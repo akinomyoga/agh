@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:vml="urn:schemas-microsoft-com:vml"
+>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <title>Test for mwg.postscript.js</title>
+<!-- Initialize Vml -->
+<style type="text/css">
+vml\:*{behavior:url(#default#VML);display:inline-block;}
+</style>
+<script id="ps1" type="application/postscript">
+gsave
+
+  % draw colorful boxes
+  0 0.1 1 {
+    dup 1 1 sethsbcolor
+    100 mul 5 moveto
+    5 0 rlineto
+    0 10 rlineto
+    -5 0 rlineto
+    closepath
+    fill
+  } for
+
+  % draw bounding rectangles
+  /rect {
+    3 index 3 index moveto
+    1 index 0 rlineto
+    0 1 index rlineto
+    1 index neg 0 rlineto
+    closepath
+    pop pop pop pop
+  } def
+
+  0 1 0 setrgbcolor 0.5 setlinewidth
+  0 0 100 100 rect stroke
+
+  0 setgray
+  10 10 80 80 rect stroke
+  -10 -10 120 120 rect stroke
+  -11 -11 122 122 rect stroke
+  
+  0.8 setgray
+  10 30 translate 0 0 10 10 rect fill
+  10 20 translate 0 0 10 10 rect fill
+  10 20 translate 0 0 10 10 rect fill
+grestore
+</script>
+<script type="text/javascript">
+if(navigator.userAgent.match(/MSIE 7.0/)&&document.compatMode=="CSS1Compat"){
+  document.body.style.position="relative";
+}
+</script>
+<script type="text/javascript" charset="utf-8" src="../../../out/mwg.js"></script>
+<script type="text/javascript">
+mwg.scripts.wait([
+	"mwg.dom.js",
+	"mwg.lang.ps.js",
+	"event:onload"
+],function(){
+  function log(text){
+    var p=document.createElement('p');
+    p.innerText=""+text;
+    document.getElementById('output').appendChild(p);
+  }
+  window.log=log;
+  function log_html(text){
+    var p=document.createElement('div');
+    p.innerHTML=""+text;
+    document.getElementById('output').appendChild(p);
+  }
+  
+  function get_script_content(idname){
+    var e=document.getElementById(idname);
+    if(mwg.browser.vIE)
+      return e.text;
+    else
+      return e.innerText;
+  }
+  
+  log("hello!");
+  
+  var p=new mwg.PostScript.Processor({
+    target:mwg.browser.vIE?"vml":"svg",
+    bb:[-10,-10,110,110]
+  });
+  p.outstream=log;
+  p.Run("1 2 3 (Hello, world! (Parenthesis)) { 1 } exec pstack clear");
+  p.Run("0 1 1 10 {add} for pstack clear");
+  p.Run("<3332313> (0123) /def /+ pstack clear");
+  p.Run("/ /hello { 1 2 3 } [ 10 -1 1 { dup mul } for ] pstack clear");
+  p.Run("1 3 div pstack clear");
+  
+  p.Run("(abc) cvn (abc) cvx cvn pstack clear");
+  p.Run("/abc cvx dup cvlit [1] cvx {2} cvlit pstack clear");
+  p.Run("{1 2 3} dup cvlit dup 1 2011 put pstack clear");
+  
+  // todo: forall
+  function test_cvrs(){
+    log("-- cvrs --");
+    p.Run("/temp {15 string} def 123 10 temp cvrs -123 10 temp cvrs 123.4 10 temp cvrs pstack clear");
+    p.Run("/temp {15 string} def 123 16 temp cvrs -123 16 temp cvrs 123.4 16 temp cvrs pstack clear");
+    p.Run("1 1 3 { 10 (Hello) dup 4 1 roll cvrs } for pstack clear");
+    p.Run("/t (Hello) def t 123 10 t cvrs 99 10 t cvrs pstack clear");
+  }
+  //test_cvrs();
+  
+  p.Run("countdictstack array dictstack ==");
+  p.Run("(1 2 add) cvx exec ==");
+  p.Run(
+    "{11 22 33 //add //sub}"
+    +"{ 1 2 add 100 10 he sub mul } bind "
+    +"/myadd systemdict /add get def /myval 10 def {myval 20 myadd 30 myadd} bind "
+    +"pstack clear"
+  );
+  
+  p.Run(
+    "10 10 moveto 100 100 lineto 100 50 lineto 0 50 lineto 10 setlinewidth 0.5 0.5 1 setrgbcolor 1 setlinejoin stroke"
+    +"/cs currentcolorspace /c currentrgbcolor pstack clear"
+    );
+  
+  p.Run(get_script_content("ps1"));
+  
+  log_html(p.graphics.GetResult());
+  //log("src= "+p.graphics.GetResult());
+});
+</script>
+</head>
+<body style="background-color:#eee;">
+<ul>
+<li>http://partners.adobe.com/public/developer/en/ps/psrefman.pdf</li>
+<li>http://atrey.karlin.mff.cuni.cz/~milanek/PostScript/Reference/REF.html</li>
+<li>http://www.ugrad.math.ubc.ca/Flat/stack-ref.html</li>
+<li>http://www.tailrecursive.org/postscript/operators.html#dup</li>
+</ul>
+<h2>他の実装</h2>
+<ul>
+<li>http://logand.com/sw/wps/index.html</li>
+<li>http://www.feiri.de/pcan/</li>
+</ul>
+<div style="font-family:MS Gothic;border:2px dotted silver;position:relative;" id="output">
+</div>
+</body>
+</html>
+
+
+
+
