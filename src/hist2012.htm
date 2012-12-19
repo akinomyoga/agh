@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <title>Ageha 開発記録 201212</title>
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://padparadscha/agh/mwg.std.css" />
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://padparadscha/agh/prog.std.css" />
+  <meta name="agh-fly-type" content="color tex" />
+  <script type="text/javascript" charset="utf-8" src="http://padparadscha/agh/agh.fly.jgz"></script>
+</head>
+<body>
+<h2>Array.prototype 汚染 [2012/12/19]</h2>
+<p>今迄、Array.prototype 汚染については「ループを回す時に for in を使うのが悪い」という態度でいた。
+しかし、実際には既存のコードで for in を使っている物は沢山ある。
+今回、agh を他のページで強制的に読み込ませて動作させるに当たって、
+他のページにある for in で問題が発生しているので Array.prototype 汚染をなくす事に決定した。
+</p>
+<p>尚、オプションとして agh(Array.protptype) によって Array.prototype を拡張できる様にしても良い。</p>
+<p>現在 Array.prototype に登録している関数は以下の通り:</p>
+<ul>
+<li>_modifyIndex: これは他の場所からは参照されていない筈</li>
+<li>$each</li>
+<li>$each_inv</li>
+<li>$map</li>
+<li>$filt</li>
+<li>$contains</li>
+<li>$indexOf</li>
+<li>$lastIndexOf</li>
+<li>$every</li>
+<li>$remove</li>
+<li>remove$</li>
+<li>remove_at</li>
+<li>clone</li>
+<li>first</li>
+<li>last</li>
+<li>lex_min</li>
+<li>lex_max</li>
+<li>min</li>
+<li>max</li>
+<li>uniq</li>
+</ul>
+<p>手順としては、</p>
+<ol>
+<li>先ず、agh.Array に静的関数として登録し直す [完]</li>
+<li>Array.prototype の関数を静的関数に置き換える [完]</li>
+<li>Array.prototype のメンバ関数呼出を静的関数に置き換える [完]</li>
+<li>agh(Array.prototype) の呼び出しで Array.prototype を拡張する様に変更する [完]</li>
+</ol>
+<pre class="agh-prog-js">
+./agh.dom.js:909:               var pixels=["ex","em","cm","in"].$map(function(unit){
+./agh.js:610:    $map:function(func,start,end){
+./agh.lang.ps/agh.lang.ps-cmd.js:1056:                  proc.outstream(proc.stk.$map(to_ps).reverse().join('\n'));
+./agh.lang.ps/agh.lang.ps-vml.js:325:                           var pixels=["ex","em","cm","in"].$map(function(unit){
+./agh.regex.js:467:             if(r)tgt=tgt.$map(agh.Text.Escape.regexp);
+./agh.dom.js:204:               return agh(document.all,Array).$filt(function(elem){
+./agh.dom.js:231:               return agh(document.getElementsByTagName(tagName),Array).$filt(function(elem){
+./agh.dom.js:303:                       classes=classes.$filt(function(cls){return !removee.$contains(cls)});
+./agh.dom.js:314:                       classes=classes.$filt(function(cls){return !cls.startsWith(base);});
+./agh.js:613:    $filt:function(func,start,end){
+./addon/aghtex4chrome/aghtex.js:364:      agh(div.childNodes,Array).$each(function(node){
+./addon/aghtex4chrome/aghtex4gmail.js:297:        agh(div.childNodes,Array).$each(function(node){
+./agh.fly.js:253:                                                       agh(elem.childNodes,Array).$each(getChildTextsR);
+./agh.fly.js:261:                               getTextNodes(parentElem).$each(function(t){
+./agh.fly.js:278:                                       agh(span.childNodes,Array).$each(function(e){
+./agh.forms.js:199:                     pages.$each(function(page){tabline_width+=page.tabElement.clientWidth;});
+./agh.forms.js:322:                     tabname.$each(function(name){main.addTab(name);});
+./agh.forms.js:336:             pages.$each(function(page){page.setPageSize(width,height);});
+./agh.js:604:    $each:function(func,start,end){
+./agh.js:607:    $each_inv:function(func,start,end){
+./agh.regex.js:83:              pairs.$each(function(pair){
+./agh.text.color.js:156:                        name.$each(function(name){nsColor[name.toLowerCase()]=f;});
+./agh.text.color.js:889:        procs.$each(function(proc){str=proc.read(str);});
+./agh.text.color.js:891:        procs.$each_inv(function(proc){str=proc.write(str);});
+./latex/array2.ctx:91:          bL.$each_inv(function(b){
+./latex/array2.ctx:103:         bR.$each(function(b){
+./latex/array2.ctx:209:         bL.$each(function(b){
+./latex/array2.ctx:253:         bR.$each(function(b){
+./agh.class.js:240:                     var i=arr.$indexOf(function(p){
+./agh.js:616:    $indexOf:function(func,start,end){
+./agh.js:619:    $lastIndexOf:function(func,start,end){
+./agh.js:785:   $indexOf:function(pattern,index){
+./agh.js:810:                           var a=this.$indexOf(pattern[i],index);
+./agh.js:816:   $lastIndexOf:function(text,index){
+./agh.js:829:                           var i=this.$indexOf(text,iC);
+./agh.js:843:                           var a=this.$lastIndexOf(text[i],index);
+./agh.js:1151:          return str.substring(0,str.$lastIndexOf(["\\","/"])+1);
+./agh.js:1154:          var i=str.$lastIndexOf(["\\","/"]);
+./agh.js:1155:          if(i==str.length-1)i=str.$lastIndexOf(["\\","/"],i-1);
+./agh.js:1164:          var i=str.$lastIndexOf(["\\","/"]);
+./agh.class.js:184:     function is(mod){return mods.$contains(mod);}
+./agh.js:43://          Array#$isEvery -&gt; Array#$every
+./agh.js:622:    $every:function(func,start,end){
+./agh.js:625:    $contains:function(obj,start,end){
+./agh.js:1408:          if(["loading","parsed","ready"].$contains(this.files[filename]))return false;
+./agh.js:628:    $remove:function(func,start,end){
+./agh.js:631:    remove$:function(func,start,end){
+./agh.js:634:    remove_at:function(i){
+./agh.js:556:      return agh.Array.first(r.sort()); // TODO optimize
+./agh.js:562:      return agh.Array.last(r.sort()); // TODO optimize
+./agh.js:599:      return agh.Array.uniqD(agh.Array.clone(arr),cmp);
+./agh.js:638:      return agh.Array.clone(this);
+./agh.js:641:      return agh.Array.first(this,len);
+./agh.js:644:      return agh.Array.first(this,len);
+./agh.js:774:                   return this.length&gt;=str.length&amp;&amp;this.last(str.length)==str;
+./agh.lang.ps/agh.lang.ps-geo.js:262:                           var p_=ns.AffineA.itransformD(p.clone(),proc.graphics.gstate.CTM);
+./agh.lang.ps/agh.lang.ps-geo.js:329:                           proc.stk.push(new ns.PsArray(ns.AffineA.identity.clone()));
+./agh.lang.ps/agh.lang.ps-geo.js:332:                           proc.graphics.gstate.CTM=ns.AffineA.defaultMatrix.clone();
+./agh.lang.ps/agh.lang.ps.js:486:               this.CTM=ns.AffineA.defaultMatrix.clone();
+./agh.lang.ps/agh.lang.ps.js:520:                       ret.path=this.path.clone();
+./agh.lang.ps/agh.lang.ps.js:521:                       ret.clipstack=this.clipstack.clone();
+./agh.lang.ps/agh.lang.ps.js:522:                       ret.CTM=this.CTM.clone();
+./agh.lang.ps/agh.lang.ps.js:571:                               gstack_[i]=this.gstack[i].clone();
+./agh.lang.ps/agh.lang.ps.js:572:                       return {gstate:this.gstate.clone(),gstack:gstack_};
+./agh.lang.ps/agh.lang.ps.js:588:                               path:this.gstate.path.clone(),
+./agh.lang.ps/agh.lang.ps.js:589:                               clipstack:this.gstate.clipstack.clone()
+./agh.lang.ps/agh.lang.ps.js:594:                       this.gstate=this.gstate.clone();
+./agh.lang.ps/agh.lang.ps.js:607:                       gstate.path=this.gstate.path.clone();
+./agh.lang.ps/agh.lang.ps.js:608:                       gstate.clipstack=this.gstate.clipstack.clone();
+./agh.lang.ps/agh.lang.ps.js:609:                       gstate.CTM=this.gstate.CTM.clone();
+./agh.lang.ps/agh.lang.ps.js:795:                       g.gstate.clippath=g.gstate.path.clone();
+./agh.lang.ps/agh.lang.ps.js:807:                               g.gstate.path=g.gstate.clippath.clone();
+./agh.lang.ps/agh.lang.ps.js:922:                       proc.stk.push(new ns.PsArray(linedash.clone()));
+./agh.lang.ps/agh.lang.ps.js:1030:                      s.path.push([PATH_CHAR,s.position,s.CTM.clone(),font,text,smove]);
+./agh.lang.ps/agh.lang.ps.js:1228:                                      this.matrix=font.matrix.clone();
+./agh.lang.ps/agh.lang.ps.js:1379:                              mat=mat.data.clone();
+./agh.text.js:251:                                      return pad&lt;0?ret.last(len)
+./latex/array2.ctx:147:         var body_bL=bL.last()==1;
+./latex/array2.ctx:148:         var body_bR=bR.first()==1;
+./latex/array2.ctx:343:                 b=this.borderL.last();
+./latex/array2.ctx:346:                 if(prev!=null)b=prev.last();
+./latex/array2.ctx:353:         if(this.borderR!=null)b=this.borderR.first();
+./latex/array2.ctx:879:         if("tbm".indexOf(va.trim().first())&lt;0){
+./latex/latex.cor.js:1267:              switch(type.first(2)){
+./latex/latex.cor.js:1382:                              var readtype=COMMAND2_READTYPE[$2.last()];
+./latex/latex.cor.js:1417:                                var htescape=$3=="0"||$2.last()=="!";
+./latex/latex.cor.js:1650:                      switch(type.first(2)){
+// grc '\b(lex_min|lex_max|min|max)\b\(' | egrep -v 'Math\.(max|min)|agh\.Array\.(max|min)'
+./agh.lang.ps/agh.lang.ps-cmd.js:197:           min:function min(proc){
+./agh.lang.ps/agh.lang.ps-cmd.js:201:           max:function max(proc){
+./latex/texsym.ctx:212: command s\max()    @"\mathop\mathrm{max}";
+./latex/texsym.ctx:213: command s\min()    @"\mathop\mathrm{min}";
+// grc '\b(uniq)\b\('
+./agh.js:661:      return agh.Array.uniq(this,cmp);
+./agh.js:683:      a=agh.Array.uniq(a,cmp);
+./agh.js:684:      b=agh.Array.uniq(b,cmp);
+./agh.js:696:      a=agh.Array.uniq(a,cmp);
+./agh.js:697:      b=agh.Array.uniq(b,cmp);
+./agh.js:708:      a=agh.Array.uniq(a,cmp);
+./agh.js:709:      b=agh.Array.uniq(b,cmp);
+</pre>
+
+</body>
+</html>
+
