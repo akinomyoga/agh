@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <title>Ageha 開発記録 201212</title>
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://padparadscha/agh/mwg.std.css" />
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://padparadscha/agh/prog.std.css" />
+  <meta name="agh-fly-type" content="color tex" />
+  <script type="text/javascript" charset="utf-8" src="http://padparadscha/agh/agh.fly.jgz"></script>
+</head>
+<body>
+<!--########################################################################-->
+<h2>ローカルファイル読み取り If-Modified-Since [2013-07-31]</h2>
+<p>aghtex4chrome でローカルファイルを reload する時に、
+ローカルファイルが更新されているかどうか確認して、
+更新されていたら reload する様にしたい。
+HTTP の場合 If-Modified-Since を指定すれば良いので、
+XmlHttpRequest で If-Modified-Since ヘッダを追加して、
+ローカルファイルを読み取ってみたが反映されていない様である。
+XmlHttpRequest はローカルファイルを読み取る際には動作が通常と異なる様である。
+</p>
+<ul>
+<li>xmlhttp.status は 0 である (HTTP で成功した場合は 200 となる)</li>
+<li>xmlhttp.setRequestHeader("If-Modified-Since") を指定しても反映されていない</li>
+<li>xmlhttp.getResponseHeader(HeaderName) で response header を取得できるが、殆ど null である。
+  <ul>
+  <li>Date, Last-Modified, Content-Length, Accept-Ranges → null</li>
+  <li>Content-Type → "text/plain; charset=x-user-defined"</li>
+  <li>というか、xmlhttp.getAllResponseHeaders という関数がある事が分かり、
+    それを呼び出してみた所 Content-Type しか設定されていないという事が分かった。</li>
+  </ul>
+<!--
+  // msg=msg+"\n  Date "+http.getResponseHeader("Date");
+  // msg=msg+"\n  Last-Modified "+http.getResponseHeader("Last-Modified");
+  // msg=msg+"\n  Accept-Ranges "+http.getResponseHeader("Accept-Ranges");
+  // msg=msg+"\n  Content-Length "+http.getResponseHeader("Content-Length");
+  // msg=msg+"\n  Content-Type "+http.getResponseHeader("Content-Type");
+-->
+</li>
+</ul>
+
+<!--########################################################################-->
+<h2>agh.text.encode.js [2013/04/25 20:07:12]</h2>
+<p>aghtex4chrome による .tex ファイルの表示または再読込で文字化けが生じしてしまうので、
+自動的に文字コードを判定・変換する様に変更したい。
+然し、その為にはそれなりのコードを自分で記述する必要がある。
+</p>
+
+<p>以下のページで XmlHttpRequest でファイルを binary で取得し、
+更に文字コードを読み取るコードが公開されている。</p>
+<ul>
+<li><a href="http://polygon-planet-log.blogspot.jp/2012/04/javascript.html">JavaScriptで文字コード変換ライブラリ作ってみた | 圧縮電子どうのこうの</a></li>
+<li><a href="http://d.hatena.ne.jp/k12u/20061216">2006-12-16 - k12uのアレ</a></li>
+</ul>
+
+<p>各種文字コードの情報</p>
+<ul>
+<li>JIS
+  <ul>
+  <li><a href="http://www.asahi-net.or.jp/~wq6k-yn/code/enc-x0213.html#iso-2022-jp-2004">JIS X 0213 (JIS2004) の代表的な符号化方式</a></li>
+  <li><a href="http://ja.wikipedia.org/wiki/ISO/IEC_2022">ISO/IEC 2022 - Wikipedia</a></li>
+  <li><a href="http://ja.wikipedia.org/wiki/JIS_X_0212">補助漢字 - Wikipedia</a></li>
+  <li>GB 2312
+    <ul>
+    <li><a href="http://ja.wikipedia.org/wiki/GB_2312">GB 2312 - Wikipedia</a></li>
+    <li><a href="http://ja.wikipedia.org/wiki/GB_18030">GB 18030 - Wikipedia</a></li>
+    <li><a href="http://icu-project.org/docs/papers/gb18030.html">GB 18030: A mega-codepage</a></li>
+    <li><a href="http://source.icu-project.org/repos/icu/data/trunk/charset/data/xml/gb-18030-2000.xml">gb-18030-2000.xml</a></li>
+    </ul>
+  </li>
+  <li><a href="http://ja.wikipedia.org/wiki/KS_X_1001">KS X 1001 - Wikipedia</a></li>
+  <li><a href="http://ja.wikipedia.org/wiki/ISO/IEC_8859-1">ISO/IEC 8859-1 - Wikipedia</a></li>
+  <li><a href="http://ja.wikipedia.org/wiki/ISO/IEC_8859-7">ISO/IEC 8859-7 - Wikipedia</a></li>
+  <li></li>
+  <li></li>
+  </ul>
+</li>
+</ul>
+
+<h3>文字コードの判定方法について</h3>
+<ul>
+<li><a href="http://writingarchives.sakura.ne.jp/chardet/algorithm.html">Universal Encoding Detector</a></li>
+<li><a href="http://dobon.net/vb/dotnet/string/detectcode.html">文字コードを判別する: .NET Tips: C#, VB.NET</a></li>
+<li><a href="http://homepage2.nifty.com/nonnon/SoftSample/SampleModJUDG.html">NonSoft - 文字コード判定のサンプル(VB6)</a></li>
+</ul>
+<p>基本的な流れとしては上記のリンク先にも書かれている通りに、
+(1) BOM (2) 文字符号化モデル (3) 言語モデル を用いて判定するのが一般的の様である。
+</p>
+<ul>
+<li>(1) では、先頭に文字符号化方式を指定するバイト列が指定されているかどうかを確認する。</li>
+<li>(2) では、例えば実際に文字のデコードを行った時にエラーが起こるかどうかを判定し、
+  エラーが起こるならばその文字コードの点数を低くすると言う事で行われる。
+  他にも、iso-2022 のエスケープシーケンスがある場合は、
+  iso-2022 の確率が高いと判断する事ができる。
+  (エスケープシーケンス自体を文字列として符号化する場合等も可能性としてあるので、
+  エスケープシーケンスが他の文字符号化方式で絶対に現れないとは言い切れないが、
+  その様な事は余り無いと思って良い。)
+</li>
+<li>(3) デコードされた文字列が自然な文字列になっているかどうかを判定する。
+  例えば滅多に使われない記号や漢字が登場する場合には点数を低くする。
+  また、意味不明なアルファベットの並びは点数が低く、よくある単語を形成する場合には点数が高い。
+  また、例えば日本語の場合は漢字とアルファベットが交互に並ぶという事はないだろうから、
+  「文字種」が切り替わる回数が少ない方が自然であると思われる。
+  また、連続する2文字の組合せの頻度を予め表にしておきその頻度で点数を付けておくという事も為される様である。
+  (これは文字種の切り替わりによる判定を一般化する形になっている様に思われる。)
+</li>
+</ul>
+
+<p>取り敢えず現在の所は本格的な文字コード判定でなくて良いので、
+BOM のチェックとエラーの数で判定する事にする。
+→こうすると JIS が問題になる。JIS の優先順位を他の符号化方式より大きくすると、
+JIS で大抵の場合エラーを発生させずに復号化できるので、全て jis と判定されてしまう。
+一方で JIS の優先順位を utf-8 より低くしてしまうと JIS コードが utf-8 と判定されてしまう。
+其処で、JIS のエスケープシーケンスが使われた回数を記録し、
+エスケープシーケンスが使用された場合に限って JIS と判断する様に変更した。
+</p>
+<p>今の所 utf16, utf32 系統が正しく判定できていない (utf16, utf32 系統は基本的に復号エラーは存在しない為) が、
+そもそも utf16, utf32 をファイルの保存・データの通信に使用する事は稀であるから今の所は実装しないでおく事にする。
+これを正しく実装する為には
+(1) UTF-16 と UTF-32 を区別する為に null 文字 '\0' に対して warn を数える事
+(2) バイトオーダーを区別する為に、頻度の低い文字種に対する減点と、文字種の切り替わりに対する減点を評価するべきである。
+</p>
+
+<h3>ToDo</h3>
+<ul>
+<li>文字コード判定</li>
+<li>warn, err 関数を Decoder に追加、warn 及び err の回数を数える</li>
+<li>utf-7 support
+  <ul>
+  <li>modified base64</li>
+  <li>utf-7 encoding</li>
+  <li>utf-7 decoding</li>
+  </ul>
+</li>
+<li>jis codepage
+  <ul>
+  <li>jis: 対応 JIS X 0212</li>
+  <li>jis: 対応 ISO/IEC 8859-1</li>
+  <li>jis: 対応 ISO/IEC 8859-7</li>
+  <li>jis: 対応 GB 2312-80</li>
+  <li>jis: 対応 KS X 1001-1992</li>
+  </ul>
+</li>
+<li></li>
+</ul>
+
+<h3>更新履歴</h3>
+<ul>
+<li>2013-07-30, KM,
+  <ul>
+  <li>agh.text.encode/main.pp, enc_jis.js, enc_uni.js: jistest2.js から移動、ファイル分割</li>
+  <li>agh.text.encode/main.pp: 文字コード自動判定機能の実装</li>
+  </ul>
+</li>
+<li>2013-07-29, KM,
+  <ul>
+  <li>jistest2.js (Decoder.jis): nshift メンバ変数で locking shift の回数を数える様に変更。</li>
+  </ul>
+</li>
+<li>2013/05/01, KM
+  <ul>
+  <li>jistest2.js: updated JIS table for JIS X 0203:2004</li>
+  <li>jistest2.js: support for encoding utf8, utf9, utf18, utf16be, utf16le, utf32be, utf32le</li>
+  <li>jistest2.js: support for encoding jis, sjis, ujis</li>
+  </ul>
+</li>
+<li>2013/04/30, KM
+  <ul>
+  <li>jistest2.js: support for decoding utf8, utf9, utf18, utf16be, utf16le, utf32be, utf32le</li>
+  </ul>
+</li>
+<li>2013/04/26, KM
+  <ul>
+  <li>jistest2.js: Renamed from jistest.js</li>
+  <li>jistest2.js: support for encoding jis, sjis, ujis</li>
+  </ul>
+</li>
+<li>2013/04/25, KM
+  <ul>
+  <li>jistest.js: Created</li>
+  </ul>
+</li>
+</ul>
+
+</body>
+</html>
+
