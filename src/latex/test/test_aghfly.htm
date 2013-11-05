@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <title>test_aghfly</title>
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://localhost/~murase/agh/mwg.std.css" />
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://localhost/~murase/agh/prog.std.css" />
+  <meta name="agh-fly-type" content="tex" />
+  <script type="text/javascript" charset="utf-8" src="http://localhost/~murase/agh/agh.fly.js"></script>
+  <style type="text/css"></style>
+  <script id="tex-preamble" type="application/x-tex">
+  \newcounter{equation}
+  </script>
+</head>
+<body class="aghfly-inline-math" style="border-color:red;">
+<h3>変換単位を跨ぐ \gdef [2013-11-05]</h3>
+<ul>
+<li>$\gdef\d{\mathrm{d}} \int\d{x}$ を計算せよ。</li>
+<li>$\int\d{x} x^n$ を計算せよ。</li>
+<li>$\int\d{x} \sin x$ を計算せよ。</li>
+</ul>
+<div class="aghfly-begin-align">
+  \int\d{x} &amp;= x + C_1, \\
+  \int\d{x} x^n &amp;= \frac1{n+1}x^{n+1} + C_2, \\
+  \int\d{x} \sin x&amp;= -\cos x + C_3,
+</div>
+
+<h3>埋込 html 要素 [2013-11-05]</h3>
+<div class="aghfly-begin-align">
+  f(x) &amp;= \sqrt{
+    \frac{x}2+
+    <table class="normal" style="margin:0;vertical-align:middle;display:inline;display:inline-table">
+    <tr><th>名前</th><th>住所</th><th>内線</th><th>式</th></tr>
+    <tr><td>功一</td><td>200号</td><td>1000</td><td>$x$</td></tr>
+    <tr><td>太郎</td><td>201号</td><td>1001</td><td>$x+1$</td></tr>
+    <tr><td>次郎</td><td>202号</td><td>1002</td><td>$x+2$</td></tr>
+    </table>
+    +
+    <marquee
+      style="width:5em;padding:.5ex;border:1px inset silver;background-color:white;vertical-align:middle;"
+      scrollamount="1">
+    this is marquee
+    </marquee>
+  }, \\
+  g(x) &amp;= 1 + \sqrt{x + \frac1{1+\frac{x}3}}, \\
+  h(x) &amp;= \sqrt{1}, \\
+  a &amp;=1+\frac1{1+\frac2{1+\frac3{1+\frac4{1+\cdots}}}}
+</div>
+
+
+</body>
+</html>
