@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns:tex="http://example.com/">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <title>tex:error[title] を使えるか?</title>
+  <link rel="stylesheet" type="text/css" href="http://padparadscha/~murase/agh/mwg.std.css" />
+</head>
+<body>
+<h1>tex:error[title] を使えるか?</h1>
+<p>
+tex:error 要素に title 属性を設定し、それを JavaScript で読み取れるかをテストする。
+</p>
+<p>tex:error[title], this.title:
+  <tex:error class="msg" title="message1234" onclick="alert(this.title);">[click here!]</tex:error>
+</p>
+<ul>
+<li>Cr: OK</li>
+<li>IE6: OK</li>
+<li>Fx: OK</li>
+<li>Sf5.1.7: OK</li>
+<li>Op12: NG (そもそも xml 要素の onclick が使えない?)</li>
+</ul>
+<p>span[title]&amp;tex:error, this.title:
+  <span title="message1234" onclick="alert(this.title);"><tex:error class="msg">[click here!]</tex:error></span>
+</p>
+<ul>
+<li>Op12: OK</li>
+</ul>
+<p>span&gt;tex:error[title], this.firstChild.title:
+  <span onclick="alert(this.firstChild.title);"><tex:error class="msg" title="message1234">[click here!]</tex:error></span>
+</p>
+<ul>
+<li>Op12: OK</li>
+</ul>
+</body>
+</html>
