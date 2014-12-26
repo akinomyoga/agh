@@ -1,0 +1,74 @@
+%%BoundingBox: 0 0 600 600
+/dbg-show-save save def
+
+6 6 scale
+
+gsave
+  /Times-Roman findfont 50 scalefont setfont
+  0.8 0.8 0.8 setrgbcolor
+  10 10 moveto (A) show
+
+  0 0 0 setrgbcolor
+  10 10 moveto 50 0 rlineto stroke
+  
+  /Times-Roman findfont [ 20 5 0 10 0 0 ] makefont setfont
+  0.8 0.5 0.5 setrgbcolor
+  10 10 moveto (Hello) show
+
+  /Times-Roman findfont [ 20 0 5 10 0 0 ] makefont setfont
+  10 30 moveto (World) show
+grestore
+
+%[[0 1][2 3][4 5]] dup 1 get cvx pstack clear
+{
+  /Times-Roman 5 selectfont
+  10 50 moveto {add} (0123456789) kshow
+  pstack clear
+} pop
+
+% xshow/yshow ‚ÌŽŽŒ±
+{
+  /myfont /Times-Roman findfont [ 10 3.5 0 5 0 0 ] makefont dup setfont def
+  10 10 moveto
+  (Hello) [ 5 5 5 5 5 ] xshow
+  (Hello) show
+  (Hello) [ 8 8 8 8 8 ] yshow
+} exec
+
+% pathbbox ‚ÌŽŽŒ±
+gsave
+  0 30 translate
+  
+  0.5 setlinewidth 0 0.5 0 setrgbcolor
+  newpath 10 20 moveto
+  8 4 rlineto
+  -4 -8 rlineto
+  -2 14 rlineto
+  closepath
+  
+  pathbbox 2 index sub exch 3 index sub exch rectstroke
+  stroke
+grestore
+
+% pathbbox/charpath ‚ÌŽŽŒ±
+gsave
+  20 40 translate 25 rotate
+  newpath
+  0 0 moveto
+  (world world world) show
+  0 0 moveto
+  (world world world) true charpath
+  pathbbox 2 index sub exch 3 index sub exch
+  rectstroke
+grestore
+
+% charpath ‚ÌŽŽŒ±
+gsave
+  /Times-Roman 20 selectfont
+  1 0 0 setrgbcolor 0.1 setlinewidth
+  20 70 translate -23 rotate
+  [0.2] 0 setdash
+  0 0 moveto (QCD) true charpath gsave 1 setgray fill grestore stroke
+grestore
+
+dbg-show-save restore
