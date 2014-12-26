@@ -1,0 +1,34 @@
+%!
+
+gsave
+  300 300 translate
+  
+  % Ž²
+  0.7 setgray
+  /comb {
+    0 -280 translate
+    -280 10 280 {
+      pop
+      -280 0 moveto 280 0 lineto stroke
+      0 10 translate
+    } for
+  } def
+  gsave
+    comb
+  grestore
+  gsave
+    90 rotate comb
+  grestore
+  
+  0 setgray
+  -280 0 moveto 280 0 lineto stroke
+  0 -280 moveto 0 280 lineto stroke
+  
+  1 0 0 setrgbcolor
+  
+  newpath 0 0 moveto
+  -280 10 280 {
+    dup abs sqrt 5 div lineto
+  } for
+  stroke
+grestore
