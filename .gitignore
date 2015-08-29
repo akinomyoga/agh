@@ -1,5 +1,14 @@
+# output directory
 /out
 /out1
-/src/agh.lang.ps/Makefile
+/dist
+
+# materials
+/mat
 /src/agh.lang.ps/mat
+
+# generated files
+/ChangeLog.htm
+/ChangeLog.txt
+/src/agh.lang.ps/Makefile
 /src/latex/Makefile

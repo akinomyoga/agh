@@ -33,6 +33,12 @@ dist-aghfonts:
 	cd ../ && tar cavf ./$(AGHDIR)/dist/agh-aghfonts.`date +%Y%m%d`.tar.xz ./$(AGHDIR)/src/latex/aghfonts --exclude=*~ --exclude=*/backup
 
 
+ChangeLog.htm: ChangeLog.lwiki
+	lwiki convert $< > $@
+ChangeLog.txt: ChangeLog.htm
+	w3m -T text/html -no-graph $< > $@
+all: ChangeLog.txt
+
 # --exclude=./$(AGHDIR)/out/stamp@* \
 # --exclude=./$(AGHDIR)/out/addon \
 # --exclude=./$(AGHDIR)/out/*.js \
