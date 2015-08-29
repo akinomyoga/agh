@@ -1,0 +1,219 @@
+@charset "utf-8"; /* 日本語 */
+
+/*======================================
+	Button
+======================================*/
+/* Border0 */
+.agh-forms-b0,
+.agh-forms-b1,
+.agh-forms-b2{
+	-moz-user-select:none;
+	-webkit-user-select:none;
+}
+.agh-forms-b0{
+	display:block;
+	border-width:1px;border-style:solid;padding:0px;
+	position:absolute;
+	width:40px;height:20px;overflow:hidden;
+	cursor:default;
+	font-size:12px;text-align:center;
+}
+.agh-forms-b0-press{
+	border-color:black;
+}
+.agh-forms-b0-focus{
+	border-color:black;
+}
+.agh-forms-b0-free{
+	border-color:threedhighlight threeddarkshadow threeddarkshadow threedhighlight;
+}
+
+/* Border1 */
+.agh-forms-b1{
+	border-width:1px;border-style:solid;padding:0px;
+	position:absolute;top:0px;left:0px;
+}
+.agh-forms-b1-press{
+	border-color:threeddarkshadow threedhighlight threedhighlight threeddarkshadow;
+}
+.agh-forms-b1-focus{
+	border-color:threedhighlight threeddarkshadow threeddarkshadow threedhighlight;
+}
+.agh-forms-b1-free{
+	border-color:threedface threedshadow threedshadow threedface;
+}
+
+/* Border2 */
+.agh-forms-b2{
+	border:solid 1px threedface;
+	position:absolute;top:0px;left:0px;
+	background-color:threedface;
+	overflow:hidden;
+}
+.agh-forms-b2-press{
+	padding:1px 0px 0px 1px;
+	border-color:threedshadow threedface threedface threedshadow;
+}
+.agh-forms-b2-focus{
+	padding:0px 1px 1px 0px;
+	border-color:threedface threedshadow threedshadow threedface;
+}
+.agh-forms-b2-free{
+	padding:0px 1px 1px 0px;
+	border-color:threedface;
+}
+/*======================================
+	TabPage
+======================================*/
+.agh-forms-tabpage{
+	background-color:threedface;
+	position:absolute;
+}
+/* TabPage field */
+.agh-forms-tabfld{
+	padding:0px;height:100%;
+}
+/* TabPage Tab Separator */
+.agh-forms-tabsep{
+	padding:0px;width:1px;height:12px;font-size:1px;
+	background-color:threedface;
+	vertical-align:top;
+	-moz-user-select:none;
+	-webkit-user-select:none;
+}
+.agh-forms-tabsep div{
+	width:1px;margin:0px;
+}
+.agh-forms-tabsep-empty{
+	padding:0px;height:12px;font-size:1px;
+	background-color:threedface;
+	width:100%;border-bottom:1px solid threedhighlight;
+	-moz-user-select:none;
+	-webkit-user-select:none;
+}
+/* TabPage Tab Separator S */
+.agh-forms-tabsep-s0,
+.agh-forms-tabsep-s1{
+	border-bottom:1px solid threedhighlight;
+}
+.agh-forms-tabsep-s2{
+	background-color:threedhighlight;
+	border-top:4px solid threedface;
+}
+.agh-forms-tabsep-s3{
+	border-top:3px solid threedface;
+	border-bottom:1px solid threedhighlight;
+}
+.agh-forms-tabsep-s3 div{
+	border-top:1px solid threedhighlight;
+}
+/* TabPage Tab Separator L */
+.agh-forms-tabsep-l0{
+	background-color:threedhighlight;
+	border-top:2px solid threedface;
+}
+.agh-forms-tabsep-l1{
+	border-top:1px solid threedface;
+}
+.agh-forms-tabsep-l1 div,
+.agh-forms-tabsep-l2,
+.agh-forms-tabsep-l3{
+	border-top:1px solid threedhighlight;
+}
+/* TabPage Tab Separator M */
+.agh-forms-tabsep-m0{
+	background-color:threedshadow;
+	border-top:3px solid threedface;
+	border-bottom:1px solid threedhighlight;
+}
+.agh-forms-tabsep-m0 div{
+	border-top:1px solid threeddarkshadow;
+}
+.agh-forms-tabsep-m1{
+	background-color:threeddarkshadow;
+	border-top:4px solid threedface;
+	border-bottom:1px solid threedhighlight;
+}
+.agh-forms-tabsep-m2{
+	background-color:threedhighlight;
+	border-top:4px solid threedface;
+}
+.agh-forms-tabsep-m3{
+	border-top:3px solid threedface;
+	border-bottom:1px solid threedhighlight;
+}
+.agh-forms-tabsep-m3 div{
+	border-top:1px solid threedhighlight;
+}
+/* TabPage Tab Separator R */
+.agh-forms-tabsep-r0,
+.agh-forms-tabsep-r1{
+	border-top:1px solid threedhighlight;
+}
+.agh-forms-tabsep-r2{
+	background-color:threedshadow;
+	border-top:1px solid threedface;
+}
+.agh-forms-tabsep-r2 div{
+	border-top:1px solid threeddarkshadow;
+}
+.agh-forms-tabsep-r3{
+	background-color:threeddarkshadow;
+	border-top:2px solid threedface;
+}
+/* TabPage Tab Separator E */
+.agh-forms-tabsep-e0{
+	background-color:threedshadow;
+	border-top:3px solid threedface;
+	border-bottom:1px solid threedhighlight;
+}
+.agh-forms-tabsep-e0 div{
+	border-top:1px solid threeddarkshadow;
+}
+.agh-forms-tabsep-e1{
+	background-color:threeddarkshadow;
+	border-top:4px solid threedface;
+	border-bottom:1px solid threedhighlight;
+}
+.agh-forms-tabsep-e2,
+.agh-forms-tabsep-e3{
+	border-bottom:1px solid threedhighlight;
+}
+/* TabPage TabPage */
+.agh-forms-tabpg0{
+	width:100%;height:100%;display:none;padding:0px;
+	border-style:solid;
+	border-color:threedface threeddarkshadow threeddarkshadow threedhighlight;
+	border-width:0px 1px 1px 1px;
+}
+.agh-forms-tabpg1{
+	width:100%;height:100%;padding:2px;/*position:absolute;*/
+	position:relative;overflow:hidden;
+	border-style:solid;
+	border-color:threedface threedshadow threedshadow threedface;
+	border-width:0px 1px 1px 0px;
+}
+/* TabPage TabTag */
+.agh-forms-tabtag0{
+	font-family:'MS UI Gothic';
+	cursor:default;white-space:nowrap;padding:0px;
+	font-size:12px;
+	-moz-user-select:none;
+	-webkit-user-select:none;
+}
+.agh-forms-tabtag1{
+	margin:0px;
+	border-top:1px solid threedhighlight;
+	padding:3px 4px 2px 4px;
+}
+.agh-forms-tabtag0-active{
+	border-bottom:1px solid threedface;
+	vertical-align:top;
+}
+.agh-forms-tabtag0-inactive{
+	border-bottom:1px solid threedhighlight;
+	border-top:2px solid threedface;
+}
+.agh-forms-tabtag1-inactive{
+	padding-bottom:1px;
+}

@@ -1,0 +1,923 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <title>PostScript Implementation</title>
+  <link charset="utf-8" type="text/css" rel="stylesheet" href="../../out/mwg.std.css" />
+  <link charset="utf-8" type="text/css" rel="stylesheet" href="../../out/prog.std.css" />
+  <script type="text/javascript" charset="utf-8" src="http://padparadscha/~murase/agh/agh.fly.jgz"></script>
+  <style type="text/css">
+  div.obsolete{color:Gray;}
+  </style>
+<!--PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+  Information for HtTree Generator <mwg.httree>
+PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+#%data title PostScript Implementation - 計画4. ファイル
+#%data keywords PostScript,実装メモ
+#%define head (
+  <link rel="stylesheet" charset="utf-8" href="${aghdir:-http://padparadscha/agh}/prog.std.css" />
+  <style type="text/css">
+  div.obsolete{color:gray;}
+  </style>
+  <meta name="agh-fly-type" content="color" />
+  <script type="text/javascript" charset="utf-8" src="${aghdir:-http://padparadscha/agh}/agh.fly.jgz"></script>
+#%)
+PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP-->
+</head>
+<body>
+#%define body (
+<h1>PostScript</h1>
+<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--############################################################################
+
+    計画4. ファイル
+    
+#############################################################################-->
+<h2>計画4. ファイル実装</h2>
+<!--.........................................................................-->
+<h3>ns.ScannerF 実装</h3>
+<p>今迄は単一の入力文字列を想定した Scanner の実装しかなかった。
+入力文字列を想定した最適化などを施してしまったので、
+逐次デコードしながら実行していくなどの動作をする事が難しくなってしまっていた。
+</p>
+<p>新しく作り直す ScannerF では、
+基本的には抽象化された ns.PsFile オブジェクトからデータを読み出して Scan する様にした。
+</p>
+<p>然し、その様にすると単一文字列に対して行った正規表現を用いた高速な scan を使えない。
+その為に、単一文字列を扱う PsFile である ns.PsStringFile を対象にする時のみ
+正規表現を用いた読み込みを実行する事にした。</p>
+<h4>削除</h4>
+<p>従来の ns.Scanner 及び、それを実験的に一部だけ高速化した ns.Scanner2 は使用されなくなった。
+同様の、そして、更に強化された機能を ns.ScannerF が保持しているので、
+これらのクラスは最早存在する意味はなくなった。
+なので、ここで削除する事にする。
+</p>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps.js/L447 @@ 23:17 2011/03/04
+-  //----------------------------------------------------------------------------
+-  // 字句解析
+-  //----------------------------------------------------------------------------
+-  ns.Scanner=function Scanner(text,parent){
+-    this.s=text;
+-    this.l=text.length;
+-    this.i=-1;
+-    this.next_char();
+-    if(parent!=null)
+-      this.errstream=function(text){parent.errstream(text);};
+-  };
+-  mwg.memcpy(ns.Scanner.prototype,{
+-    s:"", // string
+-    i:0,  // index
+-    l:0,  // length
+-    c:0,  // character
+-    
+-    iline:0,         // 行番号
+-    icol:0,          // 列番号
+-    flinebreak:true, // 次で改行 flag
+-    
+-    word:"",
+-    
+-    next_char:function(){
+-      if(++this.i&lt;this.l){
+-        this.c=this.s.charAt(this.i);
+-        if(this.c=='\r'){
+-          // 改行の統一: CR / LF / CR LF -&gt; LF
+-          this.c='\n';
+-          if(this.i+1&lt;this.l&amp;&amp;this.s.charAt(this.i+1)=='\n')this.i++;
+-        }
+-        
+-        // 行・列番号数え
+-        if(this.flinebreak){
+-          this.flinebreak=false;
+-          this.iline++;
+-          this.icol=1;
+-        }else{
+-          this.icol++;
+-        }
+-        this.flinebreak=this.c=='\n';
+-      }else{
+-        this.c=null;
+-      }
+-    },
+-    next:function(){
+-      this.next_skip_space();
+-      this.word="";
+-      var iline=this.iline;
+-      var icol=this.icol;
+-      switch(true){
+-        case this.c==null:
+-          return null;
+-        case this.c=='%':
+-          this.next_char();
+-          while(this.c!=null&amp;&amp;this.c!='\n'&amp;&amp;this.c!='\r'){
+-            this.word+=this.c;
+-            this.next_char();
+-          }
+-          this.word=new ns.PsComment(this.word);
+-          break;
+-        case this.c=='/':
+-          this.next_char();
+-          
+-          var imediate=false;
+-          if(this.c=='/'){
+-            imediate=true;
+-            this.next_char();
+-          }
+-          
+-          this.read_token();
+-          this.word=new ns.PsName(this.word);
+-          if(imediate){
+-            this.word.__xaccess__=true;
+-            this.word.__imediate__=true;
+-          }
+-          break;
+-        case this.c=='(':
+-          this.next_char();
+-          this.read_string();
+-          this.word=new ns.PsString(this.word);
+-          break;
+-        case this.c=='{':
+-          this.word=MARK_PROC_BEGIN;
+-          this.next_char();
+-          break;
+-        case this.c=='}':
+-          this.word=MARK_PROC_END;
+-          this.next_char();
+-          break;
+-        case this.c=='[':
+-        case this.c==']':
+-          this.word=this.c;
+-          this.next_char();
+-          this.word=ns.PsName.CreateExecutable(this.word);
+-          break;
+-        case this.c=='&lt;':
+-          this.next_char();
+-          if(this.c=='&lt;'){
+-            this.word='&lt;&lt;';
+-            this.next_char();
+-            this.word=ns.PsName.CreateExecutable(this.word);
+-          }else if(this.c=='~'){
+-            this.onerror("notimplemented: ascii85encoding");
+-          }else{
+-            this.read_hexstring();
+-            this.word=new ns.PsString(this.word);
+-          }
+-          break;
+-        case this.c=='&gt;':
+-          this.word=this.c;
+-          this.next_char();
+-          if(this.c==this.word){
+-            this.word+=this.c;
+-            this.next_char();
+-          }
+-          this.word=ns.PsName.CreateExecutable(this.word);
+-          break;
+-        default:
+-          this.read_token();
+-          var m=null;
+-          if(/^[-+]?\d+$/.test(this.word)){
+-            this.word=parseInt(this.word);
+-          }else if(/^[-+]?(\d+(?:\.\d*)?|\.\d+)([eE][-+]?\d+)?$/.test(this.word)){
+-            // 符号: [+-]?
+-            // 数値:  \d+|\d+.|\d+.\d+|.\d+
+-            // 指数部: [eE][+-]?\d+
+-            this.word=parseFloat(this.word);
+-          }else if(m=/^(\d+)\#([\da-zA-Z]+)$/.exec(this.word)){
+-            this.word=parseInt(m[2],parseInt(m[1]));
+-          }else{
+-            this.word=ns.PsName.CreateExecutable(this.word);
+-          }
+-          break;
+-      }
+-      if(this.word!=null){
+-        this.word.iline=iline;
+-        this.word.icol=icol;
+-      }
+-      return this.word;
+-    },
+-    next_skip_space:function(){
+-      while(this.c!=null&amp;&amp;reg_isspace.test(this.c))this.next_char();
+-    },
+-    read_token:function(){
+-      //while(this.c!=null&amp;&amp;ispssym(this.c)){
+-      while(this.c!=null&amp;&amp;reg_ispssym.test(this.c)){
+-        this.word+=this.c;
+-        this.next_char();
+-      }
+-    },
+-    read_string:function(){
+-      var c_paren=0;
+-      var f_esc=false;
+-      while(this.c!=null){
+-        if(this.c=='\\'){
+-          this.next_char();
+-          if(this.c==null){
+-            this.word+='\\';
+-            this.next_char();
+-            return;
+-          }else if(/[0-7]/.test(this.c)){
+-            this.word+=String.fromCharCode(this.read_string_octal3());
+-          }else if(/[nrtbf\n]/.test(this.c)){
+-            this.word+={n:'\n',r:'\r',t:'\t',b:'\b',f:'\f','\n':''}[this.c];
+-            this.next_char();
+-          }else{
+-            this.word+=this.c;
+-            this.next_char();
+-          }
+-        }else{
+-          if(this.c=='('){
+-            c_paren++;
+-          }else if(this.c==')'){
+-            if(c_paren--==0){
+-              this.next_char();
+-              return;
+-            }
+-          }
+-          
+-          this.word+=this.c;
+-          this.next_char();
+-        }
+-      }
+-    },
+-    read_string_octal3:function(){
+-      var code=0;
+-      for(var digit=0;digit&lt;3;digit++){
+-        if(this.c==null||!this.c.match(/[0-7]/))break;
+-        code=code*8+parseInt(this.c);//this.c.charCodeAt(0)-this.CHARCODE_0;
+-        this.next_char();
+-      }
+-      return code;
+-    },
+-    read_hexstring:function(){
+-      var lead=null;
+-      while(true)switch(true){
+-        case this.c==null:
+-          this.onerror("syntaxerror: unexpected EOF in a hexadecimal-string literal.");
+-          // fall-through
+-        case this.c=='&gt;':
+-          if(lead!=null){
+-            this.word+=String.fromCharCode(parseInt(lead+"0",16));
+-            lead=null;
+-          }
+-          this.next_char();
+-          return;
+-        case isxdigit(this.c):
+-          if(lead==null){
+-            lead=this.c;
+-          }else{
+-            this.word+=String.fromCharCode(parseInt(lead+this.c,16));
+-            lead=null;
+-          }
+-          this.next_char();
+-          break;
+-        case isspace(this.c):
+-          this.next_char();
+-          break;// 無視
+-        default:
+-          this.onerror("syntaxerror: invalid character '"+this.c+"' in hexadecimal string.");
+-          this.next_char();
+-          break;
+-      }
+-    },
+-    /*
+-    read_number:function(){
+-      while(this.c!=null&amp;&amp;this.c.match(/[\-\+0-9eE.]/)){
+-        this.word+=this.c;
+-        this.next_char();
+-      }
+-    },
+-    //*/
+-    
+-    CHARCODE_0:"0".charCodeAt(0),
+-    onerror:function(msg){
+-      this.errstream("L"+this.iline+"/C"+this.icol+": "+msg);
+-    },
+-    errstream:function(){},
+-    _:0
+-  });
+-  //----------------------------------------------------------------------------
+-  (function(){
+-    var reg_spaces=/[ \t\f\v\b\r\n]*/g;
+-    var reg_token=/[^ \t\f\v\b\n\r\&lt;\&gt;\(\)\[\]\{\}\%\/]*/g;
+-    
+-    ns.Scanner2=function Scanner2(text,parent){
+-      this.s=text;
+-      this.l=text.length;
+-      this.i=-1;
+-      this.next_char();
+-      if(parent!=null)
+-        this.errstream=function(text){parent.errstream(text);};
+-    };
+-    mwg.memcpy(ns.Scanner2.prototype,{
+-      s:"", // string
+-      i:0,  // index
+-      l:0,  // length
+-      c:0,  // character
+-      
+-      iline:0,         // 行番号
+-      icol:0,          // 列番号
+-      flinebreak:true, // 次で改行 flag
+-      
+-      word:"",
+-      
+-      next_char:function(){
+-        if(++this.i&lt;this.l){
+-          this.c=this.s.charAt(this.i);
+-          if(this.c=='\r'){
+-            // 改行の統一: CR / LF / CR LF -&gt; LF
+-            this.c='\n';
+-            if(this.i+1&lt;this.l&amp;&amp;this.s.charAt(this.i+1)=='\n')this.i++;
+-          }
+-          
+-          // 行・列番号数え
+-          if(this.flinebreak){
+-            this.flinebreak=false;
+-            this.iline++;
+-            this.icol=1;
+-          }else{
+-            this.icol++;
+-          }
+-          this.flinebreak=this.c=='\n';
+-        }else{
+-          this.c=null;
+-        }
+-      },
+-      next:function(){
+-        // next_skip_space
+-        /*
+-          this.next_skip_space();
+-        /*/
+-          reg_spaces.lastIndex=this.i;
+-          //reg_spaces.test(this.s);
+-          //this.i=reg_spaces.lastIndex;
+-          this.i+=reg_spaces.exec(this.s)[0].length;
+-          this.c=this.i&lt;this.l?this.s.charAt(this.i):null;
+-        //*/
+-        
+-        this.word="";
+-        var iline=this.iline;
+-        var icol=this.icol;
+-        switch(true){
+-          case this.c==null:
+-            return null;
+-          case this.c=='%':
+-            this.next_char();
+-            while(this.c!=null&amp;&amp;this.c!='\n'&amp;&amp;this.c!='\r'){
+-              this.word+=this.c;
+-              this.next_char();
+-            }
+-            this.word=new ns.PsComment(this.word);
+-            break;
+-          case this.c=='/':
+-            this.next_char();
+-            
+-            var imediate=false;
+-            if(this.c=='/'){
+-              imediate=true;
+-              this.next_char();
+-            }
+-
+-            //read_token
+-            /*
+-              this.read_token();
+-              this.word=new ns.PsName(this.word);
+-            /*/
+-              reg_token.lastIndex=this.i;
+-              var m=reg_token.exec(this.s);
+-              //this.i=reg_token.lastIndex;
+-              this.i+=m[0].length;
+-              this.c=this.i&lt;this.l?this.s.charAt(this.i):null;
+-              this.word=new ns.PsName(m[0]);
+-            //*/
+-            
+-            if(imediate){
+-              this.word.__xaccess__=true;
+-              this.word.__imediate__=true;
+-            }
+-            break;
+-          case this.c=='(':
+-            this.next_char();
+-            this.read_string();
+-            this.word=new ns.PsString(this.word);
+-            break;
+-          case this.c=='{':
+-            this.word=MARK_PROC_BEGIN;
+-            this.next_char();
+-            break;
+-          case this.c=='}':
+-            this.word=MARK_PROC_END;
+-            this.next_char();
+-            break;
+-          case this.c=='[':
+-          case this.c==']':
+-            this.word=this.c;
+-            this.next_char();
+-            this.word=ns.PsName.CreateExecutable(this.word);
+-            break;
+-          case this.c=='&lt;':
+-            this.next_char();
+-            if(this.c=='&lt;'){
+-              this.word='&lt;&lt;';
+-              this.next_char();
+-              this.word=ns.PsName.CreateExecutable(this.word);
+-            }else if(this.c=='~'){
+-              this.onerror("notimplemented: ascii85encoding");
+-            }else{
+-              this.read_hexstring();
+-              this.word=new ns.PsString(this.word);
+-            }
+-            break;
+-          case this.c=='&gt;':
+-            this.word=this.c;
+-            this.next_char();
+-            if(this.c==this.word){
+-              this.word+=this.c;
+-              this.next_char();
+-            }
+-            this.word=ns.PsName.CreateExecutable(this.word);
+-            break;
+-          default:
+-            /*
+-              this.read_token();
+-            /*/ //read_token
+-              reg_token.lastIndex=this.i;
+-              var m=reg_token.exec(this.s);
+-              this.i=reg_token.lastIndex;
+-              this.c=this.i&lt;this.l?this.s.charAt(this.i):null;
+-              this.word=m[0];
+-            //*/
+-            if(/^[-+]?\d+$/.test(this.word)){
+-              this.word=parseInt(this.word);
+-            }else if(/^[-+]?(\d+(?:\.\d*)?|\.\d+)([eE][-+]?\d+)?$/.test(this.word)){
+-              // 符号: [+-]?
+-              // 数値:  \d+|\d+.|\d+.\d+|.\d+
+-              // 指数部: [eE][+-]?\d+
+-              this.word=parseFloat(this.word);
+-            }else if(m=/^(\d+)\#([\da-zA-Z]+)$/.exec(this.word)){
+-              this.word=parseInt(m[2],parseInt(m[1]));
+-            }else{
+-              this.word=ns.PsName.CreateExecutable(this.word);
+-            }
+-            break;
+-        }
+-        if(this.word!=null){
+-          this.word.iline=iline;
+-          this.word.icol=icol;
+-        }
+-        return this.word;
+-      },
+-      //*
+-      next_skip_space:function(){
+-        while(this.c!=null&amp;&amp;reg_isspace.test(this.c))this.next_char();
+-      },
+-      read_token:function(){
+-        //while(this.c!=null&amp;&amp;ispssym(this.c)){
+-        while(this.c!=null&amp;&amp;reg_ispssym.test(this.c)){
+-          this.word+=this.c;
+-          this.next_char();
+-        }
+-      },
+-      //*/
+-      read_string:function(){
+-        var c_paren=0;
+-        var f_esc=false;
+-        while(this.c!=null){
+-          if(this.c=='\\'){
+-            this.next_char();
+-            if(this.c==null){
+-              this.word+='\\';
+-              this.next_char();
+-              return;
+-            }else if(/[0-7]/.test(this.c)){
+-              this.word+=String.fromCharCode(this.read_string_octal3());
+-            }else if(/[nrtbf\n]/.test(this.c)){
+-              this.word+={n:'\n',r:'\r',t:'\t',b:'\b',f:'\f','\n':''}[this.c];
+-              this.next_char();
+-            }else{
+-              this.word+=this.c;
+-              this.next_char();
+-            }
+-          }else{
+-            if(this.c=='('){
+-              c_paren++;
+-            }else if(this.c==')'){
+-              if(c_paren--==0){
+-                this.next_char();
+-                return;
+-              }
+-            }
+-            
+-            this.word+=this.c;
+-            this.next_char();
+-          }
+-        }
+-      },
+-      read_string_octal3:function(){
+-        var code=0;
+-        for(var digit=0;digit&lt;3;digit++){
+-          if(this.c==null||!this.c.match(/[0-7]/))break;
+-          code=code*8+parseInt(this.c);
+-          this.next_char();
+-        }
+-        return code;
+-      },
+-      read_hexstring:function(){
+-        var lead=null;
+-        while(true)switch(true){
+-          case this.c==null:
+-            this.onerror("syntaxerror: unexpected EOF in a hexadecimal-string literal.");
+-            // fall-through
+-          case this.c=='&gt;':
+-            if(lead!=null){
+-              this.word+=String.fromCharCode(parseInt(lead+"0",16));
+-              lead=null;
+-            }
+-            this.next_char();
+-            return;
+-          case isxdigit(this.c):
+-            if(lead==null){
+-              lead=this.c;
+-            }else{
+-              this.word+=String.fromCharCode(parseInt(lead+this.c,16));
+-              lead=null;
+-            }
+-            this.next_char();
+-            break;
+-          case isspace(this.c):
+-            this.next_char();
+-            break;// 無視
+-          default:
+-            this.onerror("syntaxerror: invalid character '"+this.c+"' in hexadecimal string.");
+-            this.next_char();
+-            break;
+-        }
+-      },
+-      onerror:function(msg){
+-        this.errstream("L"+this.iline+"/C"+this.icol+": "+msg);
+-      },
+-      errstream:function(){},
+-      _:0
+-    });
+-  })();
+-  //ns.Scanner=ns.Scanner2;
+@ mwg.lang.ps.js/L6 @@ 23:37 2011/03/05
+-    var isspace=function(c){
+-      return " \t\f\v\b\r\n".indexOf(c)&gt;=0;
+-    };
+-    var ispssym=function(c){
+-      //return !!c.match(/^[\-0-9a-zA-Z_]$/);
+-      return reg_ispssym.test(c);
+-    };
+-    var ispssymf=function(c){
+-      //return !!c.match(/^[a-zA-Z_]$/);
+-      return reg_ispssym.test(c);
+-    };
+-    var isdigit=function(c){
+-      return !!c.match(/^[0-9]$/);
+-    };
+-    var isxdigit=function(c){
+-      return !!c.match(/^[\da-fA-F]$/);
+-    };
+</pre>
+<h4>最適化 @ 行・列数え1</h4>
+<p>どうやら、改行を数える為の動作で時間が掛かっている様な気がするので、少し修正した。</p>
+<p>何でも正規表現を使えば速いという訳でもない様である。(オブジェクトの生成・破棄に時間が掛かっているのであろうか。)</p>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps-io.js/L302 @@ 23:31 2011/03/04
+       next4strfile:function(){
+-        //window.log(reg_tot.source);
+-        
+         var m;
+         if(this.file.i&lt;this.file.l&amp;&amp;(reg_tot.lastIndex=this.file.i,m=reg_tot.exec(this.file.s))){
+           //---------------------------
+           // this.file.iC/iL 更新
+-          var a;
+-          if(a=m[1].match(/\r?\n|\r/g)){
+-            this.file.iL+=a.length;
+-            this.file.iC
+-              =m[1].length-Math.max(
+-                a.lastIndexOf('\r'),
+-                a.lastIndexOf('\n')
+-              );
+-          }else{
+-            this.file.iC+=m[1].length;
+-          }
++          var s=m[1];
++          for(var i=0;i&lt;s.length;i++){
++            var c=s.charAt(i);
++            if(c=='\r'){
++              c='\n';
++              if(s.charAt(i+1)=='\n')i++;
++            }
++            
++            if(c=='\n'){
++              this.file.iL++;
++              this.file.iC=1;
++            }else{
++              this.file.iC++;
++            }
++          }
+</pre>
+<h4>最適化 @ 改行数え: 改行も正規表現で数える [逆効果]</h4>
+<p>折角正規表現を使用しているのだから、
+改行も正規表現で数える様にしたらどうであろうか。
+と考えたが、実際に試してみたら微妙に時間が掛かる様になってしまった。
+</p>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps-io.js/L103 @@ 06:37 2011/03/05
+-    var reg2_tot=(function(){
+-      var reg_comment=/\%[^\r\n]*(?:\r?\n|\r|$)/g;
+-      var reg_imed   =/\/\/[^\s\&lt;\&gt;\(\)\[\]\{\}\%\/]*/g;
+-      var reg_name   =/\/[^\s\&lt;\&gt;\(\)\[\]\{\}\%\/]*/g;
+-      var reg_exec   =/\&lt;\&lt;|\&gt;\&gt;|\[|\]/g;
+-      var reg_mark   =/[\(\)\{\}\&lt;\&gt;]/g;
+-      var reg_B      =/(?:(?=[\s\&lt;\&gt;\(\)\[\]\{\}\%\/])|$)/g
+-      var reg_int    =/[-+]?\d+B/g;
+-      var reg_flt    =/[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?B/g;
+-      var reg_hex    =/(\d+)\#([\da-zA-Z]+)B/g;
+-      var reg_tok    =/[^\s\&lt;\&gt;\(\)\[\]\{\}\%\/]+/g;
+-      
+-      var rex_space  =/[ \t\v\f\b]*/.source;
+-      var rex_break  =/\r?\n|\r/.source;
+-      var rex_number =reg_int.source+'|'+reg_flt.source;
+-      return new RegExp(
+-        '({0})(({1})|({2:src})|({3:src})|({4:src})|({5:src})|({6:src})|({7})|({8:src})|({9:src})|(.))'.format(
+-          rex_space,   // 0  1
+-          rex_break,   // 1  3
+-          reg_comment, // 2  4
+-          reg_imed,    // 3  5
+-          reg_name,    // 4  6
+-          reg_exec,    // 5  7
+-          reg_mark,    // 6  8
+-          rex_number,  // 7  9
+-          reg_hex,     // 8 10
+-          reg_tok      // 9 13
+-/*
+-          #%data REG2_SPACE      1
+-          #%data REG2_TOKEN      2
+-          
+-          #%data REGC2_BREAK     3
+-          #%data REGC2_COMMENT   4
+-          #%data REGC2_IMEDIATE  5
+-          #%data REGC2_NAME      6
+-          #%data REGC2_EXECMARK  7
+-          #%data REGC2_MARK      8
+-          #%data REGC2_NUMBER    9
+-          #%data REGC2_HEXNUM   10
+-          #%data REGC2_EXECNAME 13
+-*/
+-        ).replace(/B/g,reg_B.source),
+-        'g'
+-      );
+-    })();
+@ mwg.lang.ps-io.js/L305 @@ 06:37 2011/03/05
+-      //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+-      next4strfile2:function(){
+-        var m;
+-        while(this.file.i&lt;this.file.l&amp;&amp;(reg2_tot.lastIndex=this.file.i,m=reg2_tot.exec(this.file.s))){
+-#%expand (
+-          //---------------------------
+-          // this.file.iC/iL 更新
+-          if(m[${REGC2_BREAK}]){
+-            this.file.iL++;
+-            this.file.iC=1;
+-            this.file.i=reg2_tot.lastIndex;
+-            continue;
+-          }else{
+-            this.file.iC+=m[${REG2_SPACE}].length;
+-          }
+-          
+-          var iC=this.file.iC;
+-          var iL=this.file.iL;
+-          this.file.iC+=m[${REG2_TOKEN}].length;
+-          this.file.i=reg2_tot.lastIndex;
+-
+-          //---------------------------
+-          // 分類
+-          if(m[${REGC2_NUMBER}]){
+-            this.word=parseFloat(m[${REGC2_NUMBER}]);
+-          }else if(m[${REGC2_EXECNAME}]){
+-            this.word=new ns.PsName(m[${REGC2_EXECNAME}]);
+-            this.word.__xaccess__=true;
+-          }else if(m[${REGC2_NAME}]){
+-            this.word=new ns.PsName(m[${REGC2_NAME}].slice(1));
+-          }else if(m[${REGC2_HEXNUM}]){
+-            this.word=parseInt(m[${.eval:REGC2_HEXNUM+2}],parseInt(m[${.eval:REGC2_HEXNUM+1}]));
+-          }else if(m[${REGC2_EXECMARK}]){ // &lt;&lt; &gt;&gt; [ ]
+-            this.word=new ns.PsName(m[${REGC2_EXECMARK}]);
+-            this.word.__xaccess__=true;
+-          }else if(m[${REGC2_MARK}]){
+-            var c=this.file.seek(this.file.i);
+-            switch(m[${REGC2_MARK}]){
+-              case '{':
+-                this.word=MARK_PROC_BEGIN;
+-                break;
+-              case '}':
+-                this.word=MARK_PROC_END;
+-                break;
+-              case '(':
+-                this.word='';
+-                this.read_string();
+-                this.word=new ns.PsString(this.word);
+-                break;
+-              case '&lt;':
+-                if(c=='~'){
+-                  this.onerror("notimplemented: ascii85encoding");
+-                  this.word=new ns.PsString('');
+-                }else{
+-                  this.word='';
+-                  this.read_hexstring();
+-                  this.word=new ns.PsString(this.word);
+-                }
+-                break;
+-              case '&gt;':
+-              case ')':
+-                this.onerror("syntaxerror: no corresponding open paren for '"+m[7]+"'");
+-                break;
+-            }
+-          }else if(m[${REGC2_IMEDIATE}]){
+-            this.word=new ns.PsName(m[${REGC2_IMEDIATE}].slice(2));
+-            this.word.__xaccess__=true;
+-            this.word.__imediate__=true;
+-          }else if(m[${REGC2_COMMENT}]){
+-            this.word=new ns.PsComment(m[${REGC2_COMMENT}].slice(1));
+-            this.file.iL++;
+-            this.file.iC=1;
+-          }else{
+-            // 必ず 13 で引っかかる筈…
+-            this.word=new ns.PsComment('%Error: Fatal error in mwg.PostScript.ScannerF');
+-            this.onerror("fatalerror: an invalid character in mwg.PostScript.ScannerF");
+-          }
+-#%).i
+-          //---------------------------
+-          // 単語位置情報
+-          this.word.file=this.file.name;
+-          this.word.iline=iL;
+-          this.word.icol=iC;
+-          return this.word;
+-        }
+-        
+-        return null;
+-      },
+</pre>
+<h4>最適化 @ 整数と小数の統一</h4>
+<p>現在の解析では整数と小数を区別しているが、
+実際にはどちらも parseFloat で解析出来るので、
+区別する必要性はない。
+</p>
+<p>区別すると余計に条件判断が増えるので、両方を纏めてしまう事にする。</p>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps-io.js/L305 @@ 06:56 2011/03/05
+     var reg_tot=(function(){
+       var reg_comment=/\%[^\r\n]*(?:\r?\n|\r|$)/g;
+       var reg_imed   =/\/\/[^\s\&lt;\&gt;\(\)\[\]\{\}\%\/]*/g;
+       var reg_name   =/\/[^\s\&lt;\&gt;\(\)\[\]\{\}\%\/]*/g;
+       var reg_exec   =/\&lt;\&lt;|\&gt;\&gt;|\[|\]/g;
+       var reg_mark   =/[\(\)\{\}\&lt;\&gt;]/g;
+       var reg_B      =/(?:(?=[\s\&lt;\&gt;\(\)\[\]\{\}\%\/])|$)/g
+       var reg_int    =/[-+]?\d+B/g;
+       var reg_flt    =/[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?B/g;
+       var reg_hex    =/(\d+)\#([\da-zA-Z]+)B/g;
+       var reg_tok    =/[^\s\&lt;\&gt;\(\)\[\]\{\}\%\/]+/g;
+       var reg_space  =/\s*/g;
+       return new RegExp(
+-        '({0})(({1})|({2})|({3})|({4})|({5})|({6})|({7})|({8})|({9})|(.))'.format(
++        '({0})(({1})|({2})|({3})|({4})|({5})|({6}|{7})|({8})|({9})|(.))'.format(
+           reg_space.source,   // 0  1
+           reg_comment.source, // 1  3
+           reg_imed.source,    // 2  4
+           reg_name.source,    // 3  5
+           reg_exec.source,    // 4  6
+           reg_mark.source,    // 5  7
+-          reg_int.source,     // 6  8
+-          reg_flt.source,     // 7  9
+-          reg_hex.source,     // 8 10
+-          reg_tok.source      // 9 13
++          reg_int.source,     // 6  8
++          reg_flt.source,     // 7  8
++          reg_hex.source,     // 8  9
++          reg_tok.source      // 9 12
+ /*
+&nbsp;          #%data REG_SPACE    1
+&nbsp;          #%data REG_TOKEN    2
+&nbsp;          
+&nbsp;          #%data REGC_COMMENT  3
+&nbsp;          #%data REGC_IMEDIATE 4
+&nbsp;          #%data REGC_NAME     5
+&nbsp;          #%data REGC_EXECMARK 6
+&nbsp;          #%data REGC_MARK     7
+-          #%data REGC_INT      8
+-          #%data REGC_FLOAT    9
+-          #%data REGC_HEXNUM   10
+-          #%data REGC_EXECNAME 13
++          #%data REGC_NUMBER    8
++          #%data REGC_HEXNUM    9
++          #%data REGC_EXECNAME 12
+ */
+         ).replace(/B/g,reg_B.source),
+         'g'
+       );
+     })();
+@ mwg.lang.ps-io.js/L325 @@ 06:56 2011/03/05
+           this.file.i=reg_tot.lastIndex;
+ 
+&nbsp;#%expand (
+           //---------------------------
+           // 分類
+-          if(m[${REGC_FLOAT}]){
+-            this.word=parseFloat(m[${REGC_FLOAT}]);
+-          }else if(m[${REGC_INT}]){
+-            this.word=parseInt(m[${REGC_INT}]);
++          if(m[${REGC_NUMBER}]){
++            this.word=parseFloat(m[${REGC_NUMBER}]);
+           }else if(m[${REGC_EXECNAME}]){
+</pre>
+<h4>最適化 [逆効果]</h4>
+<p>再度、改行数えの部分の最適化に挑戦する。</p>
+<p>以前の方法では、正規表現の適用を実行する回数が多くなってしまったから遅くなってしまったのかも知れない、
+と考えて、正規表現を適用する回数を毎回一回になる様に調整してみた。
+</p>
+<p>然し、結果から言うと微妙に遅くなってしまう様であった。
+(どうやら、キャプチャの個数を増やすだけで遅くなる様である。)
+更に、この方法で改行を数えるのにも正規表現を使用する事にすると益々遅くなってしまった。
+</p>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps-io.js/L68 @@ 13:52 2011/03/05
+-      /*
+       var reg_space  =/\s*/g;
+-      //*/
+-      var reg_space  =/(?:[ \v\t\b\f](?:\r?\n|\r))*(\s*)/g;
+       return new RegExp(
+         '({0})(({1})|({2})|({3})|({4})|({5})|({6}|{7})|({8})|({9})|(.))'.format(
+           reg_space.source,   // 0  1
+           reg_comment.source, // 1  3
+           reg_imed.source,    // 2  4
+           reg_name.source,    // 3  5
+           reg_exec.source,    // 4  6
+           reg_mark.source,    // 5  7
+           reg_int.source,     // 6  8
+           reg_flt.source,     // 7  8
+           reg_hex.source,     // 8  9
+           reg_tok.source      // 9 12
+ /*
+&nbsp;          #%data REG_SPACE    1
+&nbsp;          #%data REG_TOKEN    2
+&nbsp;          
+&nbsp;          #%data REGC_COMMENT   3
+&nbsp;          #%data REGC_IMEDIATE  4
+&nbsp;          #%data REGC_NAME      5
+&nbsp;          #%data REGC_EXECMARK  6
+&nbsp;          #%data REGC_MARK      7
+&nbsp;          #%data REGC_NUMBER    8
+&nbsp;          #%data REGC_HEXNUM    9
+&nbsp;          #%data REGC_EXECNAME 12
+-          #%data REG_TOKEN    3
+-          
+-          #%data REGC_COMMENT   4
+-          #%data REGC_IMEDIATE  5
+-          #%data REGC_NAME      6
+-          #%data REGC_EXECMARK  7
+-          #%data REGC_MARK      8
+-          #%data REGC_NUMBER    9
+-          #%data REGC_HEXNUM   10
+-          #%data REGC_EXECNAME 13
+ */
+         ).replace(/B/g,reg_B.source),
+         'g'
+       );
+@ mwg.lang.ps-io.js/L335 @@ 13:52 2011/03/05
+           //---------------------------
+           // this.file.iC/iL 更新
+           var s=m[1];
+-          /*
+           for(var i=0;i&lt;s.length;i++){
+             var c=s.charAt(i);
+             if(c=='\r'){
+               c='\n';
+               if(s.charAt(i+1)=='\n')i++;
+             }
+             
+             if(c=='\n'){
+               this.file.iL++;
+               this.file.iC=1;
+             }else{
+               this.file.iC++;
+             }
+           }
+-          //*/
+-          var dL=m[1].length-m[1].replace(/\r(?!\n)|\n/g,'').length;
+-          if(dL==0)
+-            this.file.iC+=m[2].length;
+-          else{
+-            this.file.iL+=dL;
+-            this.file.iC=m[2].length+1;
+-          }
+</pre>
+<!--.........................................................................-->
+
+<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+#%)
+</body>
+</html>

@@ -1,0 +1,268 @@
+﻿// -*- mode:js -*-
+context "mode.math"{
+
+  _Ctx.DefineCommand({
+    // 二項演算子
+    mp      : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-meiryo">&#x2213;</tex:fsym>'],
+    pm      : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-meiryo">±</tex:fsym>'],
+    setminus: ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2216;</tex:fsym>'], // ※短形式は \smallsetminus
+    ast     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2217;</tex:fsym>'],
+    star    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22C6;</tex:fsym>'],
+    diamond : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22C4;</tex:fsym>'],
+    circ    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2218;</tex:fsym>'],
+    bullet  : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-meiryo">&#x2022;</tex:fsym>'], // u0221
+    cap     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-gothic">&#x2229;</tex:fsym>'],
+    cup     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-gothic">&#x222a;</tex:fsym>'],
+    uplus   : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x228E;</tex:fsym>'],
+    times   : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-gothic">×</tex:fsym>'],
+    div     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-gothic">÷</tex:fsym>'],
+    dagger  : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-roman">†</tex:fsym>'],
+    ddagger : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-roman">‡</tex:fsym>'],
+    sqcap   : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2293;</tex:fsym>'],
+    sqcup   : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2294;</tex:fsym>'],
+    vee     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22C1;</tex:fsym>'],
+    wedge   : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22C0;</tex:fsym>'],
+    amalg   : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2210;</tex:fsym>'],
+    wr      : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2240;</tex:fsym>'],
+    odot    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2299;</tex:fsym>'],
+    oplus   : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-meiryo">&#x2295;</tex:fsym>'],
+    ominus  : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-meiryo">&#x2296;</tex:fsym>'],
+    otimes  : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-meiryo">&#x2297;</tex:fsym>'],
+    oslash  : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-meiryo">&#x2298;</tex:fsym>'],
+    // ■TODO \triangleleft \triangleright \bigtriangleup \bigtriagngledown:
+    //   mathsymb による表示と platex による表示を比較して適用
+    triangleleft   : ['s@','<tex:small><tex:fsym class="mc">&#x22B2;</tex:fsym></tex:small>'], // ■
+    triangleright  : ['s@','<tex:small><tex:fsym class="mc">&#x22B3;</tex:fsym></tex:small>'], // ■
+    bigtriangleup  : ['s@','<tex:big2>△</tex:big2>'], // ■
+    bigtriangledown: ['s@','<tex:big2>▽</tex:big2>'], // ■
+    bigcirc        : ['s@','○'], // ■
+
+    // 二項関係
+    le:        ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≤</tex:fsym>'],
+    ge:        ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≥</tex:fsym>'],
+    leq:       ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≤</tex:fsym>'],
+    geq:       ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≥</tex:fsym>'],
+    prec:      ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≺</tex:fsym>'],
+    succ:      ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≻</tex:fsym>'],
+    prec:      ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≺</tex:fsym>'],
+    succeq:    ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2AB0;</tex:fsym>'],
+    preceq:    ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2AAF;</tex:fsym>'],
+    ll:        ['s@','<tex:fsym class="aghtex-binop aghtex-symb-gothic">≪</tex:fsym>'],
+    gg:        ['s@','<tex:fsym class="aghtex-binop aghtex-symb-gothic">≫</tex:fsym>'],
+    'in':      ['s@','<tex:fsym class="aghtex-binop aghtex-symb-gothic">∈</tex:fsym>'],
+    ni:        ['s@','<tex:fsym class="aghtex-binop aghtex-symb-gothic">∋</tex:fsym>'],
+    owns:      ['s@','<tex:fsym class="aghtex-binop aghtex-symb-gothic">∋</tex:fsym>'],
+    notin:     ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">∉</tex:fsym>'],
+    propto:    ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">∝</tex:fsym>'],
+    ne:        ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≠</tex:fsym>'],
+    neq:       ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≠</tex:fsym>'],
+    equiv:     ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≡</tex:fsym>'],
+    sim:       ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">∼</tex:fsym>'],
+    simeq:     ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≃</tex:fsym>'],
+    bowtie:    ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22C8;</tex:fsym>'],
+    subset:    ['s@','<tex:fsym class="aghtex-binop aghtex-symb-gothic">⊂</tex:fsym>'],
+    supset:    ['s@','<tex:fsym class="aghtex-binop aghtex-symb-gothic">⊃</tex:fsym>'],
+    subseteq:  ['s@','<tex:fsym class="aghtex-binop aghtex-symb-gothic">⊆</tex:fsym>'],
+    supseteq:  ['s@','<tex:fsym class="aghtex-binop aghtex-symb-gothic">⊇</tex:fsym>'],
+    sqsubseteq:['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊑</tex:fsym>'],
+    sqsupseteq:['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊒</tex:fsym>'],
+    vdash:     ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊢</tex:fsym>'],
+    dashv:     ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊣</tex:fsym>'],
+    models:    ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊨</tex:fsym>'],
+    perp:      ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊥</tex:fsym>'],
+    doteq:     ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≐</tex:fsym>'],
+    cong:      ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≅</tex:fsym>'],
+    approx:    ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≈</tex:fsym>'],
+    asymp:     ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≍</tex:fsym>'],
+    mid:       ['s@','<tex:fsym class="aghtex-binop aghtex-symb-gothic">|</tex:fsym>'],
+    parallel:  ['s@','<tex:fsym class="aghtex-binop aghtex-symb-roman">&#x2225;</tex:fsym>'], // ∥‖
+    smile:     ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⌣</tex:fsym>'],
+    frown:     ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⌢</tex:fsym>'],
+
+    // ギリシャ文字
+    alpha:     ['s@','<tex:fsym class="aghtex-greek">α</tex:fsym>'],
+    beta:      ['s@','<tex:fsym class="aghtex-greek">β</tex:fsym>'],
+    gamma:     ['s@','<tex:fsym class="aghtex-greek">γ</tex:fsym>'],
+    delta:     ['s@','<tex:fsym class="aghtex-greek">δ</tex:fsym>'],
+    epsilon:   ['s@','<tex:fsym class="aghtex-greek">&#x03F5;</tex:fsym>'],
+    zeta:      ['s@','<tex:fsym class="aghtex-greek">ζ</tex:fsym>'],
+    eta:       ['s@','<tex:fsym class="aghtex-greek">η</tex:fsym>'],
+    theta:     ['s@','<tex:fsym class="aghtex-greek">θ</tex:fsym>'],
+    iota:      ['s@','<tex:fsym class="aghtex-greek">ι</tex:fsym>'],
+    kappa:     ['s@','<tex:fsym class="aghtex-greek">κ</tex:fsym>'],
+    lambda:    ['s@','<tex:fsym class="aghtex-greek">λ</tex:fsym>'],
+    mu:        ['s@','<tex:fsym class="aghtex-greek">μ</tex:fsym>'],
+    nu:        ['s@','<tex:fsym class="aghtex-greek">ν</tex:fsym>'],
+    xi:        ['s@','<tex:fsym class="aghtex-greek">ξ</tex:fsym>'],
+    pi:        ['s@','<tex:fsym class="aghtex-greek">π</tex:fsym>'],
+    rho:       ['s@','<tex:fsym class="aghtex-greek">ρ</tex:fsym>'],
+    sigma:     ['s@','<tex:fsym class="aghtex-greek">σ</tex:fsym>'],
+    tau:       ['s@','<tex:fsym class="aghtex-greek">τ</tex:fsym>'],
+    upsilon:   ['s@','<tex:fsym class="aghtex-greek">υ</tex:fsym>'],
+    phi:       ['s@','<tex:fsym class="aghtex-greek">&#x03D5;</tex:fsym>'],
+    chi:       ['s@','<tex:fsym class="aghtex-greek">χ</tex:fsym>'],
+    psi:       ['s@','<tex:fsym class="aghtex-greek">ψ</tex:fsym>'],
+    omega:     ['s@','<tex:fsym class="aghtex-greek">ω</tex:fsym>'],
+    Gamma:     ['s@','<tex:fsym class="aghtex-symb-mincho">Γ</tex:fsym>'],
+    Delta:     ['s@','<tex:fsym class="aghtex-symb-mincho">Δ</tex:fsym>'],
+    Theta:     ['s@','<tex:fsym class="aghtex-symb-mincho">Θ</tex:fsym>'],
+    Lambda:    ['s@','<tex:fsym class="aghtex-symb-mincho">Λ</tex:fsym>'],
+    Xi:        ['s@','<tex:fsym class="aghtex-symb-mincho">Ξ</tex:fsym>'],
+    Pi:        ['s@','<tex:fsym class="aghtex-symb-mincho">Π</tex:fsym>'],
+    Sigma:     ['s@','<tex:fsym class="aghtex-symb-mincho">Σ</tex:fsym>'],
+    Upsilon:   ['s@','<tex:fsym class="aghtex-symb-mincho">&#x03D2;</tex:fsym>'],
+    Phi:       ['s@','<tex:fsym class="aghtex-symb-mincho">Φ</tex:fsym>'],
+    Psi:       ['s@','<tex:fsym class="aghtex-symb-mincho">Ψ</tex:fsym>'],
+    Omega:     ['s@','<tex:fsym class="aghtex-symb-mincho">Ω</tex:fsym>'],
+    varGamma:  ['s@','<tex:fsym class="aghtex-greek">Γ</tex:fsym>'],
+    varDelta:  ['s@','<tex:fsym class="aghtex-greek">Δ</tex:fsym>'],
+    varTheta:  ['s@','<tex:fsym class="aghtex-greek">Θ</tex:fsym>'],
+    varLambda: ['s@','<tex:fsym class="aghtex-greek">Λ</tex:fsym>'],
+    varXi:     ['s@','<tex:fsym class="aghtex-greek">Ξ</tex:fsym>'],
+    varPi:     ['s@','<tex:fsym class="aghtex-greek">Π</tex:fsym>'],
+    varSigma:  ['s@','<tex:fsym class="aghtex-greek">Σ</tex:fsym>'],
+    varUpsilon:['s@','<tex:fsym class="aghtex-greek">&#x03D2;</tex:fsym>'],
+    varPhi:    ['s@','<tex:fsym class="aghtex-greek">Φ</tex:fsym>'],
+    varPsi:    ['s@','<tex:fsym class="aghtex-greek">Ψ</tex:fsym>'],
+    varOmega:  ['s@','<tex:fsym class="aghtex-greek">Ω</tex:fsym>'],
+
+    varepsilon:['s@','<tex:fsym class="aghtex-greek">ε</tex:fsym>'],
+    varphi:    ['s@','<tex:fsym class="aghtex-greek">φ</tex:fsym>'],
+    vartheta:  ['s@','<tex:fsym class="aghtex-greek">&#x03D1;</tex:fsym>'],
+    varpi:     ['s@','<tex:fsym class="aghtex-greek">&#x03D6;</tex:fsym>'],
+    varrho:    ['s@','<tex:fsym class="aghtex-greek">&#x03F1;</tex:fsym>'],
+    varsigma:  ['s@','<tex:fsym class="aghtex-greek">&#x03C2;</tex:fsym>'],
+
+    // 括弧
+    lceil        : ['s@','<tex:fsym class="aghtex-lbrace aghtex-symb-gothic">&#x2308;</tex:fsym>'],
+    rceil        : ['s@','<tex:fsym class="aghtex-rbrace aghtex-symb-gothic">&#x2309;</tex:fsym>'],
+    lfloor       : ['s@','<tex:fsym class="aghtex-lbrace aghtex-symb-gothic">&#x230A;</tex:fsym>'],
+    rfloor       : ['s@','<tex:fsym class="aghtex-rbrace aghtex-symb-gothic">&#x230B;</tex:fsym>'],
+    langle       : ['s@','<tex:fsym class="aghtex-lbrace aghtex-symb-gothic">〈</tex:fsym>'], // u3008=cjklangle (c.f. u27e8=bra, u2329=lpointing langle; 対応フォント稀少)
+    rangle       : ['s@','<tex:fsym class="aghtex-rbrace aghtex-symb-gothic">〉</tex:fsym>'], // u3009=cjkrangle (c.f. u27e9=ket, u232a=rpointing rangle; 対応フォント稀少)
+    '|'          : ['s@','<tex:fsym class="aghtex-mbrace aghtex-symb-roman">&#x2225;</tex:fsym>'], // 平行
+    vert         : ['s@','<tex:fsym class="aghtex-mbrace aghtex-symb-gothic">|</tex:fsym>'],
+    Vert         : ['s@','<tex:fsym class="aghtex-mbrace aghtex-symb-roman">&#x2225;</tex:fsym>'],
+    lbrace       : ['s@','<tex:fsym class="aghtex-lbrace aghtex-symb-mincho">{</tex:fsym>'],
+    rbrace       : ['s@','<tex:fsym class="aghtex-rbrace aghtex-symb-mincho">}</tex:fsym>'],
+
+    // \math... 記号 (\mathunderscore は mod_common.ctx で定義)
+    mathellipsis : ['s@','<tex:fsym class="aghtex-symb-roman">&#x2026;</tex:fsym>'],
+    mathparagraph: ['s@','<tex:fsym class="aghtex-symb-roman">&#x00b6;</tex:fsym>'],
+    mathdollar   : ['s@','<tex:fsym class="aghtex-symb-roman">$</tex:fsym>'],
+    mathsection  : ['s@','<tex:fsym class="aghtex-symb-roman">&#x00a7;</tex:fsym>'],
+    mathsterling : ['s@','<tex:fsym class="aghtex-symb-roman">&#x00a3;</tex:fsym>'],
+
+    // 点
+    cdot              : ['s@','<tex:fsym class="aghtex-binop">・</tex:fsym>'],
+    ldots             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:fsym>'],
+    cdots             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22EF;</tex:fsym>'],
+    vdots             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22EE;</tex:fsym>'],
+    ddots             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22F1;</tex:fsym>'],
+
+    // 矢印
+    gets              : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">←</tex:fsym>'],
+    to                : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">→</tex:fsym>'],
+    uparrow           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">↑</tex:fsym>'],
+    downarrow         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">↓</tex:fsym>'],
+    leftarrow         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">←</tex:fsym>'],
+    rightarrow        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">→</tex:fsym>'],
+    nwarrow           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2196;</tex:fsym>'],
+    nearrow           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2197;</tex:fsym>'],
+    searrow           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2198;</tex:fsym>'],
+    swarrow           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2199;</tex:fsym>'],
+    leftrightarrow    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2194;</tex:fsym>'],
+    updownarrow       : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2195;</tex:fsym>'],
+    Leftarrow         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21D0;</tex:fsym>'],
+    Rightarrow        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⇒</tex:fsym>'],
+    Leftrightarrow    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⇔</tex:fsym>'],
+    Uparrow           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21D1;</tex:fsym>'],
+    Downarrow         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21D3;</tex:fsym>'],
+    Updownarrow       : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21D5;</tex:fsym>'],
+    longleftarrow     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x27F5;</tex:fsym>'],
+    longrightarrow    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x27F6;</tex:fsym>'],
+    longleftrightarrow: ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x27F7;</tex:fsym>'],
+    Longleftarrow     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x27F8;</tex:fsym>'],
+    Longrightarrow    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x27F9;</tex:fsym>'],
+    Longleftrightarrow: ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x27FA;</tex:fsym>'],
+    longmapsto        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x27FC;</tex:fsym>'],
+    hookrightarrow    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">↪</tex:fsym>'],
+    hookleftarrow     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">↩</tex:fsym>'],
+    leftharpoonup     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">↼</tex:fsym>'],
+    leftharpoondown   : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">↽</tex:fsym>'],
+    rightharpoonup    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⇀</tex:fsym>'],
+    rightharpoondown  : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⇁</tex:fsym>'],
+    rightleftharpoons : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⇌</tex:fsym>'],
+    mapsto            : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">↦</tex:fsym>'],
+
+    // 文字列記号
+    sin    : ['s>mode.math',@"\mathrm{sin}"],
+    cos    : ['s>mode.math',@"\mathrm{cos}"],
+    tan    : ['s>mode.math',@"\mathrm{tan}"],
+    cot    : ['s>mode.math',@"\mathrm{cot}"],
+    sec    : ['s>mode.math',@"\mathrm{sec}"],
+    csc    : ['s>mode.math',@"\mathrm{csc}"],
+    arcsin : ['s>mode.math',@"\mathrm{arcsin}"],
+    arccos : ['s>mode.math',@"\mathrm{arccos}"],
+    arctan : ['s>mode.math',@"\mathrm{arctan}"],
+    sinh   : ['s>mode.math',@"\mathrm{sinh}"],
+    cosh   : ['s>mode.math',@"\mathrm{cosh}"],
+    tanh   : ['s>mode.math',@"\mathrm{tanh}"],
+    coth   : ['s>mode.math',@"\mathrm{coth}"],
+    exp    : ['s>mode.math',@"\mathrm{exp}"],
+    log    : ['s>mode.math',@"\mathrm{log}"],
+    ln     : ['s>mode.math',@"\mathrm{ln}"],
+    ker    : ['s>mode.math',@"\mathrm{ker}"],
+    lg     : ['s>mode.math',@"\mathrm{lg}"],
+    hom    : ['s>mode.math',@"\mathrm{hom}"],
+    dim    : ['s>mode.math',@"\mathrm{dim}"],
+    deg    : ['s>mode.math',@"\mathrm{deg}"],
+    arg    : ['s>mode.math',@"\mathrm{arg}"],
+
+    max    : ['s',@"\mathop\mathrm{max}"],
+    min    : ['s',@"\mathop\mathrm{min}"],
+    sup    : ['s',@"\mathop\mathrm{sup}"],
+    inf    : ['s',@"\mathop\mathrm{inf}"],
+    lim    : ['s',@"\mathop\mathrm{lim}"],
+    liminf : ['s',@"\mathop\mathrm{lim inf}"],
+    limsup : ['s',@"\mathop\mathrm{lim sup}"],
+    det    : ['s',@"\mathop\mathrm{det}"],
+    Pr     : ['s',@"\mathop\mathrm{Pr}"],
+    gcd    : ['s',@"\mathop\mathrm{gcd}"],
+
+    // その他の記号
+    nabla       : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x2207;</tex:fsym>'], // @"∇";
+    partial     : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x2202;</tex:fsym>'], // ∂
+    hbar        : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x0127;</tex:fsym>'], // hbar
+    aleph       : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x2135;</tex:fsym>'], // @'<tex:fsym class="rm" style="font-size:150%;">&#x5d0;</tex:fsym>';
+    imath       : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x0131;</tex:fsym>'],
+    jmath       : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x0237;</tex:fsym>'],
+    ell         : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x2113;</tex:fsym>'],
+    wp          : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x2118;</tex:fsym>'], // @"<tex:fsym class='sy'>&#xC3;</tex:fsym>";
+    Re          : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x211C;</tex:fsym>'], // @"<tex:fsym class='sy'>&#xC2;</tex:fsym>";
+    Im          : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x2111;</tex:fsym>'], // @"<tex:fsym class='sy'>&#xC1;</tex:fsym>";
+    infty       : ['s@','<tex:fsym class="aghtex-symb-mincho">∞</tex:fsym>'],
+    smallint    : ['s@','<tex:fsym class="aghtex-symb-mincho">∫</tex:fsym>'],
+    prime       : ['s@','<tex:fsym class="aghtex-symb-roman">&#x2032;</tex:fsym>'], // 大きな prime (⇔ <tex:frm>&#x0027;</tex:frm> は上付の小さい物)
+    emptyset    : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x2205;</tex:fsym>'], // ■platex では 0 slash を出力する。
+    surd        : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x221A;</tex:fsym>'], // '<tex:ftimes lang="en">√</tex:ftimes>';
+    top         : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x22A4;</tex:fsym>'],
+    bot         : ['s@','<tex:fsym class="aghtex-symb-gothic">⊥</tex:fsym>'], // u22a5
+    angle       : ['s@','<tex:fsym class="aghtex-symb-gothic">∠</tex:fsym>'], // u2220
+    triangle    : ['s@','<tex:small1>△</tex:small1>'], // ■
+    backslash   : ['s@','<tex:fsym class="aghtex-symb-cent">\\</tex:fsym>'], // u005c
+    forall      : ['s@','<tex:fsym class="aghtex-symb-gothic">∀</tex:fsym>'], // u2200
+    exists      : ['s@','<tex:fsym class="aghtex-symb-gothic">∃</tex:fsym>'], // u2203
+    neg         : ['s@','<tex:fsym class="aghtex-symb-gothic">&#x00ac;</tex:fsym>'], // 全角=uffe2
+    lnot        : ['s@','<tex:fsym class="aghtex-symb-gothic">&#x00ac;</tex:fsym>'], // 全角=uffe2
+    diamondsuit : ['s@','<tex:fsym class="aghtex-symb-gothic">&#x25ca;</tex:fsym>'],
+    heartsuit   : ['s@','<tex:fsym class="aghtex-symb-gothic">&#x2661;</tex:fsym>'],
+    clubsuit    : ['s@','<tex:fsym class="aghtex-symb-gothic">&#x2663;</tex:fsym>'],
+    spadesuit   : ['s@','<tex:fsym class="aghtex-symb-gothic">&#x2660;</tex:fsym>'],
+    flat        : ['s@','<tex:fsym class="aghtex-symb-gothic">&#x266d;</tex:fsym>'],
+    natural     : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x266e;</tex:fsym>'],
+    sharp       : ['s@','<tex:fsym class="aghtex-symb-gothic">&#x266f;</tex:fsym>'],
+    lor         : ['s@','<tex:fsym class="aghtex-symb-gothic aghtex-binop">∨</tex:fsym>'], // u2228
+    land        : ['s@','<tex:fsym class="aghtex-symb-gothic aghtex-binop">∧</tex:fsym>'] // u2227
+  });
+}

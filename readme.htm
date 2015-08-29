@@ -1,0 +1,1947 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <title>agh/js - Ageha JavaScript Library v3.1</title>
+  <link rel="stylesheet" type="text/css" href="out/mwg.std.css" />
+  <style type="text/css">
+  li>p{margin-top:.3em;margin-bottom:.3em;}
+  </style>
+</head>
+<body class="width72">
+<h1>agh/js - Ageha JavaScript Library v3.1</h1>
+
+<h2>命名規則概略</h2>
+<ul>
+<li>関数名
+  <ul>
+  <li>基本的には動詞 (命令形) で始める</li>
+  <li>動詞 (三単現) で始まる関数名は、副作用がなく bool を返す判定関数を表す。</li>
+  <li>一単語からなる名詞の関数名は、何らかの値の取得関数を表す。対応する設定関数は存在しない (存在する場合は対称性の為に get/set prefix をつけるべきである)。</li>
+  <li>取得・設定関数は get/set で始める。</li>
+  </ul>
+</li>
+<li>副作用が</li>
+</ul>
+
+<ul>
+<li>識別子の構成方法
+  <p>複数の単語を繋げて識別子名を作る時、様々なやり方がある。</p>
+  <ul>
+  <li>helloworld</li>
+  <li>HELLOWORLD</li>
+  <li>hello_world</li>
+  <li>HELLO_WORLD</li>
+  <li>helloWorld</li>
+  <li>HelloWorld</li>
+  <li>hello-world (lisp, css)</li>
+  <li>\hello@world (tex)</li>
+  </ul>
+  <p>一般的には、どれか一つに統一するのが望ましいとされるが、
+    複数の方法を使って識別子の種類を区別する事もある。
+    例えば、HELLO_WORLD の形式は定数・マクロで使われる事が多い。
+    傾向として HelloWorld は型名・クラス名に使用し
+    helloWorld を関数名・変数名に使用する。
+    また、公開関数・公開変数には HelloWorld を使用し、
+    内部関数・内部変数には helloWorld または _ で始まる物を使う場合もある。
+  </p>
+</li>
+<li>関数名
+  <p>基本的に動詞 (命令形) で始めるのが普通である。</p>
+  <p>複数の組となる操作を行う関数群には、
+    getHoge/setHoge 等の様に動詞部分だけを入れ替えた関数名がよく使われる。
+  </p>
+  <ul>
+  <li>get/set, get/put, read/write (取得・設定、入力・出力)</li>
+  <li>set/unset, set/reset</li>
+  <li>allocate/free, new/delete</li>
+  <li>add/remove/prepend/append/insert (追加・削除)</li>
+  <li>push/pop (スタック, LIFO)</li>
+  <li>enque/deque (キュー, FIFO)</li>
+  <li>shift/unshift (JavaScript 配列, 先頭への要素の挿入)</li>
+  </ul>
+  <ul>
+  <li>create, initialize, clear, load, save</li>
+  </ul>
+  <p>C/Fortran など名前空間のない古い言語では、
+    識別子名の前に操作の種類やライブラリを区別する prefix を付ける事がある。
+    mem/str/wcs 等々。</p>
+  <p>単体の名詞を関数名とする場合は、副作用なく何らかの値を取得する関数である。
+    引数を取らない物と引数を取る物をオーバーロードして、
+    前者を値の取得関数とし後者を値の設定関数とする事もある。
+  </p>
+  <p>is/can で始まる関数は、術語関数 (副作用が無く真偽値を戻す) を表す。
+    更に、動詞 (三単現) で始まる関数も術語関数とする事もある。
+    Ruby では ? で終わる関数名を用いる。</p>
+  <p>Ruby では ! で終わるメソッド名は、
+    オブジェクトに対する破壊的な操作を表す。
+    ! の無いメソッドも同時に定義されている場合、
+    そちらは操作後の状態を持つ新しいオブジェクトを生成する。
+  </p>
+</li>
+<li>変数・型名
+  <p>通常は名詞、名詞節を変数名・型名とする。</p>
+  <p>C 系統では定数・マクロは全て大文字で _ で繋いで表現する事が多い。</p>
+  <p>また、特定の単語は高頻度で特定の種類の変数・型である事を表す。</p>
+  <ul>
+  <li>property/attribute</li>
+  <li>processor/handler/listener/observer 何処かに登録して実行して貰う関数オブジェクト</li>
+  <li>i/j/k カウンタ・インデックス (ローカル変数)</li>
+  <li>iterator, enumerator</li>
+  <li>descriptor 何らかの情報を取得する為のオブジェクト</li>
+  <li>buffer, </li>
+  </ul>
+  <p>最近では内部で使用する場合でも a や b や c 等の短い変数名ではなくて、
+    polarAngle, impactParameter, cosine などの内容を説明する名詞節にする方が良いとされる。
+  </p>
+</li>
+</ul>
+
+<h2>実装中</h2>
+
+<h3>latex/mod_math.ctx: mathstyles [2013-11-06]</h3>
+
+<p>latex/mod_math.ctx, pkg_ams.ctx: mathstyles は Document#flags を用いれば簡単に実装できるかも。
+→mathstyles は context と共にクリアされる性質の物なので Document#flags ではなくて、
+Document#Get/SetContextVariable を使うべき物である。
+</p>
+<p>と思って SetContextVariable を使って
+\displaystyle の類の実装を追加しようと思ったら、既に存在していた。
+但し、scriptstyle, scriptscriptstyle に就いて、
+フォントの大きさも指定する様にする事が todo になっている。
+</p>
+
+<h3>latex/core.js</h3>
+
+<p>色々細かい物を実装していく内に、段々とコア部分の固定的な実装が問題になってきた。
+例えば、scanner による字句の読み取り方法が固定されている。
+コマンドはコマンドとして読み取られるし、コメントはコメントとして読み取られる。
+しかし、本当の TeX は殆どの場合に於いてその様に動作するが、
+\verb やその他の特別なコマンドの中では \catcode を設定する事に拠って何とでも読み取り方法を変更する事が可能である。
+今までは速度を重視するという言い訳でこれらの対応を渋ってきたが、
+今後ちゃんとした実装を目指す上ではこの辺りからしっかりとしておきたい所である。
+(もちろん、標準的な文脈では今まで用いてきた最適化された scanner を使用する様にしたい。)
+</p>
+<p>その為には、既存の TeX の読み取りの方法について予め調べておく必要がある。
+\catcode コマンドは、\catcode整数=整数 の形式を取る。
+初めの整数は文字コードで次の整数は catcode である。
+catcode のそれぞれの意味については http://en.wikibooks.org/wiki/TeX/catcode を参照する。
+</p>
+
+<p>TeX の字句・レジスタなどについて:</p>
+<ul>
+<li>整数の指定: 整数を直接表記する。
+  または、文字コードで指定する: ` に続けて文字を記すとその文字のコードが使用される。
+  ` に続けてコマンド名を記すとそのコマンドに割当てられた番号が使用される。
+  一文字の名前のコマンドに関してはその文字の文字コードであるが、
+  複数文字のコマンドの場合は TeX 実行の過程で適当に割り当てられた番号が表示される。
+  16進数で指定する事もできる: " に続けて16進数を記せば良い。
+  8進数で指定する場合には ' に続けて 8 進数を指定する。
+</li>
+<li>dimen の指定: 単位付き長さを指定する。
+  小数+単位 または 長さコマンド または 小数+長さコマンド を指定する。
+</li>
+<li>glue(skip):
+  更に glue は dimen の後に plus &lt;dimen&gt; minus &lt;dimen&gt; を後ろに続ける事ができる。
+  また Glueコマンドを指定する事もできる。
+  (glue が使える箇所もあれば、単独の dimen しか使えない箇所もある?)
+  a plus b minus c は CSS3 flex-grow, flex-shrink, flex-basis, max-width, min-width を組み合わせれば何とか対応できる?
+  因みに \hfill は max-width:fill-available (-moz-available, -moz-fill-available) というのがあるらしい。
+</li>
+<li>^^ は Control 文字を生成する charcode|=64.</li>
+</ul>
+<p>これらのリテラルを読み取る時は単に字面で読み取るのではなく、
+マクロについての展開も実行される。
+特に数字に関してはマクロが展開された後に連結されて解釈される。
+とはいいつつも、取り敢えず、字面を見る実装でもいいから実装してしまったほうが良い様な気もする。
+</p>
+
+<!--************************************************************************-->
+
+<h2>ToDo</h2>
+<ul>
+<li>2014-09-27
+  <ul>
+  <li>■aghtex4chrome/preview: 改行が消えている (これは新しい編集画面で改行が div に置換される為)</li>
+  <li>latex: usepackage{array} の \tabularline</li>
+  <li>■latex:cmd.overline: 文字毎に上線が引かれる。本来は全体に対して overline が引かれるべきなのでは?<sup>要確認</sup></li>
+  <li>latex: コマンドには long/not long という物があるらしい。
+    <ul>
+    <li>\long\def, \newcommand etc. は long であり、\def, \newcommand*, etc. は not long である。</li>
+    <li>long のコマンドの引数は 空行, \par を含む事ができる。</li>
+    <li>not long なコマンドの引数は 空行, \par があるとエラーになる。</li>
+    <li>参考: <a href="http://tex.stackexchange.com/questions/1050/whats-the-difference-between-newcommand-and-newcommand">macros - What's the difference between \newcommand and \newcommand*? - TeX - LaTeX Stack Exchange</a></li>
+    </ul>
+  </li>
+  <li>latex: TOCHECK, \makeatletter\def\hoge{\hoge@hoge}\makeatother 等と定義した物を \makeatother の状態で使用した時、どう動作するべきか?</li>
+  </ul>
+</li>
+<li>2014-03-13
+  <ul>
+  <li>latex/aghfonts:
+    <ul>
+    <li>アルファベット roman 体も収録する。linux 等一部の OS でまともな roman 体が表示されない為。</li>
+    <li>数字も収録する。</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>2014-03-08
+  <ul>
+  <li>verbatim ← % も読み取れる字句解析が必要 ← \catcode レジスタ ← TeX レジスタの包括的実装(?)</li>
+  </ul>
+</li>
+<li>2014-03-07
+  <ul>
+  <li>latex/cls_article.ctx: cls:article abstract の動作について調べて再実装する。</li>
+  <li>latex/cls_article.ctx: \today 対応。どこに定義するべきか、どの様に定義するべきか。</li>
+  <li>latex/cls_article.ctx(cls:revtex4): \email を複数指定した場合の動作。</li>
+  <li>latex/cls_article.ctx(cmd:email): \email を追加する</li>
+  <li>目標 http://tex.stackexchange.com/questions/38674/the-the-command</li>
+  <li>目標 http://note.golden-lucky.net/2012/12/textex.html</li>
+  <li>こんな物も→ dvi.js https://github.com/naoyat/dvi.js/wiki</li>
+  </ul>
+</li>
+<li>2013-11-06
+  <ul>
+  <li>latex/mod_common.ctx: textvisiblespace 幅が大きいのでフォントを埋め込む。</li>
+  <li>latex/base.ctx: 伸縮括弧を svg にする? svg が fontforge から出力できたはず。background-size でも伸縮できる様だ。</li>
+  <li>latex/aghfonts:mathrm: bugfix, u2032 は本来大きな prime ではなくて、上付の prime の意味である。
+    なのでグリフを mathrm から mathbb に移動し、\prime の class を Amc に変える。</li>
+  <li>latex/font:aghtex_mathrm: \pounds (math/text-mode), \textsterling (text-mode) は cmu に入っている(?)ので、移動してくる。</li>
+  <li>latex/font:aghtex_mathbb: 1, 2 がないので、何処からか持ってくる。</li>
+  <li>latex/mod_common: \symbol は unicode で良い様なので実装する。フォントは指定しない。</li>
+  <li>latex/font:aghtex_mathcal: 小文字は ekcal 辺りから持ってきても OK?</li>
+  </ul>
+</li>
+<li>2013-11-05
+  <ul>
+  <li>latex/pkg_ams.ctx: \sqrt の尻尾に最大高さを設定する? (余り高さのある要素を中に指定すると伸び切ってしまうので。)
+    td[valign="bottom"] にして、尻尾の部分を img[style="max-height:5em;"] 等にすれば良い?
+  </li>
+  <li>latex: \bigl, \bigr などのフォント変更。</li>
+  <li>agh.lang.ps: systemdict.define_operators (register_operator を一括で行う) ■中途半端な状態になっているので正しく実装。</li>
+  <li>agh.lang.ps: arc 関連の実装 [P1.4 in memo.txt]</li>
+
+  <li>latex: \bigsqcup </li>
+  </ul>
+</li>
+<li>2013-11-04
+  <ul>
+  <li>latex/pkg_ams.ctx: \dots, 続きに来る word に応じて種類を変化させる。</li>
+  <li>latex/pkg_ams.ctx(cmd_genfrac): mathstyle (displaystyle/textstyle など) に対応。</li>
+  <li>latex/pkg_ams.ctx(cmd_genfrac): 下付・上付に対応? (platex の動作を確認)</li>
+  <li>latex/mod_math.ctx(cmd_int): mathstyles に対応。</li>
+  <li>latex/mod_math.ctx(cmd_int): 上付・下付の位置について。
+    <p>括弧などで囲んだ時に括弧が大きくなり過ぎない様に、上下にはみ出させているが、
+    これによって上下の数式と被ってしまっている。
+    括弧が大きく為りすぎるのは仕方がないので、上下にはみ出るのは止めた方が良い。
+    </p>
+  </li>
+  </ul>
+</li>
+<li>2013-08-31
+  <ul>
+  <li>agh.js (addEventListener): IE MemLeak Support Version Restriction</li>
+  </ul>
+</li>
+<li>2013-08-29
+  <ul>
+  <li>agh.debug.js (DomTreeNode): コードの整理</li>
+  <li>agh.debug.js (DomTreeNode): HTML 要素の表示</li>
+  <li>agh.debug.js (DomTreeNode): 値の編集機能</li>
+  <li>agh.debug.js (DomTreeNode): 開いた時刻の表示と更新ボタン</li>
+  <li>agh.debug.js (DomTreeStackInfo): 関数引数の読み取り</li>
+  <li>agh.debug.js: ドキュメントコメントの解釈</li>
+  <li>agh.debug.js: HTMLTreeNode?</li>
+  </ul>
+</li>
+<li>2013-08-21
+  <ul>
+  <li>agh.dom.js: 整理
+    <ul>
+    <li>Fx で補完される innerText の内容が異なる。</li>
+    <li>innerText 取得: <a href="http://d.hatena.ne.jp/cou929_la/20110517/1305644081">DOM の textContent と innerText について - フリーフォーム フリークアウト</a></li>
+    <li>innerText 取得: <a href="http://clubajax.org/files/lang/plain-text.js">plain-text.js</a></li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>2013-08-02
+  <ul>
+  <li>latex/latex.pp.css: 下付・上付などの文字は画面に表示する事を想定して余り小さくならない様にしているが、
+    印刷する時には本来の小ささになるようにしても良いのではないか。
+  </li>
+  </ul>
+</li>
+<li>20130121
+  <ul>
+  <li>prog.std.css: prog-items のアイコンの指定を整理。</li>
+  <li>agh.text.color.js: C++ Concept (非標準) の keyword を追加。</li>
+  </ul>
+</li>
+<li>20130114
+  <ul>
+  <li>latex/pkg:amsmath/env:flalign: \hfill の効果を正しく表示する (間に width:100% の要素を追加すれば良い?)</li>
+  </ul>
+</li>
+<li>20121224
+  <ul>
+  <li>ns.Command2
+    <ul>
+    <li>latex: <del>脆弱性 ユーザ定義マクロでの #1 以外の引数の形式を禁止する。</del> と思ったが、tex source に展開されるので問題なし。</li>
+    <li>latex/ns.Command2: 長さを解釈するコード (scanner も一緒に対応?)</li>
+    <li>latex/ns.Command2: trim, escape 等の修飾を充実させる。現在の機能と導入する機能の整理</li>
+    <li>latex/ns.Command2: 引数読み取り部はコードを生成する様に変更</li>
+    </ul>
+  </li>
+  <li>latex/cls:revtex, revtex4, jarticle, jsarticle, book, jbook, jsbook, report, jreport, jsreport</li>
+  <li>latex/pkg:mathrsbf</li>
+  </ul>
+</li>
+<li>20121223
+  <ul>
+  <li>addon/aghtex4chrome/*.tex: タイトルをブラウザに反映させる?</li>
+  <li>addon/index.htm: 説明, Windows での関連づけについて, emacs の設定について</li>
+  <li>latex/error-globalization: 既存の他のエラーについても globalization を利用する形式に変更する</li>
+  </ul>
+</li>
+<li>20121221
+  <ul>
+  <li>latex: \centering, \medskip, \newbox, \savebox, etc</li>
+  <li>latex/mod_length: parseUnit が失敗している時の状況について調べる, 単位の代わりに \textwidth 等となっていればそれに対応する</li>
+  <li>latex/aghtex4chrome.js: gmail 等でも background page で変換する? (元々ロードに時間が掛かるので現状は大して気にならない)</li>
+  </ul>
+</li>
+<li>latex
+  <ul>
+  <li>latex: スクリプト生成機構の整理
+    <ul>
+    <li>latex.*.js: 現在三つのファイルに分かれているが、一つのファイルに纏める</li>
+    <li>ctxc: c++ による再実装?
+      <ul>
+      <li>javascript scanner (正規表現の対応も含めて)</li>
+      <li>command, letter, environment: command s\hoge() 形式の認識</li>
+      <li>context 形式の認識, context は (function(){})(); で囲む</li>
+      <li>package 形式の認識, (function(){})()</li>
+      <li>mwg_pp.awk: # ディレクティブは mwg_pp.awk に食わせる様に変更</li>
+      <li>mwg_pp.awk: css 等を混在。現在は直接 mwg.latex.pp.css に記入している。</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>optimize
+    <ul>
+    <li>latex/latex.cor.js: GetLetterHandler 呼出回数が多い → context を flatten する / pkg では直接コピーする。</li>
+    </ul>
+  </li>
+  <li>latex: Courier New グリフのサイズが大きい。tt 用に別のフォントを埋め込むか?</li>
+  <li>viewtex: ページ内リンク highlight</li>
+  <li>viewtex: References の pdf へのリンク。</li>
+  <li>latex: \footnote 逆リンク</li>
+  <li>latex: \input, \include で他の .tex ファイルを読み込める様にする。XMLHttp</li>
+  <li>latex.\par, \n\n: まともな実装。
+    <ul>
+    <li>\begin{document} の ns.Writer に手を加える? または (ユーザコマンドではなく) コマンドを定義する。</li>
+    <li>latex: ctx:mode.para を ctx:mode.text に変更して ctx:mode.para (mode.text 継承) を新規に定義?</li>
+    <li>現在の段落の状態 (&lt;p&gt; の中にいるかいないか) の情報を保持する変数、</li>
+    <li>コマンドによって自動的に &lt;p&gt; を閉じるか閉じないかを指定する方法。</li>
+    </ul>
+    </li>
+  <li>latex/frac, etc: border-color: inherit を指定すれば外側の文字列の色が反映される (Cr)</li>
+  <li>latex: IE8-std で table{vertical-align:baseline} を利用?</li>
+  <li>latex 動作確認: \underbrace (IE8-std table{vertical-align:baseline;}?)</li>
+  <li>latex/フォント:
+    <ul>
+    <li>latex/cmd:\oint: 色々な積分記号のフォント (smallint を symb に。int は syma に。)</li>
+    <li>■latex/aghtex_mathsymb, aghtex_mathsyma: 英字グリフを BaKoMa の物から AmsFonts の物に置き換える。</li>
+    <li>latex/font: 黒板体, 筆記体, etc: aghtex_mathsymb, aghtex_mathsyma に統合する?
+      <ul>
+      <li>? mathsymb, mathsyma と共存する書体を決定する?</li>
+      <li>mathsymb は標準的な Unicode での数学記号に対応する。一緒にするなら mathit?</li>
+      <li>mathsyma は代替的な自体を提供する。mathcal, mathbb 辺りと共存させれば OK。</li>
+      </ul>
+    </li>
+    <li>latex/font:mathcal: 現在は cmsy5 より。潰れている。cmsy10 から作り直す</li>
+    <li>latex/font:mathbm: \imath \jmath \ell \weierstrass</li>
+    <li>latex/font:mathit: \Digamma \varkappa \backepsilon 移動</li>
+    <li>latex/font:mathsymb: \Digamma \varkappa \backepsilon 太字体</li>
+    <li>latex/font:mathsymb: \Digamma \varkappa \backepsilon 直立体</li>
+    </ul>
+  </li>
+  <li>latex: コマンド
+    <ul>
+    <li>env:deluxetable, \AtBeginDocument, \AtEndDocument, \gdef</li>
+    <li>latex/env:equation: \eqno, \leqno, \notag, \eqnref, \theequation</li>
+    <li>latex: \sbox, \begin{lrbox}, \makebox, \parbox, \rule, \newsavebox, \savebox, \usebox, \raisebox</li>
+    <li>空白関係
+      <ul>
+      <li>skip(縦空白): \bigskip, \medskip, \smallskip, \vfill, \addvspace</li>
+      <li>break(最小縦空白): \smallbreak \medbreak \bigbreak</li>
+      <li>enskip(空白文字): \enskip \quad \qquad (実装済)</li>
+      <li>kern(文字間隔調整): \enspace (plain TeX) \thinspace (text mode) \negthinspace (text mode) (実装済)</li>
+      <li>各空白の幅の定義値を調べて、既存の適当な幅を置き換える。見た目を確認する (指定した値がそのまま表示されるとは限らないので)。</li>
+      <li><a href="http://tex.stackexchange.com/questions/74353/what-commands-are-there-for-horizontal-spacing">What commands are there for horizontal spacing? - TeX - LaTeX Stack Exchange</a></li>
+      <li><a href="http://tex.stackexchange.com/questions/41476/lengths-and-when-to-use-them">spacing - Lengths and when to use them - TeX - LaTeX Stack Exchange</a></li>
+      <li>length?: \thinmuskip \medmuskip \thickmuskip \smallskip \medskip \bigskip</li>
+      </ul>
+    </li>
+    <li>latex: \pagenumbering, \pagestyle, \thispagestyle, \flushbottom, \onecolumn, \twocolumn, \raggedbottom</li>
+    <li>latex/length.ctx
+      <ul>
+      <li>latex:length: \addtolength, \settodepth, \settoheight, \settowidth; \width, \height, \depth, \totalheight</li>
+      <li>latex:length: \topmargin, \headhight, \headsep, \topskip, \textheight, \footskip, \marginparpush,
+        \oddsidemargin, \evensidemargin, \textwidth, \marginparsep, \marginparwidth, \columnsep, \columnseprule</li>
+      <li>コマンド引数: minipage の width, hspace の padding-right, 等を長さに置換, </li>
+      </ul>
+    </li>
+    <li>latex:env: letter, quote, quotation, picture, tabbing, theorem, titlepage, verse</li>
+    <li>latex: \listoffigures, \listoftables, \abstractname, \bibname, \contentsname, \listfigurename, \listtablename</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+</ul>
+<!--########################################################################-->
+<h2>Known Bugs</h2>
+<ul>
+<li>aghtex4chrome: reload した時に \r\n が二重改行になっている。</li>
+<li>latex.\mathbb: IE8-std で表示されていない。</li>
+<li>latex.\left: sup, sub として高さのある物を指定すると中身が変な位置に表示される。(sup/sub を table 内に表示するのは限界があるか?)</li>
+<li>latex.\leadsto: 記号のうねりの数が異なる</li>
+<li>技術的問題 (保留)
+  <ul>
+  <li>latex.\frac: IE6-IE8 連分数が綺麗に表示できない (IE8-std ではどうか?)</li>
+  <li>latex/上付下付: IE6-7 上付と下付を重ねて表示できない</li>
+  <li>latex/上付下付: IE8 上付と下付を同時に表示する時、下付に分数など高さのある物を表示すると上付の位置が上へ移動する。</li>
+  <li>latex.\underbrace: Sf で undertext に二行以上書くと、下の文字列と被る。
+    (Sf は table vertical-align:baseline に対応していない?)
+  </li>
+  </ul>
+</li>
+</ul>
+<!--########################################################################-->
+<h2>ChangeLog</h2>
+<ul>
+<li>2015-01-16
+  <ul>
+  <li>agh.regex.js: bugfix, $replace indexable の処理が誤っていた。</li>
+  <li>agh.class.js: bugfix, プロパティアクセサを片方だけ override した時に、他方が継承されない。</li>
+  <li>agh.class.js: bugfix, Object.defineProperties の関数名を間違えていた。</li>
+  <li>agh.class.js: Object.defineProperty を用いた実装を追加。</li>
+  <li>agh.class.js: newclass#__add の overload 追加: __add(eventName,func).</li>
+  <li>agh.dom.js (getRectangle): bugfix, getRectangle, 'page' のスクロール量の計算部分。</li>
+  <li>agh.dom.js (captureMouse, releaseMouse): bugfix, うまく動かないので色々弄った。</li>
+  <li>agh.dom.js (getRectangle): bugfix, padding-box の計算が誤っていた (スクロール量を逆に解釈していた)。</li>
+  <li>agh.js (Function#get_name): bugfix, '$' が関数名に含まれる可能性を入れていなかった (agh.class で用いる)。</li>
+  <li>agh.js: キーボードコマンド <kbd>C-: ...</kbd> を使える様に。agh.debug.js の呼出を行う。</li>
+  <li>agh.text.color.js: php に対応。</li>
+  <li>agh.fly.js: agh.fly.processContents 公開</li>
+  <li>agh.forms.js: agh.Forms.TabPage に対応。</li>
+  <li>agh.forms.js: 古いコードを agh.forms1.js に分離。</li>
+  <li>agh.forms.css: 廃止。agh.forms.js で動的に追加する様に変更。</li>
+  <li>agh.js (addEventListener for IE): 実装し直し, event.type, target, currentTarget,
+    preventDefault, stopPropagation, isDefaultPrevented, isPropagationStopped の polyfill.</li>
+  <li>agh.dom.js: preventDefault, stopPropagation だけで済むように書き換え。</li>
+  <li>agh.js: 重複読込チェック</li>
+  <li>gzjs.cs: 大幅な修正
+    <ul>
+    <li>85文字符号化による自己展開スクリプトの出力</li>
+    <li>crc32, 内部の圧縮器を用いた .gz の出力</li>
+    <li>オプションの形式 -W, -Wno-, -o, -v</li>
+    <li>複数の入力ファイルの結合</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>2014-09-29
+  <ul>
+  <li>latex/core.js(ns.Scanner4.NextVerbArgument): bugfix, charCodeAt を charAt だと思っていた…。修正。</li>
+  <li>latex/latex.pp.css: aghtex_roman, bold のフォントを明示的に指定。
+    <ul>
+    <li><del>latex: Cr, \rm の太字が synthesize で生成されているが、ぼけぼけになって見苦しい。結局フォントを埋め込んだ方が良い。</del></li>
+    </ul>
+  </li>
+  <li>latex/aghfonts(aghtex_mathit): mathit のアセンダを調整, \textstyle での分数・sub/sup の表示を改善。
+    <ul>
+    <li><del>latex: \textstyle の時の sup&amp;sub が、中身によって高さが変になる。これはフォントのディセンダ・アセンダの問題である。</del></li>
+    <li><del>latex/aghfonts: italic のアセンダが低すぎる。</del></li>
+    </ul>
+  </li>
+  <li>latex/core.js, base.ctx, pkg_url.ctx: raw 読み取りのエラー出力を修正
+    <ul>
+    <li><del>latex: http://dmitripavlov.org/syllabus.tex でエラーメッセージのHTMLが TeX として再解釈されている。</del></li>
+    <li><del>ctx:sub.argument.raw, ctx:sub.until.raw: エラー Unexpected EOR のHTMLがそのまま取得されてしまう。</del></li>
+    <li>→エラーの出力先を呼出元 context にする。
+      raw コンテキストでは、エラーを出力しうるコマンドは LH_EXIT_WITH_ERROR, LH_MISARG_BRACE のみである。
+      取り敢えず ctx.rawctx_ebuff にエラーメッセージを出力しておいて、doc.Read 呼出元で ebuff の中身を出力する事にした。</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>2014-09-28 KM, ver 3.1.0.363
+  <ul>
+  <li>既に対応済であった ToDo 項目を整理:
+    <ul>
+    <li>2014-01-28: latex/core.js: マクロの引数読み取りが変だ。text_modifier での ClipFirstFromTxt が呼び出されていない。
+      <ul>
+      <li>\sqrt 等、他の既存のコマンドについて正しく引数の読み取りが行われている。#1 が怪しい?
+        →と思ったら、ctx:sub.argument.raw で text_modifier が設定されていなかった。取り敢えず適当に追加した。
+      </li>
+      <li><del>現在経過観察中</del> → 特に問題も起こっていない様なので解除(2014-09-28)</li>
+      </ul>
+    </li>
+    <li>2014-??-??: latex/mod_para.ctx: \newenvironment, \renewenvironment 追加</li>
+    <li>2012-12-12: mwg agh 移行
+      <ul>
+      <li><del>agh/addon/aghtex4thunderbird: 動作確認</del></li>
+      <li><del>■agh/addon/aghtex4ie: 動作確認</del></li>
+      <li><del>■agh/addon/aghtex4seahorse: 動作確認</del></li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>latex/core.js: tex:error 出力コード改訂: メッセージは title 属性に入れる様に変更。class 属性を msg から aghtex-core-msgbox に変更。</li>
+  <li>latex/base.ctx, mod_common.js: エラーメッセージを mod_core.ErrorMessages に集約。
+    <ul>
+    <li><del>latex/base.ctx, mod_common: ErrorMessages 整理</del></li>
+    </ul>
+  </li>
+  <li>agh.js: MWG_URLBASE を長らく変更せずに使ってきたが AGH_URLBASE に変更。別に、この変数を使っている野良 htm も存在しない筈だから変更を阻む理由は何もない。</li>
+  <li>latex/core.js(Scanner4.Next): EOF の判定をより直接な方法に変更。</li>
+  <li>latex/mod_common.js(cmd:newcommand, cmd:renewenvironment): renewcommand の場合には、既に定義されている必要があるという事を今更知ったので、その様に修正。</li>
+  <li>latex/mod_common.js: \providecommand 実装。\newcommand の variant として。</li>
+  <li>latex/mod_common.js: \makeatletter, \makeatother に対応。これに伴い、m_makeatletter の既定値を false に変更、pkg_url で用いられていた @ 入りのコマンド名を変更。</li>
+  <li>latex/core.js(Scanner4.NextVerbArgument)
+    <ul>
+    <li>(2014-09-28) <del>latex:cmd.verb: \verb{～} の形で使おうとすると EOR エラーになる(→これは正しい動作の様だ)。
+      しかもエラーHTMLがTeXで再解釈される。</del></li>
+    <li>(2014-03-08) <del>bug \verb 内で % を扱う事ができない。
+      ns.Scanner4 自体を弄るか、読み取り関数 Read を拡張するか、Context で無理矢理読み取るか。</del></li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>2014-09-27 KM, ver 3.1.0.352
+  <ul>
+  <li>aghtex4gmail: 新しい編集画面に対応: 編集内容を変換対象としない。新しい編集画面のプレビューを動く様に。</li>
+  <li>latex/core.js(readers_apply_args): マクロ置換後の引数の直前・直後に US(\x1F) を挿入。Scanner.Next で US を特別に処理する様に変更。
+    <ul>
+    <li><del>latex/core.js: bugfix, \def\a#1{\mathrm#1} \a{a} 等とすると \mathrma を読もうとして失敗する。
+      (そもそも {a} と展開するべきなのか a と展開するべきなのか? 或いは "%\na" と展開しても問題ないか?)</del></li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>2014-06-17 KM, ver 3.1.0.350
+  <ul>
+  <li>latex/res/stretch_symbols.sfd: 伸縮括弧の SVG 形式 (stretch_lparen.svg, stretch_rparen.svg, stretch_lbrace.svg, stretch_rbrace.svg, stretch_langle.svg, stretch_rangle.svg, stretch_sqrt.svg)</li>
+  </ul>
+</li>
+<li>2014-03-13 KM, ver 3.1.0.349
+  <ul>
+  <li>latex/latex.pp.css(tex\:math.displaymath): tex\:math.aghtex-displaymath に統一。(使用者: mod_para.ctx, pkg_ams.ctx, mod_array.ctx)</li>
+  <li>latex/latex.pp.css(tex\:math.aghtex-displaymath 他): white-space:nowrap を追加。</li>
+  <li>latex/latex.pp.css(tex\:math.equation): 使用者がいないので削除。</li>
+  <li>latex/mod_math.ctx: \allowbreak に対応。
+    <p><del>\allowbreak: white-space:nowrap の中でも wbr 要素は有効か確認。</del></p>
+    <p>white-space:nowrap の要素の中に white-space:normal の空要素を置いておけばそこで改行がされる様だ。</p>
+  </li>
+  <li>latex/mod_para.ctx: \newtheorem, \-</li>
+  </ul>
+</li>
+<li>2014-03-12 KM, ver 3.1.0.344
+  <ul>
+  <li>latex/latex.pp.css(tex\:mbox): padding の指定を削除。colorbox, fcolorbox は個別に padding を指定。</li>
+  <li>latex/mod_common.ctx: 追加 \fbox, \frame</li>
+  </ul>
+</li>
+<li>2014-03-08 KM, ver 3.1.0.342
+  <ul>
+  <li>latex/base.ctx: raw_CreateContext を ContextFactory.rawctx_CreateContext に移動・修正。</li>
+  <li>latex/core.js(Read): 実際の所 Read(ctx,true) の形でしか呼び出されていないので、第2引数を削除。
+    <em>今後 Document#Read は渡された context を直接使用して読み取りを実行する</em>
+  </li>
+  </ul>
+</li>
+<li>2014-03-07 KM, ver 3.1.0.340
+  <ul>
+  <li>latex/cls_article.ctx: revtex4 に形式的に対応。</li>
+  <li>latex/mod_counter.ctx(cmd:alph,Alph): bugfix, 存在しない変数 num を this.val に変更。</li>
+  <li>latex/mod_counter.ctx: doc.counters を doc['mod:counter'] に変更。</li>
+  <li>agh.lang.ps/agh.lang.ps.js(systemdict/charpath): bugfix, s/s.agh.Array.clone(CTM)/agh.Array.clone(s.CTM)/</li>
+  </ul>
+</li>
+<li>2014-03-05 KM, ver 3.1.0.336
+  <ul>
+  <li>latex/pkg_ams.ctx: \eqref</li>
+  <li>latex/pkg_ams.ctx: \DeclareMathOperator*, \DeclareMathOperator, \operatornamewithlimits</li>
+  <li>latex/mod_math.ctx(is_slanted_fullheight): 判定を改良。</li>
+  </ul>
+</li>
+<li>2014-01-30 KM, ver 3.1.0.333
+  <ul>
+  <li>latex/mod_math.ctx(CreateAccentCommand): ブラウザ毎の高さの調整を css でやりやすくする為に出力するクラス名を追加。</li>
+  <li>latex/latex.pp.css: Opera, Safari 専用の高さのコードを整理。Firefox 用の調整を追加。</li>
+  </ul>
+</li>
+<li>2013-12-09 KM, ver 3.1.0.331
+  <ul>
+  <li>agh.text.color.js: #include &lt;...&gt; の色付けを追加。</li>
+  </ul>
+</li>
+<li>2013-12-04 KM, ver 3.1.0.330
+  <ul>
+  <li>latex/latex.pp.css (tex\:mathbb): 大文字アルファベットを aghtex_mathbb を用いて表示する様に変更。</li>
+  <li>latex/latex.pp.css, base.ctx: s/td.tex-stretch/td.aghtex-stretch/</li>
+  <li>latex/mod_array.ctx (table.aghtex-array-lrpad): bugfix, pmatrix の左右に余白がない。括弧付き表の場合に、左右に余白を入れる。</li>
+  <li>latex/latex.pp.css, mod_array.ctx (table.tex-array): クラス名変更, table.tex-array → table.aghtex-array</li>
+  <li>latex/latex.pp.css, mod_array.ctx (table.tex-va-[tmb]): クラス名変更, table.tex-va-([tmb]) → table.tex-va-$1</li>
+  </ul>
+</li>
+<li>2013-12-02 KM, ver 3.1.0.325
+  <ul>
+  <li>prog.std.css (kbd.agh-keyspec): unix_emacs.html から移植。</li>
+  </ul>
+</li>
+<li>2013-11-27 KM, ver 3.1.0.324
+  <ul>
+  <li>latex/mod_math.ctx (cmd:"\}"): bugfix, .aghtex-lbrace → .aghtex-rbrace</li>
+  </ul>
+</li>
+<li>2013-11-26 KM, ver 3.1.0.323
+  <ul>
+  <li>latex/mod_math.ctx (cmd:\int): bugfix, textstyle の時の添字が displaystyle の時の添字になっていた。</li>
+  <li>latex/latex.pp.css (td.tex-right-pipe): bugfix, pipe なのに縦棒を二本描く様になっていた。</li>
+  <li>latex/base.ctx (cmd:\left...\right): \right| 太い → vert の時と同様に vIE の時にだけ、中に &amp;nbsp; の指定をする事にした。</li>
+  </ul>
+</li>
+<li>2013-11-24 KM, ver 3.1.0.320
+  <ul>
+  <li>.htaccess: フォントの mime-type の修正。application/x-font-* だと chrome が警告を出すので、font/truetype などに。(本当は font/* は登録されていない)。</li>
+  <li>agh.fly.js: bugfix, 変換されない要素が存在する。中身を変更しながら childNodes を添字アクセスしていた為。</li>
+  </ul>
+</li>
+<li>2013-11-23 KM, ver 3.1.0.318
+  <ul>
+  <li>latex/latex.pp.css (table.aghtex-int, tex\:i.aghtex-int-sub): 積分記号上付・下付の高さ・縦位置調整。</li>
+  </ul>
+</li>
+<li>2013-11-07 KM, ver 3.1.0.317
+  <ul>
+  <li>latex/mod_math.ctx: 各種の文字を mathsymb (mathrm) で表示する様にする。× [] () など。</li>
+  <li>latex/aghfonts:mathrm-1.1.39: u007b u007d</li>
+  <li>latex/aghfonts:mathbb00-1.1.22: bugfix, 2e (accentdotlow) がなかったので、mathbb10 からコピー・編集して追加。</li>
+  <li>latex/aghfonts:mathbb-1.1.23: 28 29 5b 5d 6b 6d 2f 5c 2308-230b 3008 3009 (42glyphs)</li>
+  <li>latex/latex.pp.css: bugfix, tex:fsym.aghtex-rbrace に対する css rule を tex:fsym.aghtex-lbrace に対して適用していた。</li>
+  <li>latex/latex.pp.css: \big コマンドのマークアップを書き直し。左右マージンと高さを正しく実現する様に。</li>
+  <li>latex/latex.pp.css, texsym.ctx, mod_math.ctx, mod_para.ctx, pkg_asm.ctx: cleanup, class Bmc, Bgt, Brm, Bmr 名称変更。</li>
+  <li>latex/latex.*.js: 廃止</li>
+  </ul>
+</li>
+<li>2013-11-06 KM, ver 3.1.0.309
+  <p>interface</p>
+  <ul>
+  <li>latex/pkg:amsmath: \implies, \impliedby, \And, \iff 追加。\dots, \ldots in text-mode 追加。</li>
+  <li>latex/mod:common, mod:para, mod:math: 記号追加:
+    \textless, \textordfeminine, \textasteriskcentered, \textordmasculine,
+    \textparagraph, \textbraceleft, \textbraceright, \textcopyright,
+    \textdagger, \textdaggerdbl, \textdollar, \textsection, \textellipsis,
+    \textsterling, \textunderscore, \textgreater,
+    \lbrace, \rbrace, \mathellipsis, \mathparagraph, \mathdollar,
+    \mathsection, \mathsterling, \mathunderscore. \#.
+  </li>
+  </ul>
+  <p>internal</p>
+  <ul>
+  <li>latex/mod_common.ctx(\edef): bugfix, 脆弱性, 読み取った引数をそのまま出力 html として出力していた。修正。</li>
+  <li>latex/pkg_ams.ctx: \implies, \impliedby, \And, \iff 追加</li>
+  <li>latex/pkg_ams.ctx(\idotsint, \idots): 文字の大きさなどを調整・統一。latex.pp.css に記述。</li>
+  <li>latex/pkg_ams.ctx(\idots): mathstyles 対応。</li>
+  <li>latex/pkg_ams.ctx: mode.para で \ldots \dots が使えるか platex で確認 → 使える様なので、追加。</li>
+  <li>latex/base.ctx, core.js: ns.Shared 廃止</li>
+  <li>latex/core.js: bugfix, MACRO_LOOP_THRESH を使うべき所 MACRO_NEST_THRESH を参照していた。</li>
+  <li>latex/core.js: ns.Constants 廃止。_C. 以下に定義された四つの変数を core.js グローバルとして定義。</li>
+  <li>latex/pkg_bm.ctx: error message 整理。mod_array を参考に ErrorMessages にまとめる。</li>
+  <li>latex/pkg_url.ctx: error message 整理。</li>
+  <li>latex/mod_counter.ctx: error message 整理。</li>
+  <li>latex/mod_common.ctx: \string</li>
+  <li>latex/mod_para.ctx: \text... 系のコマンドを追加。
+    \textless, \textordfeminine, \textasteriskcentered, \textordmasculine,
+    \textparagraph, \textbraceleft, \textbraceright, \textcopyright,
+    \textdagger, \textdaggerdbl, \textdollar, \textsection, \textellipsis,
+    \textsterling, \textunderscore, \textgreater
+  </li>
+  <li>latex/mod_common.ctx, mod_para.ctx:
+    \text... 系の記号は本来 text-mode でしか使えない気がするが、
+    platex で期待通りに出力される系統の記号は mod_common/global で定義し、
+    期待通りに出力されない物については mod_para/mode.para で定義する事にした。
+  </li>
+  <li>latex/texsym.ctx: 記号の追加:
+    \lbrace, \rbrace, \mathellipsis, \mathparagraph, \mathdollar,
+    \mathsection, \mathsterling, \mathunderscore.
+  </li>
+  <li>latex/mod_common.ctx: \# 追加。</li>
+  <li>addon/aghtex4gmail: agh.lang.tex.js に移行。(aghtex4chrome に古いバグの発現を発見した為。)
+    <ul>
+    <li>addon/aghtex4gmail: latex/latex.*.js の 削除</li>
+    <li>addon/aghtex4gmail: Makefile の書き換え, 各 .js, .json, .htm の中の呼出部分を書き換え。</li>
+    <li>addon/aghtex4gmail: 各 .js 中の LaTeX2XHTML を LaTeX に書き換え。</li>
+    </ul>
+  </li>
+  <li>latex/ctxc.cs: 単体の @"", @'' を処理できる様にする。</li>
+  <li>latex/texsym.ctx: 記号類の整理。DefineCommand を使った書き直し。</li>
+  <li>latex/pkg_ams.ctx(\dots): bugfix, DOTSI の出力が古い物になっていたのを修正。</li>
+  <li>latex/pkg_ams.ctx(\idotsint, \dotsi): DOTSI の大きさと縦の位置を調整 (chrome で)</li>
+  <li>latex/mod_math.ctx, latex.pp.css(\int): cleanup, 名称変更, tex:in.it, tex:in.ib → tex:i.aghtex-int-sup, tex:i.aghtex-int-sub</li>
+  <li>latex/mod_math.ctx, latex.pp.css(^a_a): cleanup, 名称変更, tex:in.t → tex:i.aghtex-sup-nest</li>
+  <li>latex/mod_math.ctx(\int): 上付・下付の margin の調整。</li>
+  <li>latex/pkg_ams.ctx(\idotsint, \dotsi): DOTSI の大きさと縦の位置の調整 for Fx→合っていた。</li>
+  <li>latex/pkg_ams.ctx(\int): bugfix, Fx, 上付・下付の横位置がずれていた。td に text-align:left を指定したら直った。</li>
+  <li>addon/aghtex4gmail: 古い font の削除</li>
+  <li>latex/pkg_ams.ctx(\dots): bugfix, 'ltr:,', 'ltr:;' に対する DOTS 指定が誤っていた。</li>
+  <li>latex/pkg_ams.ctx(\dots): 通常の文字に対する dots と、括弧開始に対する dots は DOTSM とする事にした。</li>
+  <li>latex/aghfonts: ディレクトリ移動, latex/res/aghfonts → latex/aghfonts</li>
+  <li>latex/latex.pp.css, mod_math.css, texsym.css: tex:fsym.aghtex-lbrace, mbrace, rbrace を定義、適用。</li>
+  <li>addon/aghtex4chrome: bugfix, manifest.json に新しいフォントの事を書いていなかった。</li>
+  <li>addon/mod_para.ctx, texsym.ctx: bugfix,
+    先に @"" @'' だけ変換する様にした所為で、旧形式の command 指定が正しく変換されなくなってしまった。
+    旧形式の文字列指定の command を全て新形式に置き換える事にした。
+    →引数の指定方法を誤ったりもしたが、何とか直した。
+  </li>
+  <li>latex/aghfonts:mathrm-1.1.38: u005c (backslash)</li>
+  <li>latex/aghfonts:mathbb-1.1.20: u2216 (setminus)</li>
+  <li>latex/aghfonts:mathbb-1.1.21: bugfix, xlight で u2509 にグリフ情報が付加されていなかった。</li>
+  <li>latex/texsym.ctx: 既に aghtex_mathrm に含まれている字形についてそれを使用して表示する様に変更。</li>
+  <li>latex/texsym.ctx: backslash, aghtex_mathrm に字形を追加したので、これも aghtex_mathrm を使用する様に。</li>
+  <li>latex/texsym.ctx: \setminus の字形を backslash 型に変更。(短い形式は \smallsetminus から呼び出せる。)</li>
+  </ul>
+</li>
+<li>2013-11-05, KM, agh-3.1.0.268
+  <p>interface</p>
+  <ul>
+  <li>agh.fly.js: 変換コードの刷新
+    <ul>
+    <li>全 TeX コードが同一の context で、上から順番に評価される。式番号なども OK。</li>
+    <li>内部への HTML タグの埋込も OK</li>
+    <li>p, span の他に div も class による変換の対象。</li>
+    <li>obsolete: script#tex-default → script#tex-preamble</li>
+    <li>obsolete: body.tex\:mathbqd → body.aghfly-inline-math-bqd</li>
+    <li>obsolete: .tex\:dollared → .aghfly-tex-imath</li>
+    </ul>
+  </li>
+  <li>latex/global: \edef, \gdef, \xdef, \global 追加。</li>
+  </ul>
+  <p>internal</p>
+  <ul>
+  <li>latex/mod_array.ctx(ctx:env.array.align/letter:@):
+    bugfix, 脆弱性, alignment 指定 @{} の引数の内容を直接 html として出力していた。</li>
+  <li>agh.fly.js: 変換コードを一から書き直した。
+    これで、math-mode も text-mode も上から順番に変換されるし、
+    以前、区切り文字に使っていた "(@)" が source の中に混じっていても出力場所がずれる事は無い。
+    <ul>
+    <li>agh.fly.js: bugfix, $\newcounter{equation}$ "t is not defined", 変数名変更忘れ t → node。</li>
+    <li>agh.fly.js: p に加え div も変換の対象とする。内部にブロック要素などを埋め込む為。</li>
+    <li>agh.fly.js: 埋込要素に対しても変換を実行する。</li>
+    </ul>
+  </li>
+  <li>latex/latex.pp.css(\sqrt): vertical-align:baseline; を設定して、外側と baseline を一致させる。</li>
+  <li>latex/latex.pp.css, mod_math.ctx(\sqrt): class 名変更: s/tex-root/aghtex-sqrt/, s/tex-rt-(body|index)/aghtex-sqrt-$1/</li>
+  <li>latex/core.js: Document#GetArgumentHtml の引数に Document#Read と同様に direct を取る様にする。
+    \global で外側の context に影響を与える為
+    →結局使わなかったが、Read の対称性からこれでも良い。
+  </li>
+  <li>latex/core.js: Document#flags, Document#pushFlags, Document#popFlags 追加</li>
+  <li>latex/core.js: Document#SetMacroHandler 追加。マクロを現在の文脈上に定義。mod:common/global フラグが設定されている場合は、最外の文脈上に定義。</li>
+  <li>latex/mod_common.ctx: \edef, \gdef, \xdef, \global 追加。\def, \let 修正</li>
+  <li>latex/mod_common.ctx, mod_length.ctx, pkg_url.ctx, pkg_bm.ctx:
+    currentCtx.userC に設定を行っている所を SetMacroHandler に置き換える。
+    \def, \newcommand, \renewcommand, \let, Document#NewLength, \DeclareUrlCommand, \urldef, \DeclareBoldSymbol。
+  </li>
+  <li>latex/mod_para.ctx(letter $): bugfix, ctx:mode.math 本体を汚染していた。mode.math のコピーを作成する様に変更。</li>
+  <li>latex/mod_math.ctx(cmd_int): \int, \oint, etc. mathstyles に対応</li>
+  <li>latex/mod_math.ctx, latex.pp.css: cleanup, 名称変更, table.frac → table.aghtex-frac:</li>
+  <li>latex/mod_math.ctx, latex.pp.css: cleanup, 名称変更, td.tex-(su[bp]) → td.aghtex-int-$1</li>
+  <li>latex/mod_math.ctx, base.ctx: class=aghtex-tag-script タグを導入。
+    tex:su[bp], tex:supsub, td.aghtex-sqrt-index, td.aghtex-(cmdleft|int)-su[bp],
+    tex:sum2[ud], tex:mathop&gt;tex:[ud] tex:i.aghtex-sum-[ud] の出力に伴って。
+    今後、font-size を小さく設定する物があれば、aghtex-tag-script の付加を検討する。
+  </li>
+  <li>latex/mod_math.ctx, pkg_ams.ctx(\frac, \tfrac, \dfrac): mathstyles に対応。</li>
+  <li>latex/mod_math.ctx, latex.pp.css (\sum): tex:i.aghtex-sum-strut, line-height:1em; を追加。何故か Fx で高さが大きい為。</li>
+  <li>latex/mod_math.ctx(\sum, \mathop): mathstyles に対応。</li>
+  </ul>
+</li>
+<li>2013-11-04, KM, agh-3.1.0.251
+  <p>interface</p>
+  <ul>
+  <li>latex/pkg:amsmath: \begin{aligned}, \begin{alignedat}, \begin{gathered}, \binom, \tbinom, \dbinom, \genfrac</li>
+  <li>latex/pkg:latexsym: \iint, \iiint, \iiiint, \idotsint</li>
+  </ul>
+  <p>internal</p>
+  <ul>
+  <li>latex/mod_array.ctx: bugfix, @{1} を指定した時に太さ 1 の縦線と勘違いする。=== で比較する様に変更。</li>
+  <li>latex/mod_array.ctx: td.tex-arr2 を td.aghtex-array-cell に変更。</li>
+  <li>latex/mod_array.ctx: td.tex-arr2-dummy を td.aghtex-array-fxdummy に変更。</li>
+  <li>latex/mod_array.ctx(Table): 最初の行の上余白、最後の行の下余白を潰す。</li>
+  <li>latex/mod_array.ctx(Table): 最後の列の右余白、最初の列の左余白を潰す。</li>
+  <li>latex/latex.pp.css(td.tex-left-vert,...): bugfix, 誤 border-type, 正 border-style。</li>
+  <li>latex/mod_array.ctx, pkg_ams.ctx(pkg:amsmath): 環境 aligned, alignedat, gathered に対応。</li>
+  <li>latex/mod_array.ctx: bugfix, Fx で伸縮括弧が正しく表示されない。tr に class="aghtex-cmdleft" を指定する必要があった。</li>
+  <li>latex/mod_math.ctx(Atop): cleanup, class="tex:inline" は使用されていない様なので削除。</li>
+  <li>latex/latex.pp.css, mod_math.ctx(Atop): cleanup, td.tex-center → td.aghtex-center に変更。</li>
+  <li>latex/pkg_ams.ctx: \binom, \tbinom, \dbinom, \genfrac</li>
+  <li>latex/font:mathsymb-1.0.34: 積分記号 u222c u222d u2a0c (9glyphs)</li>
+  <li>latex/font:mathsyma-1.0.18: 積分記号 u222c u222d u2a0c (9glyphs)</li>
+  <li>latex/pkg_ams.ctx/pkg:latexsym: \iint, \iiint, \iiiint, \idotsint</li>
+  <li>latex/font:mathsymb-1.0.35: \ell u2113 (3glyphs)</li>
+  <li>latex/font:mathsymb-1.0.36: u0021-u002b(11) u002d u0030-u003b(12) u003d u003f u00a1 u00bf u0041-u005a(26) u0061-u007a(26) u02da u030a u2018 u2019 u201c u201d (86x3 glyphs)</li>
+  <li>latex/font:mathsymb-1.1.37: 名称変更。mathsymb → mathrm</li>
+  <li>latex/font:mathsyma-1.1.19: 結合。mathsyma → mathbb</li>
+  </ul>
+</li>
+<li>2013-11-03, KM, agh-3.1.0.233
+  <p>interface</p>
+  <ul>
+  <li>latex/ctx:para: \, \thinspace, \negthinspace, \enspace</li>
+  <li>latex/ctx:global: \enspace</li>
+  <li>latex/mod:length: 単位 dd, cc, zh, bp, mu</li>
+  <li>latex/pkg:amsmath: env:matrix, env:pmatrix, env:bmatrix, env:Bmatrix, env:vmatrix, env:Vmatrix, \AmS</li>
+  <li>latex: 線類の色を変更する為には、tex:container *{border-color:inherit!important} 等として、tex:container に色を指定する。</li>
+  <li>agh.fly.js(tex): tex:math を tex:container.aghfly-tex.aghtex-math, tex:container.aghfly-tex.aghtex-para に変更。</li>
+  </ul>
+  <p>internal</p>
+  <ul>
+  <li>latex/mod_length.ctx: 単位 dd, cc, zh, bp, mu の追加。</li>
+  <li>latex/mod_para.ctx: \, \thinspace \negthinspace (\, は text mode でも使える様だ)</li>
+  <li>latex/mod_common.ctx: \enspace</li>
+  <li>latex/base.ctx(\left): 伸縮括弧の生成部分を共通化し、ns.Modules["mod:base"] で公開。</li>
+  <li>latex/mod_math.ctx(Atop): ns.Shared.LEFT_KAKKO/RIGHT_KAKKO → mod_base.OutputStretchBracketTd()</li>
+  <li>latex/base.ctx(ns.Shared.LEFT_KAKKO, ns.Shared.RIGHT_KAKKO): 廃止。今後は  を使用する。</li>
+  <li>latex/base.ctx(ns.Scanner.StretchImageTd): mod_base.GetStretchImageTd に名称変更。</li>
+  <li>latex/mod_array.ctx, pkg_ams.ctx: 環境 matrix, pmatrix, bmatrix, Bmatrix, vmatrix, Vmatrix に対応。</li>
+  <li>latex/mod_array.ctx: Cell.write_bL, write_bR 書き直し。</li>
+  <li>latex/latex.pp.css: td.tex-arr2b* が使用されなくなったので廃止。</li>
+  <li>latex/latex.pp.css: *{border-color:inherit!important} によって外部から色を変えられる様に、!important の指定を border-color から外す。</li>
+  <li>latex/mod_counter.ctx: bugfix, roman1 等の変数で定義されていないタグ &lt;m:ov&gt;, &lt;m:ovv&gt; 等を用いていた。&lt;tex:i class="aghtex-counter-ov"&gt; 等に変更。</li>
+  <li>latex/base.ctx, latex.pp.css: tex\:abc.l, tex\:abc.u をそれぞれ tex\:abc.aghtex-lower, tex\:abc.aghtex-upper に変更。</li>
+  <li>latex/pkg_ams.ctx, latex.pp.css: \AmS コマンド。</li>
+  <li>latex/mod_common.ctx, latex.pp.css: \TeX 系統のコマンドの文字の配置を再調整。</li>
+  <li>agh.fly.js(tex): 変換結果を tex:math に入れて表示していたのを tex:container.aghtex-math, tex:container.aghtex-para に入れて表示する様に変更。</li>
+  <li>latex/font:mathsymb-1.0.33: u002c u002e u002f u003c u003e u2026 u2202 u22EE-22F1 (33glyphs)</li>
+  <li>latex/texsym.ctx: \partial := \ddots \cdots \ldots \vdots フォント入替</li>
+  <li>latex/pkg_ams.ctx: \dots, \dotsc, \dotsb, \dotsm, \dotsi, \dotso 追加。</li>
+  <li>latex/base.ctx: bugfix, 脆弱性, \verb 内に html を記述するとそのまま出力されてしまっていた。</li>
+  </ul>
+</li>
+<li>2013-10-31, KM, agh-3.1.0.213
+  <ul>
+  <li>agh.js(agh.scripts._dowait): bugfix, invoke_error の引数に存在しない変数名を指定していた。</li>
+  <li>agh.fly.js: LaTeX の変換に旧来の latex/latex.*.js を用いていたのを、agh.lang.tex.js を使用する様に変更。</li>
+  <li>agh.fly.js: bugfix, agh.LaTeX2XHTML を参照していたのを agh.LaTeX に修正。</li>
+  <li>agh.fly.js(tex_transform_marker): bugfix, 変換適用範囲が変だった。html escape を正しく実行できていなかった。</li>
+  </ul>
+</li>
+<li>2013-10-10, KM, agh-3.1.0.209
+  <ul>
+  <li>agh.fly.js(tex): 新機能: p class="aghfly-begin-..." で tex 環境で変換を実行する。。</li>
+  <li>agh.fly.js(tex): 新機能: body class="aghfly-inline-math" で $..$ の変換を実行する。</li>
+  </ul>
+</li>
+<li>2013-09-02, KM, agh-3.1.0.207
+  <ul>
+  <li>latex/agh.lang.tex.js: latex ソースの生成の方法を一から見直し
+    <ul>
+    <li>foo.ctx は、先ず mwg_pp.awk に通して .gen/foo.ctx に変換し、更に ctxc に通して .gen/foo.js とする。</li>
+    <li>agh.lang.tex.js は mwg_pp.awk main.pp.js を介して、.gen/*.js 等のファイルを取り込んで生成する。</li>
+    <li>従来の latex.cor.js, latex.cls.js, latex.ctx.js もおまけで生成する (その内に廃止予定)。</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>2013-09-01, KM, agh-3.1.0.206
+  <ul>
+  <li>agh.js (agh.Namespace): 名前空間名だけ指定した時 (target を省略した時) に名前空間名を . で区切って入れ子と解釈する様に変更。</li>
+  <li>agh.js (agh.Namespace): 無引数で呼び出した時に window 上ではなく agh 上に匿名名前空間を定義する様に変更。</li>
+  <li>agh.js (agh.Array.unique): uniq から unique に名称変更。中身をソートする事も仕様に含める事にした。</li>
+  <li>agh.js (agh.Array.lexicographical_min/max): agh.Array.lex_min/max に名称変更。</li>
+  <li>agh.js (agh.Array.uniq, uniqD): 連続する要素を消す関数として定義。</li>
+  <li>agh.js (agh.Array.lex_unique): 要素を文字列と見た時に重複する物を消す関数として定義。</li>
+  <li></li>
+  </ul>
+</li>
+<li>2013-09-01, KM, agh-3.1.0.200
+  <ul>
+  <li>latex/main.ctx (ns.Shared.Tags.IMG_OINT, ns.Shared.Tags.IMG_INT): 何処からも参照されていないので削除。</li>
+  <li>latex/main.ctx (TagCurrentContext): Modules["mod:main"].TagCurrentContext に移動。</li>
+  <li>latex/main.ctx (ns.Shared.CreateCommandOverStretch, ns.Shared.CreateCommandUnderStretch): Modules["mod:math"] に移動。</li>
+  <li>latex/main.ctx (ns.Shared.CreateCommanSummation): Modules["mod:math"] に移動。</li>
+  <li>latex/main.ctx, latex/mod_math.ctx (ctx:mode.math): mode.math 関連の指定を全て mod_math.ctx に合流</li>
+  <li>latex/main.ctx, latex/mod_para.ctx (ctx:mode.para): mode.para 関連の指定を全て mod_para.ctx に合流</li>
+  <li>latex/main.ctx (Modules["mod:main"]): "mod:common" に名称変更。</li>
+  <li>latex/main.ctx, latex/mod_common.ctx: 基本コマンドを mod_common.ctx ファイルに分離</li>
+  <li>latex/main.ctx, latex/mod_list.ctx: リスト関連を mod_list.ctx ファイルに分離</li>
+  <li>latex/documentclass.ctx, latex/pkg_ams.ctx: AmS 関連の物を新しいファイル pkg_asm.ctx に分離</li>
+  <li>latex/documentclass.ctx: latex/cls_article.ctx に名称変更。</li>
+  <li>latex/latex.cls.ctx: latex.cls.js 生成 (嘗ての documentclass.ctx の役割)の為の .ctx ファイルを作成。</li>
+  </ul>
+</li>
+<li>2013-08-31, KM, agh-3.1.0.188
+  <ul>
+  <li>agh.js (agh.get_ownkeys, agh.get_keys): agh.ownkeys, agh.keys に名称変更。</li>
+  <li>tools/ctxc.cs: context/common/letter/environment 等の変換だけを行う様に拡張</li>
+  </ul>
+</li>
+<li>2013-08-29, KM, agh-3.1.0.186
+  <ul>
+  <li>agh.js (agh.registerAgehaCast, registerAgehaExtension): __AddCast__, __AddExt__ から改名。</li>
+  </ul>
+</li>
+<li>2013-08-28, KM, agh-3.1.0.185
+  <ul>
+  <li>agh.js (agh.Array.uniq): @bugfix Fx では sort の第一引数に null を渡すとエラーになる。</li>
+  <li>agh.lang.tex.js: latex/* の簡易呼び出し様に作成。何れは latex/* も結合してこの名前にする予定。。</li>
+  <li>agh.debug.js (agh.debug.benchmark, agh.debug.createDomTree): mwg1 からの移植、再実装。</li>
+  <li>agh.debug.js (agh.debug.Console): ExecuteScript.htm からの移植、再実装。</li>
+  <li>agh.js (agh.Array.uniqD): @bugfix IE では sort の第一引数に undefined を渡すとエラーになる。</li>
+  <li>agh.dom.js: @bugfix IE6 で読み込めない。余分な , を特定、削除。</li>
+  <li>agh.debug.js (stacktrace): DomTreeInfo で見易く実装?</li>
+  <li>agh.debug.js (agh.debug.DomTreeNode): function の表示</li>
+  <li>agh.debug.js (agh.debug.Console): Error 時のスタック読み取り</li>
+  </ul>
+</li>
+<li>2013-08-27, KM, agh-3.1.0.176
+  <ul>
+  <li>agh.class.js: メンバ登録部分を書き直し。defineProperties を用いたプロパティの定義。</li>
+  <li>agh.dom.js: agh.dom1.js に名称変更。</li>
+  <li>agh.dom2.js: agh.dom.js として出力する様に変更。</li>
+  <li>agh.dom2.js (agh.dom.switchClassName): @bugfix this.elem → elem</li>
+  <li>agh.dom2.js (-agh-click): @bugfix -agh-mouseclick → -agh-click</li>
+  <li>agh.js (agh.get_ownkeys): @bugfix オブジェクト以外の物 (string 等) を渡すと例外が発生する。</li>
+  <li>agh.text.color.js: @bugfix 自身で agh.text.color.css を読み込んでいなかった。</li>
+  <li>agh.text.color.js (option "/html"): @bugfix &lt;br/&gt; を唯単に文字として退避していた為、これを改行と認識できなかった。</li>
+  <li>agh.text.color.css (span.agh-text-iline): @bugfix 何故か span.agh-iline になっていた。恐らく mwg → agh の以降の時に消した。</li>
+  <li>agh.text.color.css (span.agh-text-iline): @bugfix font-family を指定しているが、これは外側と同じにしないと本文とずれる。つまり、指定しない様にする。</li>
+  <li>agh.js (agh.Array.uniq): @bugfix 初めの要素しか uniq していなかった…。</li>
+  </ul>
+</li>
+<li>2013-08-23, KM, agh-3.1.0.165
+  <ul>
+  <li>agh.js (agh.removeEventListener): agh.addEventListener に対応して追加</li>
+  <li>agh.js (Array.intersec): agh.Array.intersection に改名</li>
+  <li>agh.js (Array.diff): agh.Array.difference に改名</li>
+  <li>agh.js (Array.transpose): agh.Array.transpose に改名</li>
+  <li>agh.js (Array.union): agh.Array.union に改名</li>
+  <li>agh.js, agh.class.js (agh.wrap): 他の箇所でも使いたくなるので agh.class.js から agh.js に移動</li>
+  <li>agh.class.js: this.base.method() で基底クラスのメンバ関数を呼び出せる様に拡張 (従来の呼出方も可能)。</li>
+  </ul>
+</li>
+<li>2013-08-20, KM, agh-3.1.0.158
+  <ul>
+  <li>agh.js (agh.Namespace): 生成した名前空間オブジェクトを返す様に変更。
+    <p>引数の名前空間名を省略した時に自動的に生成された名前空間の名称を知る為に、
+    今迄は名前空間名を返していたが調べてみた所、
+    実際に使用している事はなくむしろ名前空間オブジェクトを直後に取得している事の方が多かった。
+    名前空間名を省略した場合は、名前空間名は名前空間オブジェクトの namespaceName メンバに格納する事にした。
+    </p>
+  </li>
+  <li>agh.js (agh.addEventLister):関数追加 (aghtex.js から移植)、IE で window.event を引数に指定する様に修正。</li>
+  <li>agh.js (agh(obj)): Array 拡張時に array_prototype_extension を付加する様に変更。</li>
+  <li>agh.js (agh.is(obj,Function)): typeof を用いた実装に切り替え。
+    obj=agh.wrap(func) は関数として呼び出せないが、mwg.is(obj,Function) == true になるのを修正。
+  </li>
+  </ul>
+</li>
+<li>2013-08-07, KM, agh-3.1.0.154
+  <ul>
+  <li>prog.std.css: @font-face の mwg_font_code を aghfont_code に名称変更。</li>
+  <li>prog.std.css: kbd.agh-keyspec を追加。</li>
+  </ul>
+</li>
+<li>2013-08-02, KM, agh-3.1.0.152
+  <ul>
+  <li>latex/latex.pp.css (\underbrace): underbrace の位置を 0.25ex だけ上に移動。</li>
+  <li>latex/main.ctx/ctx:mode.math/letter:':': ':=' を一つの unicode 文字で出力する。</li>
+  </ul>
+</li>
+<li>2013-08-01, KM, agh-3.1.0.150
+  <ul>
+  <li>latex/main.ctx/ctx:mode.math/letter:':': ':=' を一つの単位として読み取る様に変更</li>
+  <li>latex: 数式の文字間隔について。やはり文字と文字の間隔が狭すぎる気がする。
+    <ul>
+    <li>latex/texsymb.ctx, documentclass.ctx, latex.pp.css: 二項演算子・二項関係の空白調整。
+      <p>= や - 等の演算子の周辺の空白を調整。
+      先ずは演算子などの文字を特定のタグ (例えば tex\:fsym.aghtex-binary-operator) で囲んで出力するようにする。
+      その後で tex\:fsym.aghtex-binary-operator に対して css を適用するなど。
+      → tex\:fsym.aghtex-binop で囲んで CSS を適用する様にした。
+      </p>
+    </li>
+    <li>latex/main.ctx: 終止符の後の空白を調整。
+      <p>tex\:fsym.aghtex-binop で囲んで CSS を適用する事で空白を調整する事にした。
+      ',' 等の後に隙間を入れる様に変更。
+      '.' の直後が空白文字の場合に '.' の直後に隙間を入れるように変更。
+      </p>
+    </li>
+    <li>latex/latex.pp.css (tex\:sub, tex\:supsub-d): 下付添字の後の空白を調整。
+      <p>下付・上付の直後にも微妙に空白を入れた方が良い?
+      (→こうすると $_n\mathrm{C}_r$ で左下添字が離れて見えてしまう?)</p>
+    </li>
+    </ul>
+  </li>
+  <li>latex/latex.pp.css: \rm をした時に times new roman だけしか指定していなかったが、日本語用に aghtex_mincho も指定するように変更。</li>
+  <li>latex/main.ctx, latex.pp.css (\sum): \sum の下にアルファベットしかない時、位置が上過ぎる。
+    <p>aghtex_mathit フォントのアセンダが小さすぎるのが原因の様である。
+    \sum の下付の部分に \mathstrut と同様の効果の物を追加して解決する事にした。
+    </p>
+  </li>
+  </ul>
+</li>
+<li>2013-07-31, KM, agh-3.1.0.144
+  <ul>
+  <li>latex/latex.pp.css: [bugfix] table.aghtex-inline に対して font:inherit;color:inherit が有効になっていなかった
+    <p>tex-inline から aghtex-inline に変更した時に、変更漏れがあった様である。table.tex-inline を table.aghtex-inline に変更した。</p>
+  </li>
+  <li>late/latex.pp.css: aghtex_mincho フォントに IPA P明朝, モリサワ リュウミン 等を追加。</li>
+  <li>late/latex.pp.css: クラス名の置き換え tex-int, int → aghtex-int</li>
+  </ul>
+</li>
+<li>2013-07-30, KM, agh-3.1.0.141
+  <ul>
+  <li>addon/aghtex4chrome: 文字エンコーディングの自動判定機能を追加。</li>
+  </ul>
+</li>
+<li>2013-07-06, KM, agh-3.1.0.140
+  <ul>
+  <li>latex/cmd:\atop: [bugfix] 内部で DOC 変数 (ns.Command 形式) を使用。doc 変数 (ns.Command2 形式)を使用するべき。</li>
+  <li>latex/doc/latex.chk.math.std-test.htm: [bugfix] 廃止された Array.prototype.$each 関数の使用。agh(Array.prototype) で使用可能にした。</li>
+  </ul>
+</li>
+<li>2013/04/24, KM, agh-3.1.0.138
+  <ul>
+  <li>latex/latex.cor.js:ns.Scanner4.Next: [bugfix] 全角空白は特別文字として処理されるべきなのに、通常文字列として読み取ろうとして単語切り出しに失敗していたのを修正。</li>
+  </ul>
+</li>
+<li>2013/02/07, KM, agh-3.1.0.137
+  <ul>
+  <li>latex/latex.pp.css: tex\:i.aghtex-accent-container: アクセントの高さが乱れていたので top:0 を指定。</li>
+  <li>latex/main.ctx/cmd:cal: \cal コマンドを追加。</li>
+  <li>latex/font:mathsymb-1.0.32: \u2254, \u2255 追加。(6 glyphs)</li>
+  <li>latex/font:mathsymb-1.0.33: \u222b, \u222e 積分記号。(6 glyphs)</li>
+  <li>latex/font:mathsyma-1.0.17: \u222b, \u222e 積分記号。(6 glyphs)</li>
+  <li>latex/main.ctx:\int, \oint: mathsyma の積分記号を使用する様に変更。</li>
+  <li>latex/latex.pp.css:\int, \oint: display:inline-block に変更 (line-height:1.05em 指定を有効にする為)。</li>
+  </ul>
+</li>
+<li>2013/02/06, KM, agh-3.1.0.130
+  <ul>
+  <li>latex/main.ctx: \over (plain-TeX の分数コマンド) に対応</li>
+  <li>latex/main.ctx/env:enumerate, itemize: class="tex-ie" 等を class="aghtex-ie" に変更</li>
+  <li>latex/main.ctx/env:enumerate, itemize: \item[mark] に対応。</li>
+  </ul>
+</li>
+<li>2013/01/31, KM, agh-3.1.0.127
+  <ul>
+  <li>addon/aghtex4gmail: groups 仕様変更に対応。[1.1.3.993]</li>
+  <li>addon/aghtex: \begin{document} 及び `#tex-para# 形式の変換結果で title 属性を設定しない様に変更。 [1.1.3.994]</li>
+  <li>latex/latex.cor.js/Command2.CreateArgReader.cmd2_argreader, Command2ArgUntil: [bugfix] prefix 失敗時に output.error を呼び出すべき所、output.get_error を呼び出して停止していた。</li>
+  <li>latex/latex.cor.js/Command2.CreateArgReader.cmd2_argreader: Command2ArgRead に名称変更。</li>
+  </ul>
+</li>
+<li>2013/01/25, KM, agh-3.1.0.125
+  <ul>
+  <li>addon/aghtex4thunderbird: [bugfix] 動作しない問題。agh_bgpage.htm の中身が mwg から agh に移行されていなかった。</li>
+  <li>latex/vphantom: [Fx-workaround] Fx で vphantom の縦位置がおかしい。
+    <ul>
+    <li>Fx には overflow:hidden;display:inline-block; の組合せで縦配置がおかしくなるバグがあるようである。</li>
+    <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=491549">491549 ? overflow:hidden + display:inline-block causes vertical misalignment</a></li>
+    <li>workaround として child node の vertical-align を baseline 以外にしろ、と書いてあるが効かなかった。(それに今回は baseline にしたい。)</li>
+    <li>visibility:hidden にしているので overflow:visible でも問題ない。visible に変える事にした。</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>2013/01/14, KM, agh-3.1.0.123
+  <ul>
+  <li>latex/mod:para.\centerline: [bugfix] コマンド定義の種類が文字列なのに "f" と指定されていた。</li>
+  <li>latex/mod:color: [bugfix] predefined colors が登録されていなかった</li>
+  <li>latex/mod:color: [bugfix] \colorbox, \fcolorbox の出力するタグが閉じていなかった (tex:mbox で閉じるべき所を tex:i で閉じていた)</li>
+  <li>latex/pkg:amsmath.env:align, env:align*: 対応</li>
+  <li>latex/pkg:amsmath.env:alignat, env:alignat*, env:flalign, env:flalign* 対応</li>
+  <li>latex/mod:counter.\addtocounter: [bugfix] isNaN 判定が存在しない関数を使って行われていた。</li>
+  <li>latex/mod:counter.\addtocounter: [bugfix] array 環境でエラーをした時に定義されていない変数 output に触っていた。</li>
+  <li>latex/pkg:amsmath.env:multline, env:multline*, env:gather, env:gather* 対応</li>
+  </ul>
+</li>
+<li>2012/12/25, KM, agh-3.1.0.115
+  <ul>
+  <li>latex/font:mathsymb-1.0.29: 字体のコピー, \u02ca-&gt;\u00b4, \u02c9-&gt;\uaf (6 glyphs)</li>
+  <li>latex/font:mathsyma-1.0.14: ベクトル記号, 高さ位置合わせ (9 glyphs)
+    <ul><li>フォントが欠けた時に位置がずれるのは嫌なので、上付矢印記号は真ん中の高さに定義し直す。</li></ul>
+  </li>
+  <li>latex/font:mathsymb-1.0.30, mathsyma-1.0.15, accentdddot (mathsymb \u20DB, mathsyma \u22EF), accentddddot (mathsymb \u20DC, mathsyma \u2509) (12 glyphs)</li>
+  <li>latex/font:mathsymb-1.0.31: [bugfix] \u361 文字幅が負になっていたのを修正 (3 glyphs)</li>
+  <li>latex/font:mathsyma-1.0.16: \u2040 (3 glyphs)</li>
+  <li>latex/latex.op.css: [bugfix] fsym の記号で文字幅を越えている記号が隠れてしまっていた。
+    <ul><li>これは以前に opera 用に指定した fsym の css rule が原因だった。overflow-x:visible を指定して解決。</li></ul>
+  </li>
+  <li>latex/mod:math: アクセント記号の新しい表示方式
+    <ul>
+    <li>latex/main.ctx: アクセント記号のフォントを利用した表示</li>
+    <li>latex/main.ctx: アクセント記号関連の実装を mode.math.ctx に移動, ns.Modules["mod:math"] で公開</li>
+    <li>latex/latex.pp.css: アクセント記号調整, ブラウザ間調整: Cr, Op, Fx, Sf, IE6 標準・互換共に全然駄目, IE8-std OK, IE8-qks 駄目</li>
+    <li>latex/main.ctx: <del>[bugfix] latex.\tilde: Op でアクセント記号 ~ の位置がずれている。(フォント依存性の問題、早く自前のフォントに切り替える)</del> 自然解消</li>
+    <li>latex/main.ctx: <del>[bugfix] σのアクセントの位置が可笑しい</del> 自然解消</li>
+    <li>latex/mode.math.ctx: IE-qks 用のコードを整理, 名前を ns.Shared.CreateCommandAccentT/B から ns.Modules["mod:math"].CreateAccentCommandQksT/B に変更</li>
+    <li>latex/mode.math.ctx: CreateCommandAccent2T/B を廃止</li>
+    <li>latex/latex.pp.css: 不要になったアクセント記号用ルール (tex\:lap2a*) を削除</li>
+    <li>latex/mod:math.\not: 新しいアクセント表示方式を応用した方法に切替</li>
+    </ul>
+  </li>
+  <li>latex/main.ctx: [bugfix] \underbrace, \overbrace 引数読み取り</li>
+  <li>latex/*.ctx: ファイル名前変更 mode.math.ctx→mod_math.ctx, mode.math.ctx→mod_para.ctx, length.ctx→mod_length.ctx, counter.ctx→mod_counter.ctx, array2.ctx→mod_array.ctx</li>
+  <li>latex/mod_ref.ctx: ファイル名変更 mod_ref.ctx→.gen/mod_ref.ctx, mod_ref.pp.ctx→mod_ref.ctx
+    <ul><li>mod_ref.pp.ctx から mod_ref.ctx を生成していたが誤って mod_ref.ctx の方を編集してしまうといけないので</li></ul>
+  </li>
+  <li>latex/main.ctx: 外部ファイルの include の順序を変更</li>
+  <li>latex.\sum: [bugfix] Sf, IE で Workaround の為に追加した className が引用符で囲まれず、新しい属性になっていた事。</li>
+  <li>latex/mod:array: [bugfix] IE8 で array の align の指定が効いていない問題</li>
+  <li>latex/mod:array: [bugfix] コードを眺めていたら冗長に align を出力する箇所があったので削除</li>
+  <li>latex/latex.cor.js/ns.Scanner4: [bugfix] 二重改行, 正しく処理されていない。何が変って整数と文字列を比較していた… (src.index&lt;src.text)</li>
+  <li>latex/latex.cor.js/ns.Scanner4: [bugfix] \r\n が来ると停止する。src.text.substr とするべき所を src.substr としていた</li>
+  <li>addon/aghtex4chrome.js: 上記のバグを避ける為に replace(/\r\n/g,"\n") していたのを削除</li>
+  <li>latex/font:mathit: ギリシャ文字を mathit, mathbm (太字版) に移動する (220 glyphs)</li>
+  <li>26 latex/font:mathsymb: ギリシャ大文字, ギリシャ小文字直立体 (165 glyphs)</li>
+  </ul>
+</li>
+<li>2012/12/24, KM, agh-3.1.0.89
+  <ul>
+  <li>latex/mod_ref: <del>\label コマンド, トラップを上書きできる様に CTXV_LABEL_TYPE で場合分けする</del>
+    <ul>
+    <li>userC に対して \label コマンドを上書きする事で実現する様に変更した。</li>
+    <li>ContextVariable の使用も止めかけたが、クロージャによる参照を使わないと行けないので、やはり使用する。</li>
+    </ul>
+  </li>
+  <li>latex/mod_ref: env:figure, env:table: \label コマンド</li>
+  <li>latex/mod_ref: env:equation, eqnarray: \label コマンド</li>
+  <li>latex/mod_ref: 一つの数式に複数の label を付けた場合に対応する。(CTXV_LABEL_EQ を配列にする)</li>
+  <li>latex/mod_ref, env:eqnarray: eqnarray の中で設定した label にちゃんとジャンプしない。</li>
+  <li>agh.js: agh.Text.Escape(text,"html-attr") 追加。</li>
+  <li>latex/error-globalization: エラー文字列辞書を公開する</li>
+  <li>latex/error-globalization: 既存の三種類のエラーについて format を使用する形式に変更する</li>
+  <li>latex/mod_ref: \aghtex@lastsec, \aghtex@setlastsec 廃止</li>
+  <li>latex/mod_ref: \label empty argument check</li>
+  <li>latex/aghtex4chrome/*.tex: 目次の表示</li>
+  <li>latex.\section: \tableofcontents リンク</li>
+  <li>latex/mod_ref: \pageref に対応</li>
+  <li>addon/aghtex4chrome: version 番号の統一</li>
+  <li>latex/mod:para: \line, \centerline, \leftline, \rightline</li>
+  <li>latex/mod_ref:脆弱性 Escape("\n","html") で &lt;br /&gt; が属性に入り込み, HTML 構造が変わる可能性。適宜 Escape(text,"html-attr") に移行。</li>
+  <li>latex/mod_array: alignment 指定の中に空白があった時にエラーになる。空白の意味について調べ、何か意味が在れば処理をする様に書き換える。</li>
+  <li>latex/mod_array: alignment, 空白には特に意味がない様なので唯無視する。</li>
+  <li>latex/latex.cor.js: 文字コードによる空白判定, LETTERS_SPACE 廃止。</li>
+  <li>latex/cls:article: \author を複数回指定した時の動作について確認 (revtex の場合には author が追加される。)→ article の場合は上書きされる動作で違いない</li>
+  <li>latex/latex.pp.css: [bugfix] \dotfill が実線になっている。\hfill 等の幅についても調整。</li>
+  </ul>
+</li>
+<li>2012/12/23, KM, agh-3.1.0.67
+  <ul>
+  <li>addon/aghtex4chrome/*.tex: [bugfix] @ を含むコマンド名が色付けされていない (色付けの際は全て \makeatletter の内側として扱う)</li>
+  <li>addon/aghtex4chrome/*.tex: 印刷時のスタイルシート</li>
+  <li>latex/error-globalization: 特別名のエラー文字列を format 関数で生成する様に統一する, </li>
+  <li>latex/mod_ref: <del>\label{tab:*} 等に対応する。</del> env:figure, table 内の \label の名前の動作について確認する。</li>
+  <li>latex/mod_ref: \label の仕様をまるで勘違いしていた。書き直し。</li>
+  <li>latex.\section: latex: "fA" 応用で \chapter コマンド再構築?</li>
+  <li>latex.\section: a.aghtex-ref で章にジャンプすると章題が隠れる問題</li>
+  <li>latex.\section: optional argument (ページ上部に表示する内容) (目次にはこちらを使用する事にする)</li>
+  </ul>
+</li>
+<li>2012/12/22, KM, agh-3.1.0.59
+  <ul>
+  <li>latex/main.ctx: \let コマンドに対応</li>
+  <li>latex/mode.para.ctx: equation* 環境に対応</li>
+  <li>latex/pkg:url: [bugfix] プリアンブルで \urldef 等が使えない。全コマンドの類を ctx:global に移動 (\url 等もどうせ \DeclareUrlCommand 等で userC 上に登録されるから)。</li>
+  <li>latex.\sum: [調整] 上付の文字と下付の文字が近かった。少し離した。様子を見てもう少し調整しても良いかも知れない。</li>
+  <li>latex/aghtex4chrome/*.tex: file:/// の時に 自動リロード, (emacs, vi の一時ファイルも参照する, なければ本体)
+    <ul><li>vi の一時ファイル .hoge.tex.swp の中身はバイナリなので簡単には現在の編集状態を取得する事はできない。</li></ul>
+  </li>
+  <li>latex/aghtex4chrome/*.tex: .tex ファイルの download ボタン</li>
+  <li><del>latex.\begin{envname}: 環境が見付からなかった時に空の環境として動作する筈なのに、動作していない??</del>
+    <ul><li>思い違い? 他の物が原因でその様な動作になったのだろう。</li></ul>
+  </li>
+  <li>latex/aghtex4chrome/*.tex: ソースの色付け</li>
+  <li>latex/ctx:mode.para: \eject, \pagebreak, \clearpage, \doubleclearpage, \supereject, \dosupereject</li>
+  </ul>
+</li>
+<li>2012/12/21, KM, agh-3.1.0.51
+  <ul>
+  <li>addon/aghtex4chrome: *.tex ファイルの表示に対応</li>
+  <li>addon/aghtex4chrome: [bugfix] url が *.tex#hoge の場合に表示されない問題</li>
+  <li>addon/aghtex4chrome: [bugfix] *.tex ファイルの mime type が text/plain でないとファイルに保存されて表示されない問題</li>
+  <li>latex/css: a.aghtex-ref のスタイルを指定</li>
+  <li>latex/cls:article: 見出しの上余白を調整</li>
+  <li>mwg-&gt;agh 移行: [動作確認] agh/addon/aghtex4chrome, 動いている様なので良しとする。</li>
+  <li>latex/mod_ref: [bugfix] AddContentsLine で anchor id を設定してしまっている問題</li>
+  <li>latex/mod:length: [bugfix] parseUnit, 単位が見付からなかった時に px にする</li>
+  <li>latex/main.ctx: \documentclass が見付からなかった時に暫定的に article を読み込む事にする</li>
+  <li>latex/pkg:color: [bugfix] \color, モデルの指定で大文字を可能に, e.g. 'RGB' as well as 'rgb'</li>
+  <li>latex/latex.cor.js: Writer.prototype.get_error: 改行コードを IE (\r\n) と他 (\n) で分ける事にした</li>
+  <li>latex/latex.cor.js: 指定した _window の上で css load, xmlns 設定などの初期化を実行できる様に変更</li>
+  <li>latex/aghtex4chrome: file scheme でも content script が呼び出されているか確認</li>
+  <li>latex/aghtex4chrome: file scheme は特別に指定する必要がある様なので指定を追加</li>
+  <li><del>latex/aghtex4gmail.js: Sites 関数達の引数として _window を受け取る事が出来る様に修正</del>
+    結局、「string tex を string html に変換する部分」だけを background page に持って行けば良いからこれは必要ない。
+  </li>
+  <li>latex/aghtex4chrome/*.tex:1.0.2.383: background page で変換を実行する様にする</li>
+  <li>latex/aghtex4chrome/*.tex: ボタン表示領域</li>
+  <li>latex/aghtex4chrome/*.tex: ソース, 表示の切替</li>
+  <li>latex/aghtex4chrome/*.tex:1.0.2.408: Powered by の文字列</li>
+  <li>latex/mod:array: [bugfix] alignment 読み取りの文字ハンドラで cmdName とするべき所を argv にしていた。</li>
+  <li>latex/main.ctx: \newcommand 上書きチェックと、\renewcommand 対応</li>
+  </ul>
+</li>
+<li>2012/12/19, KM, agh-3.1.0.31
+  <ul>
+  <li>aghtex4firefox: 対応</li>
+  <li>agh.js: Array.prototype 汚染を除去</li>
+  <li>addon/aghtex4gmail.js: 編集時のボタンのフォントを等幅に。</li>
+  </ul>
+</li>
+<li>2012/12/16, KM, agh-3.1.0.28
+  <ul>
+  <li>addon/aghtex4gmail.htm: mwgtex4ie の説明を書く。</li>
+  <li>latex/aghfonts: mathsymb, mathsyma のアルファベット字体 (BaKoMa 由来) を削除</li>
+  <li>latex/aghfonts: mathbb, mathfrak, mathcal を生成</li>
+  <li>latex/aghfonts: mwg_cmsy10_mod, mwg_eufm10, mwg_msbf10 を aghfonts で置換
+    <ul>
+    <li>latex/mwg_cmsy10_mod, mwg_msbm10, mwg_eufm10: aghtex4ie で表示できる様にフォント名と @font-face 名を統一する。</li>
+    </ul>
+  </li>
+  <li>latex/latex.pp.css: 使用していないルール *.mwg-tex-box を削除</li>
+  </ul>
+</li>
+<li>2012/12/15, KM, agh-3.1.0.23
+  <ul>
+  <li>addon/aghtex4ie: [bugfix] FrameElement にメンバを追加できない? 問題。</li>
+  <li>addon/aghtex4ie: [gmail 仕様変更], window.document 直下に mailbody が移動。</li>
+  <li>addon/aghtex4ie: [bugfix] initialize_frame で未初期化時に遅延が正しく設定されない問題。</li>
+  <li>addon/aghtex4ie: [bugfix] IE で addEventListener を使っている箇所があった問題。</li>
+  <li>latex/font: フォントを mwg_cmmi12 (jsMath 修正) から aghtex_mathit (AmsFonts cmmi10 修正) へ変更</li>
+  <li>latex/font: フォントを mwg_cmmib10 (jsMath 修正) から aghtex_mathbm (AmsFonts cmmib10 修正) へ変更</li>
+  <li>latex/font: フォント名変更 mwg_mathsymb → aghtex_mathsymb, sfd ファイル名の変更, 太さ情報の設定</li>
+  <li>latex/font: フォント名変更 mwg_mathsyma → aghtex_mathsyma, sfd ファイル名の変更, 太さ情報の設定</li>
+  <li>addon/aghtex4ie, aghtex4seahorse: [bugfix] aghtex_mathsymb, aghtex_mathsyma 追加</li>
+  <li>addon/mwgtex4ie: フォントを一時的にインストールする様にする</li>
+  </ul>
+</li>
+<li>2012/12/12, KM, agh-3.1.0.13
+  <ul>
+  <li>prog.std.css: mwg -&gt; agh 修正</li>
+  <li>latex/doc: mwg -&gt; agh 修正</li>
+  <li>agh.lang.ps: mwg -&gt; 修正</li>
+  <li>agh.lang.ps/doc: mwg -&gt; agh 修正</li>
+  <li>mwg.kick.js/agh-fly-type: tex.color -&gt; color に変更</li>
+  <li>mwg.kick.js/pre.className: diff または agh-prog-* の形式のみ残し他は削除</li>
+  </ul>
+</li>
+<li>2012/12/12, KM, agh-3.1.0.7 (+115 記録を付け始めてからの項目数)
+  <ul>
+  <li>mwg3: バックアップを取る様に Makefile を記述</li>
+  <li>agh: ライブラリの名前を mwg3 (myoga v3) から agh (ageha) に変更する事を決定。徐々に移行予定。以下の理由に基づく:
+    <ul>
+    <li>mwg という名前は c++ library など他にも沢山使っている</li>
+    <li>一つのライブラリとして結構大きな物になってきているので、固有の名前を付けるに値すると思う</li>
+    <li>このライブラリの重要な部分の一つである tex 処理器を ageha-tex とすれば語呂がよい</li>
+    <li>起源は mwg.LaTeX2XHTML のデバグ用ライブラリであり元々 tex と関連がある</li>
+    <li>他の蝶でないのは、揚羽蝶は茗荷と同様、良い感じの紋が存在するから</li>
+    </ul>
+  </li>
+  <li>agh: バージョン番号導入 v3.1
+    <ul>
+    <li>以前は major version しかなく v3 だった。</li>
+    <li>名前は変えたが中身は変えていないので minor version を increment し 3.1</li>
+    </ul>
+  </li>
+  <li>latex/latex.kick.js, latex.kick2.js, latex.kick3.js: 廃止</li>
+  <li>latex/mwg.latex.*.css: latex/latex.*.css に名前を変更</li>
+  <li>mwg.kick.js: agh.fly.js に名前を変更</li>
+  <li>mwg.js: agh.js に名前を変更</li>
+  <li>mwg.*.js, mwg.forms.*, mwg.text.color.css.: agh.* に名前を変更</li>
+  <li>agh/addon: 中にある mwg を色々 agh に変更
+    <ul>
+    <li>agh/addon/aghtex4gmail: 変更</li>
+    <li>agh/addon/aghtex4chrome: 変更</li>
+    <li>agh/addon/aghtex4thunderbird: 変更</li>
+    <li>agh/addon/aghtex4ie/aghtex4ie.dll: dll の名前を変更して再コンパイル。dll の名前を変更する時には、mwgtex4ie.def 及び mwgtex4ie.rgs の中の mwgtex4ie.DLL の部分を変更</li>
+    <li>agh/addon/aghtex4seahorse: 変更</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>2012/12/11, KM,
+  <ul>
+  <li>latex/latex.cor.js/Command2: コマンドの type として "fA" を追加。引数読み取りのタイミングを定義関数で制御。</li>
+  <li>latex/env:figure, env:table: [bugfix] 何か変だと思ったら、一つの figure 内に複数の \label, \caption が存在しても良い様だ。
+    <ul>
+    <li>latex/mod_ref: env:figure, env:table について完全に勘違いをしていた。修正。</li>
+    </ul>
+  </li>
+  <li>latex/latex.cor.js: [optimize] trivial な関数 output.append の大量の呼出
+    <ul>
+    <li>output の保持する内部配列 values の名前を buff に変更</li>
+    <li>output.buff.push に置換</li>
+    <li>複数の連続する buff.push を結合 (Array.push は複数の引数を受け取って同時に複数の要素を挿入できる)</li>
+    <li>→ Firebug が入っていなければ大して速度は向上していない…</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>2012/12/10, KM,
+  <ul>
+  <li>latex/latex.cor.js/Scanner4: [optimize] wbegin, update_wstart は Next からしか呼び出されていない。</li>
+  <li>latex/latex.cor.js: [optimize] mwg.is 呼び出し回数が多い。代わりにできるだけその場で instanceof 演算子を用いて判定する。
+    <ul>
+    <li>取り敢えず、String, Number, Boolen 以外は instanceof で充分の様だから、それを用いる。</li>
+    <li>Number, Boolean の判定は行っていない。</li>
+    <li>String の判定に関しては mwg.is(o,String) を単純に typeof o=="string"||o instanceof String に置換すれば良さそう。</li>
+    </ul>
+  </li>
+  <li>latex/latex.cor.js/Context: [optimize] GetLetterHandler 呼出回数が異様に多いので、pkg/cls は継承ではなく上書きする事にした。
+    <ul>
+    <li>1/4 程度呼び出し回数が減ったが余り減っていない。unique な呼出の回数を調べて flatten を考えた方が良いかも。</li>
+    </ul>
+  </li>
+  <li>latex/latex.cor.js: [optimize] $each, $each_inv, $contains, $map, $filt 等の操作を直接記述。</li>
+  <li>latex/css: a.mwgtex-cite, a.mwgtex-footnote の色</li>
+  </ul>
+</li>
+<li>2012/12/09, KM,
+  <ul>
+  <li>latex/doc: 変更履歴 (構成.txt, latex.history.htm, latex.hist.*.htm) の整理</li>
+  <li>latex/mwg.latex.css: エラーメッセージのスタイルの変更。</li>
+  <li>latex/latex.cor.js: Scanner.Next1Char: 誰も使っていない様子なので削除。</li>
+  <li>latex/latex.cor.js: [optimize] Scanner 最適化 -&gt; Scanner4
+    <ul>
+    <li>latex/Scanner: 単語の種類は文字コードで判定</li>
+    <li>latex/Scanner: 単語切り出しには正規表現を使用</li>
+    <li>一から書き直す気だったが Next だけ書き直したら scanner 部分が 4 倍早くなったので取り敢えず OK</li>
+    <li>latex/latex.cor.js: バグも出なかったので取り敢えず Scanner3 削除</li>
+    <li>latex/latex.cor.js/LETTERS_CMD_END, LETTERS_TXT_END, LETTERS_SPECIAL, LETTERS_ALPHA: 使われていないので削除</li>
+    </ul>
+  </li>
+  <li>latex/latex.cor.js: #%[EnableMacroYomikiri=1] 誰も参照していないので削除</li>
+  </ul>
+</li>
+<li>2012/12/08, KM,
+  <ul>
+  <li>latex.\footnote, \footnotemark, \footnotetext</li>
+  <li>latex.\footnote: \section またはページ (\end{document}) の最後に出力する様にする。</li>
+  <li>latex/cls:article: \section のコマンドの整理</li>
+  <li>latex/ctxc.cs: 現在の context を表す特別変数 context の名前を _Ctx に変更。</li>
+  <li>latex.\tableofcontents: 対応</li>
+  <li>latex/ctx:mode.para:ltr:~: [bugfix] 改行不可の空白のはずが、唯の改行不可を意図した物になっていた。</li>
+  <li>latex.\tableofcontents, \addcontentsline, \addtocontents</li>
+  <li>latex.\begin{minipage}: 実装, mpfootnote</li>
+  <li>latex.\enskip</li>
+  <li>latex.\hfill, \dotfill, \hrulefill: (暫定実装)</li>
+  </ul>
+</li>
+<li>2012/12/07, KM,
+  <ul>
+  <li>latex.\label: context によるトラップに対応。
+    <ul>
+    <li>ContextVariable: 'mod_ref/label:eq', 'mod_ref/label:fig', 'mod_ref/label:tb' を使用。</li>
+    <li>ContextVariable が Set されている場合、label 名を Assign する。この値は最終的に Set した側が処理をする。</li>
+    <li>もし Set されていなければ既定の動作。 (その場でアンカーを生成し参照番号を登録する)</li>
+    </ul>
+  </li>
+  <li>latex/env:eqnarray: 式番号の縦位置の調整</li>
+  <li>latex/env:eqnarray: 最終行の式番号, \nonumber の設定のバグを修正。</li>
+  <li>latex/env:figure, table: 実装, \caption, 位置オプションは現在無視 (常にその場に出力)
+    <ul>
+    <li>Done <del>TODO: env:figure, env:table: 位置オプション, \caption</del></li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>2012/12/06, KM,
+  <ul>
+  <li>latex/ctx:mode.lr: 追加。中の改行を無視。</li>
+  <li>latex.\mbox: [bugfix] mode.lr で読み取り, display:inline-block, vertical-align:baseline</li>
+  <li>latex/ctx:mode.math: 空白類を無視する様に変更。</li>
+  <li>latex/latex.cor.js: ReadCommand 内でのコマンド実行後の空白無視を止める。(paragraph mode では不適切。)</li>
+  <li>latex/latex.cor.js: [optimize] GetLetterHandler 内のループを closure なしの物に変更</li>
+  <li>latex/latex.cor.js: [optimize] Context.Initialize 内のループを closure なしの物に変更</li>
+  <li>tools/ctxc.cs: f@ の場合に function(doc,cmdName) で引数を受け取る様に変更。</li>
+  <li>tools/ctxc.cs: \ の代わりに # を用いる事ができる様にする: e.g. letter s@#" \t\v\n\f"() "";</li>
+  <li>latex/pkg:url: \url, \urlstyle, \urldef, \DeclareUrlCommand, \UrlLeft, \UrlRight</li>
+  <li>latex/env:eqnarray: 式番号, \nonumber の対応。</li>
+  </ul>
+</li>
+<li>2012/12/04, KM,
+  <ul>
+  <li>latex/mod_ref.ctx: \ref, \label, \cite, env:thebibliography, \bibindex, env:figure, env:table 等を分離</li>
+  <li>latex/mod_ref.ctx: \ref, \cite の参照を解決する関数を作成。 doc.ResolveReferences() (Parse の後に呼び出して使う)
+    <ul>
+    <li>Done <del>TODO: &lt;tex:cite name="hoge"&gt;?&lt;/tex:cite&gt; 置換</del></li>
+    <li>Done <del>TODO: &lt;tex:ref name="hoge"&gt;?&lt;/tex:ref&gt; 置換</del></li>
+    </ul>
+  </li>
+  <li>latex/mod_ref.ctx: \bibindex のカウンタは enumiv らしいのでそれを用いる様に変更。</li>
+  <li>latex.\fcolorbox: [bugfix] output 変数を初期化していなかった</li>
+  <li>latex/cls:article: \maketitle, \title, \author, \date</li>
+  </ul>
+</li>
+<li>2012/12/02, KM,
+  <ul>
+  <li>latex/latex.cor.js/Command2: 余分な単語を含む引数読み取りに対応 (\def\cmd[#1]#2{} 等)。
+    <ul>
+    <li>ns.Command2.CreatePrefixChecker 追加</li>
+    </ul>
+  </li>
+  <li>latex.\documentclass{article}: 対応。h1-h6 を用い、CSS を用いて表示を変更できる様に。</li>
+  <li>latex.\em, \emph: イタリック/太字切替。CSS で五段階の入れ子まで対応。</li>
+  <li>latex: 参照
+    <ul>
+    <li>latex.\cite: 対応</li>
+    <li>latex.\ref: 対応</li>
+    <li>latex.\label: 取り敢えず一部対応。</li>
+    <li>latex.\label: 番号の記録 [\label 完]</li>
+    <li>latex.\figure, \table: 一部対応</li>
+    <li>latex/ctx:sub.env.raw: [bugfix] command \begin を定義するのを忘れていたのに今更気付く…。</li>
+    </ul>
+  </li>
+  <li>latex/pkg:bm: \bm, \hm, \DeclareBoldSymbol, \bmdefine, \hmdefine, \boldsymbol, \heavysymbol</li>
+  <li>latex/pkg:color: \color, \textcolor, \fcolorbox, \colorbox, \definecolor, \DefineNamedColor, \normalcolor
+    <p>Done <del>TODO, color, colorbox, \definecolor{name}{rgb|gray|cmyk}{0-1,...}, pagecolor, textcolor, \colorbox[named]{color}{content}</del></p>
+  </li>
+  <li>latex.\usepackage: , で区切った複数のパッケージを読込。</li>
+  </ul>
+</li>
+<li>2012/11/29, KM,
+  <ul>
+  <li>latex/font:mwgsyma-1.0.9: ヒンティング情報の埋込</li>
+  <li>latex/font:mwgsyma-1.0.10: 太さの異なる 3 フォントを生成</li>
+  <li>latex/font:mwgsymb-1.0.24: アクセント記号 \ua8, \u2c6-\u2c7, \u2c9-\u2cb, \u2d8-\u2d9, \u2dc-\u2dd, \u300-\u304, \u306-\u308, \u30b-\u30c, \u20d6-\u20d7, \u20e1 (69 glyphs)</li>
+  <li>latex/font:mwgsyma-1.0.11: アクセント記号 \u2190, \u2192, \u2194 (9 glyphs)</li>
+  <li>latex/font:mwgsymb-1.0.25: アクセント記号 大きさ調整 \ua8, \u2d9, \u307, \u308, \u2c7, \u30c (18 glyphs)</li>
+  <li>latex/font:mwgsymb-1.0.25: アクセント記号 ヒント調整 \u2c6, \u2c7, \u2ca, \u2cb</li>
+  <li>latex/font:mwgsymb-1.0.26: アクセント記号 \u2d7, \u320, \u323, \u327, \ub8, \u361 (18 glyphs)</li>
+  <li>latex/font:mwgsyma-1.0.12: アクセント記号 \u2e (3 glyphs)</li>
+  <li>latex.\left: [bugfix] Sf vertical-align:middle の指定が効いていなかった </li>
+  <li>latex.\sum: 再構築
+    <ul>
+    <li>[bugfix] IE6, IE8-qks で表示の高さがずれる (新しい方法でも起こったが解決)</li>
+    <li>[bugfix] Op で上付・下付の文字列の位置が変</li>
+    <li>latex.\biguplus: font:mathsymb: \u2A04</li>
+    <li><del>正しく動作していた古いコードの再利用も考える?</del> 不要だった</li>
+    <li>latex.\sum: 動作確認 Fx,Cr,Op, 修正 Sf,IE OK</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>2012/11/28, KM,
+  <ul>
+  <li>latex/font:mwgsymb-1.0.23: ヒンティング情報の埋込 (今迄できていなかった…)</li>
+  </ul>
+</li>
+<li>2012/11/27, KM,
+  <ul>
+  <li>latex.^, _: [bugfix] 上付・下付の同時指定について HTML 記述に誤り。入れ子で下付にした時に問題が発生していた。</li>
+  </ul>
+</li>
+<li>2012/11/25, KM,
+  <ul>
+  <li>latex.\int: 積分記号をフォントで埋め込み。</li>
+  <li>latex.\left: 上付・下付の margin を調整。</li>
+  <li>latex.\int: 動作確認 IE6,IE8,Cr,Fx,Sf OK, Op 修正</li>
+  <li>latex.\int: [bugfix] Op では vertical-align の em 指定は外側の font-size の様だ。</li>
+  <li>latex.\left: 動作確認 IE6,IE8,Cr,Fx,Op OK, Sf 修正</li>
+  <li>latex.\left: [bugfix] Sf で table{vertical-align:baseline} が悪さをしている。</li>
+  <li>latex.\overbrace: 実装。動作確認 Cr,Sf,Op,Fx OK 修正 IE</li>
+  <li>latex.\widehat, etc: underbrace, overbrace の実装を応用。</li>
+  <li>mwg.std.css: [bugfix] body.nav72 が IE 後方互換モードで正しく動作していなかった。</li>
+  </ul>
+</li>
+<li>2012/11/24, KM,
+  <ul>
+  <li>latex/上付下付: 上付と下付の間に間が空きすぎているのを修正。</li>
+  <li>latex/上付下付: 下付に分数などを表示した時の位置を修正。</li>
+  <li>latex/font:mwgsymb.sfd, mwgsymb10.sfd, mwgsymb20.sfd: ギリシャ文字の文字幅を調整。</li>
+  <li>latex/font:mwgsymb: \mapsto 矢印を追加。\u21a4, \u21a5, \u21a6, \u21a7 (12 glyphs)</li>
+  <li>latex/cmd:\alpha-\Omega: ギリシャ文字の表示を埋め込みフォントによる物に移行</li>
+  <li>latex/font:mwgsymb.\Gamma: 右余白の大きさを調節。文字幅を調節した時に大きくしすぎた。</li>
+  <li>latex/font:mwgsymb.\notin: 記号追加 \u2209, \u220c (6 glyphs)</li>
+  <li>latex/font:mwgsymb: 記号追加 (+-=) \uff0b, \uff0d, \uff1d, \u2260 (12 glyphs)</li>
+  <li>latex/font:mwgsymb: 記号 (長矢印) \u27f5-\u27fc (24 glyphs)</li>
+  <li>latex/font:mwgsymb: 記号追加 (矢印) \u219f, \u21a1, \u21a9, \u21aa, \u21bc, \u21bd, \u21c0, \u21c1, \u21e0-\u21e3 (36 glyphs)</li>
+  <li>latex/font:mwgsymb: 幅調整 \u22c4 (3 glyphs)</li>
+  <li>latex/font:mwgsymb: サイズ調整 \u220f-\u2211, \u22c0-\u22c3, \u2a00-\u2a02, \u2a05-\u2a06 (36 glyphs)</li>
+  <li>latex/font:mwgsymb: 記号追加 (矢印) \u21d6-\u21d9 (12 glyphs)</li>
+  <li>latex/cmd:記号類: 半分ぐらい埋め込みフォントに移行</li>
+  <li>latex/cmd:記号類: +-= 埋め込みフォント</li>
+  <li>latex/font:mwgsymb: 高さ調整 \u219f, \u21a1, \u22da, \u22db, \u2a8b, \u2a8c (18 glyphs)</li>
+  <li>latex/font:mwgsymb: 高さ調整 \u2ab7, \u2ab8, \u2ab9, \u2aba, \u2ac9, \u2aca, \u2acb, \u2acc, \u2ad3-\u2ad6 (36 glyphs)</li>
+  <li>latex/font:mwgsymb: 高さ調整 \u22e6-\u22e9, \u2a85, \u2a86, \u2a89, \u2a8a (24 glyphs)</li>
+  </ul>
+</li>
+<li>2012/11/23, KM,
+  <ul>
+  <li>latex/cmd:\underbrace: CSS2.1 table vertical-align
+    <p>CSS2.1 table vertical-align に対応しているブラウザ (Cr, Fx, Op)
+    で table.style.verticalAlign="baseline" を利用した実装に変更。
+    これで完全に underbrace される数式の baseline を外側と一致させる事が出来る様になった。
+    Sf 及び IE では動かない様子だったので、古い形式の表示で継続。
+    </p>
+  </li>
+  <li>latex/main.ctx: [bugfix] IE8 で分数の高さが変な事になっていた。仕様がないので IE6 と同じ方式に切り替えた。連分数は正しく表示できない。</li>
+  <li>latex/cmd:\underbrace: [bugfix] IE で vertical-align が滅茶苦茶 (昔は表示できていた気がするのだが…)。</li>
+  <li>latex/cmd:\sqrt,\left: [bugfix] IE8 縦 stretch ができていない (width:expression(); が動作していない)
+    <p>別の方法で実現できる事が分かったので、そちらで実装する事にした。</p>
+  </li>
+  </ul>
+</li>
+<li>2012/11/19, KM,
+  <ul>
+  <li>latex/cmd:\underbrace: underbrace で指定した括弧と文字列が
+    折り返した文字列で隠されてしまう。暫定的な処置として padding-bottom を追加。
+  </li>
+  <li>latex/mwg.latex.*.css: CSS2.1 で td 要素に vertical-align:baseline を指定できると今更知った。設定を追記
+    <p>これで今迄時々気になっていた、連分数などを使った時に eqnarray 等での縦の位置がずれるという問題がなくなった。</p>
+  </li>
+  <li>latex/cmd:\left-\right: table 要素自体にも vertical-align:baseline を追加
+    <p>今迄上下方向にがたがたしていたのが一斉に綺麗になった。IE では vertical-align:middle にしてある (動作未確認なので)。</p>
+  </li>
+  <li>ChangeLog を記録する事にした。</li>
+  <li>mwgtex4chrome: manifest_version を追加。
+    <p>いつの間にかに Chrome が仕様を変更していた様だ。</p>
+  </li>
+  </ul>
+</li>
+</ul>
+<h3>Prehistory of myoga library</h3>
+<p>2012/11/19 以前は変更履歴をまとめて付けてはいなかった。
+しかし、バックアップ、スナップショット、実装の為のメモやファイルのタイムスタンプから、
+大まかな流れを辿る事は出来る。
+</p>
+<p>概要: 最も歴史が長いのは、
+myoga library の中でも大きな一角を占める数式の表示に関する部分である。
+当初は数式の表示は、LaTeX の影響を受けた簡易化された文法に従って変換を行う物であったが、
+2006 年に LaTeX の文法による実装に移行し、段落モードのコマンド・環境などにも対応した。
+myoga library 自体はその際に、 LaTeX から HTML への変換コードを "デバグする為のライブラリ" として登場した。
+更に、LaTeX 変換コード本体を吸収して今に至る。
+因みにデバグの為の機能は何回かのバージョンアップを経て殆ど失われている。
+最近は、ブラウザ自体の JavaScript デバグの為の機能が充実している為、
+特に自分で DOM Inspector や Object Tree を表示するコードを書く必要が無くなった為である。
+</p>
+<ul>
+<li>2012/06/24, KM,
+  <ul>
+  <li>latex.問題7.2: [bugfix] 循環マクロ検出 Scanner3 対応</li>
+  <li>latex.問題8: マクロがコマンド引数として読み取られない</li>
+  <li>latex.表示7.7. 上付と下付の同時指定</li>
+  </ul>
+</li>
+<li>2011/06/19, KM,
+  <ul>
+  <li>latex.表示6: [bugfix] \sum の上下の空白について</li>
+  <li>latex.表示7.6: Chrome で上付分数の位置が可笑しい。上過ぎる。</li>
+  <li>latex.表示15: [bugfix] \RAW@ コマンド廃止とセキュリティ</li>
+  </ul>
+</li>
+<li>2011/04/16, KM,
+  <ul>
+  <li>latex.Test18: アクセント記号調整</li>
+  </ul>
+</li>
+<li>2011/12/04, KM,
+  <ul>
+  <li>latex: 計画5: CSS, 自動生成を mwg_pp.awk に移行</li>
+  </ul>
+</li>
+<li>2011/12/03, KM,
+  <ul>
+  <li>latex.表示4: IE 以外での \! の対応, 負の margin-left による実現</li>
+  </ul>
+</li>
+<li>2012/12/02, KM,
+  <ul>
+  <li>latex.計画3.1: \def パターンマッチング 実装</li>
+  <li>latex: [bugfix] newcommand 既定の引数の読み取りの修正。</li>
+  </ul>
+</li>
+<li>2011/11/29, KM,
+  <ul>
+  <li>latex.問題7: [bugfix] 循環マクロ</li>
+  </ul>
+</li>
+<li>2011/05/30, KM,
+  <ul>
+  <li>latex.計画16.9. [bugfix] mathrm が太字になる</li>
+  <li>latex.計画16.10. [bugfix] 数式用イタリックが適用されていない</li>
+  <li>latex.計画16.11. [bugfix] mathfrak の字間が空いている</li>
+  <li>latex.計画16.12. [bugfix] 太字にならない</li>
+  </ul>
+</li>
+<li>2011/05/29, KM,
+  <ul>
+  <li>latex: WebFonts への本格的対応, css 記述, etc.
+    <ul>
+    <li>latex.計画16.4: IE, Fx, Op 以外で Web Fonts が synthesized されない事</li>
+    <li>latex.計画16.5: 何故か italic と slanted の font-style が逆転していたので修正</li>
+    <li>latex.計画16.7: [Op, workaround] Opera で入っていない字体が空白になってしまう事 [経過観察]</li>
+    <li>latex.計画16.8: [Op, workaround] Opera 正規表現は非一致 group に対して null を返す。</li>
+    </ul>
+  </li>
+  <li>latex/documentclass.ctx.js: latex/latex.ctx.js に名前を変更</li>
+  </ul>
+</li>
+<li>2011/05/28, KM,
+  <ul>
+  <li>latex: WebFonts への本格的対応, css 記述, etc.
+    <ul>
+    <li>latex.計画16.2: Fraktur のフォントを eufrak から eufm に変更した事による、フォントサイズの調整</li>
+    <li>latex.計画16.3: [bugfix] Fx で Web font の一部が適用されないという事</li>
+    </ul>
+  </li>
+  <li>latex.表示7.1: [bugfix] 積分上付の上付が変な位置になっている事</li>
+  <li>latex.表示7.2: [bugfix] Cr, 上付の中に高さのある物があると記号が下に落ちる</li>
+  <li>latex.表示7.3: tex\:sup&gt;tex\:in</li>
+  <li>latex.表示9: [bugfix] Chrome で mwg.latex.fx.css と mwg.latex.sf.css の両方をロードしているらしい問題: </li>
+  <li>latex.表示10: [bugfix] Safari で改行が入ってしまう問題</li>
+  <li>latex.表示11: [bugfix] IE7 で分数が正しく表示されていないという事 </li>
+  </ul>
+</li>
+<li>2011/05/27, KM,
+  <ul>
+  <li>latex.\!: IE 調整 letter-spacing+padding-right</li>
+  <li>latex: [Op workaround] 特定の記号の上下に長い空白領域が出来る問題</li>
+  <li>latex: [Op workaround] mathcal の下側に一行分の空白が出来る問題</li>
+  <li>latex: 廃止 tex:fmincho</li>
+  <li>latex: [bugfix] 記号類は tex:frm ではなく tex:fsym.rm で囲むべき</li>
+  </ul>
+</li>
+<li>2011/05/26, KM,
+  <ul>
+  <li>latex: [提起] 表示5. 変な所で改行 in tex\:math td</li>
+  <li>latex: [提起] 表示7.1 積分上付の上付が変な位置になっている事</li>
+  <li>latex: [提起] 表示7.2 Cr, 上付の中に高さのある物があると記号が下に落ちる</li>
+  <li>latex: [提起] 計画16. 本格的に Web フォントを使用するという計画</li>
+  </ul>
+</li>
+<li>2011/05/24, KM,
+  <ul>
+  <li>mwg.lang.ps: 描画パス GraphicsSvg.output_point インライン化</li>
+  <li>mwg.lang.ps: mwg.lang.ps-canvas</li>
+  </ul>
+</li>
+<li>2011/03/10, KM,
+  <ul>
+  <li>mwg.lang.ps: 最適化 ns.Optimizer2 整理</li>
+  </ul>
+</li>
+<li>2011/03/09, KM,
+  <ul>
+  <li>mwg.lang.ps: mwg.lang.ps-opt</li>
+  <li>mwg.lang.ps: 最適化 関数化での定数伝播最適化</li>
+  </ul>
+</li>
+<li>2011/03/06, KM,
+  <ul>
+  <li>mwg.lang.ps: 描画パス パス再設計</li>
+  <li>mwg.lang.ps: 最適化 JavaScript 関数化</li>
+  <li>mwg.lang.ps: 最適化 比較関数</li>
+  </ul>
+</li>
+<li>2011/03/04, KM,
+  <ul>
+  <li>mwg.lang.ps: mwg.lang.ps-io</li>
+  <li>mwg.lang.ps: ファイル ns.ScannerF 実装</li>
+  </ul>
+</li>
+<li>2011/03/01, KM,
+  <ul>
+  <li>mwg.lang.ps: 配列の __readonly__/__packed__ 属性について</li>
+  <li>mwg.lang.ps: 属性関連のオペレータの実装</li>
+  <li>mwg.lang.ps: exp 関数は自然対数の指数関数ではなくて、pow (x^y の関数) であったと言う事</li>
+  <li>mwg.lang.ps: 最適化 ExecutableArray 入れ子リテラルの初期インスタンス化</li>
+  </ul>
+</li>
+<li>2011/02/28, KM,
+  <ul>
+  <li>mwg.lang.ps: 描画パス IE/VML 文字表示位置変換</li>
+  <li>mwg.lang.ps: 描画パス SVG 文字表示位置変換</li>
+  <li>mwg.lang.ps: userdict/globaldict の修正</li>
+  <li>mwg.lang.ps: 三角関数の角度は degree 単位であると言う事</li>
+  </ul>
+</li>
+<li>2011/02/26, KM,
+  <ul>
+  <li>mwg.lang.ps: ファイルを分割 mwg.lang.ps.js, 2011/02/26 mwg.lang.ps-svg, 2011/02/26 mwg.lang.ps-cmd, 2011/02/26 mwg.lang.ps-geo</li>
+  <li>mwg.lang.ps: ns.vector2 廃止</li>
+  </ul>
+</li>
+<li>2011/02/19, KM,
+  <ul>
+  <li>mwg.lang.ps: 実装メモ</li>
+  </ul>
+</li>
+<li>2011/02/15, KM,
+  <ul>
+  <li>mwg.lang.ps: postscript 文法の本格的な調査</li>
+  </ul>
+</li>
+<li>2011/02/22, KM,
+  <ul>
+  <li>latex: Sf アクセント記号調整 (~2011/02/22)</li>
+  <li>latex: [bugfix] Cr アクセント記号調整</li>
+  </ul>
+</li>
+<li>2011/02/10, KM,
+  <ul>
+  <li>mwg.lang.ps: mwg.postscript.js</li>
+  </ul>
+</li>
+<li>2010/11/25, KM,
+  <ul>
+  <li>latex: \verb コマンドに対応</li>
+  <li>latex: latexsym.sty 追加</li>
+  <li>latex: 記号追加 \lor \land; 移動 \Box</li>
+  </ul>
+</li>
+<li>2010/11/23, KM,
+  <ul>
+  <li>latex: [bugfix] Environment 中での InsertText</li>
+  <li>latex: [bugfix] Fatal: environment 終了直後の単語が消滅</li>
+  <li>latex: 連分数対応</li>
+  </ul>
+</li>
+<li>2010/11/22, KM,
+  <ul>
+  <li>latex: [bugfix] GetArgumentRaw</li>
+  <li>latex.\left..\right: 拡張</li>
+  <li>latex: mwg.latex.css tex:fbb 削除</li>
+  <li>latex: [bugfix] デフォルト引数の raw 読み取り (GetOptionalArgumentRaw) が動作しない</li>
+  </ul>
+</li>
+<li>2010/11/21, KM,
+  <ul>
+  <li>latex: アクセント記号等</li>
+  <li>latex: \widehat</li>
+  <li>latex: \vphantom</li>
+  <li>latex: \newcommand マクロ動作の変更</li>
+  <li>latex: \stackrel 系コマンド再定義</li>
+  </ul>
+</li>
+<li>2010/11/11, KM,
+  <ul>
+  <li>latex: [bugfix] Opera でエラーメッセージが表示されない。</li>
+  <li>latex/array2.ctx: [bugfix] 過剰列だと、過剰列の警告を出す前に落ちる。</li>
+  <li>latex/array2.ctx: [bugfix] 二重 hline の間隔がブラウザによって異なる</li>
+  <li>latex/array2.ctx: [bugfix] 古いタグ &lt;col align /&gt; を使っていた。IE でしか対応していない。HTML5 でも削除予定。</li>
+  </ul>
+</li>
+<li>2010/07/11, KM,
+  <ul>
+  <li>latex: [bugfix] Opera -o-background-size から background-size へ変更</li>
+  </ul>
+</li>
+<li>2009/10/31, KM,
+  <ul>
+  <li>latex: Environment も ctxc で処理できる様に</li>
+  </ul>
+</li>
+<li>2009/10/30, KM,
+  <ul>
+  <li>latex: documentclass.ctx は完全に移行</li>
+  </ul>
+</li>
+<li>2009/10/26, KM,
+  <ul>
+  <li>latex: ns.Environment.CreateDynamicEnvironment の実装</li>
+  </ul>
+</li>
+<li>2009/10/25, KM,
+  <ul>
+  <li>latex: CSS クラスの tex:array の廃止</li>
+  <li>latex: Opera に対応</li>
+  </ul>
+</li>
+<li>2009/10/07, KM,
+  <p>前のデスクトップから移動</p>
+</li>
+<li>≦ 2009/08/08, KM, mwg v3
+  <p>書き直し。v3 に移行。</p>
+</li>
+<li>2009/07/28, KM,
+  <ul>
+  <li>latex/latex.cor.js: 削除 scanner.getMathText</li>
+  <li>latex/latex.cor.js: 追加 scanner.is(type,word)</li>
+  </ul>
+</li>
+<li>2009/07/25, KM,
+  <ul>
+  <li>latex: ブラウザ別 CSS の統一的管理</li>
+  <li>latex: [bugfix] subsection 等の中身の HTML が表示されてしまう</li>
+  <li>latex: InsertText の挿入位置</li>
+  </ul>
+</li>
+<li>2009/07/16, KM,
+  <ul>
+  <li>latex: \hbar が数式中で斜め字体になっていなかったので修正</li>
+  </ul>
+</li>
+<li>2009/07/13, KM,
+  <ul>
+  <li>latex: 計画14. Command 再考</li>
+  <li>latex: \begin{cmdName} - \end{cmdName} に対応</li>
+  <li>latex: latex.kick.js で mwg.onlatexkickready を event として実行する様にした。</li>
+  </ul>
+</li>
+<li>2009/01/07, KM,
+  <ul>
+  <li>latex: 問題5. [bugfix] compatMode の違いで表示が崩れてしまう事</li>
+  </ul>
+</li>
+<li>2008/10/21, KM,
+  <ul>
+  <li>latex.\int, \oint: \int \oint に対する上付・下付 (両方付けた時)</li>
+  </ul>
+</li>
+<li>2008/10/20, KM,
+  <ul>
+  <li>latex: CSS ファイルの読込に関して, 初期化時に自分で css をロード</li>
+  <li>latex.\left \right: 上付・下付文字</li>
+  <li>latex.\varギリシャ大文字: 対応</li>
+  </ul>
+</li>
+<li>2008/08/01, KM,
+  <ul>
+  <li>latex.\newcommand: [bugfix] 二重に newcommand を使用すると、TeX の儘出力されてしまう。</li>
+  </ul>
+</li>
+<li>2008/07/25, KM,
+  <ul>
+  <li>latex: alpha-mode (Scanner アルファベットをタグで囲む設定) に関する考察</li>
+  <li>latex.\newcommand: [bugfix]</li>
+  </ul>
+</li>
+<li>2008/07/24, KM,
+  <ul>
+  <li>latex: [bugfix] GetArgument*</li>
+  </ul>
+</li>
+<li>2008/07/20, KM,
+  <ul>
+  <li>latex.\sqrt: 調整</li>
+  </ul>
+</li>
+<li>≦ 2008/05/11, KM, mwg v2
+  <p>書き直し。v2 に移行。</p>
+</li>
+<li>2008/04/20, KM,
+  <ul>
+  <li>latex.\sqrt: 調整</li>
+  </ul>
+</li>
+<li>2008/04/19, KM,
+  <ul>
+  <li>latex.\overbrace, \underbrace: 調整</li>
+  </ul>
+</li>
+<li>2008/04/03, KM,
+  <ul>
+  <li>latex/latex.cor.js: 作成。mwg.LaTeX2XHTML v3</li>
+  </ul>
+</li>
+<li>≦ 2006/08/21, KM, mwg v1
+  <ul>
+  <li>余り覚えていないが JavaScript のデバグ用ライブラリとしてスタート</li>
+  <li>IE 上でオブジェクトのツリーを表示する為のコード</li>
+  <li>当初は mwg.base.js と mwg.debug.js</li>
+  </ul>
+</li>
+<li>2006/08/26, KM, 
+  <ul>
+  <li>latex: この時迄に footnote や picture 環境など、現在はない変な機能まで実装していた筈。</li>
+  </ul>
+</li>
+<li>～ 2006/08/08, KM, 
+  <ul>
+  <li>latex: counter</li>
+  </ul>
+</li>
+<li>～ 2006/08/04, KM, 
+  <ul>
+  <li>latex: 一通りの機能は完了</li>
+  </ul>
+</li>
+<li>2006/07/27, KM, 
+  <ul>
+  <li>latex: 書き始め</li>
+  <li>latex: 積分記号</li>
+  </ul>
+</li>
+<li>2006/04/15, KM, LaTeX の文法について調査 (LaTeX が決してマイナーな言語ではないと知って)
+  <ul>
+  <li>LaTeX2e の chm を分解して一部翻訳</li>
+  <li>2006/05/20: chm の翻訳を進める</li>
+  <li>2006/06/02: 図書館で本を借りてコマンドを調べる</li>
+  <li>2006/06/02-04, 12, 15-18: chm の翻訳を進める</li>
+  <li>2006/07/19-20: chm の翻訳を進める</li>
+  </ul>
+</li>
+<li>2005/07/26, KM, sushiki2
+  <ul>
+  <li>sushiki2: 文法の変更
+    <ul>
+    <li>sushiki2:上付, 下付: ^c, _c, ^( superscript ), _(superscript)</li>
+    <li>sushiki2:伸縮括弧: 全角の括弧で表現, （content）, ｛content｝, ［content］, 〔content〕</li>
+    <li>sushiki2:根号: 他の括弧と形式を統一: R{ content }R</li>
+    </ul>
+  </li>
+  <li>sushiki2: 総和: Σ[sub], Σ[sub;sup], Σ[char;sub;sup]</li>
+  <li>sushiki2: 積分記号: I[], I[sub], I[sub;sup]</li>
+  <li>sushiki2: 表・行列: 例 {{a_(11);a_(12);a_(13)}{a_(21);a_(22);a_(23)}{a_(31);a_(32);a_(33)}}</li>
+  <li>sushiki2: 段組 (stackrel 的な): Cl{expr1;expr2;...}</li>
+  </ul>
+</li>
+<li>2005/04/30, KM, sushiki2
+  <ul>
+  <li>sushiki.htc から移行</li>
+  </ul>
+</li>
+<li>2005/03/14, KM, sushiki.htc
+  <ul>
+  <li>sushiki.htc: 絶対値, (| content |)</li>
+  <li>sushiki.htc: L 型階乗, (L L)</li>
+  <li>sushiki.htc: 上付, (^ content ^)</li>
+  <li>sushiki.htc: 下付, { content }</li>
+  <li>sushiki.htc: 変換しない (\verb の様な物), #[ content ]#</li>
+  </ul>
+</li>
+<li>2004/12/19, KM, sushiki.htc
+  <ul>
+  <li>sushiki.htc: 伸縮括弧に大括弧を追加 #2( content )2#</li>
+  </ul>
+</li>
+<li>2004/12/04, KM, sushiki.htc
+  <ul>
+  <li>sushiki.htc: 伸縮する括弧 (LaTeX の \left-\right に対応)
+    <ul>
+    <li>#0( content )0#, #1( content )1#</li>
+    <li>G[ content ]G, C[ content ]C, F[ content ]F</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>2004/11/14, KM, sushiki.htc
+  <ul>
+  <li>sushiki.htc: 根号を表示する機能, R{ content }</li>
+  <li>sushiki.htc: 分数を表示する機能, [ numerator / denominator ]</li>
+  </ul>
+</li>
+</ul>
+</body>
+</html>

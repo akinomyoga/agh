@@ -1,0 +1,501 @@
+// -*- mode:js;coding:utf-8 -*- (日本語)
+
+/**
+ *  mod_common
+ * 
+ *    \begin{document}
+ *    \documentclass, \documentstyle
+ *    \usepackage
+ *    \newcommand, \renewcommand, \let, \def, \gdef, \edef, \xdef, \global
+ *
+ *    \hspace, \hspace*, \vspace, \vspace*
+ *    \ , \enskip, \/, \quad, \qquad, \phantom, \hphantom, \vphantom
+ *    \hfill, \dotfill, \hrulefill
+ *    \{, \}, \&, \%, \_, \$
+ *    \P, \S, \dag, \ddag, \pounds, \copyright, 
+ *    \aa, \AA, \ae, \AE, \l, \L, \oe, \OE, \SS, \ss, \o, \O
+ *    \TeX, \LaTeX, \LaTeXe
+ *    \overline, \underline
+ *    \textbar, \textemdash, \textendash, \textexclamdown, \textbullet,
+ *    \textperiodcentered, \textquestiondown,
+ *    \textquotedblleft, \textquotedblright, \textquoteleft, \textquoteright, 
+ *    \textregistered, \textvisiblespace, \texttrademark,
+ *    \copyright, \lq, \rq,
+ *
+ *    \mbox, \string
+ *    \aghtex@htag → \aghtexInternalHTag [改名]
+ *
+ *    not implemeneted: \special
+ *    
+ *  @section 公開オブジェクト
+ *    ※以下 mod_common = ns.Modules["mod:common"] とする。
+ *    @fn mod_common.TagCurrentContext.TagCurrentContext(doc,tagName,endTag)
+ */
+
+var mod_core=ns.Modules["core"];
+
+agh.memcpy(mod_core.ErrorMessages,{
+  'mod:common.cmd:newcommand.InvalidCommandName':[
+    "\\newcommand InvalidCommandName",
+    "the command name '{cmd}'is invalid. The name of the new command should have the form of '\\commandname'."],
+  'mod:common.cmd:newcommand.InvalidNumberOfParams':[
+    "\\newcommand InvalidNumberOfParams",
+    "the second argument '{nparam}' should be an integer to specify the number of parameters of the new command/environemt."],
+  // 'mod:common.cmd:newcommand.AlreadyDefined':[
+  //   "\\newcommand AlreadyDefined",
+  //   "the command '{cmd}'is already defined. if you want to overwrite the existing command, use \\renewcommand instead."],
+  'mod:common.cmd:newcommand.AlreadyDefined':[
+    "\\newcommand AlreadyDefined",
+    "the specified command/environment '{cmd}' has already been defined somewhere\n"
+      +"\\newcommand cannot override the existing commands/environments\n"
+      +"you can override the existing commands with \\renewcommand, or the environments with \\renewenvironment"],
+  'mod:common.cmd:renewcommand.NotYetDefined':[
+    "\\renewcommand NotYetDefined",
+    "the specified command/environment '{cmd}' has not yet been defined anywhere\n"
+      +"\\renewcommand/\\renewenvironment should override an existing commands/environments\n"
+      +"you can declare new commands with \\newcommand, or new environments with \\newenvironment"],
+  "mod:common.cmd:string.EndOfDocument":[
+    '\\string EndOfDocument',
+    "reached the end of document. An argument of \\string cannot be read."],
+  'mod:common.cmd:framebox.UnknownAlignment':[
+    'UnknownAlignment',
+    "unknown alignment '{align}' in the second argument of the \\framebox"],
+  'mod:common.cmd:special.NotImplemented':[
+    "\\special","\\special{{{arg}}} is used, but not yet supported."],
+  'mod:common.cmd:documentclass.UnknownClass':["cls:{cls}","The document class named '{cls}' is not registered. Instead, the document class 'article' will be used."],
+  'mod:common.cmd:documentclass.MultipleDocumentClasses':["\\documentclass","\\documentclass cannot be specified twice.\n  @ \\documentclass"],
+  'mod:common.cmd:usepackage.UnknownPackage':["pkg:{pkg} unknown","{pkg} という名前の package は登録されていません。"],
+  'mod:common.cmd:usepackage.PackageException':[
+    "pkg:{pkg} error","package '{pkg}' の初期化中に例外が発生しました。\r\n例外説明: {message}\r\n詳細に関しては aghtex 版 package の作成者に問い合わせて下さい。"],
+  'mod:common.cmd:let.InvalidCommandName':["\\let#1 invalid","'{cmd}' is not a valid command name."],
+  'mod:common.cmd:let.UnknownCommand':["\\let#2 undefined","A definition of the second argument, '\\{cmd}', cannot be found."],
+  'mod:common.cmd:def.InvalidCommandName':["\\{defcmd} InvalidCommandName","{cmdname} は不適切なコマンド名です。\r\n新しいコマンドの名前は \\commandname の形式で指定して下さい。"]
+});
+
+
+var _Mod=ns.Modules["mod:common"]={};
+
+_Mod.TagCurrentContext=function TagCurrentContext(doc,tagName,endTag){
+  var output=doc.currentCtx.output;
+  output.buff.push("<",tagName,">");
+  output.appendPost("</"+(endTag||tagName)+">");
+};
+
+context "global"{
+  var CTXV_FOOTNOTE='mod_ref/footnote';
+  _Ctx.AddEnvironment("document",{
+    prologue:function(doc,ctx){
+      ctx.SetContextVariable(CTXV_FOOTNOTE,new ns.Writer());
+    },
+    epilogue:function(doc,ctx){
+      ns.Modules["mod:ref"].WriteFootnote(doc.currentCtx.output,ctx);
+    },
+    context:"mode.para"
+  });
+
+  // \documentclass
+  command f\documentclass("#[]1#2"){
+    var opt=argv[1].trim();
+    var cls=argv[2].trim();
+    var ch=ns.Document.Classes[cls];
+    if(ch==null){
+      doc.currentCtx.output.error('mod:common.cmd:documentclass.UnknownClass',{cls:cls},'mod:common.cmd:documentclass');
+      ch=ns.Document.Classes["article"]; // default
+      if(ch==null)return;
+    }
+    ch(doc,cls,opt);
+    
+    doc.currentCtx.AddCommandHandler("documentclass",function(doc){
+      doc.scanner.Next();
+      doc.currentCtx.output.error('mod:common.cmd:documentclass.MultipleDocumentClasses',null,'mod:common.cmd:documentclass');
+    });
+  };
+  _Ctx.AddCommandHandler("documentstyle",_Ctx.handlerC["documentclass"]); // For older version of TeX
+  
+  command f\usepackage("#[]@1#@2"){
+    var opt=argv[1];
+    var pkgs=argv[2].split(',');
+    for(var i=0,iN=pkgs.length;i<iN;i++){
+      var pkg=pkgs[i].trim();
+      var handler=ns.Document.Packages[pkg];
+      if(handler==null){
+        doc.currentCtx.output.error('mod:common.cmd:usepackage.UnknownPackage',{pkg:pkg},'mod:common.cmd:usepackage');
+        continue;
+      }
+      
+      // package 初期化
+      try{
+        handler(doc,opt,pkg);
+      }catch(e){
+        var message=e==null?"?": (typeof e=="object")&&("message" in e)?e.message: e.toString();
+        doc.currentCtx.output.error('mod:common.cmd:usepackage.PackageException',{pkg:pkg,message:message},'mod:common.cmd:usepackage');
+      }
+    }
+  };
+
+  // \newcommmand, \renewcommand
+  //----------------------------------------------------------------
+  function getExistingCommandHandler(doc,name){
+    return doc.currentCtx.GetCommandHandler(doc,name)||
+      doc.context_cast("mode.para").GetCommandHandler(doc,name)||
+      doc.context_cast("mode.math").GetCommandHandler(doc,name);
+  }
+
+  command f\newcommand("#1#[0]!2#[\\@mwgnoarg]3#4"){
+    // コマンド名
+    var name=argv[1].trim();
+    if(name.substr(0,1)!="\\"){
+      doc.currentCtx.output.error(
+        'mod:common.cmd:newcommand.InvalidCommandName',{cmd:name},
+        '\\newcommand @ mod:common');
+      return;
+    }else
+      name=name.substr(1);
+
+    // 引数の数
+    var argN=0;
+    try{
+      argN=parseInt(argv[2]);
+    }catch(e){
+      doc.currentCtx.output.error(
+        'mod:common.cmd:newcommand.InvalidNumberOfParams',{nparam:argv[2]},
+        '\\newcommand @ mod:common');
+      return;
+    }
+    
+    // 既定の引数
+    var optional=argv[3];
+    var arg_def="";
+    if(argN>0){
+      if(optional!="\\@mwgnoarg"){
+        arg_def="#["+optional+"]1";
+      }else{
+        arg_def="#1";
+      }
+        
+      for(var i=2;i<=argN;i++)
+        arg_def+="#"+i;
+    }
+    
+    // 定義内容
+    var def=argv[4];
+
+    // コマンドの上書きをできないようにする
+    switch(argv[0]){
+    case "newcommand":
+      if(doc.currentCtx.GetCommandHandler(doc,name)!=null){
+        doc.currentCtx.output.error(
+          'mod:common.cmd:newcommand.AlreadyDefined',{cmd:name},
+          '\\newcommand @ mod:common');
+        return;
+      }
+      break;
+    case "renewcommand":
+      if(getExistingCommandHandler(doc,name)==null){
+        doc.currentCtx.output.error(
+          'mod:common.cmd:renewcommand.NotYetDefined',{cmd:name},
+          '\\renewcommand @ mod:common');
+        return;
+      }
+      break;
+    case "providecommand":
+      if(getExistingCommandHandler(doc,name)!=null)return;
+      break;
+    }
+
+    doc.SetMacroHandler(name,new ns.Command2("m",arg_def,def));
+  };
+
+  _Ctx.AddCommandHandler("renewcommand",_Ctx.handlerC["newcommand"]);
+  _Ctx.AddCommandHandler("providecommand",_Ctx.handlerC["newcommand"]);
+
+  command f\let("#1#2"){
+    var cmd1=argv[1].trim();
+    if(cmd1.substr(0,1)!='\\'){
+      doc.currentCtx.output.error('mod:common.cmd:let.InvalidCommandName',{cmd:cmd1},'mod:common.cmd:let');
+      return;
+    }
+    cmd1=cmd1.slice(1);
+
+    var cmd2=argv[2].trim();
+    if(cmd2.substr(0,1)=='\\'){
+      cmd2=cmd2.slice(1);
+
+      var h=getExistingCommandHandler(doc,cmd2);
+      if(h==null){
+        doc.currentCtx.output.error('mod:common.cmd:let.UnknownCommand',{cmd:cmd2},'mod:common.cmd:let');
+        return;
+      }
+
+      doc.SetMacroHandler(cmd1,h);
+    }else{
+      doc.SetMacroHandler(cmd1,new ns.Command2("m",null,cmd2));
+    }
+  };
+
+  function getCommandName(doc,argv){
+    var name=argv[1].trim();
+    if(name.substr(0,1)!="\\"){
+      doc.currentCtx.output.error('mod:common.cmd:def.InvalidCommandName',{defcmd:argv[0],cmdname:name},'mod:common.cmd:'+argv[0]);
+      return null;
+    }else
+      name=name.substr(1);
+    return name;
+  }
+
+  function cmd_def(doc,argv,isGlobal){
+    var name=getCommandName(doc,argv);
+    if(name==null)return;
+    
+    doc.SetMacroHandler(name,new ns.Command2("m",argv[2],argv[3]),isGlobal);
+  }
+  function cmd_edef(doc,argv,isGlobal){
+    var name=getCommandName(doc,argv);
+    if(name==null)return;
+    
+    doc.SetMacroHandler(name,new ns.Command2("m@",argv[2],argv[3]),isGlobal);
+  }
+  command f\def (#1#2{#3}) {cmd_def (doc,argv,false);};
+  command f\gdef(#1#2{#3}) {cmd_def (doc,argv,true );};
+  command f\edef(#1#2{#>3}){cmd_edef(doc,argv,false);};
+  command f\xdef(#1#2{#>3}){cmd_edef(doc,argv,true );};
+
+  // マクログローバル定義
+  command f\global(){
+    doc.pushFlags();
+    doc.flags['mod:common/global']=true; // \let, \def, \edef, etc
+    //■TODO: \count, \countdef
+
+    // 続くコマンドを引数として読み取り
+    doc.currentCtx.output.buff.push(
+      doc.GetArgumentHtml(doc.currentCtx,true));
+
+    doc.popFlags();
+  };
+
+  command f\newenvironment("#!1#[]!2#[\\agh@noarg]3#4#5"){
+    var envname=argv[1];
+
+    // 引数の数
+    var nparam=0;
+    if(argv[2]!=""){
+      try{
+        nparam=parseInt(argv[2]);
+      }catch(e){
+        doc.currentCtx.output.error(
+          'mod:common.cmd:newcommand.InvalidNumberOfParams',{nparam:argv[2]},
+          '\\newenvironment @ mod:common');
+        return;
+      }
+    }
+
+    var argdef='';
+    if(nparam>0){
+      argdef+=argv[3]=='\\agh@noarg'?'#1':'#[]1';
+      for(var i=1;i<nparam;i++)
+        argdef+='#'+(i+1);
+    }
+
+    var definition=argv[4]+'#0'+argv[5];
+
+    // 上書き確認
+
+    switch(argv[0]){
+    case "newenvironment":
+      if(doc.currentCtx.GetEnvironment(envname)!=null){
+        doc.currentCtx.output.error(
+          'mod:common.cmd:newcommand.AlreadyDefined',{cmd:envname},
+          '\\newenvironment @ mod:common');
+        return;
+      }
+      break;
+    case "renewenvironment":
+      if(doc.currentCtx.GetEnvironment(envname)==null){
+        doc.currentCtx.output.error(
+          'mod:common.cmd:newcommand.NotYetDefined',{cmd:envname},
+          '\\renewenvironment @ mod:common');
+        return;
+      }
+      break;
+    }
+
+    if(argv[0]!="renewenvironment"&&doc.currentCtx.GetEnvironment(envname)!=null){
+      doc.currentCtx.output.error(
+        'mod:common.cmd:newcommand.AlreadyDefined',{cmd:envname},
+        '\\newenvironment @ mod:common');
+      return;
+    }
+
+    // 全体に適用される。現在のスコープ内だけで使える様にするべきか?
+    doc.context_cast("global").AddEnvironment(envname,ns.Environment.CreateDynamicEnvironment('m',argdef,argv[4],argv[5],null));
+  };
+  _Ctx.AddCommandHandler("renewenvironment",_Ctx.handlerC["newenvironment"]);
+
+  //---------------------------------------------------------------------------
+  // 空白・改行
+  command s@\hspace(#1)  '<span style="padding-right:#1;"></span>';
+  command s@\hspace*(#1) '<span style="padding-right:#1;"></span>';
+  command s@\vspace(#1)  '<p class="tex-vspace" style="font-size:#1">&nbsp;</p>';
+  command s@\vspace*(#1) '<p class="tex-vspace" style="font-size:#1">&nbsp;</p>';
+  
+  command s>\enspace()              @'\hspace{0.5em}'; // from plain-TeX, kerning
+
+  command s@#" "()                   '&nbsp;';
+  command s@\enskip()                '&nbsp;';
+  command s>#"/"()                  @"\hspace{0.3ex}";
+  command s>\quad()                 @"\hspace{2.4ex}";
+  command s>\qquad()                @"\hspace{4.8ex}";
+  command s@\phantom("#>1")         "<tex:phantom>#1</tex:phantom>";
+  command s@\hphantom("#>1")        "<tex:hphantom>#1</tex:hphantom>";
+  command s@\vphantom("#[_]!1#>2")  "<tex:vphantom class='#1'><tex:vphantom2>#2</tex:vphantom2></tex:vphantom>";
+  
+  command s@\hfill()     '<tex:i class="aghtex-hfill"></tex:i>';
+  command s@\dotfill()   '<tex:i class="aghtex-hfill-dot"></tex:i>';
+  command s@\hrulefill() '<tex:i class="aghtex-hfill-rule"></tex:i>';
+
+  // 特殊記号
+  command s@\{()    @"{";
+  command s@\}()    @"}";
+  command s@\&()    @"&amp;";
+  command s@\%()    @"%";
+  command s@\_()    @"_";
+  command s@\$()    @"$";
+  command s@\#()    @"#";
+  
+  // その他の記号
+  command s@\P        () '¶';
+  command s@\S        () '§';
+  command s@\dag      () '<tex:fcent>†</tex:fcent>';
+  command s@\ddag     () '<tex:fcent>‡</tex:fcent>';
+  command s@\pounds   () '<tex:fcent><i>￡</i></tex:fcent>';
+  command s@\copyright() '&#xa9;';
+  command s@\aa       () '&#xE5;';  // å
+  command s@\AA       () '&#xC5;';  // Å
+  command s@\ae       () '&#xE6;';  // æ
+  command s@\AE       () '&#xC6;';  // Æ
+  command s@\l        () '&#x142;'; // ł
+  command s@\L        () '&#x141;'; // Ł
+  command s@\oe       () '&#x153;'; // œ
+  command s@\OE       () '&#x152;'; // Œ
+  command s@\SS       () '&#xDF;';  // ß
+  command s@\ss       () '&#xDF;';  // ß
+  command s@\o        () '&#xF8;';  // ø
+  command s@\O        () '&#xD8;';  // Ø
+  
+  // TeX
+  command s@\TeX   () '<tex:TeX>T<span>E</span>X</tex:TeX>';
+  command s@\LaTeX () '<tex:La>L<span>A</span></tex:La><tex:TeX>T<span>E</span>X</tex:TeX>';
+  command s@\LaTeXe() '<tex:La>L<span>A</span></tex:La><tex:TeX>T<span>E</span>X</tex:TeX>2<span style=\'vertical-align:-10%;\'>ε</span>';
+  
+  // 書式
+  command s@\overline (#>1)  '<span style="text-decoration:overline;">#1</span>';
+  command s@\underline(#>1)  '<u>#1</u>';
+  
+  // 特別な文字 
+  command s@\copyright()          '<tex:fsym class="rm">©</tex:fsym>'; // u00A9
+
+  // \text/math... 記号
+  //   元々 text-mode 用だが、期せずして math-mode でも表示できる物。
+  //   正しく表示できない \text... 記号は mod_para.ctx で定義。
+  command s@\textregistered()   '<tex:fsym class="rm">®</tex:fsym>'; // u00AE
+  command s@\texttrademark()    '<tex:fsym class="rm">™</tex:fsym>'; // u2122
+  command s@\textvisiblespace() '<tex:fmr>␣</tex:fmr>'; // u2423 (■ XP IE6 では表示できない)
+  command s@\textcopyright   () '&copy;';
+  command s@\textellipsis    () '<tex:fsym lang="en">…</tex:fsym>';
+  command s@\textless        () '&lt;';
+  command s@\textgreater     () '&gt;';
+  command s@\textunderscore  () '_';
+  command s@\textordfeminine () '&#x00aa;';
+  command s@\textordmasculine() '&#x00ba;';
+  command s@\mathunderscore  () '<tex:fsym class="aghtex-symb-mincho">_</tex:fsym>';
+
+  command s@\lq()               "`";
+  command s@\rq()               "'";
+
+  //---------------------------------------------------------------------------
+  // \mbox
+  command s@\mbox("#mode.lr>1") '<tex:mbox>#1</tex:mbox>';
+  command s@\fbox("#mode.lr>1") '<tex:mbox class="aghtex-latex-fbox">#1</tex:mbox>';
+  command s@\frame("#mode.lr>1") '<tex:mbox class="aghtex-latex-frame">#1</tex:mbox>';
+  command f\framebox("#[]!1#[c]!2#mode.lr>3"){
+    // #L1 (dimen)
+    if(argv[1]!=""){
+      var align={l:'left',r:'right',c:'center'}[argv[2]];
+      if(align==null){
+        doc.currentCtx.output.error('mod:common.cmd:framebox.UnknownAlignment',{align:argv[2]},'\\framebox (mod:common)');
+        align=center;
+      }
+
+      doc.currentCtx.output.buff.push(
+        '<tex:mbox class="aghtex-latex-frame" style="width:',
+        agh.Text.Escape(argv[1],"html-attr"),
+        ';text-align:',align,'">',argv[3],'</tex:mbox>');
+    }else
+      doc.currentCtx.output.buff.push('<tex:mbox class="aghtex-latex-frame">',argv[3],'</tex:mbox>');
+  };
+  // TODO \makebox
+  // TODO \parbox
+
+  command f\string(){
+    doc.skipSpaceAndComment();
+
+    var text="";
+    switch(doc.scanner.wordtype){
+    case mod_core.SCAN_WT_CMD:
+      text="\\"+doc.scanner.word;
+      doc.scanner.Next();
+      break;
+    case mod_core.SCAN_WT_LTR:
+      text=doc.scanner.word;
+      doc.scanner.Next();
+      break;
+    case mod_core.SCAN_WT_TXT:
+      text=doc.scanner.ClipFirstFromTxt();
+      break;
+    case mod_core.SCAN_WT_LTR:
+      if(doc.scanner.word!=="EOF"){
+        text=doc.scanner.word;
+        doc.scanner.Next();
+        break;
+      }
+      /* FALL-THROUGH */
+    default:
+      doc.currentCtx.output.error(
+        "mod:common.cmd:string.EndOfDocument",
+        null,"\\string (mod:common/global)");
+      return;
+    }
+
+    doc.currentCtx.output.buff.push(agh.Text.Escape(text,'html'));
+  };
+
+  command f\special(#1){
+    doc.currentCtx.output.error('mod:common.cmd:special.NotImplemented',{arg:argv[1]},"\\special (mod:common)");
+  };
+
+  //---------------------------------------------------------------------------
+
+  command f\aghtexInternalHTag("[#!1]#>2"){
+    var buff=doc.currentCtx.output.buff;
+
+    var tag='tex:i';
+    var cls=null;
+    argv[1].replace(/^(\w[\-:_\w]*)?(?:\.([\-:_\w]+))?/,function($0,$1,$2){
+      if($1!=null&&$1!=""&&$1.toLowerCase()!='script')
+        tag=$1;
+      if($2!=null&&$2!="")
+        cls=$2;
+    });
+    var content=argv[2];
+    
+    buff.push('<',tag);
+    if(cls!=null&&cls.length>0){
+      buff.push(' class="',cls,'">');
+    }else{
+      buff.push('>');
+    }
+    buff.push(content,'</',tag,'>');
+  };
+
+
+}

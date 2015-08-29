@@ -1,0 +1,181 @@
+﻿// -*- mode:js -*-
+//◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+//
+//            class Length
+//
+//◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
+agh.memcpy(ns.Modules["core"].ErrorMessages,{
+  "mod:length.InvalidLengthName":["invalid length name","'{lname}' は有効な length 名ではありません。\nlength 名は \\ で始まる必要があります。"]
+});
+var UNITDATA={
+  // reference: http://tex.stackexchange.com/questions/41370/what-are-the-possible-dimensions-sizes-units-latex-understands
+
+  // inches
+  "in":{mm:25.4  ,outunit:"in"},
+  bp:{mm:25.4/72 ,outunit:"in"}, // 72 bp (big point) = 1 in
+
+  // meters
+  cm:{mm:10      ,outunit:"cm"},
+  mm:{mm:1       ,outunit:"mm"}, // 10 mm := 1 cm
+
+  // points
+  pt:{mm:0.3515  ,outunit:"pt"},
+  pc:{mm:4.218   ,outunit:"pc"}, // pc (pica) := 0.166 in, 12 pc = 1 pt, 
+  sp:{mm:5.363e-6,outunit:"pt"}, // 65536 sp (scaled point) = 1 pt
+
+  // didot points
+  dd:{mm:0.37597 ,outunit:"mm"}, // 1 dd (didot point) = 15625/41559 mm
+  cc:{mm:4.51166 ,outunit:"mm"}, // 1 cc (cicero) = 12 dd
+
+  // letter sizes
+  ex:{mm:1.8     ,outunit:"ex"},
+  em:{mm:3.2     ,outunit:"em"}, // 1 ex ~ 9/16 em?
+  zw:{mm:3.2     ,outunit:"em"}, // 全角幅
+  zh:{mm:3.2     ,outunit:"em"}, // 全角高さ
+  mu:{mm:3.2/18  ,outunit:"em"}, // 18 mu (math unit) = 1 em
+
+  // display pixels
+  px:{
+    mm:25.4/(agh.browser.vIE?screen.deviceXDPI:96),
+    outunit:"px"
+  }
+};
+ns.Length=function(){
+  this.val=0;
+  this.unit="in";
+};
+agh.memcpy(ns.Length,{
+  // 将来的には GetLengthArgument か何かの関数で使用するつもり(現在は使用されていない)
+  ParseDimen:function(text){
+    /// <summary>
+    /// 指定した文字列から length を読み取ります。
+    /// </summary>
+    /// <returns>
+    /// 読み取った情報を元に作成した Length インスタンスを返します。
+    /// src_index に、指定した文字列の何処まで読み取ったかの情報を格納します。
+    /// </returns>
+    var val=parseFloat(text);
+    if(isNaN(val))return null;
+    var u=text.match(/^(?:[\+\-\d\.]|e[+\-\d.])+\s*(in|cm|mm|pt|pc|sp|em|ex|px|zw)\b/i);
+    if(u==null)return null;
+    
+    var ret=new ns.Length();
+    ret.val=val;
+    ret.unit=u[1];
+    ret.src_index=u[0].length;
+    return ret;
+  }
+});
+agh.memcpy(ns.Length.prototype,{
+  parseNumber:function(text){
+    var ret=parseFloat(text);
+    if(isNaN(ret))return 0;
+    return ret;
+  },
+  parseUnit:function(text){
+    var a=text.match(/(?:in|cm|mm|pt|pc|sp|em|ex|px|zw)\b/i);
+    return a!=null?a[0].toLowerCase():"px";
+  },
+  changeUnit:function(number,beforeUnit,afterUnit){
+    if(beforeUnit==afterUnit)return number;
+    return number*UNITDATA[beforeUnit].mm/UNITDATA[afterUnit].mm;
+  },
+  toString:function(){
+    var outunit=UNITDATA[this.unit].outunit;
+    return this.changeUnit(this.val,this.unit,outunit).toString()+outunit;
+  },
+  addValue:function(arg){
+    if(arg==null)return;
+    
+    var n=0,u="px";
+    if(arg instanceof ns.Length){
+      n=arg.val;
+      u=arg.unit;
+    }else{
+      arg=arg.toString();
+      n=this.parseNumber(arg);
+      u=this.parseUnit(arg);
+    }
+    
+    this.val+=this.changeUnit(n,u,this.unit);
+  },
+  setValue:function(arg){
+    if(arg==null)return;
+    
+    if(arg instanceof ns.Length){
+      this.val=arg.val;
+      this.unit=arg.unit;
+    }else{
+      arg=arg.toString();
+      this.val=this.parseNumber(arg);
+      this.unit=this.parseUnit(arg);
+    }
+  }
+});
+context "global"{
+  //=========================================================================
+  //    関数達
+  //=========================================================================
+  /// \ のついた length 名を受け取って、\ を取り除いた部分を返します。
+  function get_lenName(doc,cmdname){
+    var lname=cmdname.trim();
+    if(lname.substr(0,1)!='\\'){
+      doc.currentCtx.output.error("mod:length.InvalidLengthName",{lname:lname},"\\"+cmdname);
+      return null;
+    }
+    return lname.substr(1);
+  }
+  function setlength(doc,name,value){
+    if(!(name in doc.currentCtx.dataL))
+      doc.currentCtx.dataL[name]=new ns.Length();
+    doc.currentCtx.dataL[name].setValue(value);
+  }
+  function addtolength(doc,name,value){
+    if(!(name in doc.currentCtx.dataL)){
+      doc.currentCtx.dataL[name]=new ns.Length();
+      var parent=doc.GetLengthData(name);
+      if(parent!=null)doc.currentCtx.dataL[name].setValue(parent);
+    }
+    doc.currentCtx.dataL[name].addValue(value);
+  }
+  
+  var lengthHandler=new ns.Command2("f",null,function(doc,args){
+    var name=args[0];
+    doc.skipSpaceAndComment();
+    if(doc.scanner.is("ltr","=")){
+      // setlength mode
+      doc.scanner.Next();
+      setlength(doc,name,doc.scanner.word);
+      doc.scanner.Next();
+    }else{
+      // output value mode (拡張)
+      doc.currentCtx.output.buff.push((doc.GetLengthData(name)||"0in").toString());
+    }
+  });
+  
+  //=========================================================================
+  //    コマンドの定義
+  //=========================================================================
+  agh.memcpy(ns.Document.prototype,{
+    NewLength:function(name){
+      // グローバルに定義
+      this.SetMacroHandler(name,lengthHandler,/* isGlobal= */ true);
+    }
+  });
+
+  command f\newlength(#@1){
+    var lname=get_lenName(doc,argv[1]);
+    if(lname==null)return;
+    doc.NewLength(lname);
+  };
+  command f\setlength(#@1#!2){
+    var lname=get_lenName(doc,argv[1]);
+    if(lname==null)return;
+    setlength(doc,lname,argv[2]);
+  };
+  command f\addtolength(#@1#!2){
+    var lname=get_lenName(doc,argv[1]);
+    if(lname==null)return;
+    addtolength(doc,lname,argv[2]);
+  };
+}

@@ -1,0 +1,755 @@
+// -*- mode:js;coding:utf-8 -*- (日本語)
+
+/**
+ *  mod_math
+ * 
+ *  @section 公開オブジェクト
+ *    ※以下 mod_math = ns.Modules["mod:math"] とする。
+ *    
+ *    @fn mod_math.CreateCommandOverStretch(imgsrc,alttxt);
+ *    @fn mod_math.CreateCommandUnderStretch(imgsrc,alttxt);
+ *    @fn mod_math.CreateCommandSummation(content);
+ *    @fn mod_math.CreateAccentCommandQksT(height,htSymbol);
+ *    @fn mod_math.CreateAccentCommandQksB(height,htSymbol);
+ *    @fn mod_math.CreateAccentCommand(type,htsymb,ismath);
+ */
+
+var mod_base=ns.Modules["mod:base"];
+var mod_common=ns.Modules["mod:common"];
+var _Mod=ns.Modules["mod:math"]={};
+
+context "mode.math"{
+
+  //---------------------------------------------------------------
+  // 数式スタイル
+
+  _Mod.MATHSTYLE_DISPLAY=0;
+  _Mod.MATHSTYLE_TEXT   =1;
+  _Mod.MATHSTYLE_SCRIPT =2;
+  _Mod.MATHSTYLE_SCRIPT2=3;
+  _Mod.GetMathStyle=function mod_math_GetMathStyle(doc){
+    return doc.GetContextVariable('mathstyle');
+  };
+
+  command f\displaystyle(){
+    doc.SetContextVariable("mathstyle",_Mod.MATHSTYLE_DISPLAY);
+  };
+  command f\textstyle(){
+    doc.SetContextVariable("mathstyle",_Mod.MATHSTYLE_TEXT);
+  };
+  command f\scriptstyle(){
+    doc.SetContextVariable("mathstyle",_Mod.MATHSTYLE_SCRIPT);
+
+    var output=doc.currentCtx.output;
+    output.buff.push('<tex:fsize class="aghtex-default"><tex:fsize class="aghtex-script">');
+    output.appendPost('</tex:fsize></tex:fsize>');
+  };
+  command f\scriptscriptstyle(){
+    doc.SetContextVariable("mathstyle",_Mod.MATHSTYLE_SCRIPT2);
+
+    var output=doc.currentCtx.output;
+    output.buff.push('<tex:fsize class="aghtex-default"><tex:fsize class="aghtex-scriptscript">');
+    output.appendPost('</tex:fsize></tex:fsize>');
+  };
+
+  //---------------------------------------------------------------
+  //    字体
+  //---------------------------------------------------------------
+  command f\bf()  {mod_common.TagCurrentContext(doc,"tex:fmbf");};
+  command f\it()  {mod_common.TagCurrentContext(doc,"tex:fmit");};
+  command f\rm()  {mod_common.TagCurrentContext(doc,"tex:fmrm");};
+  command f\sf()  {mod_common.TagCurrentContext(doc,"tex:fmsf");};
+  command f\tt()  {mod_common.TagCurrentContext(doc,"tex:fmtt");};
+  command f\cal() {mod_common.TagCurrentContext(doc,"tex:fmcal");};
+
+  // - 以下は数式モードでは効果無し。
+  command f\mc          (){};
+  command f\gt          (){};
+  command f\normalfont  (){};
+  command f\tiny        (){};
+  command f\scriptsize  (){};
+  command f\footnotesize(){};
+  command f\small       (){};
+  command f\normalsize  (){};
+  command f\large       (){};
+  command f\Large       (){};
+  command f\LARGE       (){};
+  command f\huge        (){};
+  command f\Huge        (){};
+
+  // - 以下は文章モードに移行して評価
+  command s@\text("#mode.para>1")    '<tex:frm>#1</tex:frm>'; // 文章モードはデフォルトで roman で良いか?
+  command s@\textrm("#mode.para>1")  '<tex:frm>#1</tex:frm>';
+  command s@\textsf("#mode.para>1")  '<tex:fsf>#1</tex:fsf>';
+  command s@\texttt("#mode.para>1")  '<tex:ftt>#1</tex:ftt>';
+  command s@\textmc("#mode.para>1")  '<tex:fmc>#1</tex:fmc>';
+  command s@\textgt("#mode.para>1")  '<tex:fgt>#1</tex:fgt>';
+  command s@\textmd("#mode.para>1")  '<tex:fmd>#1</tex:fmd>';
+  command s@\textbf("#mode.para>1")  '<tex:fbf>#1</tex:fbf>';
+  command s@\textup("#mode.para>1")  '<tex:fup>#1</tex:fup>';
+  command s@\textit("#mode.para>1")  '<tex:fit>#1</tex:fit>';
+  command s@\textsc("#mode.para>1")  '<tex:fsc>#1</tex:fsc>';
+  command s@\textsl("#mode.para>1")  '<tex:fsl>#1</tex:fsl>';
+
+  command s@\mathbf(#>1)     '<tex:fmbf>#1</tex:fmbf>';
+  command s@\mathit(#>1)     '<tex:fmit>#1</tex:fmit>';
+  command s@\mathrm(#>1)     '<tex:fmrm>#1</tex:fmrm>';
+  command s@\mathsf(#>1)     '<tex:fmsf>#1</tex:fmsf>';
+  command s@\mathtt(#>1)     '<tex:fmtt>#1</tex:fmtt>';
+  command s@\mathnormal(#>1) '<tex:fmit>#1</tex:fmit>';
+  command s@\mathcal(#>1)    '<tex:fmcal>#1</tex:fmcal>';
+
+  // 括弧の大きさ
+  command s@\big  (#>1)  '<tex:big class="aghtex-big1">#1</tex:big>';
+  command s@\Big  (#>1)  '<tex:big class="aghtex-big2">#1</tex:big>';
+  command s@\bigg (#>1)  '<tex:big class="aghtex-big3">#1</tex:big>';
+  command s@\Bigg (#>1)  '<tex:big class="aghtex-big4">#1</tex:big>';
+  command s@\bigl (#>1)  '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big1">#1</tex:big></tex:big>';
+  command s@\Bigl (#>1)  '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big2">#1</tex:big></tex:big>';
+  command s@\biggl(#>1)  '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big3">#1</tex:big></tex:big>';
+  command s@\Biggl(#>1)  '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big4">#1</tex:big></tex:big>';
+  command s@\bigr (#>1)  '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big1">#1</tex:big></tex:big>';
+  command s@\Bigr (#>1)  '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big2">#1</tex:big></tex:big>';
+  command s@\biggr(#>1)  '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big3">#1</tex:big></tex:big>';
+  command s@\Biggr(#>1)  '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big4">#1</tex:big></tex:big>';
+  command s@\bigm (#>1)  '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big1">#1</tex:big></tex:big>';
+  command s@\Bigm (#>1)  '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big2">#1</tex:big></tex:big>';
+  command s@\biggm(#>1)  '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big3">#1</tex:big></tex:big>';
+  command s@\Biggm(#>1)  '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big4">#1</tex:big></tex:big>';
+
+  //---------------------------------------------------------------
+  //    特殊文字
+  //---------------------------------------------------------------
+
+  // 空白は出力しない
+  letter s@#' \b\t\v\r\n\f'() @"";
+
+  // 調整付の通常文字
+  letter s@\+() '<tex:fsym class="aghtex-symb-gothic aghtex-binop">＋</tex:fsym>';
+  letter s@\-() '<tex:fsym class="aghtex-symb-gothic aghtex-binop">－</tex:fsym>';
+  letter s@\=() '<tex:fsym class="aghtex-symb-gothic aghtex-binop">＝</tex:fsym>';
+  letter s@\/() '<tex:fsym class="aghtex-symb-gothic aghtex-binop">/</tex:fsym>';
+
+  // 数式フォントで再定義
+  letter s@#'['  () '<tex:fsym class="aghtex-symb-gothic aghtex-lbrace">[</tex:fsym>';
+  letter s@#']'  () '<tex:fsym class="aghtex-symb-gothic aghtex-rbrace">]</tex:fsym>';
+  letter s@#'('  () '<tex:fsym class="aghtex-symb-gothic aghtex-lbrace">(</tex:fsym>';
+  letter s@#')'  () '<tex:fsym class="aghtex-symb-gothic aghtex-rbrace">)</tex:fsym>';
+  command s@\{   () '<tex:fsym class="aghtex-symb-gothic aghtex-lbrace">{</tex:fsym>';
+  command s@\}   () '<tex:fsym class="aghtex-symb-gothic aghtex-rbrace">}</tex:fsym>';
+  command s@\&   () '<tex:fsym class="aghtex-symb-gothic">&amp;</tex:fsym>';
+  command s@\%   () '<tex:fsym class="aghtex-symb-gothic">%</tex:fsym>';
+  command s@\_   () '<tex:fsym class="aghtex-symb-gothic">_</tex:fsym>';
+  command s@\$   () '<tex:fsym class="aghtex-symb-gothic">$</tex:fsym>';
+  command s@\#   () '<tex:fsym class="aghtex-symb-gothic">#</tex:fsym>';
+  command s@\P   () '<tex:fsym class="aghtex-symb-gothic">¶</tex:fsym>'; // paragraph
+  command s@\S   () '<tex:fsym class="aghtex-symb-gothic">§</tex:fsym>'; // section
+  command s@\dag () '<tex:fsym class="aghtex-symb-cent">†</tex:fsym>'; // dagger
+  command s@\ddag() '<tex:fsym class="aghtex-symb-cent">‡</tex:fsym>'; // ddagger
+
+  letter s@\>() '<tex:fsym class="aghtex-symb-roman aghtex-binop">&gt;</tex:fsym>';
+  letter s@\<() '<tex:fsym class="aghtex-symb-roman aghtex-binop">&lt;</tex:fsym>';
+  letter s@\|() '<tex:fsym class="aghtex-symb-gothic">|</tex:fsym>';
+  letter f@\:(){
+    doc.scanner.Next();
+    if(doc.scanner.is("ltr","=")){
+      //doc.currentCtx.output.buff.push('<tex:fsym class="aghtex-binop aghtex-symb-gothic">:＝</tex:fsym>');
+      doc.currentCtx.output.buff.push('<tex:fsym class="aghtex-binop aghtex-symb-gothic">&#x2254;</tex:fsym>');
+      doc.scanner.Next();
+    }else{
+      doc.currentCtx.output.buff.push(":");
+    }
+  };
+  letter s@\,() '<tex:fsym class="aghtex-symb-roman aghtex-comma">,</tex:fsym>';
+  letter f@\.(){
+    var html=cmdName;
+    doc.scanner.Next();
+    if(doc.scanner.wordtype=="ltr"&&" \b\t\v\r\n\f".indexOf(doc.scanner.word)>=0){
+      html='<tex:fsym class="aghtex-comma">'+html+'</tex:fsym>';
+      doc.scanner.Next();
+    }
+    doc.currentCtx.output.buff.push(html);
+  };
+  
+  // 空白
+  command s>\,() @"\hspace{0.4ex}";  // \hspace{1\thinmuskip}
+  command s>\:() @"\hspace{0.53ex}"; // \hspace{1\medmuskip}
+  command s>\>() @"\hspace{0.60ex}"; // \hspace{1\medmuskip}
+  command s>\;() @"\hspace{0.67ex}"; // \hspace{1\thickmuskip}
+  letter  s>\~() @"\hspace{1ex}";
+  if(agh.browser.vIE&&agh.browser.vIE<7){
+    command s@\!() '<tex:negspace class="letter-spacing">&nbsp;&nbsp;</tex:negspace>&nbsp;';
+  }else{
+    command s@\!() '<tex:negspace></tex:negspace>';
+  }
+
+  command s@\allowbreak() '<tex:i class="aghtex-latex-allowbreak"></tex:i>';
+  
+  // letter
+  if(agh.browser.vIE<=6||ns.compatMode=="IE-qks"){
+    letter s@\^(#>1)  '<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">#1</tex:i></tex:sup>';
+    letter s@\_(#>1)  '<tex:sub class="aghtex-tag-script">#1</tex:sub>';
+  }else{
+    function cmd_supsub_output(doc,sup,sub){
+      if(!_Mod.GetMathStyle(doc))
+        doc.currentCtx.output.buff.push(
+          '<tex:supsub class="aghtex-tag-script"><tex:supsub-u>',sup,
+          '</tex:supsub-u><tex:supsub-d>',sub,
+          '</tex:supsub-d></tex:supsub>');
+      else
+        doc.currentCtx.output.buff.push(
+          '<tex:supsub class="aghtex-textstyle aghtex-tag-script"><tex:supsub-u><tex:i>',sup,
+          '</tex:i></tex:supsub-u><tex:supsub-d><tex:i>',sub,
+          '</tex:i></tex:supsub-d></tex:supsub>');
+    }
+    letter f\^("#>1"){
+      doc.skipSpaceAndComment();
+      if(doc.scanner.is("ltr","_")){
+        doc.scanner.Next();
+        cmd_supsub_output(doc,argv[1],doc.GetArgumentHtml());
+      }else{
+        doc.currentCtx.output.buff.push('<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">',argv[1],'</tex:i></tex:sup>');
+      }
+    };
+    letter f\_("#>1"){
+      doc.skipSpaceAndComment();
+      if(doc.scanner.is("ltr","^")){
+        doc.scanner.Next();
+        cmd_supsub_output(doc,doc.GetArgumentHtml(),argv[1]);
+      }else{
+        doc.currentCtx.output.buff.push('<tex:sub class="aghtex-tag-script">',argv[1],'</tex:sub>');
+      }
+    };
+  }
+
+  // プライム
+  // letter s@#"'"() @'<tex:fsym class="rm">''</tex:fsym>';
+  var prime_handler=function(doc){
+    doc.scanner.Next();
+    if(!doc.scanner.is("ltr","'")&&!doc.scanner.is("cmd","rq")){
+      doc.currentCtx.output.buff.push('<tex:fsym class="rm">′</tex:fsym>');
+      return;
+    }
+    
+    doc.scanner.Next();
+    if(!doc.scanner.is("ltr","'")&&!doc.scanner.is("cmd","rq")){
+      doc.currentCtx.output.buff.push('<tex:fsym class="rm">″</tex:fsym>');
+      return;
+    }
+    
+    doc.scanner.Next();
+    doc.currentCtx.output.buff.push('<tex:fsym class="rm">‴</tex:fsym>');
+  };
+  _Ctx.AddLetterHandler("'",prime_handler);
+  _Ctx.AddCommandHandler("rq",prime_handler);
+
+  //---------------------------------------------------------------
+  //    他
+  //---------------------------------------------------------------
+  var HT_SQRT_STRETCH_IMAGE=mod_base.GetStretchImageTd("root.png",2,"√",'sqrt');
+  command f\sqrt(#[]>1#>2){
+    var buff=doc.currentCtx.output.buff;
+    buff.push('<table cellpadding="0" class="aghtex-inline aghtex-sqrt"><tr style="height:0px;">');
+    if(argv[1].length>0)
+      buff.push('<td class="aghtex-sqrt-index aghtex-tag-script"><span>',argv[1],'</span></td>');
+    buff.push(HT_SQRT_STRETCH_IMAGE,'<td class="aghtex-sqrt-body">',argv[2],'</td></tr></table>');
+  };
+
+  //---------------------------------------------------------------------------
+  // \underbrace, \overbrace
+
+  var GenerateHtmlUndertextImage=(function(){
+    switch(ns.compatMode){
+      case "IE-qks":
+      case "Fx-qks":
+        return function(imgsrc,height,alt){
+          height=height.toString()+"ex";
+          return '<td class="aghtex-underbrace-i" style="width:0px;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="height:'+height+';width:100%;"/></td>';
+        };
+      case "IE-std":
+        ns.expression_width=function(elem){
+          var tr=elem.parentElement.parentElement;
+          var table=tr.parentElement.parentElement;
+          return (table.clientWidth-4)+"px";
+        };
+        return function(imgsrc,height,alt){
+          height=height.toString()+"ex";
+          var style='height:'+height+';width:expression('+ns.namespaceName+'.expression_width(this));';
+          //var style='height:'+height+';width:expression(this.parentElement.parentElement.parentElement.parentElement.clientHeight-4);';
+          return '<td class="aghtex-underbrace-i" style="width:0px;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="'+style+'"/></td>';
+        };
+      case "Fx-std":
+        return function(imgsrc,height,alt){
+          height=height.toString()+"ex";
+          //return '<td style="height:'+height+';background-image:url('+ns.BaseUrl+imgsrc+');-moz-background-size:100%;"></td>';
+          return '<td class="aghtex-underbrace-i" style="width:100%;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="height:'+height+';width:100%;"/></td>';
+        };
+      case "Sf-qks":case "Sf-std": // css による switching あり
+      case "Op-qks":case "Op-std": // css による switching あり
+        return function(imgsrc,height,alt){
+          height=height.toString()+"ex";
+          return '<td class="aghtex-underbrace-i" style="height:'+height+';background-image:url('+ns.BaseUrl+imgsrc+');"></td>';
+        };
+      default:
+        return function(imgsrc,height,alt){
+          height=height.toString()+"ex";
+          return '<td class="aghtex-underbrace-i" style="height:'+height+';background-image:url('+ns.BaseUrl+imgsrc+');background-size:100% 100%;"></td>';
+        };
+    }
+  })();
+
+  function output_underbrace(doc,content,image,undertxt){
+    var buff=doc.currentCtx.output.buff;
+
+    if(agh.browser.vIE||agh.browser.vSf){
+      if(agh.browser.vIE){
+        if(undertxt)
+          buff.push('<tex:i class="aghtex-underbrace-vphantom2">&nbsp;</tex:i><tex:i class="aghtex-underbrace">');
+        else
+          buff.push('<tex:i class="aghtex-underbrace-vphantom1">&nbsp;</tex:i><tex:i class="aghtex-underbrace">');
+      }else{
+        buff.push('<tex:i class="aghtex-underbrace" style="padding-bottom:',undertxt?2.6:1,'ex">');
+      }
+      buff.push(content);
+      buff.push('<tex:i class="aghtex-underbrace-i">',image,'</tex:i>');
+      if(undertxt)
+        buff.push('<tex:i class="aghtex-underbrace-i"><tex:ud>',undertxt,'</tex:ud></tex:i>');
+      buff.push('</tex:i>');
+    }else{
+      buff.push('<table class="aghtex-underbrace"><tr><td class="aghtex-underbrace-b">',content,'</td></tr><tr>',image,'</tr>');
+      if(undertxt)
+        buff.push('<tr><td class="aghtex-underbrace-t">',undertxt,'</td></tr>');
+      buff.push('</table>');
+    }
+  }
+  function output_overbrace(doc,content,image,overtext){
+    var buff=doc.currentCtx.output.buff;
+    buff.push('<tex:i class="aghtex-overbrace">');
+    if(overtext)
+      buff.push('<tex:i class="aghtex-overbrace-t"><tex:i class="aghtex-overbrace-u">',overtext,'</tex:i></tex:i>');
+    buff.push('<tex:i class="aghtex-overbrace-i">',image,'</tex:i><tex:i class="aghtex-overbrace-b">',content,'</tex:i></tex:i>');
+  }
+
+  var ht_img_overbrace='<img alt="\\overbrace" class="aghtex-overbrace" src="'+ns.BaseUrl+'paren2ov.png" />';
+  var ht_img_underbrace;
+  if(agh.browser.vIE||agh.browser.vSf)
+    ht_img_underbrace='<img alt="\\underbrace" class="aghtex-underbrace" src="'+ns.BaseUrl+'paren2ud.png" />';
+  else
+    ht_img_underbrace=GenerateHtmlUndertextImage("paren2ud.png",1,"\\underbrace");
+
+  command f\underbrace(#>1){
+    var undertxt=null;
+    doc.skipSpaceAndComment();
+    if(doc.scanner.is("ltr","_")){
+      doc.scanner.Next();
+      undertxt=doc.GetArgumentHtml();
+    }
+    
+    output_underbrace(doc,argv[1],ht_img_underbrace,undertxt);
+  };
+  command f\overbrace(#>1){
+    var overtxt=null;
+    doc.skipSpaceAndComment();
+    if(doc.scanner.is("ltr","^")){
+      doc.scanner.Next();
+      overtxt=doc.GetArgumentHtml();
+    }
+
+    output_overbrace(doc,argv[1],ht_img_overbrace,overtxt);
+  };
+
+  _Mod.CreateCommandOverStretch=function(imgsrc,alttxt){
+    var image='<img alt="\\'+alttxt+'" class="aghtex-overbrace" src="'+ns.BaseUrl+imgsrc+'" />';
+    return new ns.Command2("f","#>1",function(doc,argv){
+      output_overbrace(doc,argv[1],image);
+    });
+  }
+  _Mod.CreateCommandUnderStretch=function(imgsrc,alttxt){
+    var image;
+    if(agh.browser.vIE||agh.browser.vSf)
+      image='<img alt="\\'+alttxt+'" class="aghtex-underbrace" src="'+ns.BaseUrl+imgsrc+'" />';
+    else
+      image=GenerateHtmlUndertextImage(imgsrc,1,'\\'+alttxt);
+
+    return new ns.Command2("f","#>1",function(doc,argv){
+      output_underbrace(doc,argv[1],image);
+    });
+  }
+  
+  _Ctx.AddCommandHandler("widehat",_Mod.CreateCommandOverStretch("stretch_hat.png","widehat"));
+  _Ctx.AddCommandHandler("widetilde",_Mod.CreateCommandOverStretch("stretch_tilde.png","widetilde"));
+  _Ctx.AddCommandHandler("overrightarrow",_Mod.CreateCommandOverStretch("stretch_rarr.png","overrightarrow"));
+  _Ctx.AddCommandHandler("overleftarrow",_Mod.CreateCommandOverStretch("stretch_larr.png","overleftarrow"));
+  //---------------------------------------------------------------
+  //    分数 / atop
+  //---------------------------------------------------------------
+  if(agh.browser.vIE<=8||ns.compatMode=="IE-qks"){
+    command s@\frac(#>1#>2) '<table cellspacing="0" class="aghtex-frac"><tr><td class="tex-num">#1</td></tr><tr><td class="tex-den">#2</td></tr></table>';
+    command f\over(){
+      var output=doc.currentCtx.output;
+      var former=output.toHtml();
+      output.clear();
+      output.buff.push('<table cellspacing="0" class="aghtex-frac"><tr><td class="tex-num">',former,'</td></tr><tr><td class="tex-den">');
+      output.appendPost('</td></tr></table>');
+    };
+  }else{
+    function cmd_frac(doc,argv){
+      var buff=doc.currentCtx.output.buff;
+      if(argv[0]=='dfrac'||argv[0]!='tfrac'&&!_Mod.GetMathStyle(doc))
+        buff.push('<tex:frac2><tex:num>',argv[1],'</tex:num><tex:den>',argv[2],'</tex:den></tex:frac2>');
+      else
+        buff.push(
+          '<tex:frac2 class="aghtex-tag-script"><tex:num><tex:i>',argv[1],
+          '</tex:i></tex:num><tex:den><tex:i>',argv[2],
+          '</tex:i></tex:den></tex:frac2>');
+    }
+    _Mod.CH_FRAC=cmd_frac;
+
+    command f\frac(#>1#>2){cmd_frac(doc,argv)};
+    command f\over(){
+      var output=doc.currentCtx.output;
+      var former=output.toHtml();
+      output.clear();
+      output.buff.push('<tex:frac2><tex:num>',former,'</tex:num><tex:den>');
+      output.appendPost('</tex:den></tex:frac2>');
+    };
+  }
+
+  function Atop(output,left,right,bar){
+    var former=output.toHtml();
+    output.clear();
+
+    var buff=output.buff;
+    buff.push('<table cellspacing="0" class="aghtex-inline"><tr style="height:0px;">');
+    if(left)
+      mod_base.OutputStretchBracketTd(output,left,2);
+
+    buff.push('<td class="aghtex-center"');
+    if(bar)
+      buff.push(' style="border-bottom:1px solid black;"');
+    buff.push('>',former,'</td>');
+
+    if(right)
+      mod_base.OutputStretchBracketTd(output,right,2);
+    buff.push('</tr><tr><td class="aghtex-center">');
+    output.appendPost('</td></tr></table>');
+  }
+  command f\atopwithdelims("#!1#!2"){
+    Atop(
+      doc.currentCtx.output,
+      argv[1],argv[2]
+      );
+  };
+  command f\atop(){
+    Atop(doc.currentCtx.output,null,null);
+  };
+  command f\choose(){
+    Atop(doc.currentCtx.output,"(",")");
+  };
+  command f\brack(){
+    Atop(doc.currentCtx.output,"[","]");
+  };
+  command f\brace(){
+    Atop(doc.currentCtx.output,"{","}");
+  };
+  command f@\above(){
+    Atop(doc.currentCtx.output,null,null,true);
+    // ■ GetLengthArgument で線の太さを読み取り
+  };
+  command f\abovewithdelims("#!1#!2"){
+    Atop(
+      doc.currentCtx.output,
+      argv[1],argv[2],true
+      );
+    // ■ GetLengthArgument で線の太さを読み取り
+  };
+  //---------------------------------------------------------------
+  //    総和 / mathop
+  //---------------------------------------------------------------
+  command f\mathop(#>1){
+    var buff=doc.currentCtx.output.buff;
+    if(!_Mod.GetMathStyle(doc)){
+      var sbsp=doc.GetSubSup();
+      if(sbsp.sub==null&&sbsp.sup==null){
+        buff.push(argv[1]);
+      }else{
+        buff.push(
+          '<tex:mathop><tex:u class="aghtex-tag-script">',sbsp.sup||'&nbsp;',
+          '</tex:u>',argv[1],
+          '<tex:d class="aghtex-tag-script">',sbsp.sub||'&nbsp;',
+          '</tex:d></tex:mathop>');
+      }
+    }else{
+      buff.push(argv[1]);
+    }
+  };
+
+  command f\sum@("#>1"){
+    var buff=doc.currentCtx.output.buff;
+    var sbsp=doc.GetSubSup();
+    if(sbsp.sub==null&&sbsp.sup==null){
+      buff.push("<tex:sum>",argv[1],"</tex:sum>");
+    }else{
+      buff.push(
+        '<tex:sum2><tex:sum2u class="aghtex-tag-script">',sbsp.sup||'&nbsp;',
+        '</tex:sum2u><tex:sum2m>',argv[1],
+        '</tex:sum2m><tex:sum2d class="aghtex-tag-script">',sbsp.sub||'&nbsp;',
+        '</tex:sum2d></tex:sum2>');
+    }
+  };
+
+  _Mod.CreateCommandSummation=(function InitCreateCommandSummation(){
+    var _ht_strut='<tex:i class="aghtex-sum-strut">&nbsp;</tex:i>'
+    var ht_table_beg='<table class="aghtex-sum"><tr><td class="aghtex-sum-m"><tex:i class="aghtex-sum-m">';
+    var ht_table_mid='</tex:i></td></tr><tr><td class="aghtex-sum-d"><tex:i class="aghtex-sum-d aghtex-tag-script">'+_ht_strut;
+    var ht_table_end=_ht_strut+'</tex:i></td></tr></table>';
+    var ht_sum_begin='<tex:i class="aghtex-sum">';
+
+    var fWA=false;
+    if(agh.browser.vSf||agh.browser.vIE&&(agh.browser.vIE<8||ns.compatMode=='IE-qks')){
+      // WorkAround - 'CSS2.1 table{vertical-align:baseline;}'
+      var fWA=true;
+      var ht_sum_beginWA=ht_sum_begin.replace('"aghtex-sum"','"aghtex-sum aghtex-sum-WA1"');
+      ht_table_beg=ht_table_beg.replace('"aghtex-sum"','"aghtex-sum aghtex-sum-WA1"');
+      if(agh.browser.vIE){
+        // 何故か、空文字列がないと vertical-align:-0.02 した分だけ、Σの下端が切れてしまう。
+        ht_table_mid=ht_table_mid.replace('</tex:i>','</tex:i>\n');
+      }
+    }
+
+    return function CreateCommandSummation(content){
+      return new ns.Command2("f","",function(doc,argv){
+        var buff=doc.currentCtx.output.buff;
+        if(!_Mod.GetMathStyle(doc)){
+          var sbsp=doc.GetSubSup();
+          var fI=false;
+
+          if(fWA&&sbsp.sub!=null){
+            fI=true;
+            buff.push(ht_sum_beginWA);
+          }else{ // }else if (sbsp.sup!=null){
+            fI=true;
+            buff.push(ht_sum_begin);
+          }
+
+          if(sbsp.sup!=null){
+            buff.push('<tex:i class="aghtex-sum-u aghtex-tag-script">',sbsp.sup,'</tex:i>');
+          }
+          if(sbsp.sub!=null){
+            buff.push(ht_table_beg,content,ht_table_mid,sbsp.sub,ht_table_end);
+          }else{
+            buff.push('<tex:i class="aghtex-sum-m1"><tex:i class="aghtex-sum-m2">',content,'</tex:i></tex:i>');
+          }
+
+          if(fI)
+            buff.push('</tex:i>');
+        }else{
+          buff.push('<tex:fsym class="aghtex-symb-mincho">',content,'</tex:fsym>');
+        }
+      });
+    };
+  })();
+  _Ctx.AddCommandHandler("sum",_Mod.CreateCommandSummation('&#x2211;'));
+  _Ctx.AddCommandHandler("prod",_Mod.CreateCommandSummation('&#x220f;'));
+  _Ctx.AddCommandHandler("coprod",_Mod.CreateCommandSummation('&#x2210;'));
+  _Ctx.AddCommandHandler("bigcap",_Mod.CreateCommandSummation('&#x22C2;'));
+  _Ctx.AddCommandHandler("bigcup",_Mod.CreateCommandSummation('&#x22C3;'));
+  _Ctx.AddCommandHandler("bigvee",_Mod.CreateCommandSummation('&#x22C1;'));
+  _Ctx.AddCommandHandler("bigwedge",_Mod.CreateCommandSummation('&#x22C0;'));
+  _Ctx.AddCommandHandler("bigodot",_Mod.CreateCommandSummation('&#x2A00;'));
+  _Ctx.AddCommandHandler("bigoplus",_Mod.CreateCommandSummation('&#x2A01;'));
+  _Ctx.AddCommandHandler("bigotimes",_Mod.CreateCommandSummation('&#x2A02;'));
+  _Ctx.AddCommandHandler("biguplus",_Mod.CreateCommandSummation('&#x2A04;'));
+
+  //---------------------------------------------------------------
+  //    積分
+  //---------------------------------------------------------------
+  function cmd_int(doc,ch){
+    var output=doc.currentCtx.output;
+    var buff=output.buff;
+
+    // content
+    if(!_Mod.GetMathStyle(doc)){
+      // 普通の (大きな) 積分記号
+      buff.push('<tex:fsym class="aghtex-int">',ch,'</tex:fsym>');
+
+      var sbsp=doc.GetSubSup();
+      switch((sbsp.sub?1:0)+(sbsp.sup?2:0)){
+      case 1:
+        buff.push('<tex:sub class="aghtex-int">',sbsp.sub,'</tex:sub>');
+        break;
+      case 2:
+        buff.push('<tex:sup class="aghtex-int">',sbsp.sup,'</tex:sup>');
+        break;
+      case 3:
+        buff.push(
+          '<table class="aghtex-inline aghtex-int"><tr><td class="aghtex-int-sup aghtex-tag-script"><tex:i class="aghtex-int-sup">',sbsp.sup,
+          '</tex:i></td></tr><tr><td class="aghtex-int-sub aghtex-tag-script"><tex:i class="aghtex-int-sub">',sbsp.sub,
+          '</tex:i></td></tr></table>');
+        break;
+      }
+    }else{
+      // 小さな積分記号
+      buff.push('<tex:fsym class="aghtex-symb-mincho">',ch,'</tex:fsym>');
+    }
+  }
+  command f\int() {cmd_int(doc,'∫');};
+  command f\oint(){cmd_int(doc,'∮');};
+  _Mod["cmd:int"]=cmd_int;
+}
+
+context "mode.math"{
+  //---------------------------------------------------------------
+  //  アクセント・重ね記号・積み重ね記号
+  //---------------------------------------------------------------
+
+  if(ns.compatMode=="IE-qks"||agh.browser.vIE<8){
+    command s@\not(#>1) '<tex:lap><tex:m>/</tex:m><tex:m>#1</tex:m></tex:lap>';
+  }else{
+    command s@\not(#>1) '<tex:i class="aghtex-accent">#1<tex:i class="aghtex-accent-container"><tex:i class="aghtex-accent-symbol-over">/</tex:i></tex:i></tex:i>';
+  }
+  
+  (function(){
+    var STACKREL_DEFAULT_TOP=agh.browser.select({IE:0,Fx:0,Op:0,Cr:0.2,Sf:0.8,Def:0.2}); // 本当の所 0.1 にしたい
+    function is_single_lower(html){
+      var text=agh.Text.Unescape(html,"html");
+      if(text.length!=1)return false;
+      return "acegijmnopqrsuvwxyzαγεηικμνοπρστυφχψω\u0131".indexOf(text)>=0;
+    }
+    function is_slanted_fullheight(html){
+      // \mathrm
+      if(/^<tex:fmrm>.+<\/tex:fmrm>$/.test(html))return false;
+
+      // 中身が複数文字ある場合
+      var text=agh.Text.Unescape(html,"html");
+      if(text.length!=1)return false;
+
+      if(/<tex:fsym class="aghtex-greek">[βδζθλξΑ-Ω]<\/tex:fsym>/.test(html)){
+        // \beta, \varGamma, etc.
+        return true;
+      }
+
+      return /[bdfhkltA-Z∂]/.test(text);
+    }
+    function is_tailed(html){
+      var text=agh.Text.Unescape(html,"html");
+      if(text.length!=1)return false;
+      return "gjpqy".indexOf(text)>=0;
+    }
+    
+    command f\stackrel("#>1#>2"){
+      var t=STACKREL_DEFAULT_TOP-1.3;
+      if(is_single_lower(argv[1]))t+=0.45;
+      t=0.01*Math.round(t*100);
+      
+      var buff=doc.currentCtx.output.buff;
+      buff.push(
+        '<tex:lap><tex:m style="top:',t,'ex;"><tex:small3>',argv[1],
+        '</tex:small3></tex:m><tex:m>',argv[2],'</tex:m></tex:lap>');
+    };
+
+    if(ns.compatMode=="IE-qks"||agh.browser.vIE<8){
+      _Mod.CreateAccentCommandQksT=function(height,htSymbol){
+        var TAG_L='<tex:lap><tex:m style="top:';
+        var TAG_M='ex;">'+htSymbol+'</tex:m><tex:m>';
+        var TAG_R='</tex:m></tex:lap>';
+        
+        // 00:28 2011/02/23 補正
+        if(agh.browser.vCr)
+          TAG_L='<tex:lap style="vertical-align:0.684ex;"><tex:m style="top:';
+        
+        var style_top=STACKREL_DEFAULT_TOP-height;
+        return new ns.Command2("f","#>1",function(doc,argv){
+          var t=style_top;
+          if(is_single_lower(argv[1]))t+=0.45;
+          t=0.01*Math.round(t*100);
+          
+          var buff=doc.currentCtx.output.buff;
+          buff.push(TAG_L,t,TAG_M,argv[1],TAG_R);
+        });
+      };
+      _Mod.CreateAccentCommandQksB=function(height,htSymbol){
+        var TAG_L='<tex:lap><tex:m style="top:';
+        var TAG_M='ex;">'+htSymbol+'</tex:m><tex:m>';
+        var TAG_R='</tex:m></tex:lap>';
+        
+        // 00:28 2011/02/23 補正
+        if(agh.browser.vCr)
+          TAG_L='<tex:lap style="vertical-align:0.684ex;"><tex:m style="top:';
+        
+        var style_top=STACKREL_DEFAULT_TOP-height;
+        return new ns.Command2("f","#>1",function(doc,argv){
+          var t=style_top;
+          if(is_tailed(argv[1]))t+=0.4;
+          t=0.01*Math.round(t*100);
+          
+          var buff=doc.currentCtx.output.buff;
+          buff.push(TAG_L,t,TAG_M,argv[1],TAG_R);
+        });
+      };
+    }
+
+    // 2012/12/25 17:47:56
+    _Mod.CreateAccentCommand=function(type,htsymb,ismath){
+      var cls_container='aghtex-accent-container aghtex-accent-container-'+type;
+      if(agh.browser.vSf)
+        cls_container+=' aghtex-accent-sf aghtex-accent-sf-'+type;
+
+      var ht1='<tex:i class="aghtex-accent">';
+      var ht2='<tex:i class="'+cls_container+'"><tex:i class="aghtex-accent-symbol-';
+      var ht3='">'+htsymb+'</tex:i></tex:i></tex:i>';
+
+      if(type=='low'){
+        return new ns.Command2("f","#>1",function(doc,argv){
+          var content=argv[1];
+          var t=type;
+          if(content.length==0)
+            content='&nbsp;';
+          else if(is_tailed(content))
+            t+="T";
+
+          var buff=doc.currentCtx.output.buff;
+          buff.push(ht1,content,ht2,t,ht3);
+        });
+      }else{
+        return new ns.Command2("f","#>1",function(doc,argv){
+          var content=argv[1].trim();
+          var t=type;
+          if(content.length==0)
+            content='&nbsp;';
+          else if(is_single_lower(content))
+            t+="L";
+          else if(ismath&&is_slanted_fullheight(content))
+            t+="U";
+
+          var buff=doc.currentCtx.output.buff;
+          buff.push(ht1,content,ht2,t,ht3);
+        });
+      }
+    };
+  })();
+  
+  if(ns.compatMode=="IE-qks"||agh.browser.vIE<8){
+    _Ctx.AddCommandHandler("grave",_Mod.CreateAccentCommandQksT(0.7,"`"));
+    _Ctx.AddCommandHandler("dot",  _Mod.CreateAccentCommandQksT(1.3,"<tex:small3>・</tex:small3>"));
+    _Ctx.AddCommandHandler("ddot", _Mod.CreateAccentCommandQksT(1.8,"<tex:small2>..</tex:small2>"));
+    _Ctx.AddCommandHandler("vec",  _Mod.CreateAccentCommandQksT(1.3,"<tex:small3>→</tex:small3>"));
+    _Ctx.AddCommandHandler("tilde",_Mod.CreateAccentCommandQksT(0.7,'<tex:fsym class="mc">~</tex:fsym>'));
+    _Ctx.AddCommandHandler("hat",  _Mod.CreateAccentCommandQksT(0.9,"&#x2C6;"));
+    _Ctx.AddCommandHandler("bar",  _Mod.CreateAccentCommandQksT(1.2,"<tex:small3>－</tex:small3>"));
+    _Ctx.AddCommandHandler("acute",_Mod.CreateAccentCommandQksT(0.7,"&#xB4;"));
+    _Ctx.AddCommandHandler("check",_Mod.CreateAccentCommandQksT(0.8,"&#x2C7;"));
+    _Ctx.AddCommandHandler("breve",_Mod.CreateAccentCommandQksT(0.6,"&#x2D8;"));
+  }else{
+    _Ctx.AddCommandHandler("acute",_Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00B4;</tex:fsym>',true)); // &#x02CA;
+    _Ctx.AddCommandHandler("bar",  _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00AF;</tex:fsym>',true)); // &#x02C9;
+    _Ctx.AddCommandHandler("breve",_Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D8;</tex:fsym>',true));
+    _Ctx.AddCommandHandler("check",_Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C7;</tex:fsym>',true));
+    _Ctx.AddCommandHandler("dot",  _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D9;</tex:fsym>',true));
+    _Ctx.AddCommandHandler("ddot", _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00A8;</tex:fsym>',true));
+    _Ctx.AddCommandHandler("grave",_Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02CB;</tex:fsym>',true));
+    _Ctx.AddCommandHandler("hat",  _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C6;</tex:fsym>',true));
+    _Ctx.AddCommandHandler("tilde",_Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02DC;</tex:fsym>',true));
+    _Ctx.AddCommandHandler("vec",  _Mod.CreateAccentCommand('vec','<tex:fsym class="aghtex-syma-mincho">&#x2192;</tex:fsym>',true));
+  }
+}

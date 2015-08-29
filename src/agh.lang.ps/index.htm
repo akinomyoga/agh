@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <title>PostScript Implementation</title>
+  <link charset="utf-8" type="text/css" rel="stylesheet" href="../../out/mwg.std.css" />
+  <link charset="utf-8" type="text/css" rel="stylesheet" href="../../out/prog.std.css" />
+  <meta name="afh-fly-type" content="color" />
+  <script type="text/javascript" charset="utf-8" src="http://padparadscha/agh/agh.fly.jgz"></script>
+  <style type="text/css">
+  div.obsolete{color:Gray;}
+  </style>
+<!--PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+  Information for HtTree Generator <mwg.httree>
+PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+#%data title PostScript Implementation
+#%data keywords PostScript,実装メモ
+#%define head (
+  <link rel="stylesheet" charset="utf-8" href="${aghdir:-http://padparadscha/agh}/prog.std.css" />
+  <style type="text/css">
+  div.obsolete{color:gray;}
+  </style>
+  <meta name="afh-fly-type" content="color" />
+  <script type="text/javascript" charset="utf-8" src="${aghdir:-http://padparadscha/agh}/agh.fly.jgz"></script>
+#%)
+PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP-->
+</head>
+<body>
+#%define body (
+<h1>agh.PostScript</h1>
+<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<p><dfn>agh.PostScript</dfn> は JavaScript 上で動作する PostScript インタプリタです。
+Web ページ内にベクトル形式の図を直接埋め込むのに使用する事ができます。
+</p>
+<p>以下の三種類の出力形式に対応しています。</p>
+<ul>
+<li>SVG (Scalable Vector Graphics)</li>
+<li>VML (Vector Markup Language)</li>
+<li>Canvas (HTML5 Canvas)</li>
+</ul>
+<h3>機能</h3>
+<ul>
+<li>言語構造・制御構文
+  <p>PostScript は唯の文書・画像形式ではありません。
+  逆ポーランド記法のスタック指向プログラミング言語で、当然、チューリング完全です。
+  データ型には、整数、浮動小数点数、文字列、配列、辞書等があります。
+  また、基本的な制御構造やサブルーチン、簡単な例外機構も存在します。
+  更に、標準出力に文字列を出力したり、ファイルを読み取ったりする事も可能です。
+  </p>
+  <p>agh.PostScript は PostScript で定義されている制御構文の全てに対応しています。
+  また、PostScript で定義されている基本的な四則演算・数学関数、型変換、文字出力の演算子も一通り実装しています。
+  </p>
+</li>
+<li>描画演算子
+  <p>PostScript は図形・文字を描画するのに便利な演算子を標準で提供します。
+  agh.PostScript では、その全てではありませんが多くの演算子を提供しています。
+  座標変換の演算子や、文字列の様々な出力の方法 (*show) にもちゃんと対応しています。
+  </p>
+</li>
+<li>最適化
+  <p>高速に動作する様に最適化をしています。
+  特に、特定の状況 (多くの状況で満たされると期待されます) では、
+  明示的に指定する事により強力な最適化が可能になります。
+  </p>
+  <p>具体的には、定数伝播、インライン展開などを実行します。
+  更に、命令毎にインタプリタで実行するのではなく、
+  JavaScript の関数として定義してから実行します。
+  JIT コンパイルを行う JavaScript エンジン上では、
+  最終的にはネイティブなコードとして PostScript が動作する事になるのです。
+  </p>
+</li>
+</ul>
+
+<h3>未対応の主な機能</h3>
+<p>PostScript に完全に準拠している訳ではありません。
+重要だと考えているけれども、未だ対応していない機能には以下の様な物があります。
+</p>
+<ul>
+<li>arc (円弧パス)</li>
+<li>clip 関連</li>
+<li>複数ページ</li>
+<li>各種フィルタ</li>
+<li>eofill 系統</li>
+<li>フォント定義</li>
+<li>Encoded string/array</li>
+</ul>
+
+
+#%)
+</body>
+</html>

@@ -1,0 +1,174 @@
+/* -*- mode:js -*- */
+
+// Package
+//   \usepackage{color}
+// ChangeLog
+//   2012/12/02, KM
+//     Created, 
+// References
+//   http://texlive.tug.org/texlive/devsrc/Master/texmf-dist/doc/latex/graphics/color.pdf
+//   http://en.wikibooks.org/wiki/LaTeX/Colors
+
+
+function NamedColors(){}
+agh.memcpy(NamedColors.prototype,{
+  // predifined colors
+  white         :'#FFFFFF', black         :'#000000', red           :'#FF0000', green         :'#00FF00', 
+  blue          :'#0000FF', cyan          :'#00ADEE', magenta       :'#EC008D', yellow        :'#FFF100', 
+  // dvips colors
+  Apricot       :'#FBB982', Aquamarine    :'#00B5BE', Bittersweet   :'#C04F17', Black         :'#221E1F',
+  Blue          :'#2D2F92', BlueGreen     :'#00B3B8', BlueViolet    :'#473992', BrickRed      :'#B6321C',
+  Brown         :'#792500', BurntOrange   :'#F7921D', CadetBlue     :'#74729A', CarnationPink :'#F282B4',
+  Cerulean      :'#00A2E3', CornflowerBlue:'#41B0E4', Cyan          :'#00AEEF', Dandelion     :'#FDBC42',
+  DarkOrchid    :'#A4538A', Emerald       :'#00A99D', ForestGreen   :'#009B55', Fuchsia       :'#8C368C',
+  Goldenrod     :'#FFDF42', Gray          :'#949698', Green         :'#00A64F', GreenYellow   :'#DFE674',
+  JungleGreen   :'#00A99A', Lavender      :'#F49EC4', LimeGreen     :'#8DC73E', Magenta       :'#EC008C',
+  Mahogany      :'#A9341F', Maroon        :'#AF3235', Melon         :'#F89E7B', MidnightBlue  :'#006795',
+  Mulberry      :'#A93C93', NavyBlue      :'#006EB8', OliveGreen    :'#3C8031', Orange        :'#F58137',
+  OrangeRed     :'#ED135A', Orchid        :'#AF72B0', Peach         :'#F7965A', Periwinkle    :'#7977B8',
+  PineGreen     :'#008B72', Plum          :'#92268F', ProcessBlue   :'#00B0F0', Purple        :'#99479B',
+  RawSienna     :'#974006', Red           :'#ED1B23', RedOrange     :'#F26035', RedViolet     :'#A1246B',
+  Rhodamine     :'#EF559F', RoyalBlue     :'#0071BC', RoyalPurple   :'#613F99', RubineRed     :'#ED017D',
+  Salmon        :'#F69289', SeaGreen      :'#3FBC9D', Sepia         :'#671800', SkyBlue       :'#46C5DD',
+  SpringGreen   :'#C6DC67', Tan           :'#DA9D76', TealBlue      :'#00AEB3', Thistle       :'#D883B7',
+  Turquoise     :'#00B4CE', Violet        :'#58429B', VioletRed     :'#EF58A0', White         :'#FFFFFF',
+  WildStrawberry:'#EE2967', Yellow        :'#FFF200', YellowGreen   :'#98CC70', YellowOrange  :'#FAA21A'
+});
+
+function parseFloat01(text){
+  var value=parseFloat(text);
+  return value<0?0:value>1?1:value;
+}
+function float_to_hex2(value){
+  var r=Math.round(value*255).toString(16);
+  return r.length==1?"0"+r:r;
+}
+
+function get_color_dict(doc){
+  if(doc['pkg:color/colors']==null)
+    doc['pkg:color/colors']={named:new NamedColors(),defined:new NamedColors};
+  return doc['pkg:color/colors'];
+}
+
+function get_color(doc,model,spec){
+  var dict=get_color_dict(doc);
+  switch(model.toLowerCase()){
+  case "":
+    if(dict.defined[spec])
+      return dict.defined[spec];
+    break;
+  case 'named':
+    if(dict.named[spec])
+      return dict.named[spec];
+    break;
+  case 'gray':
+  case 'grey':
+    var ww=float_to_hex2(parseFloat01(spec||0));
+    return "#"+ww+ww+ww;
+  case 'rgb':
+    var s=spec.split(',');
+    var rr=float_to_hex2(parseFloat01(s[0]||0));
+    var gg=float_to_hex2(parseFloat01(s[1]||0));
+    var bb=float_to_hex2(parseFloat01(s[2]||0));
+    return "#"+rr+gg+bb;
+  case 'cmyk':
+    var c=parseFloat01(s[0]||0);
+    var m=parseFloat01(s[1]||0);
+    var y=parseFloat01(s[2]||0);
+    var ik=1-parseFloat01(s[3]||0);
+    var rr=float_to_hex2(ik*(1-c));
+    var gg=float_to_hex2(ik*(1-m));
+    var bb=float_to_hex2(ik*(1-y));
+    return "#"+rr+gg+bb;
+  default:
+    doc.currentCtx.output.error('InvalidColorModel','invalid color model {model='+model+'}.');
+    return null;
+  }
+
+  doc.currentCtx.output.error('InvalidColor','invalid color specification {model='+model+', spec='+spec+'}.');
+  return null;
+}
+
+context "pkg:color/global" new(){
+  command f\DefineNamedColor("#!1#!2#!3#!4"){
+    // \DefineNamedColor{named}{name}{model}{colour-spec}
+
+    if(argv[1]!='named'){
+      doc.currentCtx.output.error(
+        'InvalidColorModel',
+        '\\DefineNamedColor: "'+argv[1]+'"is specified to first argument. it should be "named"');
+      return;
+    }
+
+    var name=argv[2];
+    var color=get_color(doc,argv[3].trim(),argv[4].trim());
+    if(color)
+      get_color_dict(doc).named[name]=color;
+  };
+  command f\definecolor("#!1#!2#!3"){
+    // \definecolor{name}{model}{colour-spec}
+
+    var name=argv[1];
+    var color=get_color(doc,argv[2].trim(),argv[3].trim());
+    if(color)
+      get_color_dict(doc).defined[name]=color;
+  };
+  command f\color("#[]!1#!2"){
+    // \color[model]{colour-spec}
+
+    var color=get_color(doc,argv[1].trim(),argv[2].trim());
+    if(color==null)return;
+
+    doc.currentCtx.output.buff.push('<tex:i class="aghtex-color-textcolor" style="color:',color,'">');
+		doc.currentCtx.output.appendPost("</tex:i>");
+  };
+  command f\textcolor("#[]!1#!2#>3"){
+    var color=get_color(doc,argv[1].trim(),argv[2].trim());
+    if(color==null)return;
+
+    doc.currentCtx.output.buff.push('<tex:i class="aghtex-color-textcolor" style="color:',color,'">',argv[3],"</tex:i>");
+  };
+  command f\colorbox("#[]!1#!2#mode.lr>3"){
+    // \colorbox[model]{background-colour-spec}{text}
+
+    var buff=doc.currentCtx.output.buff;
+    var bgc=get_color(doc,argv[1].trim(),argv[2].trim());
+    if(bgc!=null){
+      buff.push('<tex:mbox class="aghtex-color-box" style="background-color:',bgc,'">');
+    }else{
+      buff.push('<tex:mbox class="aghtex-color-box">');
+    }
+    buff.push(argv[3],"</tex:mbox>");
+  };
+  command f\fcolorbox("#[]!1#!2#!3#mode.lr>4"){
+    // \fcolorbox[model]{frame-colour-spec}{background-colour-spec}{text}
+
+    var buff=doc.currentCtx.output.buff;
+    var frc=get_color(doc,argv[1].trim(),argv[2].trim());
+    var bgc=get_color(doc,argv[1].trim(),argv[3].trim());
+    if(frc!=null||bgc!=null){
+      buff.push('<tex:mbox class="aghtex-color-box" style="');
+      if(frc!=null){
+        buff.push('border:solid 1px ',frc,';');
+      }
+      if(bgc!=null){
+        buff.push('background-color:',bgc,';');
+      }
+      buff.push('">');
+    }else{
+      buff.push('<tex:mbox class="aghtex-color-box">');
+    }
+    buff.push(argv[4],"</tex:mbox>");
+  };
+
+  command f\normalcolor(){
+    // \normalcolor
+    // 既定色に戻す。
+    var dict=get_color_dict(doc);
+    dict.named=new NamedColors();
+    dict.defined=new NamedColors();
+  };
+}
+ns.Document.Packages["color"]=function(doc,opt,pkgName){
+	doc.context_cast("global").OverwriteContext(doc.context_cast("pkg:color/global"));
+};

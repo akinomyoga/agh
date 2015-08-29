@@ -1,0 +1,968 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <title>PostScript Implementation</title>
+  <link charset="utf-8" type="text/css" rel="stylesheet" href="../../out/mwg.std.css" />
+  <link charset="utf-8" type="text/css" rel="stylesheet" href="../../out/prog.std.css" />
+  <meta name="agh-fly-type" content="color" />
+  <script type="text/javascript" charset="utf-8" src="../../out/agh/agh.fly.jgz"></script>
+  <style type="text/css">
+  div.obsolete{color:gray;}
+  </style>
+<!--PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+  Information for HtTree Generator <mwg.httree>
+PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+#%data title PostScript Implementation - 計画3. 最適化
+#%data keywords PostScript,実装メモ
+#%define head (
+  <link rel="stylesheet" charset="utf-8" href="${aghdir:-http://padparadscha/agh}/prog.std.css" />
+  <style type="text/css">
+  div.obsolete{color:gray;}
+  </style>
+  <meta name="agh-fly-type" content="color" />
+  <script type="text/javascript" charset="utf-8" src="${aghdir:-http://padparadscha/agh}/agh.fly.jgz"></script>
+#%)
+PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP-->
+</head>
+<body>
+#%define body (
+<h1>PostScript</h1>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!--###########################################################################
+
+    計画 3 最適化
+    
+############################################################################-->
+<h2>計画3. 最適化</h2>
+<!--........................................................................-->
+<h3>ExecutableArray 入れ子リテラルの初期インスタンス化</h3>
+<div class="note obsolete">初期メモ)
+  <p>子 ExecutableArray は初めの実行時に既に作成してしまう。
+  </p>
+  <p>要するに context によって { の意味が変わったりするという事は無い為、
+  その場で PsArray にしてしまっても問題ない。
+  毎回ループの中で構築するよりは速いだろう。
+  </p>
+</div>
+<p>今迄の実装だと、ExecutableArray の中にある入れ子の
+ExecutableArray 初期化子 { { } } についてはインスタンス化していなかった。
+つまり、外側の 「ExecutableArray を評価する時」にインスタンス化を行っていたのである。
+</p>
+<p>然し、この動作だと、外側の ExecutableArray を評価するたびに新しく
+入れ子の ExecutableArray のインスタンス化を行わなければならないし、
+非効率的である。</p>
+<p>更に、GhostScript で <code>{ {1 2} {1 3} } 0 get</code> 等として確認してみる所、
+既に内側の ExecutableArray はインスタンス化されていて、
+全体としては要素数 2 の配列になっている。
+つまり、今迄の動作は非標準的な動作だったという事である。
+</p>
+<p>また、もう一つ分かった事は、中に実行可能な配列がある実行可能配列を「実行」した時、
+内側の実行可能配列は実行されないという事である。(当然の事ではあるが)
+その事にも対応させた。
+</p>
+<p>それと、実行中には滅多に登場しないであろう
+MARK_PROC_BEGIN 及び MARK_PROC_END については
+__xaccess__ 属性を付加して、if-else 連鎖の末端の方に配置し直した。</p>
+<h4>書き換え</h4>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps.js/L1981 @@ 21:21 2011/03/01
+   ns.Processor=function(info){
+     this.stk_wgen=[];
+     this.stk=[];
+     this.scope=new Scope();
+     
+-    this.m_block=null;
+-    this.m_block_lv=0;
++    this.m_blklv=-1;
++    this.m_blkstk=[];
+     
+     this.m_blklv=-1;
+     this.m_blkstk=[];
+     
+     this.m_stop=false; // exit/stop/quit
+     
+     this.m_wstack=[];
+@ mwg.lang.ps.js/L2017 @@ 21:27 2011/03/01
+     Run:function Run(text){
+       var scanner=new ns.Scanner(text,this);
+-      this.m_block_lv=0;
+-      this.m_block=null;
++      this.m_blklv=-1;
++      this.m_blkstk=[];
+       var w=null;
+       while((w=scanner.next())!=null){
+@ mwg.lang.ps.js/L2136 @@ 21:27 2011/03/01
+     process:function process(w){
+       this.m_wstack.push(w);
+       if(this.m_block==null){
+         if(w.__xaccess__){
+           if(w instanceof ns.PsName){
+             var val=this.scope.get_val(this,w.name);
+             if(val!=null)
+               this.process(val,w);
+           }else if(w instanceof ns.PsArray){
+             for(var i=0;i&lt;w.length;i++){
+-              this.process(w.data[w.offset+i]);
+-              if(this.m_stop)break;
++              var w2=w.data[w.offset+i];
++              if(w.__xaccess__&amp;&amp;!(w2 instanceof ns.PsArray)){
++                this.process(w2);
++                if(this.m_stop)break;
++              }else
++                this.stk.push(w2);
+             }
+           }else if(w instanceof ns.PsString){
+             var cscan=new ns.Scanner(w.toString(),this);
+             var w2=null;
+             while(w2=cscan.next()){
+               if(w2 instanceof ns.PsComment)continue;
+               this.process(w2);
+               if(this.m_stop)break;
+             }
++          }else if(w==MARK_PROC_BEGIN){
++            this.m_blklv=0;
++            this.m_blkstk.push([]);
++          }else if(w==MARK_PROC_END){
++            this.onerror("syntaxerror","unexpected '}'. The corresponding '{' does not exist.");
+           }else if(!(w instanceof ns.PsNull)){
+             this.stk.push(w);
+           }
+         }else if(w instanceof Function){
+           w(this);
+-        }else if(w==MARK_PROC_BEGIN){
+-          this.m_block=[];
+-          this.m_block_lv=0;
+-        }else if(w==MARK_PROC_END){
+-          this.onerror("syntaxerror","unexpected '}'. The corresponding '{' does not exist.");
+         }else{
+           this.stk.push(w);
+         }
+       }else{
+         //---- { } で囲まれている部分は実行せずに、実行可能配列に格納
+         if(w==MARK_PROC_BEGIN){
+-          this.m_block_lv++;
+-          
++          this.m_blklv++;
++          this.m_blkstk.push([]);
++          
++          this.m_wstack.pop();return;
+         }else if(w==MARK_PROC_END){
+-          if(this.m_block_lv--==0){
+-            var procedure=new ns.PsArray(this.m_block);
+-            procedure.__xaccess__=true;
+-            // TODO: whether a procedure is defaultly packed?
+-            this.stk.push(procedure);
+-            this.m_block=null;
+-            this.m_wstack.pop();
+-            return;
+-          }
++          this.m_blklv--;
++          w=new ns.PsArray(this.m_blkstk.pop());
++          w.__xaccess__=true;
++          //■TODO: whether a procedure is defaultly packed? device 設定
++          
++          if(this.m_blklv&lt;0){
++            this.stk.push(w);
++            
++            this.m_wstack.pop();return;
++          }
+         }else if(w.__imediate__){
+           var val=this.scope.get_val(this,w.name);
+           if(val==null){
+             this.onerror("undefined","'"+w.name+"'");
+           }else{
+             w=val;
+           }
+         }
+         
+-        this.m_block.push(w);
++        this.m_blkstk[this.m_blklv].push(w);
+       }
+       this.m_wstack.pop();
+     },
+     _:0
+   });
+</pre>
+<!--.........................................................................-->
+<h3>JavaScript 関数化</h3>
+<p>更に高速化を実行する為、
+頻繁に呼ばれる executable な array を JavaScript 関数に変換してしまう。
+</p>
+<p>この様にする事で process 関数呼出の回数を減らす事が出来るし、
+既に型の分かっている物に対して何度も型判定をする必要もなくなる。
+</p>
+<p>executable な array の中身の変更に対応する為に version を使用する。
+array の内容を更新する度に array の内容の version を increment し、
+また一方で 関数化を実行した時の version も同時に保持しておく。
+関数を実行する前に関数を実行した時の version と現在の内容の version を比較して
+異なれば新しく関数化を実行する必要がある事を示す。
+(実際には、executable な array の内容を動的に変更する
+という事はそんなにないと思われるので、
+これで重くなる様なプログラムは比較的に少ないと考える。)
+また、重要な事は、array の内容は他の ns.PsArray インスタンスと共有されている事であり、
+従って、他の ns.PsArray インターフェイスを通じての変更に対しても関数化を再度実行する必要が生じるという事である。
+なので、array の内容の version は、
+ns.PsArray インスタンスではなくバッファに附属させて覚えておかなければならない。
+</p>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps-cmd.js/L326 @@ 08:31 2011/03/02
+     'for':function ps_for(proc){
+       var exec=proc.stk.pop();
+       var iM=proc.stk.pop();
+       var di=proc.stk.pop();
+       var i0=proc.stk.pop();
+       
+-      /*
+-      // 継続条件
+-      var cond=null;
+-      if(di==0){
+-        cond=function(){return true;};
+-      }else if(di*(iM-i0)&lt;0){
+-        cond=function(){return false;};
+-      }else if(di&gt;0){
+-        cond=function(){return i&lt;=iM;};
+-      }else{
+-        cond=function(){return i&gt;=iM;};
+-      }
+-      
+-      for(var i=i0;cond();i+=di){
+-        proc.stk.push(i);
+-        proc.process(exec);
+-        //proc.onerror("debug",to_ps(exec));
+-        if(proc.m_stop){
+-          if(proc.m_stop=='exit')proc.m_stop=false;
+-          break;
+-        }
+-      }
+-      /*/
++      if(!(exec instanceof ns.PsArray)||!exec.__xaccess__){
++        proc.onerror('typecheck',"operand4/4: a procedure is expected");
++        return;
++      }
++      
++      // exec.update_function
++      if(exec.__function__==null||exec.__funcver__!=exec.data.ver)
++        exec.compile_function(proc);
++
+       if(di==0){
+         for(var i=i0;!proc.m_stop;i+=di){
+           proc.stk.push(i);
+-          proc.process(exec);
++          exec.__function__(proc,exec.__funcargs__);
+         }
+       }else if(di*(iM-i0)&lt;0){
+         return;
+       }else if(di&gt;0){
+         for(var i=i0;i&lt;=iM&amp;&amp;!proc.m_stop;i+=di){
+           proc.stk.push(i);
+-          proc.process(exec);
++          exec.__function__(proc,exec.__funcargs__);
+         }
+       }else{
+         for(var i=i0;i&gt;=iM&amp;&amp;!proc.m_stop;i+=di){
+           proc.stk.push(i);
+-          proc.process(exec);
++          exec.__function__(proc,exec.__funcargs__);
+         }
+       }
+       
+       if(proc.m_stop=='exit')proc.m_stop=false;
+       //*/
+     },
+@ mwg.lang.ps-cmd.js/L363 @@ 07:51 2011/03/04
+     forall:function forall(proc){
+       var e=proc.stk.pop();
+       var a=proc.stk.pop();
++      
++      if(!(e instanceof ns.PsArray)||!e.__xaccess__){
++        proc.onerror('typecheck',"operand4/4: a procedure is expected");
++        return;
++      }else if(e.__funcver__!=e.data.ver)
++        e.compile_function(proc);
++        
+       if(a instanceof ns.PsArray||a instanceof ns.PsString){
+         for(var i=0;i&lt;a.length;i++){
+           proc.stk.push(a.data[a.offset+i]);
+-          proc.process(e);
++          e.__function__(proc,e.__funcargs__)
+         }
+       }else if(a instanceof ns.PsDict){
+         for(var k in a.data){
+           proc.stk.push(new ns.PsName(k));
+           proc.stk.push(a.data[k]);
+-          proc.process(e);
++          e.__function__(proc,e.__funcargs__)
+         }
+       }else{
+         proc.onerror('typecheck','oprand1/2: an array, string or dictionary is expected');
+         return;
+       }
+     },
+     loop:function loop(proc){
+       var e=proc.stk.pop();
++      
++      if(!(e instanceof ns.PsArray)||!e.__xaccess__){
++        proc.onerror('typecheck',"operand1/1: a procedure is expected");
++        return;
++      }else if(e.__funcver__!=e.data.ver)
++        e.compile_function(proc);
++        
+       for(;!proc.m_stop;)
+-        proc.process(e);
++        e.__function__(proc,e.__funcargs__)
+       if(proc.m_stop=='exit')
+         proc.m_stop=false;
+     },
+     repeat:function repeat(proc){
+       var e=proc.stk.pop();
+       var n=proc.stk.pop();
++      
++      if(!(e instanceof ns.PsArray)||!e.__xaccess__){
++        proc.onerror('typecheck',"operand2/2: a procedure is expected");
++        return;
++      }else if(e.__funcver__!=e.data.ver)
++        e.compile_function(proc);
++        
+       while(n--){
+-        proc.process(e);
++        e.__function__(proc,e.__funcargs__)
+         if(proc.m_stop){
+           if(proc.m_stop=='exit')proc.m_stop=false;
+           break;
+         }
+       }
+     },
+     'if':function ps_if(proc){
+       var e=proc.stk.pop();
+       var c=proc.stk.pop();
+       if(c)proc.process(e);
+     },
+@ mwg.lang.ps-cmd.js/L429 @@ 19:25 2011/03/06
+     'if':function ps_if(proc){
+       var e=proc.stk.pop();
+-      var c=proc.stk.pop();
+-      if(c)proc.process(e);
++      if(!proc.stk.pop())return;
++      
++      if(!(e instanceof ns.PsArray)||!e.__xaccess__){
++        proc.onerror('typecheck',"operand2/2: a procedure is expected");
++        return;
++      }else if(e.__funcver__!=e.data.ver)
++        e.compile_function(proc);
++        
++      e.__function__(proc,e.__funcargs__)
+     },
+     ifelse:function ifelse(proc){
+       var f=proc.stk.pop();
+       var t=proc.stk.pop();
+       var c=proc.stk.pop();
+-      proc.process(c?t:f);
++      
++      var e=c?t:f;
++      if(!(e instanceof ns.PsArray)||!e.__xaccess__){
++        proc.onerror('typecheck',"operand"+(c?2:3)+"/3: a procedure is expected");
++        return;
++      }else if(e.__funcver__!=e.data.ver)
++        e.compile_function(proc);
++        
++      e.__function__(proc,e.__funcargs__)
+     },
+</pre>
+<!--.........................................................................-->
+<h3>比較関数</h3>
+<p>光線追跡法のプログラムで結構な回数の比較が実行されている事が分かった。
+現在の比較操作は、
+</p>
+<ol>
+<li>比較オペレータ呼出</li>
+<li>ps_compare 呼出</li>
+<li>mwg.is で型を判定してから、</li>
+<li>ps_compare_native 呼出</li>
+</ol>
+<p>の様な方法になっていて、何度も関数呼出を実行する為に遅くなっている。
+関数呼出を減少させる方向で最適化を図る事にする。
+また、実際に使用される頻度が高いのは Number であろうから、
+先に Number かどうかの判定を持ってきた方が速くなるであろう。
+</p>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps-cmd.js/L209 @@ 18:34 2011/03/06
+-  ns.ps_compare=(function(){
+-    function ps_compare_native(a,b){
+-      if(a==b)return 0;
+-      if(a&gt;b)return 1;
+-      return -1;
+-    }
+-    
+-    return function ps_compare(a,b){
+-      if(a==null)return b==null?0:NaN;
+-      if(b==null)return NaN;
+-      if(a.constructor!=b.constructor)return NaN;
+-      
+-      if(a instanceof ns.PsName){
+-        return ps_compare_native(a.name,b.name);
+-      }else if(a instanceof ns.PsString){
+-        return ps_compare_native(a.toString(),b.toString());
+-      }else if(a instanceof ns.PsNull){
+-        return 0;
+-      }else if(mwg.is(a,Number)||mwg.is(a,String)){
+-        return ps_compare_native(a,b);
+-      }else{
+-        return a===b?0:NaN;
+-      }
+-    };
+-  })();
++  ns.ps_compare=function ps_compare(a,b){
++    if(a==null)return b==null?0:NaN;
++    if(b==null)return NaN;
++    if(a.constructor!=b.constructor)return NaN;
++    
++    if(!(typeof a=="number"||a instanceof Number||typeof a=="string"||a instanceof String)){
++      if(a instanceof ns.PsName){
++        a=a.name;
++        b=b.name;
++      }else if(a instanceof ns.PsString){
++        var a=a.toString();
++        var b=b.toString();
++      }else if(a instanceof ns.PsNull){
++        return 0;
++      }else return a===b?0:NaN;
++    }
++    
++    // compare native
++    if(a==b)return 0;
++    if(a&gt;b)return 1;
++    return -1;
++  };
+</pre>
+<!--.........................................................................-->
+<h3>関数化での定数伝播最適化</h3>
+<p>関数化するコードを書き直して、最適化を実行し易い様にした。</p>
+<h4>古い関数化 (直接 Code Generation/高速な関数化)</h4>
+<p>それに伴って、古い関数化のコードを削除する。</p>
+<p>実は、下の関数化のコードの方が新しい物よりも単純なだけ合って、関数を構築する速度は此方の方が速い。
+最適化のレベルによっては、この様な、
+「実行速度はそんなには速くないけれども構築が速い関数化」が必要になる事もあるかも知れない。
+その時には、この関数化のコードの様に
+「一旦スタックにコードを整理してから出力するのではなく、直接 code generation を実行する」
+という手段を取る事も有効であると言う事を覚えておく。
+</p>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps.js/L89 @@ 09:26 2011/03/09
+     //--------------------------------------------------------------------------
+-    compile_bind__:function(proc,w,buff,args){
+-      // assume(w instanceof ns.PsName);
+-      
+-      var t=w;
+-      while(
+-        w instanceof ns.PsName&amp;&amp;w.__xaccess__
+-        &amp;&amp;(t=proc.scope.TryGetValue(proc,w.name))!=null
+-      )w=t;
+-      
+-      if(w.__xaccess__){
+-        if(w instanceof ns.PsArray){
+-          //buff.push('_a[',args.length,'].execute_function(proc);\n');args.push(w);
+-          buff.push('var f=_a[',args.length,'];');args.push(w);
+-          buff.push('if(f.__funcver__!=f.data.ver)');
+-          buff.push('  f.compile_function(proc);');
+-          buff.push('f.__function__(proc,f.__funcargs__);');
+-          
+-          buff.push('if(proc.m_stop)return;\n');
+-        }else if(w instanceof ns.PsString){
+-          buff.push('var sc=new ns.ScannerF(_a[',args.length,'].toString(),proc);\n');args.push(w);
+-          buff.push('var w2=null;\n');
+-          buff.push('while(w2=sc.next()){\n');
+-          buff.push('  if(w2 instanceof ',nsName,'.PsComment)continue;\n');
+-          buff.push('  proc.process(w2);\n');
+-          buff.push('  if(proc.m_stop)return;\n'); // 配列内列挙の中止
+-          buff.push('}\n');
+-        }else if(!(w instanceof ns.PsNull)){
+-          buff.push('_s.push(_a[',args.length,']);\n');args.push(w);
+-        }
+-      }else if(w instanceof Function){
+-        if(w.__inline__!=null){
+-          if(!w.__nothrow__){
+-            buff.push('proc.m_wstack.push(_a[',args.length,']);\n');args.push(w);
+-          }
+-          buff.push(w.__inline__);
+-          if(!w.__nothrow__){
+-            buff.push('proc.m_wstack.pop();\n');
+-            buff.push('if(proc.m_stop)return;\n');
+-          }
+-        }else{
+-          buff.push('proc.m_wstack.push(_a[',args.length,']);\n')
+-          buff.push('_a[',args.length,'](proc);\n');args.push(w);
+-          buff.push('proc.m_wstack.pop();\n');
+-          buff.push('if(proc.m_stop)return;\n');
+-        }
+-      }else{
+-        buff.push('_s.push(_a[',args.length,']);\n');args.push(w);
+-      }
+-    },
+     compile_function:function(proc){
+-      var buff=[];
+-      var args=[];var ia=0;
+-      buff.push('var _s=proc.stk;\n');
+-      for(var i=0;i&lt;this.length;i++){
+-        var w=this.data[this.offset+i];
+-        if(w.__xaccess__&amp;&amp;!(w instanceof ns.PsArray)){
+-          if(w instanceof ns.PsName){
+-            if(proc.option.MwgAllowAutoBind){
+-              this.compile_bind__(proc,w,buff,args);
+-              ia=args.length;
+-            }else{
+-              //buff.push('proc.m_wstack.push(_a[',ia++,']);');args.push(w);
+-              buff.push('var v=proc.scope.get_val(proc,_a[',ia++,']);\n');args.push(w.name);
+-              buff.push('if(v!=null)proc.process(v);\n');
+-              buff.push('if(proc.m_stop)return;\n');
+-              //buff.push('proc.m_wstack.pop();');
+-            }
+-          }else if(w instanceof ns.PsString){
+-            buff.push('var sc=new ns.ScannerF(_a[',ia++,'].toString(),proc);\n');args.push(w);
+-            buff.push('var w2=null;\n');
+-            buff.push('while(w2=sc.next()){\n');
+-            buff.push('  if(w2 instanceof ',nsName,'.PsComment)continue;\n');
+-            buff.push('  proc.process(w2);\n');
+-            buff.push('  if(proc.m_stop)return;\n'); // 配列内列挙の中止
+-            buff.push('}\n');
+-          }else if(!(w instanceof ns.PsNull)){
+-            buff.push('_s.push(_a[',ia++,']);\n');args.push(w);
+-          }
+-        }else if(w instanceof Function){
+-          buff.push('proc.m_wstack.push(_a[',ia,']);\n')
+-          buff.push('_a[',ia++,'](proc);\n');args.push(w);
+-          buff.push('proc.m_wstack.pop();\n');
+-          buff.push('if(proc.m_stop)return;\n');
+-        }else{
+-          buff.push('_s.push(_a[',ia++,']);\n');args.push(w);
+-        }
+-      }
+-      this.__function__=new Function('proc','_a',buff.join(''));
+-      this.__funcargs__=args;
+-      this.__funcver__=this.data.ver;
+-      
+-      //window.log("dbg: "+this.__function__);
+-      //window.log('dbg: compile_function');
++      return new ns.Optimizer(proc).compile_function(this);
+     },
+</pre>
+<h4>ns.Optimizer: 定数以外の伝播に向けて</h4>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps.js/L244 @@ 09:47 2011/03/09
+     mwg.memcpy(ns.Optimizer.prototype,{
+       compile_function:function(procedure){
+         this.stk=[];
+         var stk=this.stk;
+         
+         //----------------------------------------------------
+         //  Construction
+         for(var i=0;i&lt;procedure.length;i++){
+           var w=procedure.data[procedure.offset+i];
+           if(w.__xaccess__&amp;&amp;!(w instanceof ns.PsArray)){
+             if(w instanceof ns.PsName){
+               if(this.proc.option.MwgAllowAutoBind){
+                 this.strong_bind(w);
+               }else{
+                 stk.push([OP_NAME,w]);
+               }
+             }else if(w instanceof ns.PsString){
+               stk.push([OP_ESTR,w]);
+             }else if(!(w instanceof ns.PsNull)){
+               stk.push([OP_PUSH,w]);
+             }
+           }else if(w instanceof Function){
+             stk.push([OP_FUNC,w]);
+           }else{
+             stk.push([OP_PUSH,w]);
+           }
+         }
+         
++        var args=[];
++        this.iv=0;
++        this.args=args;
+         this.optimize();
+         
+         //----------------------------------------------------
+         //  Code Generation
+         var stk=this.stk;
+         var buff=[];
+-        var args=[];var ia=0;
++        var ia=args.length;
+         buff.push('var _s=proc.stk;\n');
+         for(var i=0;i&lt;stk.length;i++){
+           var op=stk[i];
+           switch(op[0]){
+-            case OP_PUSH:
+-              buff.push('_s.push(_a[',ia++,']');args.push(op[1]);
+-              while(i+1&lt;stk.length&amp;&amp;stk[i+1][0]==OP_PUSH){
+-                buff.push(',_a[',ia++,']');args.push(stk[++i][1]);
+-              }
+-              buff.push(');\n');
+-              break;
++            case OP_EXPR:
++              buff.push('_s.push(',op[1],'');
++              while(i+1&lt;stk.length&amp;&amp;stk[i+1][0]==OP_EXPR){
++                buff.push(',',stk[++i][1]);
++              }
++              buff.push(');\n');
++              break;
+             case OP_FUNC:
+               var f=op[1];
+               if(f.__inline__!=null){
+                 if(!f.__nothrow__){
+                   buff.push('proc.m_wstack.push(_a[',ia++,']);\n');args.push(f);
+                 }
+                 buff.push(f.__inline__);
+                 if(!f.__nothrow__){
+                   buff.push('proc.m_wstack.pop();\n');
+                   buff.push('if(proc.m_stop)return;\n');
+                 }
+               }else{
+                 buff.push('proc.m_wstack.push(_a[',ia,']);')
+                 buff.push('_a[',ia++,'](proc);');args.push(f);
+                 buff.push('proc.m_wstack.pop();');
+                 buff.push('if(proc.m_stop)return;\n');
+               }
+               break;
+             case OP_NAME:
+               //buff.push('proc.m_wstack.push(_a[',ia++,']);');args.push(w);
+               buff.push('var v=proc.scope.get_val(proc,_a[',ia++,']);\n');args.push(op[1].name);
+               buff.push('if(v!=null)proc.process(v);\n');
+               buff.push('if(proc.m_stop)return;\n');
+               //buff.push('proc.m_wstack.pop();');
+               break;
+             case OP_ESTR:
+               buff.push('var sc=new ns.ScannerF(_a[',ia++,'].toString(),proc);\n');args.push(op[1]);
+               buff.push('var w2=null;\n');
+               buff.push('while(w2=sc.next()){\n');
+               buff.push('  if(w2 instanceof ',nsName,'.PsComment)continue;\n');
+               buff.push('  proc.process(w2);\n');
+               buff.push('  if(proc.m_stop)return;\n'); // 配列内列挙の中止
+               buff.push('}\n');
+               break;
+             case OP_EARR:
+               buff.push('var f=_a[',ia++,'];');args.push(op[1]);
+               buff.push('if(f.__funcver__!=f.data.ver)');
+               buff.push('  f.compile_function(proc);');
+               buff.push('f.__function__(proc,f.__funcargs__);');
+               buff.push('if(proc.m_stop)return;\n');
+               break;
+             case OP_CODE:
+               buff.push(op[1]);
+               break;
++            case OP_PUSH:
++              buff.push('_s.push(_a[',ia++,']');args.push(op[1]);
++              while(i+1&lt;stk.length&amp;&amp;stk[i+1][0]==OP_PUSH){
++                buff.push(',_a[',ia++,']');args.push(stk[++i][1]);
++              }
++              buff.push(');\n');
++              break;
+           }
+         }
+         
+         //----------------------------------------------------
+         //  Setup
+         procedure.__function__=new Function('proc','_a',buff.join(''));
+         procedure.__funcargs__=args;
+         procedure.__funcver__=procedure.data.ver;
+         
+         window.log("compiled: "+procedure.__function__);
+       },
+       strong_bind:function(w){
+         // assume(w instanceof ns.PsName);
+         
+         var t=w;
+         while(
+           w instanceof ns.PsName&amp;&amp;w.__xaccess__
+           &amp;&amp;(t=this.proc.scope.TryGetValue(this.proc,w.name))!=null
+         )w=t;
+         
+         if(w.__xaccess__){
+           if(w instanceof ns.PsArray){
+             this.stk.push([OP_EARR,w]);
+           }else if(w instanceof ns.PsString){
+             this.stk.push([OP_ESTR,w]);
+           }else if(!(w instanceof ns.PsNull)){
+             this.stk.push([OP_PUSH,w]);
+           }
+         }else if(w instanceof Function){
+           this.stk.push([OP_FUNC,w]);
+         }else{
+           this.stk.push([OP_PUSH,w]);
+         }
+       },
+       optimize:function(){
+         this.ostk=this.stk;
+         this.stk=[];
+         this.stkp=[];
+         var s=this.ostk;
+         var s_=this.stk;
+         var sp=this.stkp;
+         
+         for(var i=0;i&lt;s.length;i++){
+           var o=s[i];
+           if(o[0]==OP_FUNC&amp;&amp;o[1].__optimize1__!=null){
+             o[1].__optimize1__(this);
++          }else if(o[0]==OP_PUSH){
++            sp.push(o);
+           }else{
++            // flush
++            for(var i=0;i&lt;sp.length;i++)
++              s_.push(sp[i]);
++            sp.length=0;
++            
+             s_.push(o);
+           }
+         }
+       },
+       countpush:function(){
++        return this.stkp.length;
+-        var s=this.stk;
+-        var l=s.length;
+-        for(var i=l-1;i&gt;=0&amp;&amp;s[i][0]==OP_PUSH;i--);
+-        return l-1-i;
+       }
+@ mwg.lang.ps-opt.js/L240 @@ 17:53 2011/03/10
+         ns.systemdict.data.roll.__optimize1__=function(opt){
+           var c=opt.countpush();
+           if(c&lt;2){
+             opt.stk.push([OP_FUNC,this]);
+             return;
+           }
+           
+           var del=opt.stk.pop()[1];
+           var len=opt.stk.pop()[1];
+           if(del&lt;0)del+=len;
+           
+           var ret=[];
+           ret.push('var end=_s.length;\n');
+           ret.push('var mid=end-',del,';\n');
+           ret.push('var beg=end-',len,';\n');
+           ret.push('var b,e,t;\n');
+           if(len-del&gt;1)ret.push('b=beg;e=mid;for(e--;b&lt;e;b++,e--){t=_s[b];_s[b]=_s[e];_s[e]=t;}\n');
+           if(del&gt;1)ret.push('b=mid;e=end;for(e--;b&lt;e;b++,e--){t=_s[b];_s[b]=_s[e];_s[e]=t;}\n');
+           ret.push('b=beg;e=end;for(e--;b&lt;e;b++,e--){t=_s[b];_s[b]=_s[e];_s[e]=t;}\n');
+           opt.stk.push([OP_CODE,ret.join('')]);
+           
+           // □ c==1 の場合
+           // □ c&gt;=2+len の場合
+         };
+ #%define mwg::mul (
+         ns.systemdict.data.mul.__optimize1__=function(opt){
+           var c=opt.countpush();
+           if(c&gt;=2){
+             var b=opt.stk.pop()[1];
+             var a=opt.stk.pop()[1];
+             opt.stk.push([OP_PUSH,a*b]);
+           }else if(c==1){
+             var b=opt.stk.pop()[1];
+             opt.stk.push([OP_CODE,"_s[_s.length-1]*="+b+";\n"]);
+           }else{
+             opt.stk.push([OP_FUNC,this]);
+           }
+         };
+ #%)
+ #%expand mwg::mul.r|*|+|.r|mul|add|
+ #%expand mwg::mul.r|*|-|.r|mul|sub|
+ #%expand mwg::mul
+ #%expand mwg::mul.r|*|/|.r|mul|div|
+ #%expand mwg::mul.r|*|%|.r|mul|mod|
+ #%define mwg::cmd (
+         ns.systemdict.data.cmd.__optimize1__=function(opt){
+           var c=opt.countpush();
+           if(c&gt;=1){
+             var a=opt.stk.pop()[1];
+             opt.stk.push([OP_PUSH,expr]);
+           }else{
+             opt.stk.push([OP_FUNC,this]);
+           }
+         };
+ #%)
+ #%expand mwg::cmd.r|cmd|neg|.r|expr|-a|
+ #%expand mwg::cmd.r|cmd|abs|.r|expr|Math.abs(a)|
+</pre>
+<h4>ns.Optimizer2: push/pop の結合</h4>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps-opt.js/L319 @@ 17:46 2011/03/10
+# push/pop の結合
+         //----------------------------------------------------
+         //  Code Generation
+         var stk=this.stk;
+         var buff=[];
+         var ia=args.length;
+         buff.push('var _s=proc.stk;\n');
+         for(var i=0;i&lt;stk.length;i++){
+           var op=stk[i];
+           switch(op[0]){
+-            case OP_EXPR:
+-              buff.push('_s.push(',op[1]);
+-              while(i+1&lt;stk.length&amp;&amp;stk[i+1][0]==OP_EXPR){
+-                buff.push(',',stk[++i][1]);
+-              }
+-              buff.push(');\n');
+-              break;
+-            case OP_VPOP:
+-              if(i+1&lt;stk.length&amp;&amp;stk[i+1][0]==OP_EXPR){
+-                // pop, push の結合
+-                buff.push('var ',op[1],'=_s[_s.length-1];\n');
+-                var expr=stk[++i][1];
+-                if(expr!=op[1])
+-                  buff.push('_s[_s.length-1]=',expr,';\n');
+-              }else{
+-                buff.push('var ',op[1],'=_s.pop();\n');
+-              }
+-              break;
++            case OP_EXPR:
++            case OP_VPOP:
++              for(var j=1;i+j&lt;stk.length&amp;&amp;(stk[i+j][0]==OP_EXPR||stk[i+j][0]==OP_VPOP);j++);
++              if(j&gt;=2){
++                buff.push('var _n=_s.length;\n');
++                var s=0;
++                for(var k=0;k&lt;j;k++){
++                  if(stk[i][0]==OP_EXPR){
++                    buff.push('_s[_n+(',s++,')]=',stk[i++][1],';\n');
++                  }else{
++                    buff.push('var ',stk[i++][1],'=_s[_n+(',s---1,')];\n');
++                  }
++                }
++                if(s!=0)buff.push('_s.length=_n+(',s,');\n');
++                i--; // cancel
++              }else if(op[0]==OP_EXPR){
++                buff.push('_s.push(',op[1],');\n');
++              }else{
++                buff.push('var ',op[1],'=_s.pop();\n');
++              }
++              break;
+             case OP_FUNC:
+               var f=op[1];
+</pre>
+<!--.........................................................................-->
+<h3>ns.Optimizer2 整理</h3>
+<p>ns.Optimizer2 の最適化処理の追加が大体一段落したと思われるので、既存のコードを整理する。</p>
+<h4>直接 Optimize</h4>
+<p>現在の実装では、配列の内容を一旦 opt.stk に読み出して溜めてから、最適化を実行する様になっている。</p>
+<p>この方法だと、最適化機能を on/off するのが楽であるが、
+最適化しながら動的に命令列の内容を追加 (inlining などで) する事が出来ない。
+其処で、opt.stk に push する代わりにその儘 optimize 処理に移る様に実装を変更する。
+</p>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps-opt.js/L303 @@ 23:28 2011/03/10
+     mwg.memcpy(ns.Optimizer2.prototype,{
+       compile_function:function(procedure){
+-        this.stk=[];
+-        var stk=this.stk;
+-        
+         //----------------------------------------------------
+         //  Construction
++        this.stk=[];
++        this._s=[];
++        this.args=[];
++        this.iv=0;
+         this.read_array(procedure);
++        this.flushpush();
++        
++        var stk=this.stk;
++        var args=this.args;
+-        
+-        var args=[];
+-        this.iv=0;
+-        this.args=args;
+-        this.optimize();
+
+@ mwg.lang.ps-opt.js/L409 @@ 23:27 2011/03/10
+       read_array:function(procedure){
+-        var stk=this.stk;
+         for(var i=0;i&lt;procedure.length;i++){
+           var w=procedure.data[procedure.offset+i];
+           if(w.__xaccess__&amp;&amp;!(w instanceof ns.PsArray)){
+             if(w instanceof ns.PsName){
+               if(this.proc.option.MwgAllowAutoBind){
+                 this.strong_bind(w);
+               }else{
+-                stk.push([OP_NAME,w]);
++                this.read_operation([OP_NAME,w]);
+               }
+             }else if(w instanceof ns.PsString){
+-              stk.push([OP_ESTR,w]);
++              this.read_operation([OP_ESTR,w]);
+             }else if(!(w instanceof ns.PsNull)){
+-              stk.push([OP_PUSH,w]);
++              this.read_operation([OP_PUSH,w]);
+             }
+           }else if(w instanceof Function){
+-            stk.push([OP_FUNC,w]);
++            this.read_operation([OP_FUNC,w]);
+           }else{
+-            stk.push([OP_PUSH,w]);
++            this.read_operation([OP_PUSH,w]);
+           }
+         }
+       },
+       strong_bind:function(w){
+         // assume(w instanceof ns.PsName);
+         
+         var t=w;
+         while(
+           w instanceof ns.PsName&amp;&amp;w.__xaccess__
+           &amp;&amp;(t=this.proc.scope.TryGetValue(this.proc,w.name))!=null
+         )w=t;
+         
+         if(w.__xaccess__){
+           if(w instanceof ns.PsArray){
+             if(this.proc.option.MwgAllowInlining&amp;&amp;w.length&lt;=5)
+               this.read_array(w);
+             else
+-              this.stk.push([OP_EARR,w]);
++              this.read_operation([OP_EARR,w]);
+           }else if(w instanceof ns.PsString){
+-            this.stk.push([OP_ESTR,w]);
++            this.read_operation([OP_ESTR,w]);
+           }else if(!(w instanceof ns.PsNull)){
+-            this.stk.push([OP_PUSH,w]);
++            this.read_operation([OP_PUSH,w]);
+           }
+         }else if(w instanceof Function){
+-          this.stk.push([OP_FUNC,w]);
++          this.read_operation([OP_FUNC,w]);
+         }else{
+-          this.stk.push([OP_PUSH,w]);
++          this.read_operation([OP_PUSH,w]);
+         }
+       },
+       read_operation:function(o){
+         if(o[0]==OP_FUNC&amp;&amp;o[1].__optimize2__!=null){
+           o[1].__optimize2__(this);
+         }else if(o[0]==OP_PUSH){
+           this._s.push(o);
+         }else{
+           this.flushpush();
+           this.stk.push(o);
+         }
+       },
+       //--------------------------------------------------------------
+-      optimize:function(){
+-        this.ostk=this.stk;
+-        this.stk=[];
+-        this._s=[];
+-        var s=this.ostk;
+-        
+-        var args=this.args;
+-        
+-        for(var i=0;i&lt;s.length;i++){
+-          this.read_operation(s[i]);
+-        }
+-        
+-        // flush
+-        this.flushpush();
+-      },
+       opepush:function(ope){
+         this.flushpush();
+         this.stk.push(ope);
+       },
+</pre>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+#%)
+</body>
+</html>

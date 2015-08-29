@@ -1,0 +1,446 @@
+// -*- mode:js;coding:utf-8 -*- (日本語)
+
+var mod_common=ns.Modules["mod:common"];
+var mod_math=ns.Modules["mod:math"];
+var mod_core=ns.Modules["core"];
+agh.memcpy(mod_core.ErrorMessages,{
+  'mod:para.cmd:newtheorem.AlreadyDefined':[
+    '\\newtheorem AlreadyDefined',
+    'the theorem "{name}" was already defined.'],
+  'mod:para.cmd:newtheorem.UndefinedTheorem':[
+    'UndefinedTheorem',
+    '\\newtheorem: the specified number-sharing theorem "{refthm}" is not defined.']
+});
+
+context "mode.para"{
+  command s>#"@"()  @"\hspace{1.2ex}";
+
+  command s>\,()            @'\hspace{0.1667em}';
+  command s>\thinspace()    @'\hspace{0.1667em}';
+  if(agh.browser.vIE&&agh.browser.vIE<7){
+    command s@\negthinspace() '<tex:negspace class="letter-spacing">&nbsp;&nbsp;</tex:negspace>&nbsp;';
+  }else{
+    command s@\negthinspace() '<tex:negspace></tex:negspace>';
+  }
+
+  command s@\-() "&#xAD;"; // soft hyphen
+
+  letter  s@\~()    '<tex:i class="aghtex-nobr"> </tex:i>'; // <nobr>
+  command s@#" " () "&nbsp;";
+  command s@#"\\"() "<br />";
+  command s@#par () "<br />";
+  letter f#'\n'(){
+    if(doc.scanner.wordtype=="ltr"&&doc.scanner.word=='\n'){
+      doc.skipSpaceAndComment();
+      doc.currentCtx.output.buff.push("<br />");
+    }else
+      doc.currentCtx.output.buff.push(" ");
+  };
+  
+  //@A 字体
+  // - 文字の大きさ
+  command f\tiny()         {mod_common.TagCurrentContext(doc,"tex:fsize-s4");};
+  command f\scriptsize()   {mod_common.TagCurrentContext(doc,"tex:fsize-s3");};
+  command f\footnotesize() {mod_common.TagCurrentContext(doc,"tex:fsize-s2");};
+  command f\small()        {mod_common.TagCurrentContext(doc,"tex:fsize-s1");};
+  command f\normalsize()   {mod_common.TagCurrentContext(doc,"tex:fsize-n");};
+  command f\large()        {mod_common.TagCurrentContext(doc,"tex:fsize-b1");};
+  command f\Large()        {mod_common.TagCurrentContext(doc,"tex:fsize-b2");};
+  command f\LARGE()        {mod_common.TagCurrentContext(doc,"tex:fsize-b3");};
+  command f\huge()         {mod_common.TagCurrentContext(doc,"tex:fsize-b4");};
+  command f\Huge()         {mod_common.TagCurrentContext(doc,"tex:fsize-b5");};
+  // - フォント
+  command s@\textrm(#>1) '<tex:frm>#1</tex:frm>';
+  command s@\textsf(#>1) '<tex:fsf>#1</tex:fsf>';
+  command s@\texttt(#>1) '<tex:ftt>#1</tex:ftt>';
+  command s@\textmc(#>1) '<tex:fmc>#1</tex:fmc>';
+  command s@\textgt(#>1) '<tex:fgt>#1</tex:fgt>';
+  command s@\textmd(#>1) '<tex:fmd>#1</tex:fmd>';
+  command s@\textbf(#>1) '<tex:fbf>#1</tex:fbf>';
+  command s@\textup(#>1) '<tex:fup>#1</tex:fup>';
+  command s@\textit(#>1) '<tex:fit>#1</tex:fit>';
+  command s@\textsc(#>1) '<tex:fsc>#1</tex:fsc>';
+  command s@\textsl(#>1) '<tex:fsl>#1</tex:fsl>';
+  command s@\emph  (#>1) '<tex:i class="aghtex-emphasize">#1</tex:i>';
+  command f\rmfamily() {mod_common.TagCurrentContext(doc,"tex:frm");};
+  command f\sffamily() {mod_common.TagCurrentContext(doc,"tex:fsf");};
+  command f\ttfamily() {mod_common.TagCurrentContext(doc,"tex:ftt");};
+  command f\mcfamily() {mod_common.TagCurrentContext(doc,"tex:fmc");};
+  command f\gtfamily() {mod_common.TagCurrentContext(doc,"tex:fgt");};
+  command f\mdseries() {mod_common.TagCurrentContext(doc,"tex:fmd");};
+  command f\bfseries() {mod_common.TagCurrentContext(doc,"tex:fbf");};
+  command f\upshape()  {mod_common.TagCurrentContext(doc,"tex:fup");};
+  command f\itshape()  {mod_common.TagCurrentContext(doc,"tex:fit");};
+  command f\scshape()  {mod_common.TagCurrentContext(doc,"tex:fsc");};
+  command f\slshape()  {mod_common.TagCurrentContext(doc,"tex:fsl");};
+  //
+  command s@\textnormal(#>1) '<tex:fnorm>#1</tex:fnorm>';
+  command f\normalfont (){mod_common.TagCurrentContext(doc,"tex:fnorm");};
+  //
+  command f\em()      {mod_common.TagCurrentContext(doc,'tex:i class="aghtex-emphasize"','tex:i');};
+  command f\rm()      {mod_common.TagCurrentContext(doc,"tex:frm");};
+  command f\sl()      {mod_common.TagCurrentContext(doc,"tex:fsl");};
+  command f\it()      {mod_common.TagCurrentContext(doc,"tex:fit");};
+  command f\tt()      {mod_common.TagCurrentContext(doc,"tex:ftt");};
+  command f\bf()      {mod_common.TagCurrentContext(doc,"tex:fbf");};
+  command f\sf()      {mod_common.TagCurrentContext(doc,"tex:fsf");};
+  command f\sc()      {mod_common.TagCurrentContext(doc,"tex:fsc");};
+  command f\mc()      {mod_common.TagCurrentContext(doc,"tex:fmc");};
+  command f\gt()      {mod_common.TagCurrentContext(doc,"tex:fgt");};
+  command f\dm()      {mod_common.TagCurrentContext(doc,"tex:fmc");};
+  command f\dg()      {mod_common.TagCurrentContext(doc,"tex:fgt");};
+  command s@\boldmath(#>1) '<tex:fmbm>#1</tex:fmbm>';
+
+  if(ns.compatMode=="IE-qks"||agh.browser.vIE<8){
+    _Ctx.DefineCommand({
+      "'":mod_math.CreateAccentCommandQksT( 0.7,"<tex:fgt>&#xB4;</tex:fgt>"),
+      "`":mod_math.CreateAccentCommandQksT( 0.7,"<tex:fgt>`</tex:fgt>"),
+      "^":mod_math.CreateAccentCommandQksT( 0.9,"<tex:fgt>&#x2C6;</tex:fgt>"),
+      '"':mod_math.CreateAccentCommandQksT( 1.8,'<tex:fsym class="mc"><tex:small2>..</tex:small2></tex:fsym>'),
+      "~":mod_math.CreateAccentCommandQksT( 0.7,'<tex:fsym class="mc">~</tex:fsym>'),
+      "=":mod_math.CreateAccentCommandQksT( 1.2,"<tex:small3>－</tex:small3>"),
+      ".":mod_math.CreateAccentCommandQksT( 1.3,"<tex:small3>・</tex:small3>"),
+      "u":mod_math.CreateAccentCommandQksT( 0.6,"&#x2D8;"),
+      "v":mod_math.CreateAccentCommandQksT( 0.8,"&#x2C7;"),
+      "H":mod_math.CreateAccentCommandQksT( 0.6,"&#x2DD;"),
+      "t":mod_math.CreateAccentCommandQksT( 0.6,"<tex:fgt>&nbsp;&#x361;&nbsp;</tex:fgt>"),
+      "c":mod_math.CreateAccentCommandQksB( 0.2,"<tex:fgt>&#x327;</tex:fgt>"),
+      "b":mod_math.CreateAccentCommandQksB( 0.2,"_"),
+      "d":mod_math.CreateAccentCommandQksB(-1.0,"・")
+    });
+  }else{
+    _Ctx.DefineCommand({
+      "'":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00B4;</tex:fsym>'), // alt = &#x02CA;
+      "=":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00AF;</tex:fsym>'), // alt = &#x02C9;
+      "u":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D8;</tex:fsym>'),
+      "v":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C7;</tex:fsym>'),
+      ".":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D9;</tex:fsym>'),
+      '"':mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00A8;</tex:fsym>'),
+      "`":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02CB;</tex:fsym>'),
+      "^":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C6;</tex:fsym>'),
+      "~":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02DC;</tex:fsym>'),
+      "H":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02DD;</tex:fsym>'),
+      "t":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-syma-mincho">&#x2040;</tex:fsym>'), // combining = &#x0361;
+      "c":mod_math.CreateAccentCommand('low','<tex:fsym class="aghtex-symb-mincho">&#x00B8;</tex:fsym>'), // combining = &#x0327;
+      "b":mod_math.CreateAccentCommand('low','<tex:fsym class="aghtex-symb-mincho">&#x02D7;</tex:fsym>'), // combining = &#x0320;
+      "d":mod_math.CreateAccentCommand('low','<tex:fsym class="aghtex-syma-mincho">&#x002E;</tex:fsym>')  // combining = &#x0323;
+    });
+  }
+  
+  // \text... 記号 (math-mode で文字化けする系統の物) 
+  command s@\textasciicircum     () "^";
+  command s@\textasciitilde      () "~";
+  command s@\textbackslash       () '<tex:fsym class="rm">\\</tex:fsym>';
+  command s@\textbullet          () "<tex:fmr>•</tex:fmr>"; // u2022
+  command s@\textperiodcentered  () "·";  // u00B7
+  command s@\textbar             () "|";  // platex: j に文字化け in math-mode
+  command s@\textemdash          () "―"; // platex: | に文字化け in math-mode
+  command s@\textendash          () "—";
+  command s@\textexclamdown      () "¡";  // platex: < に文字化け in math-mode
+  command s@\textquestiondown    () "¿";  // platex: > に文字化け in math-mode
+  command s@\textquotedblleft    () '<tex:fsym class="rm">“</tex:fsym>';
+  command s@\textquotedblright   () '<tex:fsym class="rm">”</tex:fsym>'; // platex: double prime に文字化け in math-mode
+  command s@\textquoteleft       () '<tex:fsym class="rm">‘</tex:fsym>';
+  command s@\textquoteright      () '<tex:fsym class="rm">’</tex:fsym>'; // platex: prime に文字化け in math-mode
+  command s@\textasteriskcentered() "&#x2217;";
+  command s@\textparagraph       () "&#x00b6;";
+  command s@\textbraceleft       () "{";
+  command s@\textbraceright      () "}";
+  command s@\textdagger          () "&#x2020;";
+  command s@\textdaggerdbl       () "&#x2021;";
+  command s@\textdollar          () "$";
+  command s@\textsection         () "&#x00a7;";
+  command s@\textsterling        () "&#x00a3;";
+
+  letter s@\>()  '&#x00BF;'; // u00bf "¿", '<tex:fsym class="aghtex-symb-roman">&#x00BF;</tex:fsym>'
+  letter s@\<()  '&#x00A1;'; // u00a1 "¡", '<tex:fsym class="aghtex-symb-roman">&#x00A1;</tex:fsym>'
+  letter s@\|()  "―";
+  letter f@\?(){
+    doc.scanner.Next();
+    if(doc.scanner.is("ltr","`")){
+      doc.currentCtx.output.buff.push('&#x00BF;');
+      doc.scanner.Next();
+    }else{
+      doc.currentCtx.output.buff.push("?");
+    }
+  };
+  letter f@\!(){
+    doc.scanner.Next();
+    if(doc.scanner.is("ltr","`")){
+      doc.currentCtx.output.buff.push('&#x00A1;');
+      doc.scanner.Next();
+    }else{
+      doc.currentCtx.output.buff.push("!");
+    }
+  };
+  letter f@\-(){
+    doc.scanner.Next();
+    if(!doc.scanner.is("ltr","-")){
+      doc.currentCtx.output.buff.push("-");
+      return;
+    }
+    
+    doc.scanner.Next();
+    if(!doc.scanner.is("ltr","-")){
+      doc.currentCtx.output.buff.push("—");
+      // ※ 本来は \u2013 であるべき
+      return;
+    }
+    
+    doc.scanner.Next();
+    doc.currentCtx.output.buff.push("―");
+    // ※ 本来は \u2014 であるべき
+  };
+  // Quotations
+  function quoteleft(doc){
+    doc.scanner.Next();
+    if(!doc.scanner.is("ltr","`")&&!doc.scanner.is("cmd","lq")){
+      doc.currentCtx.output.buff.push('<tex:fsym class="rm">‘</tex:fsym>');
+      return;
+    }
+    
+    doc.scanner.Next();
+    doc.currentCtx.output.buff.push('<tex:fsym class="rm">“</tex:fsym>');
+  }
+  _Ctx.AddLetterHandler("`",quoteleft);
+  _Ctx.AddCommandHandler("lq",quoteleft);
+  function quoteright(doc){
+    doc.scanner.Next();
+    if(!doc.scanner.is("ltr","'")&&!doc.scanner.is("cmd","rq")){
+      doc.currentCtx.output.buff.push('<tex:fsym class="rm">’</tex:fsym>');
+      return;
+    }
+    
+    doc.scanner.Next();
+    doc.currentCtx.output.buff.push('<tex:fsym class="rm">”</tex:fsym>');
+  }
+  _Ctx.AddLetterHandler("'",quoteright);
+  _Ctx.AddCommandHandler("rq",quoteright);
+  letter s@\'"'()  '<tex:fsym class="rm">”</tex:fsym>'; // "
+  
+  environment s@\center()     '<div class="tex-center">#0</div>';
+  environment s@\flushright() '<div class="tex-right">#0</div>';
+  environment s@\flushleft()  '<div class="tex-left">#0</div>';
+  environment s@\quote()      '<blockquote class="tex-quote">#0</blockquote>';
+  environment s@\quotation()  '<blockquote class="tex-quota">#0</blockquote>';
+  environment s@\verse()      '<tex:verse>#0</tex:verse>';
+
+  //---------------------------------------------------------------------------
+  // 改頁コマンド (この実装では区別はない)
+  //---------------------------------------------------------------------------
+  command f\eject(){
+    var c=doc.GetCounter("page");
+    if(c!=null)c.Step();
+    doc.currentCtx.output.buff.push('<hr class="aghtex-newpage" />');
+  };
+  _Ctx.AddCommandHandler("supereject",_Ctx.handlerC["eject"]);
+  _Ctx.AddCommandHandler("dosupereject",_Ctx.handlerC["eject"]);
+  _Ctx.AddCommandHandler("newpage",_Ctx.handlerC["eject"]);
+  _Ctx.AddCommandHandler("clearpage",_Ctx.handlerC["eject"]);
+  _Ctx.AddCommandHandler("pagebreak",_Ctx.handlerC["eject"]);
+
+  command f\cleardoublepage(){
+    var c=doc.GetCounter("page");
+    if(c!=null){
+      c.Step();
+      c.Step();
+    }
+    doc.currentCtx.output.buff.push('<hr class="aghtex-newpage" /><hr class="aghtex-newpage" />');
+  };
+
+  //---------------------------------------------------------------------------
+  command s@\line(#mode.lr>1)       '<tex:i class="aghtex-cmd-line">#1</tex:i>';
+  command s@\centerline(#mode.lr>1) '<tex:i class="aghtex-cmd-centerline">#1</tex:i>';
+  command s@\leftline(#mode.lr>1)   '<tex:i class="aghtex-cmd-leftline">#1</tex:i>';
+  command s@\rightline(#mode.lr>1)  '<tex:i class="aghtex-cmd-rightline">#1</tex:i>';
+
+  //---------------------------------------------------------------------------
+  // \begin{displaymath}
+  // \[\]
+  // \begin{math}
+  // \(\)
+  // \begin{equation}
+  
+  environment s@:mode.math\displaymath()  '<tex:math class="aghtex-displaymath">&nbsp;#0&nbsp;</tex:math>\r\n';
+  command s@\[(#mode.math>1\]) '<tex:math class="aghtex-displaymath">#1</tex:math>\r\n';
+
+  environment s@:mode.math\math()  '<tex:math>#0</tex:math>';
+  command s@#"("("#mode.math>1\\)") '<tex:math>#1</tex:math>';
+  
+  _Ctx.AddLetterHandler("$",function(doc){
+    var buff=doc.currentCtx.output.buff;
+    doc.scanner.Next();
+    if(doc.scanner.is("ltr","$")){
+      doc.scanner.Next();
+      // $$ - $$
+      buff.push('<tex:math class="aghtex-displaymath">');
+      
+      // setup context and read under the context
+      var ctx=doc.context_cast(["mode.math"]);
+      ctx.AddLetterHandler("$",function(doc){
+        doc.scanner.Next();
+        if(doc.scanner.is("ltr","$"))
+          doc.scanner.Next();
+        else
+          doc.currentCtx.output.error("UnexpectedEOR","$");
+        
+        doc.currentCtx.BREAK=true;
+      });
+
+      buff.push(doc.Read(ctx),'</tex:math>');
+    }else{
+      // $ - $
+      buff.push('<tex:math>');
+
+      // setup context and read under the context
+      var ctx=doc.context_cast(["mode.math"]);
+      ctx.SetContextVariable('mathstyle',mod_math.MATHSTYLE_TEXT);
+      ctx.AddLetterHandler("$",function(doc){
+        doc.scanner.Next();
+        doc.currentCtx.BREAK=true;
+      });
+
+      buff.push(doc.Read(ctx),'</tex:math>');
+    }
+    
+  });
+
+  var CTXV_LABEL_EQ='mod_ref/label:eq';
+
+  _Ctx.AddEnvironment("equation",{
+    prologue:function(doc,ctx){
+      doc.currentCtx.output.buff.push('<tex:math class="aghtex-displaymath">');
+      ctx.SetContextVariable(CTXV_LABEL_EQ,[]);
+      ctx.userC["label"]=ns.Modules["mod:ref"]["cmd:label:eq"];
+    },
+    epilogue:function(doc,ctx){
+      var buff=doc.currentCtx.output.buff;
+      var labels=ctx.GetContextVariable(CTXV_LABEL_EQ);
+      if(labels.length>0){
+        var id="aghtex."+labels[0];
+        buff.push('<tex:eqno class="right" id="',id,'">');
+        for(var i=1;i<labels.length;i++)
+          doc.references.label_id_map[labels[i]]=id;
+      }else{
+        buff.push('<tex:eqno class="right">');
+      }
+      
+      // 式番号の形式を指定するコマンドを呼び出す様に変更する■
+      //  InsertSource & ReadCommand
+      var c=doc.GetCounter("equation");
+      if(c==null){
+        buff.push('(?)');
+      }else{
+        c.Step();
+        var eqno=c.arabic();
+        buff.push('(',eqno,')');
+        if(labels.length>0)
+          doc.references.displayedText['ref@'+labels[0]]=eqno;
+      }
+
+      buff.push('</tex:eqno></tex:math>\r\n');
+    },
+    context:"mode.math"
+  });
+
+  var CTXV_FOOTNOTE='mod_ref/footnote';
+  var CTXV_MPFOOTNOTE='mod_ref/is_mpfootnote';
+  _Ctx.AddEnvironment("minipage",{
+    prologue:function(doc,ctx){
+      var output=doc.currentCtx.output;
+
+      var va=(doc.GetOptionalArgumentRaw()||"").trim();
+      switch(va){
+      case "t":va="top";break;
+      case "b":va="bottom";break;
+      case "":
+      case "c":va="middle";break;
+      default:
+        output.error("UnknownVerticaAlign","\\minipage: first argument '"+va+"' is unknown vertical align");
+        va="middle";
+        return;
+      }
+
+      var width=doc.ReadArgument("txt",false,null).trim();
+      width=width.replace(/(\d*(?:\.\d*)?)\s*(\w+|%)/,"$1$2"); //■length もっとまともな変換
+
+      output.buff.push('<tex:i class="aghtex-minipage" style="vertical-align:',va,';width:',width,';">');
+      ctx.SetContextVariable(CTXV_MPFOOTNOTE,true);
+      ctx.SetContextVariable(CTXV_FOOTNOTE,new ns.Writer());
+    },
+    epilogue:function(doc,ctx){
+      var output=doc.currentCtx.output;
+      ns.Modules["mod:ref"].WriteFootnote(output,ctx);
+      output.buff.push('</tex:i>');
+    },
+    context:"mode.para"
+  });
+}
+
+function get_mod_data(doc){
+  return doc['mod:para']||(doc['mod:para']={
+    theorems:[]
+  });
+}
+
+context "global"{
+  command f\newtheorem(#!1#[]!2#3#[]!4){
+    var mod_ref=ns.Modules["mod:ref"]; // 読み込み順序の都合
+    var thmname=argv[1];
+    var refthmName=argv[2];
+    var title=argv[3];
+    var parentCounterName=argv[4];
+
+    var theorems=get_mod_data(doc).theorems;
+    if(theorems[thmname]){
+      doc.currentCtx.output.error('mod:para.cmd:newtheorem.AlreadyDefined',{name:thmname},'\\newtheorem (mod:para)');
+      return;
+    }
+
+    // 番号共有の定理環境(あれば)
+    var refthm=null;
+    if(refthmName!=""){
+      refthm=theorems[refthmName];
+      if(!refthm){
+        doc.currentCtx.output.error('mod:para.cmd:newtheorem.UndefinedTheorem',{refthm:refthmName},'\\newtheorem (mod:para)');
+        return;
+      }
+    }
+
+    var thm={};
+
+    // counter and number
+    if(refthm){
+      thm.counterName=refthm.counterName;
+      thm.titleNumberSource=refthm.titleNumberSource;
+    }else{
+      thm.counterName='mod:para.cmd:newtheorem.'+thmname;
+      thm.titleNumberSource='\\arabic{'+thm.counterName+'}';
+      if(parentCounterName&&parentCounterName!=""){
+        thm.titleNumberSource='\\arabic{'+parentCounterName+'}.'+thm.titleNumberSource;
+        doc.NewCounter(thm.counterName,parentCounterName);
+      }else{
+        doc.NewCounter(thm.counterName);
+      }
+    }
+
+    thm.sectionCommand=mod_ref.CreateSectionCommand({
+      counter:thm.counterName,refname:title+' '+thm.titleNumberSource,
+      httag:'h4',htclass:'aghtex-latex-theorem',html:'# #'
+    });
+
+    doc.context_cast("mode.para").AddEnvironment(thmname,{
+      prologue:function(doc,ctx){
+        var subtitle=doc.GetOptionalArgumentRaw()||'';
+        doc.scanner.InsertSource('\\relax{'+subtitle+'}');
+        thm.sectionCommand(doc,thmname); // h(doc,cmd)
+        doc.currentCtx.output.buff.push('<tex:i class="aghtex-latex-theorem-content">');
+      },
+      epilogue:function(){
+        doc.currentCtx.output.buff.push('</tex:i>');
+      },
+      context:"mode.para"
+    });
+    theorems[thmname]=thm;
+  };
+}

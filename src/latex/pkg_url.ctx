@@ -1,0 +1,234 @@
+/* -*- mode:js -*- */
+
+// Package
+//   \usepackage{url}
+// ChangeLog
+//   2012/12/06, KM
+//     Created, 
+// References
+//   http://www.ctan.org/tex-archive/macros/latex/contrib/url/
+//     ftp://ftp.u-aizu.ac.jp/pub/tex/CTAN/macros/latex/contrib/url/url.pdf
+
+agh.memcpy(ns.Modules["core"].ErrorMessages,{
+  "pkg:url.InitializationFailed":[
+    "PackageFailed",
+    "failed to initialize package 'url'"],
+  "pkg:url.UrlCommand.VerbMissingPunct":[
+    "MissingPunct",
+    "\\{cmdName}:\n"
+      +"  \\{cmdName} の終端を定義する記号文字が指定されていません。\n"
+      +"  使用例: \\{cmdName}|http://example.com/|"],
+  "pkg:url.cmd:DeclareUrlCommand.InvalidCommandName":[
+    'InvalidCommandName',
+    "\\DeclareUrlCommand: a first argument of DeclareUrlCommand should have the form of '\\cmdName' ('{cmd}' is specified)."],
+  "pkg:url.cmd:urldef.InvalidCommandName":[
+    'InvalidCommandName',
+    "\\urldef: the first argument '{cmd}' does not have the form of '\\cmdName'."],
+  "pkg:url.cmd:urldef.InvalidCommandName2":[
+    'InvalidCommandName',
+    "\\urldef: the second argument '{urlcmd}' does not have the form of '\\cmdName'."],
+  "pkg:url.cmd:urldef.NotUrlCommand":[
+    'NotUrlCommand',
+    "\\urldef: the second argument \\{urlcmd} is not registered as a url command."]
+});
+
+ns.Document.Packages["url"]=function(doc,opt,pkgName){
+  initialize_pkg_url();
+  var h=ns.Document.Packages["url"];
+  if(h==arguments.callee){
+    doc.currentCtx.output.error("pkg:url.InitializationFailed",null,"\\usepackage{url}");
+
+  }else
+    h(doc,opt,pkgName);
+};
+
+var initialize_pkg_url_flag=false;
+function initialize_pkg_url(){
+  if(initialize_pkg_url_flag)return;
+  initialize_pkg_url_flag=true;
+  var package_name='pkg:url';
+
+  function create_insert_command(source){
+    return function(doc,cmdName){
+      doc.scanner.Next();
+      doc.currentCtx.output.buff.push(source);
+    };
+  }
+
+  function UrlStyleDictionary(){}
+  var command_etag_default=ns.Command2("s@","",'</a>');
+  agh.memcpy(UrlStyleDictionary.prototype,{
+    tt:{
+      stag:ns.Command2("s@","#>1",'<a class="aghtex-url-tt" href="#1">'),
+      etag:command_etag_default
+    },
+    rm:{
+      stag:ns.Command2("s@","#>1",'<a class="aghtex-url-rm" href="#1">'),
+      etag:command_etag_default
+    },
+    sf:{
+      stag:ns.Command2("s@","#>1",'<a class="aghtex-url-sf" href="#1">'),
+      etag:command_etag_default
+    },
+    same:{
+      stag:ns.Command2("s@","#>1",'<a class="aghtex-url-same" href="#1">'),
+      etag:command_etag_default
+    }
+  });
+
+  var urlstyles_vname='pkg:url/styles';
+  function get_doc_pkgdata(doc){
+    if(doc[urlstyles_vname]==null)
+      doc[urlstyles_vname]={urlstyle:"tt",styles:new UrlStyleDictionary,declared:{url:""}};
+    return doc[urlstyles_vname];
+  }
+
+  function read_verblike_argument(doc,cmdName){
+    doc.skipSpaceAndComment();
+    var wordtype=doc.scanner.wordtype;
+    var word    =doc.scanner.word;
+    if(wordtype!="ltr"){
+      output.error(
+        "pkg:url.UrlCommand.VerbMissingPunct",
+        {cmdName:cmdName},"url command (pkg:url)");
+      return null;
+    }else if(word=='{'){
+      return doc.GetArgumentRaw();
+    }else{
+      doc.scanner.Next();
+      var ctx=doc.context_cast(ns.ContextFactory["sub.until.raw"]);
+      ctx.until_type=wordtype;
+      ctx.until_word=word;
+      ctx.rawctx_ebuff=[];
+      var result=doc.Read(ctx);
+      if(ctx.rawctx_ebuff.length)
+        doc.currentCtx.output.buff.push(ctx.rawctx_ebuff.join(''));
+      return result;
+    }
+  }
+  function CreateUrlCommand(styles){
+    var source=styles+'\\aghtexInternalUrlSTag{\\aghtexInternalUrlContent}\\UrlLeft\\aghtexInternalUrlContent\\UrlRight\\aghtexInternalUrlETag';
+    return function(doc,cmdName){
+      var output=doc.currentCtx.output;
+
+      doc.scanner.Next();
+      var content=read_verblike_argument(doc,cmdName);
+      if(content==null)return;
+
+      doc.currentCtx.userC['aghtexInternalUrlContent']=create_insert_command(content);
+      doc.scanner.InsertSource(source);
+    };
+  }
+
+  context "pkg:url/global" new(){
+    // \DeclareUrlCommand{\cmd}{styles}
+    // \url{}
+    // \url||
+    // \urldef{\cmd}{\url}{url}
+
+    command f\urlstyle("#!1"){
+      var d=get_doc_pkgdata(doc);
+      var urlstyle=argv[1].trim();
+      d.urlstyle=urlstyle;
+    };
+
+    command f@\aghtexInternalUrlSTag(){
+      var d=get_doc_pkgdata(doc);
+      var s=d.styles[d.urlstyle]||d.styles['tt'];
+      s.stag(doc,cmdName);
+    };
+    command f@\aghtexInternalUrlETag(){
+      var d=get_doc_pkgdata(doc);
+      var s=d.styles[d.urlstyle]||d.styles['tt'];
+      s.etag(doc,cmdName);
+    };
+    command s@\UrlLeft()  '';
+    command s@\UrlRight() '';
+
+    _Ctx.AddCommandHandler("url",CreateUrlCommand(""));
+    command f\DeclareUrlCommand("#1#2"){
+      var cmd=argv[1].trim();
+      if(cmd.slice(0,1)!='\\'){
+        doc.currentCtx.output.error(
+          "pkg:url.cmd:DeclareUrlCommand.InvalidCommandName",
+          {cmd:cmd},"\\DeclareUrlCommand#1 (pkg:url/global)");
+        return;
+      }else{
+        cmd=cmd.slice(1);
+      }
+
+      doc.SetMacroHandler(cmd,CreateUrlCommand(argv[2]));
+    };
+    command f\urldef("#1#2"){
+      var cmd=argv[1].trim();
+      if(cmd.slice(0,1)!='\\'){
+        doc.currentCtx.output.error(
+          "pkg:url.cmd:urldef.InvalidCommandName",
+          {cmd:cmd},"\\urldef#1 (pkg:url/global)");
+        return;
+      }else{
+        cmd=cmd.slice(1);
+      }
+
+      var urlcmd=argv[2].trim();
+      if(urlcmd.slice(0,1)!='\\'){
+        doc.currentCtx.output.error(
+          "pkg:url.cmd:urldef.InvalidCommandName2",
+          {urlcmd:urlcmd},"\\urldef#2 (pkg:url/global)");
+        return;
+      }else{
+        urlcmd=urlcmd.slice(1);
+      }
+      var styles=get_doc_pkgdata(doc).declared[urlcmd];
+      if(styles==null){
+        doc.currentCtx.output.error(
+          "pkg:url.cmd:urldef.NotUrlCommand",
+          {urlcmd:urlcmd},"\\urldef#2 (pkg:url/global)");
+        return;
+      }
+
+      var content=read_verblike_argument(doc,argv[0]);
+      if(content==null)return;
+      var content_inserter=create_insert_command(content);
+
+      var source=styles+'\\aghtexInternalUrlSTag{\\aghtexInternalUrlContent}\\UrlLeft\\aghtexInternalUrlContent\\UrlRight\\aghtexInternalUrlETag';
+
+      doc.SetMacroHandler(cmd,function(doc,cmdName){
+        doc.scanner.Next();
+
+        doc.currentCtx.userC['aghtexInternalUrlContent']=content_inserter;
+        doc.scanner.InsertSource(source);
+      });
+    };
+
+    /* Not supported functionalities:
+
+       Url 表示に用いる既定のフォントを変更
+       \def\UrlFont{\tt} % 等幅フォントに変更
+       \def\UrlFont{\rm} % ローマンフォントに変更
+
+       mathbinops と同じ強度の折返可能文字
+       \UrlBreaks
+
+       mathrel と同じ強度の折返可能文字
+       \UrlBigBreaks
+
+       折返不可能な文字
+       \UrlNoBreaks
+
+       より詳細な設定
+       \UrlSpecials
+
+       折り返し可能文字の周りの余白の設定
+       \Urlmuskip = 0mu plus 1mu
+
+       各折返可能文字の折返強度を設定
+       \mathchardef\UrlBreakPenalty = 100
+       \mathchardef\UrlBigBreakPenalty = 100
+    */
+  }
+
+  ns.Document.Packages["url"]=function(doc,opt,pkgName){
+    doc.context_cast("global").OverwriteContext(doc.context_cast("pkg:url/global"));
+  };
+}

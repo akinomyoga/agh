@@ -1,0 +1,66 @@
+/* -*- mode:js;coding:utf-8 -*- */
+
+// Package
+//   \usepackage{bm}
+// ChangeLog
+//   2012/12/02, KM
+//     Created, \DeclareBoldSymbol, \bmdefine, \hmdefine, \bm, \hm, \boldsymbol, \heavysymbol
+// References
+//   http://ftp.yz.yamagata-u.ac.jp/pub/CTAN/macros/latex/required/tools/bm.pdf
+
+agh.memcpy(ns.Modules["core"].ErrorMessages,{
+  "pkg:bm.DefineBoldSymbol.InvalidMathVersion":[
+    "InvalidMathVersion",
+    "\\DeclareBoldSymbol: {weight} is invalid as an optional argument."],
+  "pkg:bm.DefineBoldSymbol.InvalidCommandName":[
+    "InvalidCommandName",
+    "\\DeclareBoldSymbol: {name} は不適切なコマンド名です。\n"
+      +"新しいコマンドの名前は \\commandname の形式で指定して下さい。"]
+});
+
+context "pkg:bm/global" new(){
+  function DefineBoldSymbol(doc,weight,name,content){
+    if(weight=='bold'){
+      content='<tex:fmbm>'+content+'</tex:fmbm>';
+    }else if(weight=='heavy'){
+      content='<tex:fmhm>'+content+'</tex:fmhm>';
+    }else{
+      doc.currentCtx.output.error(
+        "pkg:bm.DefineBoldSymbol.InvalidMathVersion",
+        {weight:weight},"\\DefineBoldSymbol#1 (pkg:bm/global)");
+    }
+
+    if(name.substr(0,1)!="\\"){
+      doc.currentCtx.output.error(
+        "pkg:bm.DefineBoldSymbol.InvalidCommandName",
+        {name:name},"DefineBoldSymbol (pkg:bm/global)");
+      return;
+    }else
+      name=name.substr(1);
+
+    doc.SetMacroHandler(name,new ns.Command2("s@","",content));
+  }
+  command f\DeclareBoldSymbol("#[bold]!1#2#mode.math>3"){
+    DefineBoldSymbol(doc,argv[1].trim(),argv[2].trim(),argv[3]);
+  };
+  command f\bmdefine("#1#mode.math>3"){
+    DefineBoldSymbol(doc,'bold',argv[1].trim(),argv[2]);
+  };
+  command f\hmdefine("#1#mode.math>3"){
+    DefineBoldSymbol(doc,'heavy',argv[1].trim(),argv[2]);
+  };
+}
+context "pkg:bm/mode.math" new(){
+  command s@\bm("#>1")          '<tex:fmbm>#1</tex:fmbm>';
+  command s@\hm("#>1")          '<tex:fmhm>#1</tex:fmhm>';
+  command s@\boldsymbol("#>1")  '<tex:fmbm>#1</tex:fmbm>';
+  command s@\heavysymbol("#>1") '<tex:fmhm>#1</tex:fmhm>';
+
+  // \bmmax, \hmmax
+  //   これはユーザが指定する変数で、
+  //   キャッシュの大きさを指定する。この実装では関係ない。
+}
+ns.Document.Packages["bm"]=function(doc,opt,pkgName){
+  doc.context_cast("global").OverwriteContext(doc.context_cast("pkg:bm/global"));
+  doc.context_cast("mode.math").OverwriteContext(doc.context_cast("pkg:bm/mode.math"));
+};

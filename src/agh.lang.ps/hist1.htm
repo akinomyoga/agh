@@ -1,0 +1,810 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <title>PostScript Implementation</title>
+  <link charset="utf-8" type="text/css" rel="stylesheet" href="../../out/mwg.std.css" />
+  <link charset="utf-8" type="text/css" rel="stylesheet" href="../../out/prog.std.css" />
+  <meta name="agh-fly-type" content="color" />
+  <script type="text/javascript" charset="utf-8" src="../../out/agh/agh.fly.jgz"></script>
+  <style type="text/css">
+  div.obsolete{color:Gray;}
+  </style>
+<!--PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+  Information for HtTree Generator <mwg.httree>
+PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+#%data title PostScript Implementation - 計画1. パス再設計
+#%data keywords PostScript,実装メモ
+#%define head (
+  <link rel="stylesheet" charset="utf-8" href="${aghdir:-http://padparadscha/agh}/prog.std.css" />
+  <style type="text/css">
+  div.obsolete{color:gray;}
+  </style>
+  <meta name="agh-fly-type" content="color" />
+  <script type="text/javascript" charset="utf-8" src="${aghdir:-http://padparadscha/agh}/agh.fly.jgz"></script>
+#%)
+PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP-->
+</head>
+<body>
+#%define body (
+<h1>PostScript</h1>
+<!--###########################################################################
+
+    計画1. 描画パス実装
+    
+############################################################################-->
+<h2>計画1. 描画パス実装</h2>
+<!--************************************************************************-->
+<!--  文字列表示の実装                                                      -->
+<!--************************************************************************-->
+<h3>1. 文字列表示の実装</h3>
+<!--........................................................................-->
+<h4>IE/VML 文字表示位置変換 [00:47 2011/02/28 完]</h4>
+<p>物凄く苦労したが、何とかちゃんと動作する様になった。</p>
+<p>汚くなっている部分を整理。</p>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps-vml.js /L172 @@ 23:46 2011/02/27
+     primitive_show:function(text,move,pos,matrix){
+       var font=this.gstate.font;
+       
+-      // 描画中心 @ 標準座標
+-      var v2c;
+-      if(pos instanceof Array)
+-        v2c=this.rtransf_point(this.gstate.position,pos.clone());
+-      else
+-        v2c=this.gstate.position.clone();
+-      
+-      // 線形変換
+-      if(matrix instanceof Array){
+-        // Glyph 線形変換
+-        matrix=ns.AffineA.mul(matrix,this.gstate.CTM);
+-        v2c[0]+=matrix[4]-this.gstate.CTM[4];
+-        v2c[1]+=matrix[5]-this.gstate.CTM[5];
+-      }else
+-        matrix=this.gstate.CTM;
+       //*/
+       var DBG_SCALE=1;
+@ mwg.lang.ps-vml.js/L208 @@ 00:39 2011/02/28
+       //------------------------------------------
+       // vml 補正
+-      /*/
+-        ns.AffineA.idtransformD(v2c,matrix);  // 並進・回転交換
+-      /*//*
+-        // Cancel Skew Transformation
+-        matrix[1]=-matrix[1]; // ※ y 軸反転
+-        matrix[2]=-matrix[2]; // ※ y 軸反転
+-        matrix[4]=-this.m_bbw*(matrix[0]+matrix[2]-1);
+-        matrix[5]=-this.m_bbh*(matrix[1]+matrix[3]-1);
+-        window.log("dbg: mat=["+matrix+"]");
+-        
+-        v2c[0]=v2c[0]-this.m_bbl;
+-        v2c[1]=this.m_bbb+this.m_bbh-v2c[1];
+-        ns.AffineA.itransformD(v2c,matrix);  // 並進・回転交換
+-        v2c[0]=v2c[0]+this.m_bbl;
+-        v2c[1]=this.m_bbb+this.m_bbh-v2c[1];
+-      //*/
+-      
+-      //*/
+         matrix[1]=-matrix[1]; // ※ y 軸反転
+         matrix[2]=-matrix[2]; // ※ y 軸反転
+         matrix[4]=-VML_SHAPE_COORD_WH*(matrix[0]+matrix[2]-1);
+         matrix[5]=-VML_SHAPE_COORD_WH*(matrix[1]+matrix[3]-1);
+-        window.log("dbg: mat=["+matrix+"]");
+         
+         v2c[1]=VML_SHAPE_COORD_WH-v2c[1];
+         ns.AffineA.itransformD(v2c,matrix);  // 並進・回転交換
+         v2c[1]=VML_SHAPE_COORD_WH-v2c[1];
+-      //*/
+       
+       v2c[1]+=0.3*font.size*VML_FONT_SCALE;
+-      
+-      window.log("dbg:show: position=("+this.gstate.position.join(',')+")");
+-      window.log("dbg:show: center="+v2c[0]+","+v2c[1]);
+-      window.log("dbg:show: matrix=["+matrix.join(',')+"]");
+@ mwg.lang.ps-vml.js/L244 @@ 00:41 2011/02/28
+       this.buffer.push('&lt;vml:path textpathok="true" /&gt;');
+       this.buffer.push('&lt;vml:textpath on="true" style="');
+-      //*
+         this.buffer.push('font-family:');
+         this.buffer.push(font.fontname);
+         this.buffer.push(';font-size:');
+         this.buffer.push(VML_FONT_SCALE*font.size*this.s_r+this.s_u);
+         this.buffer.push(';font-style:');
+         this.buffer.push(font.style);
+         this.buffer.push(';font-weight:');
+         this.buffer.push(font.bold?"bold":"normal");
+-      /*/
+-        this.buffer.push('font:');
+-        this.buffer.push(font.style);
+-        this.buffer.push(' normal ');
+-        this.buffer.push(font.bold?"bold":"normal");
+-        this.buffer.push(' ');
+-        this.buffer.push(VML_FONT_SCALE*font.size*this.s_r+this.s_u);
+-        this.buffer.push(' ');
+-        this.buffer.push(font.fontname);
+-      //*/
+       this.buffer.push(';" string="');
+       this.buffer.push(text);
+       this.buffer.push('" /&gt;\n');
+</pre>
+<!--.........................................................................-->
+<h4>SVG 文字表示位置変換 [01:26 2011/02/28 完]</h4>
+<p>Safari と Chrome で変な事になっていると思っていたら…。
+IE で起きたのと同じように、フォントのサイズが小さすぎると変なことになるようだ。
+</p>
+<ul>
+<li>Chrome の場合、最小フォントサイズか何かでもあるのだろうか、文字が変に大きく表示される。</li>
+<li>Safari の方はと言うと左右の位置が滅茶苦茶になってしまう。
+小さな所での 1px のずれが拡大されているのだろう。</li>
+</ul>
+<p>結局 VML と同じようにフォントのサイズを大きくして、その分だけ matrix の要素を小さくする事で解決した。</p>
+<p>以下、整理。</p>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps-svg.js/L201 @@ 01:31 2011/02/28
+-      //*
+         this.buffer.push('&lt;text fill="');
+         this.buffer.push(this.gstate.color.toHtmlColor());
+         this.buffer.push('" x="');
+         this.buffer.push(v2c[0]);
+         this.buffer.push('" y="');
+         this.buffer.push(-v2c[1]);
+         this.buffer.push('" transform="matrix(');
+           this.buffer.push(matrix[0]);
+           this.buffer.push(',');
+           this.buffer.push(matrix[1]);
+           this.buffer.push(',');
+           this.buffer.push(-matrix[2]);
+           this.buffer.push(',');
+           this.buffer.push(-matrix[3]);
+         this.buffer.push(',0,0)" font-family="');
+           this.buffer.push(font.fontname);
+           this.buffer.push('" font-size="');
+           this.buffer.push(font.size*SVG_FONT_SCALE);
+-          window.log("dbg: font.size="+font.size);
+           this.buffer.push('" font-style="');
+           this.buffer.push(font.style);
+           this.buffer.push('" font-weight="');
+           this.buffer.push(font.bold?"bold":"normal");
+         this.buffer.push('"&gt;');
+         // ■ UTF-8 Encoding
+         this.buffer.push(text);
+         this.buffer.push('&lt;/text&gt;');
+-      /*/
+-        this.buffer.push('&lt;g transform="matrix(');
+-          this.buffer.push(matrix[0]);
+-          this.buffer.push(',');
+-          this.buffer.push(matrix[1]);
+-          this.buffer.push(',');
+-          this.buffer.push(-matrix[2]);
+-          this.buffer.push(',');
+-          this.buffer.push(-matrix[3]);
+-        this.buffer.push(',0,0)"&gt;&lt;text fill="');
+-        this.buffer.push(this.gstate.color.toHtmlColor());
+-        this.buffer.push('" x="');
+-        this.buffer.push(v2c[0]);
+-        this.buffer.push('" y="');
+-        this.buffer.push(-v2c[1]);
+-        this.buffer.push('" font-family="');
+-          this.buffer.push(font.fontname);
+-          this.buffer.push('" font-size="');
+-          this.buffer.push(font.size);
+-          this.buffer.push('" font-style="');
+-          this.buffer.push(font.style);
+-          this.buffer.push('" font-weight="');
+-          this.buffer.push(font.bold?"bold":"normal");
+-        this.buffer.push('"&gt;');
+-        // ■ UTF-8 Encoding
+-        this.buffer.push(text);
+-        this.buffer.push('&lt;/text&gt;&lt;/g&gt;');
+-      //*/
+@ mwg.lang.ps-svg.js/L146 @@ 01:32 2011/02/28
+     primitive_show:function(text,move,pos,matrix){
+       var font=this.gstate.font;
+-      
+-      /*
+-      // 描画中心 @ 標準座標
+-      var v2c;
+-      if(pos instanceof Array)
+-        v2c=this.rtransf_point(this.gstate.position,pos.clone());
+-      else
+-        v2c=this.gstate.position.clone();
+-      
+-      // 線形変換
+-      if(matrix instanceof Array){
+-        // Glyph 線形変換
+-        matrix=ns.AffineA.mul(matrix,this.gstate.CTM);
+-        v2c[0]+=matrix[4]-this.gstate.CTM[4];
+-        v2c[1]+=matrix[5]-this.gstate.CTM[5];
+-      }else
+-        matrix=this.gstate.CTM;
+-      //*/
+</pre>
+<!--........................................................................-->
+<h4>基本フォントサイズ</h4>
+<p>VML でも SVG でも、フォントサイズを小さくしすぎると問題が生じる事が分かった。
+両者とも、余分に大きな文字を行列変換によって縮小する事によって表示する様な実装にしている。
+それならば、初めから描画に使用するフォントのサイズを適当に大きな物に固定してしまって、
+表示する際は VML でも SVG でもそのフォントサイズの字形をスケーリングして用いる事にする。
+</p>
+<h5>全てを matrix に統一</h5>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps.js/L1216 @@ 02:04 2011/02/28
++  var PS_FONT_SCALE=20;
+   ns.PsFont=function(arg1,arg2){
+     if(mwg.is(arg1,String)){
+       var fontname=arg1;
+-      var size=arg2;
++      var size=arg2||1;
+       
+-      this.size=size||1;
+-      this.bold=false;
+-      this.style='normal';
+-      this.oblique=false;
+-      this.filter=null;
++      this.matrix=[size/PS_FONT_SCALE,0,0,size/PS_FONT_SCALE,0,0];
+     
+       if(/\-Bold$/.test(fontname)){
+         this.bold=true;
+         fontname=fontname.slice(0,-5);
+       }else if(/\-Oblique$/.test(fontname)){
+         this.style='oblique';
+         fontname=fontname.slice(0,-8);
+       }else if(/\-Italic$/.test(fontname)){
+         this.style='italic';
+         fontname=fontname.slice(0,-7);
+       }else if(/\-BoldOblique$/.test(fontname)){
+         this.bold=true;
+         this.style='oblique';
+         fontname=fontname.slice(0,-12);
+       }else if(/\-BoldItalic$/.test(fontname)){
+         this.bold=true;
+         this.style='italic';
+         fontname=fontname.slice(0,-11);
+       }
+       
+-      //window.log("dbg: fontname="+fontname);
+-      //window.log("dbg: fontname in PS_FONT_MAP="+(fontname in PS_FONT_MAP));
+       if(fontname in PS_FONT_MAP)
+         fontname=PS_FONT_MAP[fontname];
+       this.fontname=fontname;
+     }else if(arg1 instanceof ns.PsFont){
+       var font=arg1;
+       
+       this.bold=font.bold;
+       this.style=font.style;
+       this.fontname=font.fontname;
+       
+       // 線形合成
+       if(arg2 instanceof Array){
+-        if(font.matrix!=null){
+-          ns.AffineA.mulD(font.matrix,this.matrix=arg2);
+-        }else{
+-          this.matrix=arg2;
+-          for(var i=0;i&lt;6;i++)
+-            this.matrix[i]*=font.size;
+-        }
++        ns.AffineA.mulD(font.matrix,this.matrix=arg2);
+       }else{
+-        if(font.matrix!=null){
+-          this.matrix=font.matrix.clone();
+-          for(var i=0;i&lt;6;i++)
+-            this.matrix[i]*=arg2;
+-        }else{
+-          this.size=font.size*arg2;
+-        }
++        this.matrix=font.matrix.clone();
++        for(var i=0;i&lt;6;i++)
++          this.matrix[i]*=arg2;
+       }
+     }
+   };
+@ mwg.lang.ps-vml.js/L172 @@ 02:29 2011/02/28
+     //--------------------------------------------------------------------------
+     //  文字列表示
+-    primitive_show:function(text,move,pos,matrix){
++    primitive_show:function(text,move,pos){
+       var font=this.gstate.font;
+       
+-      var v2c;
+-      if(matrix instanceof Array){
+-        matrix=ns.AffineA.mul(matrix,this.gstate.CTM);
+-        for(var i=0;i&lt;6;i++)matrix[i]/=VML_FONT_SCALE;
+-        
+-        if(pos instanceof Array){
+-          v2c=this.rtransf_point(
+-            this.gstate.position,
+-            [pos[0]+matrix[4],pos[1]+matrix[5]]
+-          );
+-        }else{
+-          v2c=this.rtransf_point(
+-            this.gstate.position,
+-            [matrix[4],matrix[5]]
+-          );
+-        }
+-      }else{
+-        matrix=this.gstate.CTM.clone();
+-        for(var i=0;i&lt;6;i++)matrix[i]/=VML_FONT_SCALE;
+-        
+-        if(pos instanceof Array){
+-          v2c=this.rtransf_point(
+-            this.gstate.position,
+-            pos.clone()
+-          );
+-        }else{
+-          v2c=this.gstate.position.clone();
+-        }
+-      }
++      var matrix=ns.AffineA.mul(font.matrix,this.gstate.CTM);
++      var v2c=font.matrix.slice(4,6);
++      if(pos instanceof Array){
++        v2c[0]+=pos[0];
++        v2c[1]+=pos[1];
++      }
++      v2c=this.rtransf_point(this.gstate.position,v2c);
+
+       //------------------------------------------
+       // vml 補正
+       //------------------------------------------
+       // SKEW 補正
+       matrix[1]=-matrix[1]; // [Y反転]
+       matrix[2]=-matrix[2]; // [Y反転]
+       matrix[4]=-VML_SHAPE_COORD_WH*(matrix[0]+matrix[2]-1);
+       matrix[5]=-VML_SHAPE_COORD_WH*(matrix[1]+matrix[3]-1);
+       v2c[1]=VML_SHAPE_COORD_WH-v2c[1]; // [Y反転]
+       ns.AffineA.itransformD(v2c,matrix);  // 並進・回転交換
+       v2c[1]=VML_SHAPE_COORD_WH-v2c[1]; // [Y反転]
+       // 中心線補正
+-      v2c[1]+=0.3*font.size*VML_FONT_SCALE;
++      v2c[1]+=0.3*font.size;
+       //------------------------------------------
+       
+       this.buffer.push('&lt;vml:shape stroked="false" filled="true" strokeweight="0" fillcolor="');
+       this.buffer.push(this.gstate.color.toHtmlColor());
+       this.buffer.push('" path="m ');
+         this.buffer.push(v2c[0]*VML_FIXEDMUL|0);
+         this.buffer.push(' ');
+         this.buffer.push(v2c[1]*VML_FIXEDMUL|0);
+         this.buffer.push(' l ');
+-        this.buffer.push((v2c[0]+move[0]*VML_FONT_SCALE)*VML_FIXEDMUL|0);
++        this.buffer.push((v2c[0]+move[0])*VML_FIXEDMUL|0);
+         this.buffer.push(' ');
+-        this.buffer.push((v2c[1]+move[1]*VML_FONT_SCALE)*VML_FIXEDMUL|0);
++        this.buffer.push((v2c[1]+move[1])*VML_FIXEDMUL|0);
+       this.buffer.push(VML_ATTR_COORD);
+       this.buffer.push('&gt;\n');
+       
+       this.buffer.push('&lt;vml:skew matrix="');
+         this.buffer.push(matrix[0]);
+         this.buffer.push(',');
+         this.buffer.push(matrix[2]);
+         this.buffer.push(',');
+         this.buffer.push(matrix[1]);
+         this.buffer.push(',');
+         this.buffer.push(matrix[3]);
+       this.buffer.push(',0,0" on="true" /&gt;\n');
+       
+       this.buffer.push('&lt;vml:path textpathok="true" /&gt;');
+       this.buffer.push('&lt;vml:textpath on="true" style="');
+         this.buffer.push('font-family:');
+         this.buffer.push(font.fontname);
+         this.buffer.push(';font-size:');
+-        this.buffer.push(VML_FONT_SCALE*font.size*this.s_r+this.s_u);
++        this.buffer.push(font.size*this.s_r+this.s_u);
+         this.buffer.push(';font-style:');
+         this.buffer.push(font.style);
+         this.buffer.push(';font-weight:');
+         this.buffer.push(font.bold?"bold":"normal");
+       this.buffer.push(';" string="');
+       this.buffer.push(text);
+       this.buffer.push('" /&gt;\n');
+       
+       this.buffer.push('&lt;/vml:shape&gt;\n');
+     },
+@ mwg.lang.ps-vml.js/L79 @@ 02:30 2011/02/28
+   var VML_FIXEDMUL=10000;
+   var VML_SHAPE_COORD_WH=100;
+   var VML_ATTR_COORD
+     ='" style="width:'+VML_SHAPE_COORD_WH+';height:'+VML_SHAPE_COORD_WH
+     +';" coordsize="'+(VML_SHAPE_COORD_WH*VML_FIXEDMUL)+' '+(VML_SHAPE_COORD_WH*VML_FIXEDMUL)
+     +'" coordorigin="0 0"';
+-  var VML_FONT_SCALE=1; // 小さすぎるフォントサイズはエリアシングを起こす。
+
+   ns.GraphicsVml=mwg.Class(nsName+'.GraphicsVml',ns.GraphicsBase,{
+@ mwg.lang.ps-svg.js/L144 @@ 02:33 2011/02/28
+     //--------------------------------------------------------------------------
+     //  文字列表示
++    primitive_show:function(text,move,pos,matrix){
+-    primitive_show:function(text,move,pos){
+       var font=this.gstate.font;
+       
+-      var v2c;
+-      if(matrix instanceof Array){
+-        matrix=ns.AffineA.mul(matrix,this.gstate.CTM);
+-        for(var i=0;i&lt;4;i++)matrix[i]/=SVG_FONT_SCALE;
+-        
+-        if(pos instanceof Array){
+-          v2c=this.rtransf_point(
+-            this.gstate.position,
+-            [pos[0]+matrix[4],pos[1]+matrix[5]]
+-          );
+-        }else{
+-          v2c=this.rtransf_point(
+-            this.gstate.position,
+-            [matrix[4],matrix[5]]
+-          );
+-        }
+-      }else{
+-        //matrix=this.gstate.CTM;
+-        matrix=this.gstate.CTM.clone();
+-        for(var i=0;i&lt;4;i++)matrix[i]/=SVG_FONT_SCALE;
+-        
+-        if(pos instanceof Array){
+-          v2c=this.rtransf_point(
+-            this.gstate.position,
+-            pos.clone()
+-          );
+-        }else{
+-          v2c=this.gstate.position.clone();
+-        }
+-      }
++      var matrix=ns.AffineA.mul(font.matrix,this.gstate.CTM);
++      var v2c=font.matrix.slice(4,6);
++      if(pos instanceof Array){
++        v2c[0]+=pos[0];
++        v2c[1]+=pos[1];
++      }
++      v2c=this.rtransf_point(this.gstate.position,v2c);
+       
+       //------------------------------------------
+       ns.AffineA.idtransformD(v2c,matrix);
+       
+       this.buffer.push('&lt;text fill="');
+       this.buffer.push(this.gstate.color.toHtmlColor());
+       this.buffer.push('" x="');
+       this.buffer.push(v2c[0]);
+       this.buffer.push('" y="');
+       this.buffer.push(-v2c[1]);
+       this.buffer.push('" transform="matrix(');
+         this.buffer.push(matrix[0]);
+         this.buffer.push(',');
+         this.buffer.push(matrix[1]);
+         this.buffer.push(',');
+         this.buffer.push(-matrix[2]);
+         this.buffer.push(',');
+         this.buffer.push(-matrix[3]);
+       this.buffer.push(',0,0)" font-family="');
+         this.buffer.push(font.fontname);
+         this.buffer.push('" font-size="');
++        this.buffer.push(font.size*SVG_FONT_SCALE);
+-        this.buffer.push(font.size);
+         this.buffer.push('" font-style="');
+         this.buffer.push(font.style);
+         this.buffer.push('" font-weight="');
+         this.buffer.push(font.bold?"bold":"normal");
+       this.buffer.push('"&gt;');
+       // ■ UTF-8 Encoding
+       this.buffer.push(text);
+       this.buffer.push('&lt;/text&gt;');
+     },
+@ mwg.lang.ps-svg.js/L52 @@ 02:33 2011/02/28
+   var SVG_LNCAP=mwg.memcpy(null,VML_LNCAP);
+   SVG_LNCAP[LNCAP_BUTT]="butt";
+   var SVG_LNJOIN=VML_LNJOIN;
+   var SVG_DASHARRAY=function(dash,scal){
+     var ret=[];
+     for(var i=0;i&lt;dash.length;i++){
+       ret.push(dash[i]*scal);
+     }
+     return ret.join(','); // Firefox はスペース区切だと認識しない。
+   };
+-  var SVG_FONT_SCALE=1;
+   
+   ns.GraphicsSvg=mwg.Class(nsName+'.GraphicsSvg',ns.GraphicsBase,{
+@ mwg.lang.ps.js/L1406 @@ 
+     show:function show(proc){
+       var text=proc.stk.pop();
+       
+-      var font=proc.graphics.gstate.font;
+-      if(font.filter!=null&amp;&amp;text instanceof ns.PsString){
+-        text=font.fitler(text);
+-      }else{
+-        text=""+text;
+-      }
++      text=font.Decode(text);
+       
+-      if(font.matrix==null){
+-        var smove=font.GetStringMove(text);
+-        proc.graphics.primitive_show(text,smove);
+-        proc.graphics.rmoveto(smove[0],smove[1]);
+-      }else{
+-        var dx=[0,0];
+-        var g=proc.graphics;
+-        for(var i=0;i&lt;text.length;i++){
+-          var c=text.charAt(i);
+-          
+-          var smove=font.GetStringMove(c);
+-          //window.log("smove="+smove.join(","));
+-          g.primitive_show(c,smove,dx,font.matrix);
+-          ns.AffineA.dtransformD(smove,font.matrix);
+-          dx[0]+=smove[0];
+-          dx[1]+=smove[1];
+-          
+-          //window.log("dbg: "+dx);
+-          window.log("font.size={0} font.matrix=[{1}]".format(font.size,font.matrix));
+-          //window.log("char={0} smove={1} ".format(c,smove.join(",")));
+-          window.log("CTM=[{0}] CP={1} ".format(g.gstate.CTM,g.gstate.position));
+-        }
+-        proc.graphics.rmoveto(dx[0],dx[1]);
+-      }
++      var smove=font.GetStringMove(text);
++      proc.graphics.primitive_show(text,smove);
++      ns.AffineA.dtransformD(smove,font.matrix);
++      proc.graphics.rmoveto(smove[0],smove[1]);
+     }
+   });
+</pre>
+<!--************************************************************************-->
+<!--  パス再設計                                                            -->
+<!--************************************************************************-->
+<h3>2. パス再設計</h3>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<p>pathbbox や charpath を実装する為に、パスを再度設計し直す事にする。</p>
+<p>先ず moveto はパス要素には含めない事にする。
+moveto を複数回実行した時にパスに moveto が複数回はいるのは無駄である。
+それよりは、各パス要素がそれぞれの始点を保持する方が自然である。
+</p>
+<p>各パス要素が自分自身を描画するのに充分な情報を持っている事によって、
+pathbb 等の計算が楽になると期待出来る。
+また、reversepath を実装するのも楽になる。
+</p>
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<h4>パス再設計</h4>
+<p>パス要素に始点を含める様に再設計する。</p>
+<!--........................................................................-->
+<h5>書き換え</h5>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps.js/L504 @@ 02:27 2011/03/06
+   //****************************************************************************
+   //  Graphics
+   //----------------------------------------------------------------------------
+-  var P_LINETO =1;
+-  var P_MOVETO =2;
+-  var P_CURVETO=3;
+-  var P_CLOSE  =4;
++  var PATH_LINE =11;
++  var PATH_CBEZ =12;
++  var PATH_CLOSE=13;
+@ mwg.lang.ps.js/L845 @@ 02:22 2011/03/06
+     moveto:function(x,y){
+-      var s=this.gstate;
+-      s.position=this.transf_point([x,y]);
++      this.gstate.position=this.transf_point([x,y]);
+-      
+-      // 直前が P_MOVETO の時
+-      if(s.path.length&gt;=1&amp;&amp;s.path[s.path.length-1][0]==P_MOVETO)
+-        s.path[s.path.length-1][1]=s.position;
+-      else
+-        s.path.push([P_MOVETO,s.position]);
+     },
+     rmoveto:function(x,y){
+-      var s=this.gstate;
+-      s.position=this.rtransf_point(s.position,[x,y]);
++      this.gstate.position=this.rtransf_point(this.gstate.position,[x,y]);
+-      
+-      if(s.path.length&gt;=1&amp;&amp;s.path[s.path.length-1][0]==P_MOVETO)
+-        s.path[s.path.length-1][1]=s.position;
+-      else
+-        s.path.push([P_MOVETO,s.position]);
+     },
+     lineto:function(x,y){
+       var s=this.gstate;
+-      s.position=this.transf_point([x,y]);
+-      s.path.push([P_LINETO,s.position]);
++      var p1=s.position;
++      var p2=this.transf_point([x,y]);
++      s.path.push([PATH_LINE,p1,p2]);
++      s.position=p2;
+     },
+     rlineto:function(x,y){
+       var s=this.gstate;
+-      s.position=this.rtransf_point(s.position,[x,y]);
+-      s.path.push([P_LINETO,s.position]);
++      var p1=s.position;
++      var p2=this.rtransf_point(s.position,[x,y]);
++      s.path.push([PATH_LINE,p1,p2]);
++      s.position=p2;
+     },
+     curveto:function(c1x,c1y,c2x,c2y,x,y){
+       var s=this.gstate;
++      var p1=s.position;
+       var c1=this.transf_point([c1x,c1y]);
+       var c2=this.transf_point([c2x,c2y]);
+-      s.position=this.transf_point([x,y]);
+-      s.path.push([P_CURVETO,c1,c2,s.position]);
++      var p2=this.transf_point([x,y]);
++      s.path.push([PATH_CBEZ,p1,c1,c2,p2]);
++      s.position=p2;
+     },
+     rcurveto:function(c1x,c1y,c2x,c2y,x,y){
+       var s=this.gstate;
++      var p1=s.position;
+       var c1=this.rtransf_point(s.position,[c1x,c1y]);
+       var c2=this.rtransf_point(s.position,[c2x,c2y]);
+-      s.position=this.rtransf_point(s.position,[x,y]);
+-      s.path.push([P_CURVETO,c1,c2,s.position]);
++      var p2=this.rtransf_point(s.position,[x,y]);
++      s.path.push([PATH_CBEZ,p1,c1,c2,p2]);
++      s.position=p2;
+     },
+     closepath:function(){
+-      this.gstate.path.push([P_CLOSE]);
++      this.gstate.path.push([PATH_CLOSE]);
+     },
+@ mwg.lang.ps-svg.js/L109 @@ 02:28 2011/03/06
+     output_path:function(){
+       var path=this.gstate.path;
+       var pos=null;
+       for(var i=0;i&lt;path.length;i++){
+         if(i!=0)this.buffer.push(" ");
+         
+         var e=path[i];
+         switch(e[0]){
+-          case P_MOVETO:
+-            this.buffer.push("M ");
+-            this.output_point(e[1]);
+-            break;
+-          case P_LINETO:
++          case PATH_LINE:
++            if(pos!=e[1]){
++              this.buffer.push("M ");
++              this.output_point(e[1]);
++            }
+             this.buffer.push("L ");
+-            this.output_point(e[1]);
++            this.output_point(pos=e[2]);
+             break;
+-          case P_CURVETO:
++          case PATH_CBEZ:
++            if(pos!=e[1]){
++              this.buffer.push("M ");
++              this.output_point(e[1]);
++            }
+             this.buffer.push("C ");
+-            this.output_point(e[1]);
++            this.output_point(e[2]);
+             this.buffer.push(" ");
+-            this.output_point(e[2]);
++            this.output_point(e[3]);
+             this.buffer.push(" ");
+-            this.output_point(e[3]);
++            this.output_point(pos=e[4]);
+             break;
+-          case P_CLOSE:
++          case PATH_CLOSE:
+             this.buffer.push("z");
+             break;
+         }
+       }
+     },
+@ mwg.lang.ps-vml.js/L137 @@ 02:28 2011/03/06
+    output_path:function(){
+      var path=this.gstate.path;
+      var pos=null;
+      for(var i=0;i&lt;path.length;i++){
+        if(i!=0)this.buffer.push(" ");
+        
+        var e=path[i];
+        switch(e[0]){
+-         case P_MOVETO:
+-           this.buffer.push("m ");
+-           this.output_point(e[1]);
+-           break;
+-         case P_LINETO:
++         case PATH_LINE:
++           if(pos!=e[1]){
++             this.buffer.push("m ");
++             this.output_point(e[1]);
++           }
+            this.buffer.push("l ");
+-           this.output_point(e[1]);
++           this.output_point(pos=e[2]);
+            break;
+-         case P_CURVETO:
++         case PATH_CBEZ:
++           if(pos!=e[1]){
++             this.buffer.push("m ");
++             this.output_point(e[1]);
++           }
+            this.buffer.push("c ");
+-           this.output_point(e[1]);
++           this.output_point(e[2]);
+            this.buffer.push(" ");
+-           this.output_point(e[2]);
++           this.output_point(e[3]);
+            this.buffer.push(" ");
+-           this.output_point(e[3]);
++           this.output_point(pos=e[4]);
+            break;
+-         case P_CLOSE:
++         case PATH_CLOSE:
+            this.buffer.push("x");
+            break;
+        }
+      }
+    },
+</pre>
+<!--************************************************************************-->
+<!--  GraphicsSvg.output_point インライン化                                 -->
+<!--************************************************************************-->
+<h3>3. GraphicsSvg.output_point インライン化 [完 2011/05/24]</h3>
+<p>描画する時の基準になる全ての点に対して呼ばれるのだから、
+当然 output_point は呼び出す回数が多い。
+中身は三行しかない単純な関数なので、毎回呼び出すよりはその場にコードを記述した方が速い。
+</p>
+<p>と考えて、マクロで実装する事にした。
+現状、mwg_pp を使用してファイルを結合して最終的な .js を得ているので、簡単である。
+</p>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps-svg.js/L129 @@ 2011/05/24 23:55:19
+     output_path:function(){
+       var path=this.gstate.path;
+       var pos=null;
+       for(var i=0;i&lt;path.length;i++){
+         if(i!=0)this.buffer.push(" ");
+         
+         var e=path[i];
+         switch(e[0]){
+           case PATH_LINE:
+             if(pos!=e[1]){
+               this.buffer.push("M ");
++#%define output_point (
++            this.buffer.push(%point%[0]);
++            this.buffer.push(' ');
++            this.buffer.push(%point%[1]);
++#%)
+-              this.output_point(e[1]);
++#%expand output_point.r|%point%|e[1]|
+               this.buffer.push(" ");
+             }
+             this.buffer.push("L ");
+-            this.output_point(pos=e[2]);
++#%expand output_point.r|%point%|e[2]|
++            pos=e[2];
+             break;
+           case PATH_CBEZ:
+             if(pos!=e[1]){
+               this.buffer.push("M ");
+-              this.output_point(e[1]);
++#%expand output_point.r|%point%|e[1]|
+               this.buffer.push(" ");
+             }
+             this.buffer.push("C ");
+-            this.output_point(e[2]);
++#%expand output_point.r|%point%|e[2]|
+             this.buffer.push(" ");
+-            this.output_point(e[3]);
++#%expand output_point.r|%point%|e[3]|
+             this.buffer.push(" ");
+-            this.output_point(pos=e[4]);
++#%expand output_point.r|%point%|e[4]|
++            pos=e[4];
+             break;
+           case PATH_CLOSE:
+             this.buffer.push("z");
+             break;
+         }
+       }
+     },
+-    output_point:function(pt){
+-      this.buffer.push(pt[0]);
+-      this.buffer.push(' ');
+-      this.buffer.push(pt[1]);
+-    },
+</pre>
+<!--.........................................................................-->
+<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+#%)
+</body>
+</html>

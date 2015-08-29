@@ -1,0 +1,1051 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <title>PostScript Implementation</title>
+  <link charset="utf-8" type="text/css" rel="stylesheet" href="../../out/mwg.std.css" />
+  <link charset="utf-8" type="text/css" rel="stylesheet" href="../../out/prog.std.css" />
+  <meta name="agh-fly-type" content="color" />
+  <script type="text/javascript" charset="utf-8" src="../../out/agh/agh.fly.jgz"></script>
+  <style type="text/css">
+  div.obsolete{color:Gray;}
+  </style>
+<!--PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+  Information for HtTree Generator <mwg.httree>
+PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+#%data title PostScript Implementation
+#%data keywords PostScript,実装メモ
+#%define head (
+  <link rel="stylesheet" charset="utf-8" href="${aghdir:-http://padparadscha/agh}/prog.std.css" />
+  <style type="text/css">
+  div.obsolete{color:gray;}
+  </style>
+  <meta name="agh-fly-type" content="color" />
+  <script type="text/javascript" charset="utf-8" src="${aghdir:-http://padparadscha/agh}/agh.fly.jgz"></script>
+#%)
+PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP-->
+</head>
+<body>
+#%define body (
+<h1>PostScript</h1>
+<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<h2>参照</h2>
+<h3>PostScript</h3>
+<h4>References</h4>
+<ul>
+<li><a href="http://partners.adobe.com/public/developer/ps/index_specs.html">Adobe PostScript language specifications</a>
+  <ul>
+  <li><a href="http://www.adobe.com/products/postscript/pdfs/PLRM.pdf">PostScript Language Reference - Third Edition</a></li>
+  <li><a href="http://partners.adobe.com/public/developer/en/ps/psrefman.pdf">PostScript Language Reference Manual - Second Edition</a></li>
+  <li><a href="http://partners.adobe.com/public/developer/en/font/T1_SPEC.PDF">Adobe Type 1 Font Format</a> (eexec Encryption について)</li>
+  </ul>
+</li>
+<li><a href="http://atrey.karlin.mff.cuni.cz/~milanek/PostScript/Reference/REF.html">Postscript Level 2</a></li>
+<li><a href="http://www.ugrad.math.ubc.ca/localdoc/Flat/PS-toc.html">PostScript Table of Contents</a></li>
+<li><a href="http://www.tailrecursive.org/postscript/">A First Guide to PostScript</a>
+  <ul>
+  <li><a href="http://www.tailrecursive.org/postscript/operators.html">PostScript Operators</a></li>
+  </ul>
+</li>
+</ul>
+<h4>入門</h4>
+<ul>
+<li><a href="http://denki.nara-edu.ac.jp/~yabu/soft/ps.html">Postscript ファイルの書き方入門</a></li>
+<li><a href="http://d.hatena.ne.jp/dayflower/20100203/1265185183">PostScript 基礎文法最速マスター - daily dayflower</a></li>
+<li><a href="http://www.cs.kyoto-wu.ac.jp/~konami/documents/ps/psmemo.html">Postscript プログラミングメモ</a></li>
+<li><a href=""></a></li>
+</ul>
+<h4>Samples</h4>
+<ul>
+<li><a href="http://fukuchi.org/oss4art/PostScript">PostScript - Oss4art</a></li>
+</ul>
+<h4>Trouble Shootings</h4>
+<ul>
+<li><a href="http://www.tnlab.ice.uec.ac.jp/tips/postscript.html">PostScript TIPS</a></li>
+<li>BoundingBox
+  <ul>
+  <li><a href="http://www2.odn.ne.jp/nmatunaga/framedir/tex/tex_graphics_include.htm">tex_graphics_include</a></li>
+  <li><a href="http://www.speech-lab.org/hiroki/PSvsEPS/">b</a></li>
+  </ul>
+</li>
+<li>ps2pdf 文字化け
+  <ul>
+  <li><a href="http://d.hatena.ne.jp/khiker/20080329/ghostscript">日本語を含むPDFを文字化けせずps2pdfで作れた! - とりあえず暇だったし何となく始めたブログ</a></li>
+  <li><a href="http://d.hatena.ne.jp/k3k1/20070812/1186924788">Ghostscript 8.60 を CentOS 4 にインストール、cups 経由で RICOH のプリンタに印刷 - k3k1::log</a></li>
+  </ul>
+</li>
+<li><a href=""></a></li>
+</ul>
+<h3>JavaScript による実装</h3>
+<ul>
+<li><a href="http://logand.com/sw/wps/index.html">WPS: PostScript for the Web</a>
+  <ul>
+  <li>PostScript: 119 operators</li>
+  <li>PDF: 26 operators</li>
+  <li>※ 独自拡張: 139 operators</li>
+  <li>※ 未実装: 74 operators</li>
+  </ul>
+</li>
+<li><a href="http://www.feiri.de/pcan/">PostCanvas</a> : 78 operators</li>
+</ul>
+<h3>VML</h3>
+<ul>
+<li><a href="http://www.w3.org/TR/NOTE-VML">VML - the Vector Markup Language</a></li>
+<li><a href="http://www.doraneko.org/misc/vml/19980513/Overview.html">ベクトルマークアップ言語(VML)</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/bb263897(v=VS.85).aspx">MSDN Online - VML Introduction</a></li>
+<li></li>
+<li><a href="http://www.pp-express.info/vml.htm">VMLについて</a></li>
+<li><a href="http://www.tohoho-web.com/wwwvml.htm">とほほのVML入門</a></li>
+<li><a href="http://seoi.net/vector/ref_index.shtml">VMLリファレンス</a></li>
+<li><a href="../test/latex.vml.htm">agh.Graphics - VML Experiment</a></li>
+<li><a href=""></a></li>
+</ul>
+<ul>
+<li><a href="http://www.revulo.com/SVG/SIE.html">Internet Explorer で SVG ファイルを直接表示できるようにする - Revulo's Laboratory</a></li>
+<li><a href="http://sie.sourceforge.jp/">SIE - SVG形式の画像を表示できるオープンソースのJavaScriptライブラリ</a></li>
+</ul>
+<h3>SVG</h3>
+<ul>
+<li><a href="http://www.w3.org/TR/SVG/index.html">Scalable Vector Graphics (SVG) 1.1 (Second Edition)</a></li>
+<li><a href="http://www.remus.dti.ne.jp/~a-satomi/nikki/tmp/bouhoumen_svg/object_param_1.html">object 要素 + param 要素による SVG の埋め込み (1)</a></li>
+</ul>
+<h4>BoundingBox からはみ出ている部分を SVG で表示するには。</h4>
+<ul>
+<li><a href="http://stackoverflow.com/questions/1572587/allow-svg-graphics-to-overflow-outside-the-containing-svg-element">
+  javascript - Allow SVG graphics to overflow outside the containing svg element - Stack Overflow</a>
+  <p>茲によると、WebKit の場合には、一番外側の svg 要素に overflow:visible を適用しておけば、
+  はみ出ている部分も表示されるようなことが書かれている。
+  然し、Chrome で試してみた (object で埋め込み) 所、その様な事はなく、表示されない。
+  (object で埋め込んでいる場合には効かないという事なのかも知れない。)
+  </p>
+</li>
+<li></li>
+</ul>
+<h3>Canvas</h3>
+<ul>
+<li><a href="http://www.html5.jp/canvas/ref.html">Canvasリファレンス - HTML5.JP</a></li>
+</ul>
+<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<h2>agh.PostScript 実装</h2>
+<!--.........................................................................-->
+<h3>PostScript の文字列は JavaScript と扱いが異なるという事 [完]</h3>
+<p>今の所、分かっている範囲で正しい動作をする様に実装出来ている。</p>
+<p>例:</p>
+<ul>
+<li>PostScript:
+<pre class="agh-prog-ps">
+/t (Hello) def
+t
+123 10 t cvrs
+99 10 t cvrs
+pstack
+</pre>
+</li>
+<li>結果:
+<pre class="result">
+(99)
+(993)
+(993lo)
+</pre>
+</li>
+<li>結論:
+  <ul>
+  <li>文字列は中身を変化させる事が可能。</li>
+  <li>中身を変化させると、同インスタンスを参照している別の所も変化の影響を受ける。</li>
+  </ul>
+</li>
+</ul>
+<p>例: &gt;GhostScript&lt;</p>
+<ul>
+<li>PostScript:
+<pre class="agh-prog-ps">1 1 3 { 10 (Hello) dup 4 1 roll cvrs } for</pre>
+</li>
+<li>結果:
+<pre class="result">
+(3)
+(3ello)
+(3)
+(3ello)
+(3)
+(3ello)
+</pre>
+</li>
+<li>結論:
+  <ul>
+  <li>(...) リテラルは、評価時ではなくて解析時にバッファが作成される。</li>
+  <li>つまり、異なる exec を通してインスタンスは共有される。</li>
+  </ul>
+</li>
+</ul>
+<!--.........................................................................-->
+<h3>色空間変換式</h3>
+<h4>CMY 空間</h4>
+<pre class="agh-prog-js">
+function rgb2cmy(r,g,b){
+  return {c:1-r,m:1-g,y:1-b};
+}
+function cmy2rgb(c,m,y){
+  return {r:1-c,g:1-m,b:1-y};
+}
+</pre>
+<h4>CMYK 空間</h4>
+<pre class="agh-prog-js">
+function rgb2cmyk(r,g,b){
+  var k=min(r,g,b);
+  var ik=1-k;
+  return {c:1-r/ik,m:1-g/ik,y:1-b/ik,k:k};
+}
+function cmyk2rgb(c,m,y,k){
+  var ik=1-k;
+  return {r:ik*(1-c),g:ik*(1-m),b:ik*(1-y)};
+}
+</pre>
+<h4>HSV 空間</h4>
+<p>注意: 以下の変換式は、H∈[0,1) の場合</p>
+<pre class="agh-prog-js">
+function rgb2hsv(r,g,b){
+  var a=[r,g,b];
+
+  var m=argmax(a);
+  var v=a[m];
+  var t=a[(m+1)%3];
+  var u=a[(m+2)%3];
+  var d=v-min(t,u);
+
+  return {h:((t-u)/d+2*m)/6,s:d/v,v:v};
+}
+function hsv2rgb(h,s,v){
+  h-=Math.floor(h); // modulo 1
+  h*=6;
+  var m=h&gt;&gt;1;
+  var i=1^h&amp;1;
+  var a=[0,0,0];
+  a[(m+i)%3]=Math.abs(2*m+1-h);
+  a[(m+2)%3]=1;
+  return {r:v*(1-s*a[0]),g:v*(1-s*a[1]),b:v*(1-s*a[2])};
+}
+</pre>
+<h4>HLS 空間</h4>
+<h4>R'G'B' 空間</h4>
+<pre class="agh-prog-js">
+function rgb2gamma(r,g,b){
+  function f(v){
+    return v&lt;0.018?v*4.5:1.099*Math.pow(v,0.45)-0.099;
+  }
+  return {r:f(r),g:f(g),b:f(b)};
+}
+function gamma2rgb(r,g,b){
+  function f(v){
+    return v&lt;0.0812?v/4.5:Math.pow((v+0.099)/1.099,1/0.45);
+  }
+  return {r:f(r),g:f(g),b:f(b)};
+}
+</pre>
+<h4>XYZ 空間</h4>
+<pre class="agh-prog-js">
+function rgb2xyz(r,g,b){
+  return {
+    x:0 ?&lt; 0.412453*r+0.357580*g+0.180423*b &lt;? 1,
+    y:0 ?&lt; 0.212671*r+0.715160*g+0.072169*b &lt;? 1,
+    z:0 ?&lt; 0.019334*r+0.119193*g+0.950227*b &lt;? 1
+  };
+}
+function xyz2rgb(x,y,z){
+  return {
+    r:0 ?&lt;  3.240479*x-1.537150*y-0.498535*z &lt;? 1,
+    g:0 ?&lt; -0.969256*x+1.875991*y+0.041556*z &lt;? 1,
+    b:0 ?&lt;  0.055648*x-0.204043*y+1.057311*z &lt;? 1
+  };
+}
+</pre>
+<h4>参考</h4>
+<ul>
+<li><a href="http://image-d.isp.jp/commentary/color_cformula/index.html">ISP imaging-developers - 色変換式集</a></li>
+</ul>
+<!--.........................................................................-->
+<h3>ns.PsGState 確定の事</h3>
+<p>当初は、出力先の種類によって PsGState の内部構造を自由に選択できるようにしようと考えた。</p>
+<p>然し、それだと実装が面倒なので、結局 PsGState は一種類に絞って扱う事にした。</p>
+<p>PsGState を共通にする事の利点と欠点を以下に挙げる。</p>
+<ul>
+<li>○ 無駄な中間関数呼出 (dispatch) を経ずに操作を実行出来る。
+  (PsGState を Graphics 固有の物にすると、
+  一旦 Graphics を介して操作を実行しなければならない。)
+</li>
+<li>○ operator 定義の所に直接操作を記述出来るので、実装がやりやすい。
+  (Graphics 固有だと、Graphics の方と、
+  それを呼び出す operator の方の二箇所に記述を行う必要があり面倒である。)
+</li>
+</ul>
+<p>PsGState の内容を Graphics 依存にする事の利点と欠点を以下に挙げる。</p>
+<ul>
+<li>○ 出力対象に応じて最適な方法で、座標変換や状態設定等を扱う事が出来る。</li>
+<li>○ Canvas の場合には、元から備わっている graphics state 機能があるので、それを流用する事が出来る。 </li>
+<li>△ [Canvas の場合] PostScript にあって Canvas の方に用意されていない機能を扱う時に、
+  面倒である。結局、計算する前に、Canvas の機能を用いて現在の描画設定に関する情報を読み取らなければならない。
+  (簡単に実現出来るかどうかも、考えていないから分からないが。)
+</li>
+</ul>
+<p>以上の事を考えた上で、現在の所は、取り敢えず実装の簡単さを重視して「PsGState は共通」として扱う事にする。</p>
+<p>但し、現在の実装にも問題はある。</p>
+<ul>
+<li>現在の実装は、SVG/VML の為の物であり、座標変換は全て自前で行っている。
+  <ul>
+  <li>SVG/VML では座標変換は単に「点」の位置に対する物の様で、
+    描画された太さを持った線に対して為される物ではない様である。
+    <p>例えば、[縦に三倍に引き延ばす要素] の内側で [円] を描いたとする。</p>
+    <ul>
+    <li>この時、GhostScript では円の上端近くと下端近くでは線が太くなるが、
+      円の左右の線は長さが長くなるだけで太くはならない。</li>
+    <li>SVG/VML で同じように記述しても、円の線の太さは全体で一様である。
+    </li>
+    </ul>
+  </li>
+  <li>従って、SVG/VML では GhostScript と同様な座標変換の仕方を実現するのは不可能
+    (或いは、やり方があるのに知らないだけかも知れないが) であると判断した。
+  </li>
+  <li>結局「点」の位置の変換しかできないのであれば、
+    座標変換操作をする度に svg/vml 要素を入れ子にしてそれを管理するよりは、
+    自前で点の座標変換を実行してしまい常にフラットな空間に対して出力する様にした方が楽である。
+    <p>特に、vml の場合は、座標変換をする様な要素を入れ子にすると、IE が挙動不審であり始末に負えない。</p>
+  </li>
+  <li>というのが、座標変換を全て自前で行っている理由である。</li>
+  </ul>
+</li>
+<li>然し、Canvas では線の太さもちゃんと座標変換で変化するのかも知れない。
+  <ul>
+  <li>その場合 Canvas の時に限って、Canvas の機能で座標変換を実現するかも知れない。</li>
+  <li>Canvas を使う時には「座標変換を対象の機能で実現する」という事は、
+    svg/vml より簡単である。
+    <ul>
+    <li>Canvas は PostScript の指定と同じ感じに JavaScript で関数を順番に読んでいけばよい。
+      座標変換や gsave/grestore に対応する機能も既に持っているので、楽である。</li>
+    <li>これが、svg/vml だと「座標変換を行った履歴に従って木構造を自分で構築し要素の木構造に変換する」みたいな面倒な事はしなければならない。</li>
+    </ul>
+  </li>
+  <li>という事を考えると、Canvas の為に PsGState を再び Graphics 固有にしたくなると言う可能性がある。
+    (Canvas で線の太さも含めて座標変換されるのであれば。)
+    <p>でも、それは実際にそうする事に決めてから変更をする事にすれば良い。</p>
+  </li>
+  </ul>
+</li>
+</ul>
+<!--.........................................................................-->
+<h3>IE/VML dashstyle の謎</h3>
+<p>dashstyle 属性には、数値を偶数個並べて (線の長さ 空白の長さ)*
+の形式で破線のパターンを指定する事が出来る。
+所が実際に指定してみると、指定したのと異なるパターンで表示されてしまう。
+一体どうなっているのか…?
+</p>
+<table class="normal">
+<tr><th>指定</th><th>実際</th></tr>
+<tr><td>dash</td><td>4 3</td></tr>
+<tr><td>dot</td><td>1 3</td></tr>
+<tr><td>dashdot</td><td>4 3 1 3</td></tr>
+<tr><td>longdash</td><td>8 3</td></tr>
+<tr><td>longdashdot</td><td>8 3 1 3</td></tr>
+<tr><td>longdashdotdot</td><td>8 3 1 3 1 3</td></tr>
+<tr><td>0 n (n≧1)</td><td>1 3</td></tr>
+<tr><td>n 0 (n≧0)</td><td class="markB">3 1</td></tr>
+<tr><td>1 1</td><td class="markB">1 1</td></tr>
+<tr><td>2 1</td><td class="markB">3 1 1 1</td></tr>
+<tr><td>4 1</td><td>8 3 1 3</td></tr>
+<tr><td>5 1</td><td>3 1 1 1</td></tr>
+<tr><td>6 1</td><td>4 3</td></tr>
+<tr><td>10 1</td><td>8 3</td></tr>
+<tr><td>n 1 (n 他)</td><td>3 1</td></tr>
+<tr><td>1 n (n≧2)</td><td>1 3</td></tr>
+<tr><td>2 2</td><td>3 1</td></tr>
+<tr><td>2 3</td><td>8 3 1 3</td></tr>
+<tr><td>2 4</td><td>3 1 1 1</td></tr>
+<tr><td>2 5</td><td>4 3</td></tr>
+<tr><td>2 9</td><td>4 3 1 3</td></tr>
+<tr><td>2 n (n 他)</td><td>1 3</td></tr>
+<tr><td>3 2</td><td>8 3 1 3</td></tr>
+<tr><td>4 2</td><td>3 1 1 1</td></tr>
+<tr><td>5 2</td><td>4 3</td></tr>
+<tr><td>8 2</td><td>8 3 1 3</td></tr>
+<tr><td>9 2</td><td>8 3</td></tr>
+<tr><td>12 2</td><td>4 3</td></tr>
+<tr><td>13 2</td><td>8 3 1 3</td></tr>
+<tr><td>20 2</td><td>8 3</td></tr>
+<tr><td>n 2 (n 他)</td><td>3 1</td></tr>
+<tr><td>3 3</td><td>3 1 1 1</td></tr>
+<tr><td>3 4</td><td>4 3</td></tr>
+<tr><td>3 5</td><td class="markB">3 1 1 1 1 1</td></tr>
+<tr><td>3 8</td><td>4 3 1 3</td></tr>
+<tr><td>3 n (n 他)</td><td>1 3</td></tr>
+<tr><td>1 1 1 1</td><td>1 1</td></tr>
+</table>
+<ul>
+<li>名前の付いているパターンを直接指定すると、正しく表示される。</li>
+<li>登場する数字の種類によって、描画に時間が掛かったりする。
+  特に、12 と 16 には時間が掛かる。
+</li>
+</ul>
+<p>結局、IE では以下に挙げるパターンしか表示できないようである。
+因みに、以下のパターンであるならば、パターン通りに正しく表示される。</p>
+<table class="normal">
+<tr><th>名前</th><th>パターン</th></tr>
+<tr><td>dash</td><td>4 3</td></tr>
+<tr><td>dot</td><td>1 3</td></tr>
+<tr><td>dashdot</td><td>4 3 1 3</td></tr>
+<tr><td>longdash</td><td>8 3</td></tr>
+<tr><td>longdashdot</td><td>8 3 1 3</td></tr>
+<tr><td>longdashdotdot</td><td>8 3 1 3 1 3</td></tr>
+<tr><td>-</td><td>1 1</td></tr>
+<tr><td>-</td><td>3 1</td></tr>
+<tr><td>-</td><td>3 1 1 1</td></tr>
+<tr><td>-</td><td>3 1 1 1 1 1</td></tr>
+</table>
+
+<!--.........................................................................-->
+<h3>ns.vector2 廃止 [2011/02/26 完]</h3>
+<p>行列の方を配列で表現しているので、ベクトルの方も配列で表現した方が汎用性が高い。</p>
+<p>また、PostScript スタック上でのベクトルの表現は、唯単に二つの数値を続けて push する物である為、
+ベクトルの表現が配列であると</p>
+<ul>
+<li>ベクトルをスタックに追加する時は push.apply(...,vector)
+  <p>※ 実は、push(vector[0],vector[1]) の方が速い様な気も。</p>
+</li>
+<li>ベクトルをスタックから取り出す時は slice(-2)
+  <p>※ typecheck をしなければならないので実はこれだけでは良くないが</p>
+</li>
+</ul>
+<p>で簡単に実装する事が出来る。</p>
+<h4>書き換え</h4>
+<ol>
+<li>先ずは、使われていない ns.vector2 の関数を削除
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps.js/L8 @@ 23:20 2011/02/26
+   mwg.memcpy(ns.vector2.prototype,{
+-    add:function(r){
+-      return new ns.vector2(this.x+r.x,this.y+r.y);
+-    },
+     add_xy:function(x,y){
+       return new ns.vector2(this.x+x,this.y+y);
+-    },
++    }
+-    affine:function(mat){
+-      // 低速
+-      //function arr(i){return math.data[mat.offset+i];}
+-      //return new ns.vector2(
+-      //  arr(0)*this.x+arr(2)*this.y+arr(4),
+-      //  arr(1)*this.x+arr(3)*this.y+arr(5),
+-      //);
+-      
+-      var A=mat.data,a=mat.offset;
+-      return new ns.vector2(
+-        A[a+0]*this.x+A[a+2]*this.y+A[a+4],
+-        A[a+1]*this.x+A[a+3]*this.y+A[a+5]
+-      );
+-    },
+-    affineR:function(mat){
+-      var A=mat.data,a=mat.offset;
+-      var idet=1.0/(A[a]*A[a+3]-A[a+1]*A[a+2]);
+-      var a1=A[a+3];
+-      var a2=-A[a+1];
+-      var c1=-A[a+2];
+-      var c2=A[a+0];
+-      var s1=A[a+2]*A[a+5]-A[a+3]*A[a+4];
+-      var s2=A[a+1]*A[a+4]-A[a+0]*A[a+5];
+-      return new ns.vector2(
+-        (a1*this.x+c1*this.y+s1)*idet,
+-        (a2*this.x+c2*this.y+s2)*idet
+-      );
+-    }
+   });
+</pre>
+</li>
+<li>ns.vector2#x 及び ns.vector2#y を [0] 及び [1] に書き換え
+  <p>grep -E '\.(x|y)' 実行結果</p>
+<pre class="result">
+mwg.lang.ps-geo.js:5:           this.x=x;
+mwg.lang.ps-geo.js:6:           this.y=y;
+mwg.lang.ps-geo.js:10:                  return new ns.vector2(this.x+x,this.y+y);
+mwg.lang.ps-geo.js:241:                         var p_=ns.AffineA.itransformD([p.x,p.y],proc.graphics.gstate.CTM)
+mwg.lang.ps-svg.js:139:                 this.buffer.push(pt.x);
+mwg.lang.ps-svg.js:141:                 this.buffer.push(pt.y);
+mwg.lang.ps-vml.js:165:                 this.buffer.push(pt.x*VML_FIXEDMUL|0);
+mwg.lang.ps-vml.js:167:                 this.buffer.push(pt.y*VML_FIXEDMUL|0);
+mwg.lang.ps-vml.js:188:                 v2c=ns.AffineA.idtransformD([v2c.x,v2c.y],mat);
+</pre>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps-geo.js/L239 @@ 23:34 2011/02/26
+       currentpoint:function currentpoint(proc){
+         var p=proc.graphics.gstate.position;
+-        var p_=ns.AffineA.itransformD([p.x,p.y],proc.graphics.gstate.CTM);
++        var p_=ns.AffineA.itransformD(p.clone(),proc.graphics.gstate.CTM);
+         proc.stk.push(p_[0],p_[1]);
+       },
+@ mwg.lang.ps-svg.js/L138 @@ 23:35 2011/02/26
+     output_point:function(pt){
+-      this.buffer.push(pt.x);
++      this.buffer.push(pt[0]);
+       this.buffer.push(' ');
+-      this.buffer.push(pt.y);
++      this.buffer.push(pt[1]);
+     },
+@ mwg.lang.ps-vml.js/L164 @@ 23:41 2011/02/26
+     output_point:function(pt){
+-      this.buffer.push(pt.x*VML_FIXEDMUL|0);
++      this.buffer.push(pt[0]*VML_FIXEDMUL|0);
+       this.buffer.push(' ');
+-      this.buffer.push(pt.y*VML_FIXEDMUL|0);
++      this.buffer.push(pt[1]*VML_FIXEDMUL|0);
+     },
+</pre>
+</li>
+<li>ns.vector2 初期化をを配列に
+<pre class="result">
+mwg.lang.ps-geo.js:4:   ns.vector2=function(x,y){
+mwg.lang.ps-geo.js:8:   mwg.memcpy(ns.vector2.prototype,{
+mwg.lang.ps-geo.js:10:                  return new ns.vector2(this.x+x,this.y+y);
+mwg.lang.ps.js:901:                     return new ns.vector2(p_[0],p_[1]);
+</pre>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps.js/L899 @@ 23:43 2011/02/26
+     transf_point:function(p){
+       var p_=ns.AffineA.transformD(p,this.gstate.CTM);
+-      return new ns.vector2(p_[0],p_[1]);
++      return p_;
+     },
+</pre>
+</li>
+<li>add_xy を配列による計算に置き換え
+<pre class="result">
+mwg.lang.ps-geo.js:9:           add_xy:function(x,y){
+mwg.lang.ps-vml.js:185:                 v2c=v2c.add_xy(mat[4],mat[5]);
+mwg.lang.ps.js:905:                     return b.add_xy(p_[0],p_[1]);
+</pre>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps.js/L903 @@ 23:46 2011/02/26
+     rtransf_point:function(b,p){
+       var p_=ns.AffineA.dtransformD(p,this.gstate.CTM);
+-      return b.add_xy(p_[0],p_[1]);
++      p_[0]+=b[0];
++      p_[1]+=b[1];
++      return p_;
+     },
+</pre>
+</li>
+<li>ns.vector2 削除
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps.js/L4 @@ 00:11 2011/02/27
+-  ns.vector2=function(x,y){
+-    this.x=x;
+-    this.y=y;
+-  };
+-  mwg.memcpy(ns.vector2.prototype,{
+-    add_xy:function(x,y){
+-      return new ns.vector2(this.x+x,this.y+y);
+-    }
+-  });
+-  //----------------------------------------------------------------------------
+</pre>
+</li>
+</ol>
+<!--.........................................................................-->
+<h3>どうやら、IE/VML の線の太さが間違っているらしいの事</h3>
+<p>前から微妙に細くなっている様だと思う所はあった。
+今迄は、一定の比率で微妙に細くなっているだけだと思っていたのだが…。
+どうやら、指定の仕方を抑も間違えている様である。
+</p>
+<p>画像全体を大きくしたり小さくしたりすると、
+線の太さの変わり方が全体の代わり方と異なる。
+というか、何か変化していない様な気がする…。</p>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps-vml.js/L105 @@ 07:58 2011/02/27
+     stroke:function(){
+       var s=this.gstate;
+       var scal=this.getMeanScale();
+       this.buffer.push('&lt;vml:shape filled="false" path="');
+       this.output_path();
+       this.buffer.push(VML_TAG_STROKE1);
+       this.buffer.push('&lt;vml:stroke color="');
+       this.buffer.push(s.color.toHtmlColor());
+       this.buffer.push('" weight="');
+-      this.buffer.push(s.linewidth*scal);
++      this.buffer.push(s.linewidth*scal*this.s_r+this.s_u);
++      //window.log('dbg: weight='+s.linewidth*scal);
++      //window.log('dbg: s_r='+this.s_r);
+</pre>
+<p>取り敢えず上の様にしておいたら、極端に変なことになることは無くなった。
+(本当にあって居るかどうかは良く分からない。)</p>
+<!--############################################################################
+
+    計画 2 属性の再実装
+    
+#############################################################################-->
+<h2>計画2. 属性の再実装</h2>
+<h3>Summary</h3>
+<p>属性の適用対象は以下の物である</p>
+<ul>
+<li>ns.PsArray: array/packedarray</li>
+<li>ns.PsDict: dict</li>
+<li>ns.PsString: string</li>
+<li>ns.PsFile: file</li>
+</ul>
+<p>アクセス属性には以下の物がある。</p>
+<ul>
+<li>__raccess__</li>
+<li>__waccess__</li>
+<li>__xaccess__</li>
+<li>__packed__ (packedarray と array を区別する為の物)</li>
+</ul>
+<!--.........................................................................-->
+<h3>配列の __readonly__/__packed__ 属性について [17:42 2011/03/01 完]</h3>
+<p>実は、__packed__ と __readonly__ は異なるという事が分かった。
+</p>
+<p><del>ExecutableArray に __readonly__/__executeonly__ 属性を追加</del></p>
+<p>これを機に、オブジェクトのアクセス権限について再度実装し直す。
+オブジェクトが持ちうる属性は以下の様な物</p>
+<ul>
+<li>__raccess__</li>
+<li>__waccess__ (__readonly__/__packed__)</li>
+<li>__xaccess__ (__executable__)</li>
+<li>__packed__ (配列の時のみ)</li>
+</ul>
+<p>属性の適用対象は以下の物である</p>
+<ul>
+<li>ns.PsArray: array/packedarray</li>
+<li>ns.PsDict: dict</li>
+<li>ns.PsString: string</li>
+<li>ns.PsFile: file</li>
+</ul>
+<h4>書き換え</h4>
+<ol>
+<li>__packed__ で書き込みできるか確認しているしている部分を
+__waccess__ を見て書き込みできるか確認する様に変更。
+<pre class="agh-prog-js diff">
+@ grep -n __packed__ *.js
+# mwg.lang.ps-cmd.js:456:                 obj.__packed__=true;
+# mwg.lang.ps-cmd.js:478:                 if((arr instanceof ns.PsArray)&amp;&amp;!arr.__packed__){
+# mwg.lang.ps-cmd.js:503:                         ret.__packed__=obj.__packed__;
+# mwg.lang.ps-cmd.js:528:                         if(dst.__packed__){
+# mwg.lang.ps-cmd.js:588:                         // ※ __packed__ でも bind を実行する。 (GS 準拠)
+# mwg.lang.ps-cmd.js:690:                         r=o.__packed__?'packedarraytype':'arraytype';
+# mwg.lang.ps-geo.js:188:                                 if(a.__packed__){
+# mwg.lang.ps-geo.js:221:                 if(!(r instanceof ns.PsArray)||r.__packed__){
+# mwg.lang.ps-geo.js:267:                         if(!(r instanceof ns.PsArray)||r.__packed__){
+# mwg.lang.ps-geo.js:315:                         if(!(r instanceof ns.PsArray)||r.__packed__){
+# mwg.lang.ps.js:62:              this.__packed__=false;
+# mwg.lang.ps.js:76:                      if(this.__packed__){
+@ mwg.lang.ps-cmd.js/L52 @@ 16:39 2011/03/01
+   ns.PsArray=function(len){
+     if(mwg.is(len,Array)){
+       this.data=len;
+       this.length=this.data.length;
+     }else{
+       this.length=parseInt(len);
+       this.data=[];
+       for(var i=0;i&lt;len;i++)this.data[i]=ns.PsNull.instance;
+     }
+-    this.__executable__=false;
+-    this.__packed__=false;
+     this.offset=0;
+   };
+   mwg.memcpy(ns.PsArray.prototype,{
++    __raccess__:true,
++    __waccess__:true,
++    __executable__:false,
++    __packed__:false,
+     __psget__:function(proc,key){
+       var index=parseInt(key);
+       if(isNaN(index)||index&lt;0||this.length&lt;=index){
+         proc.onerror("rangeerror","array="+this+", key="+key);
+         return null;
+       }
+
+       return this.data[this.offset+index];
+     },
+     __psput__:function(proc,key,val){
+-      if(this.__packed__){
+-        proc.onerror("invalidaccess","packedarray is readonly.");
++      if(!this.__waccess__){
++        proc.onerror("invalidaccess","!__waccess__");
+         return;
+       }
+@ mwg.lang.ps-cmd.js/L448 @@ 16:41 2011/03/01
+     packedarray:function packedarray(proc){
+       var len=parseInt(proc.stk.pop());
+       var index=proc.stk.length-len;
+       
+       var arr=[];
+       for(var i=index;i&lt;proc.stk.length;i++)
+         arr.push(proc.stk[i]);
+       var obj=new ns.PsArray(arr);
+       obj.__packed__=true;
++      obj.__waccess__=false;
+       
+       proc.stk.length=index;
+       proc.stk.push(obj);
+       //p.Run("1 2 3 4 4 packedarray aload pstack clear");
+     },
+@ mwg.lang.ps-cmd.js/L477 @@ 
+     astore:function astore(proc){
+       var arr=proc.stk.pop();
++      
+-      if((arr instanceof ns.PsArray)&amp;&amp;!arr.__packed__){
++      if(!(arr instanceof ns.PsArray)){
++        proc.onerror('typecheck',"operand: an array is expected.");
++        return;
++      }else if(!arr.__waccess__){
++        proc.onerror('invalidaccess',"operand: the array has no waccess.");
++        return;
++      }else{
+         for(var i=arr.length-1;i&gt;=0;i--)
+           arr.data[i]=proc.stk.pop();
+       }
++      
+       proc.stk.push(arr);
+       //p.Run("1 2 3 4 4 array astore pstack clear");
+     },
+@ mwg.lang.ps-cmd.js/L495 @@ 16:47 2011/03/01
+     getinterval:function getinterval(proc){
+       var len=proc.stk.pop();
+       var ind=proc.stk.pop();
+       var obj=proc.stk.pop();
+       
+       // create clone
+       var ret=null;
+       if(obj instanceof ns.PsArray){
+         ret=new ns.PsArray(obj.data);
+         ret.__packed__=obj.__packed__;
++        ret.__waccess__=obj.__waccess__;
++        ret.__raccess__=obj.__raccess__;
++        ret.__executable__=obj.__executable__;
+       }else if(obj instanceof ns.PsString){
+@ mwg.lang.ps-cmd.js/L522 @@ 16:44 2011/03/01
+     putinterval:function putinterval(proc){
+       var src=proc.stk.pop();
+       var ind=proc.stk.pop();
+       var dst=proc.stk.pop();
+       
+       // typecheck
+       if(dst instanceof ns.PsArray){
+-        if(dst.__packed__){
+-          proc.onerror("invalidaccess","operand 1/3 is a packedarray which is readonly.");
++        if(!dst.__waccess__){
++          proc.onerror("invalidaccess","operand1/3: no __waccess__");
+           return;
+         }
+         
+         if(!(src instanceof ns.PsArray)){
+@ mwg.lang.ps-cmd.js/L585 @@ 16:42 2011/03/01
+     bind:function bind(proc){
+       var p=proc.stk[proc.stk.length-1];
+       if(p instanceof ns.PsArray){
+         // ※ __executable__ でなくても bind する。 (GS 準拠)
+-        // ※ __packed__ でも bind を実行する。 (GS 準拠)
++        // ※ !__waccess__ でも bind を実行する。 (GS 準拠)
+@ mwg.lang.ps-geo.js/L188 @@ 
+     function create_matrix_operation(ps_name,transf,N,i0,iN){
+       // transf(a1,...,aN,matrix) : 変換関数
+       // [i0,iN)                  : 行列に対して変更される範囲
+       var op=function(proc){
+         var a=proc.stk.pop();
+         var args=new Array(N);
+         var j=N-1;
+         
+         if(a instanceof ns.PsArray){
+-          if(a.__packed__){
+-            proc.onerror("typecheck","operand3/3: should not be a packedarray.");
++          if(!a.__waccess__){
++            proc.onerror('typecheck',"operand3/3: no waccess.");
+             return;
+-          }
++          }else{
+           
+-          while(j&gt;=0)args[j--]=proc.stk.pop();
+-              
+-          if(a.offset==0){
+-            args.push(a.data);
+-            transf.apply(null,args);
+-          }else{
+-            var buff=a.data.slice(a.offset,a.offset+6);
+-            args.push(buff);
+-            transf.apply(null,args);
+-            for(var i=i0;i&lt;iN;i++)
+-              a.data[a.offset+i]=buff[i];
+-          }
++            while(j&gt;=0)args[j--]=proc.stk.pop();
++              
++            if(a.offset==0){
++              args.push(a.data);
++              transf.apply(null,args);
++            }else{
++              var buff=a.data.slice(a.offset,a.offset+6);
++              args.push(buff);
++              transf.apply(null,args);
++              for(var i=i0;i&lt;iN;i++)
++                a.data[a.offset+i]=buff[i];
++            }
++          }
+           
+           proc.stk.push(a);
+         }else{
+@ mwg.lang.ps-geo.js/L219 @@ 17:09 2011/03/01
+     function load_matrix(proc,source){
+       var r=proc.stk[proc.stk.length-1];
+-      if(!(r instanceof ns.PsArray)||r.__packed__){
+-        proc.onerror("typecheck","the operand should be an array (which is not packed).");
++      if(!(r instanceof ns.PsArray)){
++        proc.onerror('typecheck',"operand1/1: an array (which is not packed).");
++        return;
++      }else if(!r.__waccess__){
++        proc.onerror('typecheck',"operand1/1: no waccess");
+         return;
+       }
+       
+       for(var i=0;i&lt;6;i++)r.data[r.offset+i]=source[i];
+     }
+@ mwg.lang.ps-geo.js/L261 @@ 17:02 2011/03/01
+       concatmatrix:function concatmatrix(proc){
+         var r=proc.stk.pop();
+         var b=proc.stk.pop();
+         var a=proc.stk.pop();
+         
+-        // typecheck
++        // typecheck (arr_mod:rw-)
+-        if(!(r instanceof ns.PsArray)||r.__packed__){
+-          proc.onerror("typecheck","the 3rd operand should be an array (which is not packed).");
+-          return;
++        if(!(r instanceof ns.PsArray)){
++          proc.onerror('typecheck',"operand3/3: an array is required.");
++          return;
++        }else if(!r.__waccess__){
++          proc.onerror('invalidaccess',"operand3/3: no waccess");
++          return;
+         }else if(!(b instanceof ns.PsArray)){
+-          proc.onerror("typecheck","the 2nd operand should be an array.");
++          proc.onerror('typecheck',"operand2/3: an array is required.");
+           return;
+         }else if(!(a instanceof ns.PsArray)){
+-          proc.onerror("typecheck","the 1st operand should be an array.");
++          proc.onerror('typecheck',"operand1/3: an array is required.");
+           return;
+         }
+         
+         a=a.offset==0?a.data:a.data.slice(a.offset,a.offset+6);
+@ mwg.lang.ps-geo.js/L310 @@ 16:59 2011/03/01
+       invertmatrix:function invertmatrix(proc){
+         var r=proc.stk.pop();
+         var a=proc.stk.pop();
+         
+-        // typecheck
++        // typecheck (arr_mod:rw-)
+-        if(!(r instanceof ns.PsArray)||r.__packed__){
+-          proc.onerror("typecheck","the 2nd operand should be an array (which is not packed).");
+-          return;
++        if(!(r instanceof ns.PsArray)){
++          proc.onerror('typecheck',"operand2/2: an array is required.");
++          return;
++        }else if(!r.__waccess__){
++          proc.onerror('invalidaccess',"operand2/2: no waccess.");
++          return;
+         }else if(!(a instanceof ns.PsArray)){
+-          proc.onerror("typecheck","the 1st operand should be an array.");
++          proc.onerror('typecheck',"operand1/2: an array is required.");
+           return;
+         }
+</pre>
+</li>
+<li>PsDict の __readonly__ を __waccess__ に置き換え
+<pre class="agh-prog-js diff">
+@ grep -n __readonly__ *.js
+# mwg.lang.ps.js:199:             this.__readonly__=false;
+# mwg.lang.ps.js:212:                     if(this.__readonly__){
+# mwg.lang.ps.js:224:                     if(this.__readonly__){
+# mwg.lang.ps.js:810:     ns.systemdict.__readonly__=true;
+@ mwg.lang.ps.js/L196 @@ 17:24 2011/03/01
+   ns.PsDict=function(len){
+     this.data={};
+     this.length=0;
+-    this.__readonly__=false;
+   };
+   mwg.memcpy(ns.PsDict.prototype,{
++    __waccess__:true,
++    __raccess__:true,
+     __psget__:function(proc,key){
+       key=""+key;
+       if(!(key in this.data)){
+         proc.onerror("undefined","dict="+this+", key="+key);
+         return null;
+       }
+
+       return this.data[key];
+     },
+     __psput__:function(proc,key,val){
+-      if(this.__readonly__){
+-        proc.onerror("invalidaccess","this dictionary is readonly.");
++      if(!this.__waccess__){
++        proc.onerror('invalidaccess',"this dictionary has no waccess.");
+         return;
+       }
+       
+       key=""+key;
+       // dictionary は mwg.wrap 元は更新しないという想定の下
+       if(!(key in this.data))this.length++;
+       
+       this.data[key]=val;
+     },
+     undef:function(proc,key){
+-      if(this.__readonly__){
+-        proc.onerror("invalidaccess","this dictionary is readonly.");
++      if(!this.__waccess__){
++        proc.onerror('invalidaccess',"this dictionary has no waccess.");
+         return;
+       }
+       
+       key=""+key;
+       if(key in this.data){
+         delete this.data[key];
+         this.length--;
+       }
+     },
+@ mwg.lang.ps.js/L806 @@ 17:19 2011/03/01
+   //----------------------------------------------------------------------------
+   //  systemdict / NameLookup
+   //----------------------------------------------------------------------------
+   ns.systemdict=new ns.PsDict();
+-  ns.systemdict.__readonly__=true;
++  ns.systemdict.__waccess__=false;
+   ns.systemdict.data.systemdict=ns.systemdict;
+   //----------------------------------------------------------------------------
+</pre>
+</li>
+<li>__executable__ を __xaccess__ に置換
+<pre class="agh-prog-js diff">
+@ grep -n __executable__ *.js @@ 17:42 2011/03/01
+# mwg.lang.ps-cmd.js:515:                         ret.__executable__=obj.__executable__;
+# mwg.lang.ps-cmd.js:528:                 ret.__executable__=obj.__executable__;
+# mwg.lang.ps-cmd.js:599:                         // ※ __executable__ でなくても bind する。 (GS 準拠)
+# mwg.lang.ps-cmd.js:609:                                 //      o instanceof ns.PsName&amp;&amp;o.__executable__
+# mwg.lang.ps-cmd.js:616:                                         o instanceof ns.PsName&amp;&amp;o.__executable__
+# mwg.lang.ps-cmd.js:728:                 if(top instanceof Object&amp;&amp;'__executable__' in top&amp;&amp;!top.__executable__){
+# mwg.lang.ps-cmd.js:730:                         top.__executable__=true;
+# mwg.lang.ps-cmd.js:734:                 /* TODO: filetype.__executable__ etc */
+# mwg.lang.ps-cmd.js:738:                 if(top instanceof Object&amp;&amp;'__executable__' in top&amp;&amp;top.__executable__){
+# mwg.lang.ps-cmd.js:740:                         top.__executable__=false;
+# mwg.lang.ps-cmd.js:747:                 if('__executable__' in top)
+# mwg.lang.ps-cmd.js:748:                         name.__executable__=top.__executable__;
+# mwg.lang.ps-cmd.js:771:                 sub.__executable__=str.__executable__;
+# mwg.lang.ps.js:66:              __executable__:false,
+# mwg.lang.ps.js:100:                     var ret=[this.__executable__?'{':'['];
+# mwg.lang.ps.js:104:                     ret.push(this.__executable__?'}':']');
+# mwg.lang.ps.js:111:             this.__executable__=false;
+# mwg.lang.ps.js:119:                     if(this.__executable__)
+# mwg.lang.ps.js:127:             ret.__executable__=true;
+# mwg.lang.ps.js:132:             this.__executable__=false;
+# mwg.lang.ps.js:136:     ns.PsNull.executable.__executable__=true;
+# mwg.lang.ps.js:161:             this.__executable__=false;
+# mwg.lang.ps.js:374:                                             this.word.__executable__=true;
+# mwg.lang.ps.js:638:                                                     this.word.__executable__=true;
+# mwg.lang.ps.js:2128:                            if(w.__executable__){
+# mwg.lang.ps.js:2166:                                            procedure.__executable__=true;
+</pre>
+  <p>※ 変更は置換を実行しただけである。</p>
+</li>
+</ol>
+<p>※ 註記: packedarray に対する書込は typecheck エラーではなく、invalidaccess エラーを出す。
+これは GhostScript でも同様である。</p>
+<!--.........................................................................-->
+<h3>属性関連のオペレータの実装 [18:23 2011/03/01 完]</h3>
+<p>各オペレータの動作定義を調べて実装した。</p>
+<ul>
+<li>rcheck</li>
+<li>wcheck</li>
+<li>xcheck</li>
+<li>readonly</li>
+<li>executeonly</li>
+<li>noaccess</li>
+</ul>
+<!--############################################################################
+
+    その他
+    
+#############################################################################-->
+<h2>その他</h2>
+<!--.........................................................................-->
+<h3>userdict/globaldict の修正 [完 2011/02/28]</h3>
+<p>Scope の userdict/globaldict の扱いが今見てみると変なので、修正する。
+昔は、PsDict は裸の Object であったので、mwg.wrap を一回すれば良かったが、
+今は、PsDict という class なので、systemdict は
+mwg.wrap を自身に対して実行するだけでは正しい動作にならない。
+</p>
+<ol style="list-style-type:lower-alpha;">
+<li>operator とし実装
+  <p>systemdict の userdict 及び globaldict だけ入れ替えるというのは色々面倒なので、
+  結局 userdict 及び globaldict は裸でその儘登録するのではなく、
+  proc クラスインスタンスから対応するオブジェクトを取り出す operator として実装した方が楽である。
+  </p>
+  <p>但し、これは PostScript の仕様とは異なる。
+  実際に、systemdict /userdict get した時の動作などが変わってしまう。
+  然し、この様な使い方をしない限りは動作に支障はない?</p>
+</li>
+<li>mwg.wrap を二回実行する。
+  <p>外側の PsDict 及び内側の data に対して。両方実行する。</p>
+  <p>←然し、外側の殻に対しても mwg.wrap を実行する意味はあるのだろうか?</p>
+</li>
+<li>mwg.wrap を中の data のみに対して実行する。
+</li>
+<li>mwg.memcpy してしまう。
+  <p>この方法を取ると、初期化時にコストはかかるが以後の動作は多少軽くなる (かもしれない)。</p>
+</li>
+</ol>
+<p>取り敢えず、今の実装としては c. を選ぶ事にする。</p>
+<pre class="agh-prog-js diff">
+@ mwg.lang.ps.js/L807 @@ 23:58 2011/02/28
+   var Scope=function(){
+     this.dicts=[];
+-    this.systemdict=mwg.wrap(ns.systemdict,{
+-      globaldict:new ns.PsDict(),
+-      userdict:new ns.PsDict()
+-    });
+-    this.push_dict(this.systemdict.globaldict);
+-    this.push_dict(this.systemdict.userdict);
++    var userdict=new ns.PsDict();
++    var globaldict=new ns.PsDict();
++    
++    this.systemdict=new ns.PsDict();
++    this.systemdict.data=mwg.wrap(ns.systemdict.data,{
++      userdict:userdict,
++      globaldict:globaldict
++    });
++    this.systemdict.length=ns.systemdict.length+2;
++    this.push_dict(globaldict);
++    this.push_dict(userdict);
+   };
+</pre>
+<!--.........................................................................-->
+<h3>三角関数の角度は degree 単位であると言う事 [2011/02/28]</h3>
+<p>escher の図がちゃんと表示されないと思っていたら、
+どうやら三角関数の角度の定義を勘違いしていた様である。
+三角関数には radian 単位で値を指定する物と思っていたのが、
+実は degree 単位で値を指定しなければならない様だ。
+</p>
+<!--.........................................................................-->
+<h3>exp 関数は自然対数の指数関数ではなくて、pow (x^y の関数) であったと言う事 [2011/03/01]</h3>
+<p>ray-tracing の PostScript の結果として変な物が出てきていると思っていたら、
+そう言う事であった。
+</p>
+<p>ray-tracing の PostScript が使用しているオペレータは小数しかないのに、動作が変であった。
+と言う事は、PostScript の動作機構自体を間違えているか小数のオペレータ自体にバグが入っているという事である。
+スタックを処理するオペレータなどは余程変な引数を渡さない限りちゃんと動作しているという事は、
+他の PostScript が良く動作している事を考えれば合っている。
+とすれば、他では余り使っていない関数が怪しい。
+</p>
+<p>動作を確認する為に、取り敢えず exp 関数のグラフを表示するプログラムを作成しようと考えた。
+dbg-exp.ps を作成して mwg.PostScript で丁度良い感じに動作する様に作った。
+それを GhostScript に食わせたら何かエラーを吐いて動作しない…
+其処で exp 関数の定義を確認してみたら、定義を勘違いしていたという事に初めて気付いた。
+という訳である。</p>
+<!--.........................................................................-->
+
+<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+#%)
+</body>
+</html>

@@ -1,0 +1,217 @@
+﻿@charset "utf-8";
+
+@font-face{
+  font-family:aghfont_code;
+  src:local("Courier New"),local("Courier"),local("MeiryoKe_Gothic"),local("MS Gothic"),local("ＭＳ ゴシック");
+}
+
+/******************************************************************************
+  ソースコード要素 (<pre>s&<code>s)
+------------------------------------------------------------------------------/
+/*
+pre.cs{background-color:#fafff4;}
+pre.cpp{background-color:#fffff4;}
+pre.result{background-color:black;color:silver;}
+*/
+
+pre.result{
+  border:1px solid silver;border-width:1px 0px;padding-top:1ex;padding-bottom:1ex;background-color:white;
+}
+
+/*%m mwg::prog::classList (*/
+/*%x (*/
+class agh-prog-c    {desc:C Language;}
+class agh-prog-cpp  {desc:C++;}
+class agh-prog-cs   {desc:C#;}
+class agh-prog-x86  {desc:x86 Assembly;}
+class agh-prog-il   {desc:Common Inermediate Language;}
+class agh-prog-vb   {desc:Visual Basic;}
+class agh-prog-vbs  {desc:VBScript;}
+class agh-prog-bash {desc:Bash Script (Bourne-Again Shell);}
+class agh-prog-ibash{desc:Bash Interactive (Bourne-Again Shell);}
+class agh-prog-el   {desc:Emacs Lisp;}
+class agh-prog-html {desc:HTML;}
+class agh-prog-xml  {desc:XML;}
+class agh-prog-css  {desc:CSS;}
+class agh-prog-js   {desc:JavaScript (ECMAScript);}
+class cs            {desc:C#;}
+class il            {desc:Common Inermediate Language;}
+class x86           {desc:x86 Assembly;}
+class cpp           {desc:C++;}
+class css           {desc:CSS;}
+class html          {desc:HTML;}
+class xml           {desc:XML;}
+class js            {desc:JavaScript (ECMAScript);}
+class agh-prog-php  {desc:PHP (Hypertext Preprocessor);}
+/*%).R|^class[[:space:]]+([^[:space:]]+)[[:space:]]*\{desc:(.+);\}[[:space:]]*$|#%%x mwg::prog::class.r/__class__/$1/.r/__desc__/$2/|m*/
+/*%)*/
+
+/*%m mwg::prog::class (*/
+pre.__class__,
+/*%)*/
+/*%x mwg::prog::classList*/
+pre.agh-prog-titled,
+pre.agh-prog-txt{
+  border:1px solid silver;border-width:1px 0px;padding-top:0px;padding-bottom:1ex;background-color:white;
+}
+
+pre.result:before,
+/*%m mwg::prog::class (*/
+pre.__class__:before,
+/*%)*/
+/*%x mwg::prog::classList*/
+pre.agh-prog-titled:before,
+pre.agh-prog-txt:before{
+  display:block;margin:0px;margin-bottom:.5ex;
+  padding:0px 3px;
+  background-color:gray;color:white;font-size:small;
+}
+
+/*%m mwg::prog::class (*/
+pre.__class__:before{content:"__desc__";}
+/*%)*/
+/*%x mwg::prog::classList*/
+pre.agh-prog-txt:before{content:"text/plain";}
+pre.agh-prog-titled:before{content:"<No Title>";}
+pre.agh-prog-titled[data-title]:before{content:attr(data-title);}
+
+code{font-family:monospace;}
+@media print{
+  code{font-family:aghfont_code,monospace;}
+}
+
+div.preholder{padding:0px;margin-top:1ex;margin-bottom:1ex;}
+div.preholder p{margin:0px;background-color:gray;color:white;padding:2px 1em;text-indent:0px;line-height:1em;}
+div.preholder pre{margin:0px;}
+
+/******************************************************************************
+  プログラム項目リスト (prog-items)
+-----------------------------------------------------------------------------*/
+
+ul.prog-items li,
+dl.prog-items dt{font-family:monospace;}
+@media print{
+  ul.prog-items li,
+  dl.prog-items dt{font-family:aghfont_code,monospace;}
+}
+
+/* program icons */
+
+/*%m agh::prog::itemList (*/
+/*%%x agh::prog::item.r/__type__/meth/   .r/__icon__/prog-meth/   */
+/*%%x agh::prog::item.r/__type__/var/    .r/__icon__/prog-field/  */
+/*%%x agh::prog::item.r/__type__/op/     .r/__icon__/prog-oper/   */
+/*%%x agh::prog::item.r/__type__/const/  .r/__icon__/prog-const/  */
+/*%%x agh::prog::item.r/__type__/struct/ .r/__icon__/prog-struct/ */
+/*%%x agh::prog::item.r/__type__/class/  .r/__icon__/prog-class/  */
+/*%%x agh::prog::item.r/__type__/type/   .r/__icon__/prog-type/   */
+/*%%x agh::prog::item.r/__type__/header/ .r/__icon__/file-h/      */
+/*%%x agh::prog::item.r/__type__/param/  .r/__icon__/prog-param/  */
+/*%%x agh::prog::item.r/__type__/iface/  .r/__icon__/prog-iface/  */
+/*%%x agh::prog::item.r/__type__/event/  .r/__icon__/prog-event/  */
+/*%)*/
+
+/*%m agh::prog::item (*/
+li.prog-decl-__type__, dt.prog-decl-__type__,
+/*%)*/
+/*%x agh::prog::itemList*/
+ul.prog-items li, dl.prog-items dt{padding-left:20px;}
+
+/*%m agh::prog::item (*/
+li.prog-decl-__type__:before, dt.prog-decl-__type__:before,
+/*%)*/
+/*%x agh::prog::itemList*/
+ul.prog-items li:before, dl.prog-items dt:before{
+  display:inline-block;vertical-align:middle;
+  padding:0;margin:0;margin-right:-20px;
+  position:relative;width:20px;left:-20px;
+}
+
+/*%m agh::prog::item (*/
+li.prog-decl-__type__:before, dt.prog-decl-__type__:before, ul.prog-items li.__type__:before, dl.prog-items dt.__type__:before{content:url('icons/__icon__.png');}
+/*%)*/
+/*%x agh::prog::itemList*/
+
+/* <!CSSHACK "IE7以下, IE8後方互換" [ */
+  /*%m agh::prog::item (*/
+  li.prog-decl-__type__,
+  /*%)*/
+  /*%x agh::prog::itemList*/
+  ul.prog-items li{*background-position:left 1px;*background-repeat:no-repeat;}
+  
+  /*%m agh::prog::item (*/
+  dt.prog-decl-__type__,
+  /*%)*/
+  /*%x agh::prog::itemList*/
+  dl.prog-items dt{*background-position:left center;*background-repeat:no-repeat;}
+  
+  /*%m agh::prog::item (*/
+  li.prog-decl-__type__, dt.prog-decl-__type__, ul.prog-items li.__type__, dl.prog-items dt.__type__{*background-image:url('icons/__icon__.png');}
+  /*%)*/
+  /*%x agh::prog::itemList*/
+
+  /*%m agh::prog::item (*/
+  li.prog-decl-__type__:before, dt.prog-decl-__type__:before,
+  /*%)*/
+  /*%x agh::prog::itemList*/
+  ul.prog-items li:before, dl.prog-items dt:before{*content:none;*display:none;}
+/* ]> */
+
+h2.prog-item-hfile,
+h3.prog-item-hfile,
+h4.prog-item-hfile,
+h5.prog-item-hfile,
+h6.prog-item-hfile,
+h2.prog-item-class,
+h3.prog-item-class,
+h4.prog-item-class,
+h5.prog-item-class,
+h6.prog-item-class,
+h2.prog-item-ns,
+h3.prog-item-ns,
+h4.prog-item-ns,
+h5.prog-item-ns,
+h6.prog-item-ns{
+	padding-left:35px;
+	background-position:10px center;background-repeat:no-repeat;
+}
+h2.prog-item-hfile,
+h3.prog-item-hfile,
+h4.prog-item-hfile,
+h5.prog-item-hfile,
+h6.prog-item-hfile{background-image:url('icons/file-h.png');}
+h2.prog-item-class,
+h3.prog-item-class,
+h4.prog-item-class,
+h5.prog-item-class,
+h6.prog-item-class{background-image:url('icons/prog-class.png');}
+h2.prog-item-ns,
+h3.prog-item-ns,
+h4.prog-item-ns,
+h5.prog-item-ns,
+h6.prog-item-ns{background-image:url('icons/prog-ns.png');}
+
+/******************************************************************************
+  他
+-----------------------------------------------------------------------------*/
+
+kbd.agh-keyspec{
+  padding:.5ex;border:2px white groove;background-color:#ddd;
+  display:inline-block;text-indent:0;line-height:1em;
+  font-weight:bold;font-family:monospace;
+}
+@media print{
+  kbd.agh-keyspec{font-family:aghfont_code,monospace;}
+}
+
+/* prog.color.css (obsoleted) */
+/*
+  pg\:t,pg\:k,pg\:v{font-family:monospace;}
+  pg\:t{color:darkcyan;}
+  pg\:k{color:blue;}
+  pg\:v{color:purple;}
+  @media print{
+    pg\:t,pg\:k,pg\:v{font-family:aghfont-code,monospace;}
+  }
+*/
+
