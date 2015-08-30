@@ -75,7 +75,8 @@ agh.memcpy(Refuge.prototype,{
   enq:function(value){this.buff.push(value);},
   deq:function(){return this.buff[this.index++];},
   bank:function(str){
-    return str.$replace(this.mrx,this);
+    // this.mrx instanceof agh.Text.MultiRegex
+    return this.mrx.replace(str,this);
   },
   draw:function(str){
     var self=this;
@@ -685,12 +686,12 @@ var Reg={};
 
     // 式展開の終了／継続の一致
     var r;
-    if(r=match_from(reg_clos,_)){
+    if((r=match_from(reg_clos,_))){
       d.pop_expr();
       this.enq(_cls(color_expr(r[0]),cls));
       _.lastIndex=_.index+r[0].length;
       return k1;
-    }else if(r=match_from(reg_next,_)){
+    }else if((r=match_from(reg_next,_))){
       this.enq(_cls(color_expr(r[0]),cls));
       _.lastIndex=_.index+r[0].length;
       return k1;
@@ -979,9 +980,9 @@ var Reg={};
   //    Variables for Initialization
   //----------------------------------------------------------------
   var reg_quoted  =/\@"(?:[^\\\"]|\\.|\"\")*"|"(?:[^\\\"\n\r\f]|\\.)*"|'(?:[^\\\'\n\r\f]|\\.)*'/g;
-  var reg_comment  =/\/\*(?:[^\*]|\*[^\/])*\*\//g;
+  var reg_comment =/\/\*(?:[^\*]|\*[^\/])*\*\//g;
 
-  var reg_rules    =/\{[^\{\}]*\}/g;
+  var reg_rules   =/\{[^\{\}]*\}/g;
   var reg_name    =/([a-zA-Z0-9_\-]|\\.)+/g;
   //----------------------------------------------------------------
   //    Rules
@@ -1702,21 +1703,25 @@ nsColor.cpp=function(str,option){
     var ctx={input:input,regex:regex,handler:handler};
     for(var itext=start;itext<end;){
       // ctx.regex.exec()
-      var reg=ctx.regex; // assert(reg.global);
-      var originalLastIndex=reg.lastIndex;
-      reg.lastIndex=itext;
-      var m     =reg.exec(input);
-      if(agh.browser.vIE<9&&m[0].length===0)reg.lastIndex--; // vIE<9 ではゼロ幅一致の時 lastIndex が勝手に 1 増やされる。
-      var mend  =reg.lastIndex;
-      var mstart=mend-m[0].length;
-      reg.lastIndex=originalLastIndex;
+      var m,mend;
+      {
+        var reg=ctx.regex; // assert(reg.global);
+        var originalLastIndex=reg.lastIndex;
+        reg.lastIndex=itext;
+        m   =reg.exec(input);
+        mend=reg.lastIndex;
+        reg.lastIndex=originalLastIndex;
+
+        // vIE<9 ではゼロ幅一致の時 lastIndex が勝手に 1 増やされる。
+        if(agh.browser.vIE<9&&m!=null&&m[0].length===0)mend--;
+      }
       if(m==null||end<mend){
         buff.push(input.slice(itext));
         break;
       }
 
       // update context
-      ctx.index    =mstart;
+      ctx.index    =mend-m[0].length;
       ctx.lastIndex=mend;
       ctx.captures =m;
 
@@ -1729,7 +1734,8 @@ nsColor.cpp=function(str,option){
 
       // output
       if(replaced===undefined){
-        buff.push(input.slice(itext,ctx.lastIndex));
+        if(itext<ctx.lastIndex)
+          buff.push(input.slice(itext,ctx.lastIndex));
       }else{
         if(itext<ctx.index)
           buff.push(input.slice(itext,ctx.index));
@@ -1741,7 +1747,7 @@ nsColor.cpp=function(str,option){
       if(ctx.lastIndex>itext)
         itext=ctx.lastIndex;
       else
-        buff.push(input.slice(itext++,1));
+        buff.push(input.substr(itext++,1));
     }
 
     return buff.join("");
@@ -1773,7 +1779,7 @@ nsColor.cpp=function(str,option){
       this.handler=handler;
     else{
       if(!(/\$(?:([&`'\$])|([0-9]+))/).test(handler))
-        this.handler=function(G,C){return handler};
+        this.handler=function(G,C){return handler;};
       else{
         this.handler=function(G,C){
           return handler.replace(/\$(?:([&`'\$])|(\d+))/g,function($0,$C,$N,index,input){
@@ -1864,6 +1870,7 @@ nsColor.cpp=function(str,option){
           //console.log({args0:m,regex0:ctx.regex,index:index,rule:rule,captures:capt});
           return rule.handler.call(self,capt,ctx);
         }
+        return void 0;
       };
       return this.m_instance_regex;
     },

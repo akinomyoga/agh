@@ -1912,27 +1912,27 @@ Function.prototype.get_name=function(){
 //#lock(this.waiting)
         // waiting の更新
         var w0=this.waiting;
-        var w=[]; // 未だ waiting
-        var x=[]; // 今回実行する物
+        var proc_wait=[]; // 未だ waiting
+        var proc_call=[]; // 今回実行する物
         for(var i=0;i<w0.length;i++){
           var proc=w0[i];
           if(!this.isready(proc.requires)){
-            w.push(proc);
+            proc_wait.push(proc);
           }else{
-            x.push(proc.func);
+            proc_call.push(proc.func);
           }
         }
-        this.waiting=w;
+        this.waiting=proc_wait;
 //#unlock(this.waiting)
         
-        if(x.length==0)return;
+        if(proc_call.length==0)return;
         
         // 実行
-        for(var i=0;i<x.length;i++)
+        for(var i=0;i<proc_call.length;i++)
           try{
-            x[i]();
+            proc_call[i].call(agh);
           }catch(ex){
-            this.invoke_onerror(x[i],ex);
+            this.invoke_onerror(proc_call[i],ex);
           }
       }
     },

@@ -97,6 +97,118 @@ agh/js - Ageha JavaScript Library v3.2
 
     未だ追加されていないファイルなどについても整理して追加する必要がある。
 
+  * 今回再度 agh を弄ろうと考えたのは syntax highlight を再考したい為である。
+
+    特に、複雑な文脈と入れ子構造を持つ bash script を着色するに当たってどの様な実装が必要になるかを考える。
+    現在、着色に関係しそうなコードは以下の場所に分散している。
+    - agh.regex.js             ... これは正規表現を多少使いやすくする為のクラスを含む。
+    - agh.text.color.js        ... ここに現在の実装の大半が含まれている。
+    - agh.syntax/regex_i2.js   ... ここには後方零幅表明を指定可能な正規表現の試験的な実装が含まれる。
+    - agh.syntax/html_slice.js ... ここには複数の着色機構による交差するタグ付けを処理する為の試験的な実装が含まれる。
+
+    今後は agh.syntax/ 以下に新しくファイルを作って実装する事にする。
+
+    既存実装についても確認しておく。
+
+    | GNU source-highlight (src-highlite) 評価=○
+    |   実装手法: この実装は agh.text.color.js と似たような実装になっている。
+    |   複数の文法要素を同時に一致させて一番早く一致した物を採用するという方式である。
+    |   (但しマニュアルを見ると、一つの正規表現に結合して一致しているのではなく、
+    |   全ての登録された正規表現について一つ一つ一致を試みる様な書き方をしてある。)
+    |   また、agh.text.color.js における stage の概念はない。
+    |   つまり 1 pass で着色できる場合にしか対応していない。
+    |
+    |   また、文法定義の為の言語を用意して簡単に定義できるようになっている。
+    |
+    |   GNU project でありながら余りアクティブに開発されていない様だ。
+    |   実際にコードを書いている人は一人しかいないように見える。
+    |   何よりどの様に constribute したらよいのかが不明瞭だからだろうか。
+    |   文法定義ファイルも長らく更新されていない様に見える。
+    |
+    | highlight.js 評価=×
+    |   [[https://github.com/isagalaev/highlight.js]]
+    |
+    |   色付け対象としての言語には様々な物に対応している。
+    |
+    |   実装手法: しかし、実装自体は単純で複雑な文法は取り扱えないように見える。
+    |   特に、GNU source-highlight で使っているような「一番初めに一致した表現」に対応していないので駄目な実装だ。
+    |
+    |
+    | SyntaxHighlighter 評価=×
+    |
+    |   [[syntaxhighlighter/syntaxhighlighter>https://github.com/syntaxhighlighter/syntaxhighlighter]]
+    |
+    |   各言語毎に正規表現を指定できる。XRegExp を外部ライブラリとして使用している Brush もある。
+    |   しかしながら滅茶苦茶に細分化されていてソースコードが醜い。下らない機能毎にプロジェクトになっている…。酷い。
+    |   例えば parser は簡単に言うと XRegExp.match を実行するだけのプロジェクトである。
+    |
+    |   実装手法: 先ず初めに各言語要素についての一致を全て列挙して、その後でそれを sort し適用するという形になっている。
+    |   この様な実装で例えば /* " */ "hello" /* " */ の様な物を正しく parse できるのかは怪しい。
+    |
+    | Prism 評価=×
+    |   [[PrismJS/prism>https://github.com/PrismJS/prism]]
+    |
+    |   実装手法: 何か変な実装方法を採っているが、これも各言語要素の正規表現の繰り返し適用である。
+    |   適用対象を [文字列,token,文字列,token,文字列] という様な配列で表現する。
+    |   この "文字列" の部分に対して正規表現を適用して、新しく 文字列,token,...,文字列 とした部分列を splice で挿入する。
+    |   一番初めの状態は [文字列] であり、正規表現を適用するたびに細分されていくという実装である。
+    |
+    |   これも微妙な実装である。例えば /* " */ "hello" /* " */ を正しく評価できるのか怪しい。
+    |
+    |   ただこれも色付け対象の言語としては色々な物に対応している様だ。
+    |
+    | SHJS 評価=○
+    |   [[SHJS - Syntax Highlighting in JavaScript>http://shjs.sourceforge.net/]]
+    |
+    |   実装手法: source-highlight と同じ様である。というか、言語定義ファイルの内容も source-highlight と同じ??
+    |   JavaScript の実装にはまともな物がないのだろうかと諦めていた所だったが意外とちゃんとした物もあった。
+    |   但し、正規表現を連結して効率を高めるという発想には到っていない様だ (もしかするとこちらの方が早い可能性も?)。
+    |   また、stage の概念などもやはり無いようである。
+
+    既存実装を色々見てみたが大体馬鹿な実装で、
+    ちゃんとした実装も agh.text.color.js を超える物は存在しないようだ。
+    既存実装については余り気にせずに自由に実装を考える方針にする。
+
+    現在の正規表現の実装に関しても確認を行っておく
+    →この際だから整理する事にした。[2015-08-30 agh.regex.js 整理] を参照の事。
+
+  * agh.regex.js 整理
+
+    agh.regex.js の中で提供されている関数・クラスには以下のような物がある。
+
+    | String.prototype.$replace; → 使っている人はいるのか疑問。削除or整理する。
+    | // RegExp.prototype.countGroup; → 削除
+    | RegExp.addFlags;
+    | class agh.Text.MultiRegex
+    |   register(regex,handler)
+    |   replace_fast : 単純な複数一致
+    |   replace_last : replace2 を利用した実装。途中で位置を変更できる
+    | replace2
+    |   replace2local
+    |     何かバグがある様に見えるので修正を行う。というか実装途中??
+    |     →修正した。
+    |   replace2global
+    |     これは agh.text.color.js の GlobalIndexibleReplace で再実装されている気がする。
+    |     削除(または置き換え)予定である。
+
+    取り敢えず agh.text.color.js にある機能を agh.regex.js に移動する方向で replace 機能を整理する。
+
+    1 先ず初めに $replace 及び replace2 の使用箇所を特定し、依存性について確認する。
+    2 $replace 及び replace2 を削除し、代替物に置き換える。
+      簡単に代替物が見付からない場合には暫定的に残し後で削除する事にする。
+    3 $replace, replace2 に代わる新しい関数を実装し agh.RegExp を介して公開する事にする。
+      あるいは上記の replace2 を agh.RegExp に移動するという方向でも良い。
+
+    使用箇所について確認を行う。$replace の使用箇所は以下の2箇所である。
+
+    ./agh.regex.js:235:    return str.$replace(this.m_reg,function($G,$R){
+    ./agh.text.color.js:78:    return str.$replace(this.mrx,this);
+
+    agh.text.color.js に関しては単純に this.mrx.replace に置き換える事ができる。
+    agh.regex.js の方についても this.m_reg instanceof RegExp なので replace2 に置き換える事ができる。
+    replace2 に関しては agh.RegExp.indexibleReplace として公開する事にした。
+    一旦 commit する事にする。
+
 Known Bugs:
 
   * aghtex4chrome: reload した時に \r\n が二重改行になっている。
