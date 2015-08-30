@@ -1,0 +1,131 @@
+@charset "utf-8";
+
+/* span.agh-text-diff-location{color:white;background-color:gray;} */
+/* span.agh-text-diff-location *{color:white!important;background-color:gray!important;} */
+span.agh-text-diff-location{color:blue;background-color:#ddf;font-weight:bold;}
+span.agh-text-diff-location *{color:blue!important;background-color:#ddf!important;font-weight:bold!important;}
+span.agh-text-diff-comment{color:green;background-color:white;}
+span.agh-text-diff-comment *{color:green!important;background-color:white!important;}
+span.agh-text-diff-deleted{background-color:#fee;}
+span.agh-text-diff-added  {background-color:#efe;}
+span.agh-text-diff-changed{background-color:#ffd;}
+
+span.agh-text-diff-location,
+span.agh-text-diff-deleted,
+span.agh-text-diff-added,
+span.agh-text-diff-changed
+{display:inline-block;width:100%;}
+
+span.agh-syntax-line-index{
+  border-right:1px dotted #2b91af;
+  padding-left:3px;padding-right:3px;margin-right:2ex;
+  /*font-family:'Courier New',monospace;*/
+  color:#2B91AF;font-weight:bold;
+  background-color:#eee!important;}
+span.agh-syntax-line-index:before{
+  display:inline-block;text-align:right;width:4ex;
+  content:attr(title);}
+
+span.agh-syntax-line-filled{
+  display:inline-block;width:100%;}
+span.agh-syntax-cr39workaround:after{content:"";display:inline-block;width:1px;overflow:hidden;}
+span.agh-syntax-line-index+span.agh-syntax-line-filled,
+span.agh-syntax-cr39workaround>span.agh-syntax-line-filled{
+  width:calc(100% - 6ex - 8px);}
+
+span.agh-text-js-reserved{color:blue;}
+span.agh-text-js-identifier{color:purple;}
+span.agh-text-js-comment{color:gray;}
+span.agh-text-js-regexp{background-color:#fee;}
+span.agh-text-js-string{background-color:#eee;}
+span.agh-text-js-numeric{background-color:#ffd;}
+span.agh-text-js-type{color:darkcyan;}
+
+span.agh-text-ruby-reserved{color:blue;}
+span.agh-text-ruby-identifier{color:purple;}
+span.agh-text-ruby-comment{color:gray;}
+span.agh-text-ruby-regexp{background-color:#fee;}
+span.agh-text-ruby-string{background-color:#eee;}
+span.agh-text-ruby-embeddeddoc{color:green;}
+span.agh-text-ruby-numeric{background-color:#ffd;}
+
+span.agh-text-html-tagParen{color:blue;}
+span.agh-text-html-tagName{color:brown;}
+span.agh-text-html-attrName{color:red;}
+span.agh-text-html-attrEq{color:blue;}
+span.agh-text-html-attrVal{color:blue;background-color:#eee;}
+span.agh-text-html-comment{color:green;}
+span.agh-text-html-entity{background-color:#eee;}
+
+span.agh-text-cpp-preproc{color:blue;}
+span.agh-text-cpp-reserved{color:blue;}
+span.agh-text-cpp-restypes{color:blue;}/*dark cyan*/
+span.agh-text-cpp-identifier{color:purple;}
+span.agh-text-cpp-comment{color:gray;}
+span.agh-text-cpp-string{background-color:#eee;}
+span.agh-text-cpp-numeric{background-color:#eee;}
+
+span.agh-text-x86-keyword{color:blue;}
+span.agh-text-x86-mnemonic{color:#81f;}/* #81f */
+span.agh-text-x86-register{color:darkcyan;}/*dark cyan*/
+span.agh-text-x86-identifier{color:purple;}
+span.agh-text-x86-comment{color:gray;}
+span.agh-text-x86-string{background-color:#eee;}
+span.agh-text-x86-numeric{background-color:#eee;}
+
+span.agh-text-cs-preproc{color:blue;}
+span.agh-text-cs-reserved{color:blue;}
+span.agh-text-cs-restypes{color:darkcyan;}/**/
+span.agh-text-cs-identifier{color:purple;}
+span.agh-text-cs-comment{color:gray;}
+span.agh-text-cs-string{background-color:#eee;}
+span.agh-text-cs-numeric{background-color:#eee;}
+
+span.agh-text-il-comment{color:gray;}
+span.agh-text-il-string{background-color:#eee;}
+span.agh-text-il-decl{color:blue;}
+span.agh-text-il-instruc{color:#81f;}/* #81f */
+span.agh-text-il-keyword{color:#77c;}
+span.agh-text-il-keytype{color:darkcyan;}/**/
+span.agh-text-il-identifier{color:purple;}
+span.agh-text-il-numeric{background-color:#eee;}
+
+span.agh-text-css-comment{color:gray;}
+span.agh-text-css-string{background-color:#eee;}
+span.agh-text-css-atrule{color:blue;}
+span.agh-text-css-name{color:brown;}
+span.agh-text-css-property{color:purple;}
+span.agh-text-css-important{color:red;}
+span.agh-text-css-function{color:#81f;}
+span.agh-text-css-colorbox{
+  display:inline-block;height:1.5ex;width:1.5ex;margin:1px;
+  border:1px solid gray;vertical-align:text-bottom;
+}
+
+span.agh-text-el-comment{color:gray;}
+span.agh-text-el-keyword{color:blue;}
+span.agh-text-el-string{background-color:#eee;}
+span.agh-text-el-numeric{background-color:#ffe;}
+span.agh-text-el-identifier{color:purple;}
+span.agh-text-el-token{color:red;}
+span.agh-text-el-attr{color:darkcyan;}
+
+span.agh-syntax-comment{color:gray;}
+span.agh-syntax-keyword{color:blue;}
+span.agh-syntax-identifier{color:purple;}
+span.agh-syntax-label{color:#c0c;}
+span.agh-syntax-string{background-color:#eee;}
+span.agh-syntax-numeric{background-color:#ffe;}
+span.agh-syntax-regex{background-color:#fee;}
+span.agh-syntax-error{color:#c00;background-color:#fee;}
+
+span.agh-syntax-sed-address{color:green;}
+
+/* PHP */
+span.agh-syntax-lang-php span.agh-syntax-string>span.agh-syntax-expression,
+span.agh-syntax-lang-php span.agh-syntax-string>span.agh-syntax-identifier{background-color:white;}
+span.agh-syntax-lang-php span.agh-syntax-string>span.agh-syntax-escape{font-weight:bold;color:#088;}
+@media print{
+	span.agh-text-cpp-comment{color:green;}
+	span.agh-text-x86-comment{color:green;}
+}

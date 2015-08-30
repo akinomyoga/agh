@@ -1,0 +1,50 @@
+# htaccess for agh/ -*- mode:conf-space -*-
+
+# The mime-type text/javascript is obsoted in
+# RFC 4329 <https://tools.ietf.org/html/rfc4329> (2006-04).
+# Instead application/javascript is recommended.
+
+AddType "application/javascript;charset=UTF-8" .js
+# RewriteEngine on
+# RewriteCond %{HTTP:Accept-Encoding} gzip
+# RewriteRule (.*)\.js$ $1\.js\.gz [L]
+
+AddType "application/javascript;charset=UTF-8" .jgz
+AddEncoding gzip .jgz
+
+<FilesMatch "\.js\.gz$">
+  ForceType "application/javascript;charset=UTF-8"
+  Header unset Content-Encoding
+  Header append Content-Encoding "gzip"
+</FilesMatch>
+
+#------------------------------------------------------------------------------
+# Font files
+
+AddType "application/vnd.ms-fontobject" eot
+AddType "application/x-font" fon
+
+# Google Chrome says "Resource interpreted as Font but transferred with..."
+# for the following mime types.
+#   AddType "application/x-font-truetype" ttf ttc
+#   AddType "application/x-font-opentype" otf
+AddType "font/truetype" ttf ttc
+AddType "font/opentype" otf
+
+# to use CSS Web Fonts from local in firefox
+<Files ~ "\.ttf$">
+  Header append Access-Control "allow <*>"
+  Header append Access-Control-Allow-Origin "*"
+</Files>
+
+#------------------------------------------------------------------------------
+# Chrome Extension
+
+AddType application/x-chrome-extension .crx
+
+#------------------------------------------------------------------------------
+# other filetypes
+
+AddType image/svg+xml .svg
+AddType image/svg+xml .svgz
+AddEncoding gzip .svgz

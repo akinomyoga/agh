@@ -13,6 +13,7 @@
 /src/Makefile
 /src/agh.lang.ps/Makefile
 /src/latex/Makefile
+/src/latex/.gen
 /src/addon/Makefile
 /src/addon/aghtex4firefox/mat
 /src/addon/aghtex4seahorse/mat
