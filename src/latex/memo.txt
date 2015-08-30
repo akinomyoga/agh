@@ -1,0 +1,997 @@
+﻿■ファイルの構成
+
+mwg.*.js
+
+latex.cor.js
+
+ctxc.cs   ─→ ctxc.exe
+               │ │
+               │ ↓
+main.ctx       ┼─→ latex.ctx.js
+base.ctx       │
+texsym.ctx     │
+array.ctx      │
+array2.ctx     │
+length.ctx     │
+counter.ctx    └─┐
+                   ↓
+documentclass.ctx ─→ documentclass.ctx.js
+
+mwg.latex.pp.css
+├→ mwg.latex.ie.css
+├→ mwg.latex.fx.css
+├→ mwg.latex.sf.css
+└→ mwg.latex.op.css
+
+latex.kick.js
+latex.kick2.js
+latex.kick3.js
+mwg.kick.js
+
+■現在の目標
+
+1. array 完全対応 (length 等も含めて)
+  array2 に移行
+2. \def
+3. amsmath/amssymb 対応
+4. graphics 対応
+  Feynman graph
+  epic eepic graphicx
+5. color
+
+■個別項目
+
+■計画 (実装の予定)
+
+P00. 細々とした事
+  二重改行を \par に変換する事
+  → paragraph mode で二重改行を &lt;br/&gt; に変更した。
+
+P01. verbatim の実装
+	Context の GetCommandHandler 等を override して何も変更を加えずに出力する handler を返す様にする。
+	改行や空白は実体参照で返す。
+	但し、\end{verbatim} だけは識別する様にしなければならない。
+
+P02. 目次や参照文献や数式番号の実装
+	初めの出力では、「識別できるような符号」として出力し、後でそれを置換する
+	
+  [バグ] ns.Environment のデフォルトの catcher を使っている箇所がなかったので、
+    一番よく使われている以下の物に置き換える事にした。
+    catcher:function(doc,ctx){this.epilogue(doc,ctx);},
+		
+  [バグ] displaymath (div.mwg-tex-eq) と \[\] (tex:math.displaymath) が重複している様な気がするが…。
+    →mwg.latex.css を調べてみたら、抑も div.mwg-tex-eq には何も設定されていない。
+      displaymath は新しい定義に移行する事にする。
+	
+  [バグ] #mode.math!1 としても #mode.math>1 と同じ動作をしているらしい事 [完 2011/12/03 00:22:30]
+    →新しい引数読み取り (ReadArgument を介さない) では readtype を参照していなかった。
+      ので、呼出元で readtype=="txt" の場合のコードを追加した。(html escape)
+
+  [バグ] #mode.math!1 で正しく terminator が設定されていないと思っていたら…
+    実は context の初期化に失敗していた。とても馬鹿な事をしていた。
+<pre class="js diff">
+@@ latex.cor.js/Document#GetArgHUntil
+     GetArgHUntil:function(basectx,untilType,untilWord){
+       this.skipSpaceAndComment();
+-      var ctx=this.context_cast(ns.ContextFactory[basectx||this.currentCtx,"sub.until"]);
++      var ctx=this.context_cast([basectx||this.currentCtx,"sub.until"]);
+       ctx.until_type=untilType;
+       ctx.until_word=untilWord;
+       return this.Read(ctx,true);
+     },
+</pre>
+  
+P03. \def パターンマッチング
+
+  同じコマンドでも複数の構文を定義できるようにする。 (茗荷拡張)
+    複数定義した場合には、最近定義した物から順に試していって失敗したら別のを実行する、と言った形式にする。
+    
+  検索してみたら ReadArgument を呼び出しているのは一箇所しかない。
+  引数の呼出方が分かっている場合に毎回 ReadArgument を介して引数を呼び出すのは非効率的である。
+  呼出元を定義する段階でどれか一つの GetArgument 関数に解決してしまった方が良いのではないだろうか…?■
+
+P04. Command からの GetArgument 呼び出しの再考
+	GetArgument の種類を指定できるようにする。
+	GetArgument の種類については問題点 4. を参照のこと。
+	更に、問題点 4. で述べたほかに、GetArgument 時に html 化処理を実行してしまうか、
+	それとも、一通りそのままで読み取ってから #n に代入して、その後で処理を実行するかという選択も行える様にする。
+
+P05. CSS ファイルの読込に関して
+
+P06. 特別記号の熟語
+	例えば `` 等の記号を “ とするなど。
+	
+	その定義をし易くする為に、先ず、Command の定義を再考したい。
+	今の状態だと、コードは整理されているが、
+	例えば、引数を持たないコマンドの場合には、空の readArgument 関数を呼び出すなど効率が悪くなっているという反面がある。
+	
+	コマンドの定義で分かれ目となりそうなのは、
+	1. 引数を受け取るか受け取らないか
+	2. 文字列定義の場合
+	　・定義文字列をその場で解釈するか
+	　・定義時に処理を行ってしまうか
+	　・処理を行わないか (直接タグを記述)
+	3. 引数について
+	　・その引数に既定値が存在するか
+	　
+	　・引数は読み取り時に処理してしまう (引数の指定の案:#1)
+	　・引数の内容をそのまま読み取る (案:#@1)
+	　・引数を処理してその文字列部分だけを取り出す。 (案:#!1)
+	　
+	　・引数読み取りの context は特に指定するか (案:#[mode.math]1)
+
+P07. 行末の %
+
+P08. flatten で context performance に期待
+	baseCtxs の handler* を全て一番上に持ってきてしまい、
+	baseCtxs を省略することで performance 向上が期待出来るかも
+	
+	といっても、flatten 自体の overhead も考えて、
+	基本 context のみに対して flatten 処理をするのがよい。
+
+P09. アクセント記号類に関して
+
+案
+~~
+・対応する文字が Unicode に存在している場合には置換してしまう。
+    太字にする場合や、中抜きにする場合など、アクセントにもそれが適用されてしまう
+    などの問題が発生しそうな気もするが、気にしない。
+    →然し、中身の HTML を観察して問題の無さそうな時にだけ変更するという事も可能であろう。
+
+P10. \left\right
+	・上付・下付に正しく対応する。[完]
+	　table.mwg-tex-kakko に対する css が無いので table.className から mwg-tex-kakko を除去
+	　
+	・\right| のスペースの位置を反対側にした方がよい。 [完]
+	　→ | 文字の幅を 1px 迄小さくすることで対応
+	　
+	・エラーメッセージで alert() を出してしまう ■
+	  これはエラー出力に変えるべき。
+
+P11. ドキュメントのクローン
+	何回も同じ初期化を行って異なる内容を変換する場合には、
+	初期化した状態でドキュメントをクローンしてしまうと良い。
+	(Context を汚染しない様に設計したので、簡単に実現できる筈である。)
+	
+	初期化が終了した時点で、全ての Context から抜けた状態にあると考える (※) と、
+	ctxStack は clone する必要はない。
+	
+　・counters の clone
+	Counter#Clone
+		/// Document#counters を全て変換した後で、
+		/// parent や child の参照を更新する必要在り。
+		Clone:function(){
+			var ret=new ns.Counter(this.name,this.parent);
+			ret.val=this.val;
+			return ret;
+		},
+　・context の clone
+	Context#Clone
+		Clone:function(cloned){
+			var ret=new ns.Context(
+				this.baseCtxs.clone(), /* #1 */
+				mwg.memberwise_clone(this.handlerL),
+				mwg.memberwise_clone(this.handlerC),
+				mwg.memberwise_clone(this.handlerE),
+				this.initializer
+			);
+			ret.userC=mwg.memberwise_clone(this.userC);
+			/* #2 */
+			return ret;
+		},
+		
+		→色々と問題が出て来た
+		・#1: 中身の参照を新しく作成した物へ変更しなければならない
+		・#2: 他の追加メンバも clone → 更に内部の参照も
+		　　即ち、他にもオプションでメンバを追加したり、メンバ関数を上書きしたりしている。
+		　それも反映しなければならない。
+		　　また、関数が宣言された context の中のローカル変数を参照している場合には、
+		　完全なクローンは不可能となる。
+		　　よって、Clone を実現する為には、<context の中の参照を全て差し替える事が可能な形式>に
+		　書き直さなければならない。
+
+P12. array の類の実装をもう一度やり直したい
+
+<ul>
+<li>\settodepth, \settoheight, \settowidth</li>
+<li>length
+  <p>bug: 2\width の様な使い方をした場合、2*(width の値) と解釈して欲しいが、
+  現在の実装では、\width の値とくっついてしまう。
+  例えば、\width が 0.1cm だった場合、2\width は 20.1cm になってしまう。
+  </p>
+</li>
+<li>array 実装
+  <ul>
+  <li>alignment
+    <ul>
+    <li>!{hoge} (array.sty)</li>
+    <li>m{width} (array.sty)</li>
+    <li>b{width} (array.sty)</li>
+    <li>&gt;{txt} (array.sty)</li>
+    <li>&lt;{txt} (array.sty)</li>
+    <li></li>
+    </ul>
+  </li>
+  <li>length \arrayrulewidth を使用</li>
+  <li>command \arraystretch を使用</li>
+  <li>length \tabcolsep (tabular 環境) / \arraycolsep (array 環境) を使用</li>
+  <li>\\[2pt]</li>
+  <li>\addlinespace{2pt}</li>
+  </ul>
+</li>
+</ul>
+
+P13. Scanner の再設計
+P13.1 整理 [完 2009/07/28]
+P13.2 \makeatletter, \makeatother
+  ■TODO:Mode
+  * \makeatletter \makeatother
+  * verb, verbatim
+  * Next1Char for GetArgumentRaw
+    コマンドを除いて、全て一文字ずつ txt で
+  * array2 alignment 解析
+    lcr 等の通常文字も全て SCAN_WT_LTR に
+  ■TODO:
+    遅延評価について考察
+      実のところ読み直しになる確率は小さいので、遅延評価にしない方が良いかも知れない。
+
+P14. Command 再考
+	- 完 - 
+	
+	[今後の課題]
+	・引数の context と使用している場所の context が異なる場合、
+	　外側で定義したユーザーマクロを内側でも使える様にする。
+	　(現時点では、内側の context に外側の context が関連付けられていない。)
+	　
+	　実は userMacro の検索は Document の中の contextStack から検索されるので、
+	　特に注意しなくても検索されて使用できるのではないか?
+    →正しく検索されている。(いつか実装を変更した時に解決したのかも知れない。)
+	　
+	・#01 で html unescape を実行する様になっているが、もっと他の機能を付加しても良い。
+	
+	・現在殆どのコマンドが ns.Command に依存しているが、Command2 に移行するという事。
+
+P15. コマンドの対応
+　・\above2px
+　・\abovewithdelims[]2px
+　　長さの引数を読み取る事が出来る様にする。
+　　(現状では、length の引数の部分は読み取られない実装になっている)
+　　1. ns.Length.Parse 関数を実装した。
+　　　後は、GetLengthArgument か何かを実装して、text から
+　　　ns.Length.Parse で読み取った部分を切り出せば良いであろう。
+　・widehat
+　・widetilde
+　・stackrel バグ: html が出力される?
+　・genfrac
+　
+　・\enspace \thinspace
+　・\hphantom \vphantom \phantom
+
+　[plainTeX]
+　・\matrix \pmatrix \bordermatrix
+　[AMSMath]
+　・\uproot{len}   .. \sqrt[3\uproot{len}]{g}
+　・\leftroot{len}
+　・\overleftrightarrow
+　・\underrightarrow
+　・\underleftarrow
+　・\underleftrightarrow
+　・\dddot
+　・\ddddot
+　・\binom
+　・\tbinom
+　・\dbinom
+　・\dots \dotsc \dotsb \dotsm \dotsi
+　・\lvert \rvert \lVert \rVert \mid
+　
+　・\begin{split}
+　・\begin{align 等}
+　
+　[???]
+　・\iint \iiint \iiiint \idotsint
+　・\varinjlim \varprojlim \varlimsup \varliminf
+　・\begin{subarray}
+　・\sideset
+　・\DeclareMathOperator
+　・\DeclareMathOperator*
+　・\bmod \pmod
+
+  1. [bug] \rm が数式モードで使えない。
+    広野さんから要望があったのでようやく対処する事にした。
+    実際に LaTeX で試してみた結果:
+      数式モードの中では使えないコマンド
+        \sl     \sc     \em
+
+      数式モードの中でも使えるコマンド
+        \rm     \it     \tt     \bf     \sf
+
+      数式モードの中で使えるが何の効果もないコマンド
+        \mc     \gt     \normalfont     \tiny
+        \scriptsize     \footnotesize   \small
+        \normalsize     \large  \Large  \LARGE
+        \huge   \Huge
+
+      数式モードの中で使うと文章モードに突入するコマンド
+        \textrm \textsf \texttt \textmc \textgt
+        \textmd \textbf \textup \textit \textsc
+        \textsl
+
+    @@main.ctx 先ずは、数式モードの中でも使えるコマンドの場所を移動する。
+
+
+P16. フォント埋込計画 ■
+  7. [Opera Bug]Opera で入っていない字体が空白になってしまう事 [経過観察]  
+
+  ・css カスケードの問題
+    参照 Test14
+  ・フォント選択の問題??
+  
+  ・IE9 未満では @font-face での font-style,font-weight は認識しないという事だが?
+    IE での動作を確認する必要がある■
+    →これに関しては、font-style, font-weight に拘わらない様な実装にしたので、
+      大丈夫なはず…。
+    
+  ・印刷の問題
+    Fx で印刷時に Web Fonts が適用されないのはバグらしい
+    https://bugzilla.mozilla.org/show_bug.cgi?id=468568
+    ・Firefox はファイル出力可能
+　    印刷するときのフォントは、Web フォントでない?
+    ・Opera はファイル出力可能
+    ・Opera は印刷時に @media print を参照しない。 @ murase2011
+    ・Opera は表示の段階で @media print の中身を見ている様な気がする @ optiplex2009
+    ・
+  ・text-shadow (Cr/Op/Fx) による mathbb
+    現状では、拡大すると五つの文字列を重ねただけになっている。
+    
+    text-shadow の指定でぼかしの程度を 1px に設定する事で改善しないか?
+      試しに Firefox で試してみたが、ぼかしの程度を 1px にしたら、
+      1px 所か 3px 位滲んでいる様に見え、これは駄目である。
+      また、0.1px を指定してみたら、今度はぼかしが全く入らず、
+      結局 0 を指定した時と変わらない様である。
+
+    或いは、影の数を四つだけではなく、もっと沢山にするという手もある。
+      実際に試してみたら、通常拡大率の時の表示が改善した。
+      (袋文字の袋に穴が空いている様な感じだったのが、ちゃんと表示される様になった。)
+      然し、拡大した時の見た目は大して変わらない。やはりなめらかにはならない物である。
+      ■→八方向に影を重ねる実装を行う
+
+P17. 伸縮記号の色
+  現在の実装だと、伸縮する記号は全て .png を用いて表示されている。そして、常に黒色で表示される。
+  背景を黒色にして前景色を白にしている環境では、黒色で表示すると何も見えない。
+  前景色に合わせて表示する色を変えるにはどうしたら良いだろうか。
+  
+  a.画像を表示する時に何らかの effect を用いて着色する。
+    IE では filter を使えばこれは可能。
+    他のブラウザの場合は不明。別のレイヤーを被せる事で何とかできるか?
+
+  b.その場で png を生成して base64 で encode する
+    IE 以外のブラウザでは data スキームを使う事が出来るので、
+    その場で表示したい色の png を生成して url(data:*) に入れるというのも手である。
+  
+    但し、この場合には html を生成した後に、文字色を動的に変更しても反映されないという問題が残る。
+    (でも、良く考えたら、これは IE の filter を用いたとしても同様に問題になるのでは?)
+    因みに、border を使って表示している角括弧の類も、現状では黒で表示されている気がする。
+
+  c.SVG で生成する
+    その場で対応する色を持った SVG を表示する。
+    (SVG で表示する時は、外部で使われている文字色を中に取り込む事が出来ただろうか?)
+
+  d.フォント?
+    フォントの中にある文字を伸縮して表示する事が出来れば、前景色の問題などは一切起こらない。
+    然し、縦横に自由に伸縮する文字の表示の仕方というのは全然聞かない。
+
+    transform を使って何とか出来るか? → transform の関数は基本的に単位を受け付けない
+    (元の大きさに対する倍率)。つまり、100% 等を用いて親要素の大きさに合わせる事は出来ない。
+
+  どうも、動的な前景色の変更を正しく反映する様にするのは難しい。
+  その方法は「文字」として表示する方法しかないが、
+  文字を枠に合わせて伸縮させるという方法は知らない。
+  それならば諦めて、前景色を指定したい時には生成時に明示的に指定する様にするというので良いかも知れない。
+  \usepackage{color} すれば \color{色名} というコマンドがあって、前景色を指定できる。
+  前景色を変更したい場合には、この \color{色名} コマンドを指定して貰う事にすれば良い。
+
+  color.sty の機能を実装する。 [完]
+
+P18. 自作記号フォント
+
+  フォント作成について考える。
+
+P18.2 Font 作成ソフトに関し
+  フォント作成に使える良いソフトはないか?
+  或いは、簡単なフォント生成プログラムを書けないか?
+
+  A fontforge/cygwin build
+    - fontforge build
+    # →fork に失敗する。
+
+  B FontForge-20090924 Windows バイナリ
+    # より新しい windows 向けバイナリを見つけたので、自分でビルドするのは諦める。
+    # と思ったけれど、簡単には動かなそう?
+    # 或いは VM を立ち上げてその中で fontforge を動作させた方が良いのかも知れない。
+
+    x 一応動いてはいるが操作をしている途中にすぐにフリーズするし、
+    x 特定の操作をするとクラッシュする。
+      例えば、操作を間違えた時や、特定のショートカットキー (C-\ など) を押した時など。
+
+    $ fontforge
+
+  C FontForge-20110211 Windows バイナリ
+    こちらの方が安定して動作する。
+    x しかし、こちらかはこちらで、「輪郭を太らせる」の操作をするとクラッシュする。
+      B の方は [輪郭を太らせる] が動作するので、輪郭を太らせる操作をしたい時は B を使用する事にする。
+    x 開くファイルを選択する画面で偶にクラッシュする。
+
+    $ fontforge-2012
+
+  D FontForge/Linux
+    残された方法は linux の中で FontForge を実行する事である。
+
+  E FontForge-20120731/MinGW [2013-11-04]
+    改めて見てみた所、公式 (sourceforge) で Win 版が公開されていた。
+    o 輪郭を太らせるの所でクラッシュする事もない様だ。
+    x しかし、これはこれで日本語が文字化けしているので操作する時に何が書かれているか分からない。
+
+    $ fontforge-2012w
+
+  F FontForge-20120731/MinGW (縦書き修正パッチ適用済)
+    http://www.akenotsuki.com/eyeben/fonts/kanren.html にて公開されていた。
+    o こちらを起動してみた所、日本語も文字化けせずに正しく表示されている。
+    x 更に、ヒンティングの自動生成を実行すると異常な命令が作成される。
+      また、ヒンティングの命令を閲覧しようとするとクラッシュする。
+    x フォントのグリフ情報を触っていると時々クラッシュする。
+
+    * 何らかのタイミングでやはり文字化けする様だ?
+      →どうやら DISPLAY=localhost:9.0 が既に起動している fontforge の物と被っている為の様だ。
+        fontforge.bat を編集して 9.0 の代わりに 8.0 を指定する事にした。
+
+    $ fontforge-2013v
+
+  以下は纏め。
+
+      起動 硬直 輪郭 日本 Hint
+    A  ×   --   --   --   --
+    B  ○   ×   ○   ○   ○
+    C  ○   ○   ×   ○   ○
+    D  △   ×   ○   ○   ○
+    E  ○   ○   ○   ×   ○
+    F  ○   ○   ○   ○   ×
+
+    現状で、結局まともに使えるのは C という事になる。
+    輪郭を太らせる操作をする時にだけ F を起動する様にすれば良い。
+
+
+P18.2 字体
+font
+  > nrightarrow の類を登録 mathsyml
+  > mathsymb/validation error を解決
+    mathsymb 適用
+  >   219a 219b 21ae
+  >   mathsymb/maltesecross に名前をつける
+  >   mathsymb/doublebarwedge に名前をつける
+  >   00a7 00b6
+  >   0131 0237 0391-03d6 03f0-03f5 グリフ情報 (C-i)
+  >   25bb 25c5-25c7 2664 2667 266d-266f グリフ情報 (C-i)
+  >   2a99-2a9a 2a9d-2a9e 2ab1-2ab4 2ac7-2aca 2ad3-2ad6 グリフ情報 (C-i)
+    # mathsymb 図形の線の幅は 43-44。
+    # 黒塗り図形から作成する時には、線の幅を増やすで -87 で生成すれば良い。
+    # /usr/share/texmf-dist/fonts/type1/public/amsfonts
+    #   cmmi に♯、♭、ナチュラル、i, j, Weierstrass, vec の類
+    #   cmr  にアクセント記号の類
+
+自体の作成の注意点・方法についてもここに纏めておく
+
+* [輪郭を太らせる] は基本的に以下の様にする事にする:
+  -縦横の "太さ" は同じにする 例: &W [10] &H [10]
+  -線の端は [Butt]
+  -線の結びは [Miter]
+  -[内側の輪郭線を削除]
+
+  "輪郭を太らせる" はすぐ fontforge がクラッシュするので 2013v を使用する。
+
+* 黒塗り図形から中抜き図形を作成する時は、
+  1 [輪郭を太らせる C-S-E] で -87 で外の輪郭だけ残す。
+    または 87 で内側の輪郭だけ残す (こちらの方がアウトラインの向き的に良い?)。
+  2 それを original の glyph に重ねて、問題が有れば調整する。
+
+* aghtex_mathrm は
+  - original の字形が aghtex_mathrm00 (aghtex_mathrm_xlight) で、
+  - 輪郭を 10 太らせた物が aghtex_mathrm10 (aghtex_mathrm_light),
+  - 輪郭を 20 太らせた物が aghtex_mathrm20 (aghtex_mathrm) である。
+
+
+P18.3 ディセンダ・アセンダ
+
+  どうも無意味にディセンダとアセンダが出来てしまうのは、
+  巨大な文字が中に含まれているからの様な気がする。
+  (FontForge が勝手にディセンダとアセンダを設定するという事だろうか?)
+
+  OS/2 タブで設定できる様子である。
+  * OS/2 Version は 1 に設定する。
+    Automatic のままにしておくとアセンダ・ディセンダの値を設定した時に
+    "Weight, Width, Slope onlyは不正な数値を含んでいます" という謎のエラーが出る。
+    <a href="http://blog.goo.ne.jp/kennyseed/e/56fd9cfe07d59f64d81c514a99f4206a">FontForge 備忘録 その３。 - night garden &gt; reboot</a>
+    <a href="http://pl.digipedia.org/usenet/thread/12024/7902/">Bug in OS/2 infos</a>
+    よく分からないが、以下のサイトでは全角の幅で問題が出る時に 1 を指定する様にしているので、特に 1 にしたからといって問題になる事は無さそう?
+    <a href="http://blue-red.ddo.jp/~ao/wiki/wiki.cgi?page=%A5%D5%A5%A9%A5%F3%A5%C8%A4%CE%B9%E7%C0%AE">フォントの合成 - ふなWiki</a>    
+
+  * Windows Ascent/Descent で WinAscender/WinDescender を強制的に設定できる
+    直接数値を指定したいのでオフセットのチェックは外しておく。
+
+    しかし、この値は実際に表示される時の高さとは関係ない様だ。
+
+  * Typography Ascent/Descent で TypoAscender/TypoDescender を強制的に設定できる
+    直接数値を指定したいのでオフセットのチェックは外しておく。
+    しかし、TypoAscender/Descender を使用しているアプリケーションは殆ど存在しない? らしい?
+
+    しかし、この値は実際に表示される時の高さとは関係ない様だ。
+
+  * 通常の Ascender/Descender はこの画面からは設定できない様子だ。
+    どうやら、全てのグリフの点の最小値と最大値が自動的に Ascender/Descender の値になる様だ。
+    従って、手で直接指定する事は出来ない。
+
+  仕様がないので ttfname3 を使用して直接 Ascender/Descender の値を書き換えてみる事にした。
+  すると、期待した通りに上下の無駄な空白がなくなって表示された。
+  しかし、今度は Ascender/Descender をはみ出ている文字の上の部分と下の部分が切れて表示されてしまっている。
+
+  最終的には全ての記号が、切れずに表示されて、しかも行の高さが勝手に高くならない様にしたい。
+  これを達成する為には現在存在している記号で無駄に高さの高い物を縮めて自動的に計算される Ascender/Descender を小さくすると良い。
+
+  極端に高さの大きい記号を六つ程修正したが、やはり全体的にディセンダが大きいのが気になる。
+  取り敢えず目標として、一番下にある制御点はできるだけ -315 以上になる様にしたい。■
+  現状で、一番嵩張っているのは不等号＋等号の複合記号である。
+  以下、-315 より下にはみでている字体の一覧
+
+  -333 226d-2271 2278 2279 2288 2289 22e2 22e3 22ec 22ed
+
+P18.4 フォントヒンティング
+
+  フォントヒンティングがうまく動いていないと思っていたら、
+  そもそも埋め込まれていなかった様だ。
+  今迄にフォント情報でグリッドフィッティングを弄るなど様々な事をしてきたが無駄だった様子。
+
+  フォントヒンティングが TTF フォントに埋め込む為には以下の手順を踏まなければならない。
+  1 先ず、[フォント情報]-[レイヤー] のフォントのタイプについて。
+    [Font-Type] = [アウトラインフォント]
+    レイヤー = [All layers quadratic]
+    そもそも TTF フォントがこれだけにしか対応していない?
+
+    Weight, Width, Slope Only は不正な値を含んでいます などの様なメッセージが出たら、
+    [フォント情報]-[OS/2]-[その他]-[OS/2 Version] を [Automatic] 以外の何かに変える。
+
+    OS/2
+  2 ヒンティングの必要なグリフを全て選択し、
+    [ヒント]-[自動ヒンティング] を実行する。
+  3 ヒンティングの必要なグリフを全て選択し、
+    [ヒント]-[ヒント命令の自動生成] を実行する。
+  4 [ファイル]-[フォントを出力] で .ttf フォントを生成する時に、
+    [オプション]-[SFNT]-[TrueType Hints] にチェックを入れる。
+
+  →普通に表示される様になった…今迄の苦労は一体…。
+
+18.5 aghfonts フォント名称と内容の再考
+
+  現在フォントは以下の様に沢山ある
+
+  mathsymb - base cmr
+  mathsyma - base ?
+    上記二つは cmex, cmsy記号, msbm記号 の類を格納している。
+    mathsymb に基本的な記号を全て集めてある。
+    mathsyma には同一 Unicode に割り当てられる文字の異体字や、
+    mathsymb に格納している字体の変異版を格納している。
+    これらには \displaystyle の積分記号なども含む。
+
+  mathit  - cmmi
+  mathcal - cmsy
+  mathbb  - msbm
+  mathbm  - cmmi太字
+  mathscr - rsfs (未使用)
+
+  * math?? 等のフォントの類は、殆どアルファベットの部分にしか字体がない。
+    記号の部分については空白になっている。ここの部分に記号を格納する事も可能である。
+  * 記号類を格納しているフォント mathsym? のアルファベット部分は、
+    mathsymb の場合には mathrm を格納する事にした。
+    それに伴ってギリシャ文字の部分には直立体に修正したギリシャ文字を格納している。
+    mathsyma の場合には何も格納していない。
+    mathsyma の空欄は勿体ないので他のアルファベットフォントと結合できる。
+  * \bigl \bigr 等によって出力される括弧の異字体は 1+4 種類ある。
+    A これらを扱う為に、例えば mathsymb, mathsyma の半角・全角の区点に様々の括弧を割り当てる事ができる。
+      しかし合計で 5 字体あるので、その他の区点も利用しなければ symb/syma に納められない。
+      更に、\lfloor, \lceil などの一部の括弧については、全角に対応する括弧の区点が存在しない。
+      「その他の区点」についても括弧の種類によって対応する物が見付からないかもしれない。
+    B それよりは、1+4 種類のフォントに分けて格納した方が綺麗にできる。
+      テキストとして選択してコピーしても標準的な unicode point としてコピーされる。
+      (A) の方法に従うと、コピー時に色々な区点の色々な括弧 (環境によっては見にくいかもしれない)
+      に化けてしまって扱いにくい。
+  * 以上を総合して、mathsymb, mathsyma を他のアルファベットフォントと結合する事にした。
+    mathsymb については既に cmr と結合した様な状態になっているので、単に mathsymb から mathrm に改称する。
+    mathsyma については mathbb と結合する事にする。
+
+  * mathsymb 改称
+    1 src/latex/Makefile.pp, out/Makefile.pp, src/addon/Makefile.pp
+    2 src/addon/aghtex4ie/mwgtex4ie/dllmain.cpp(install_aghfonts, uninstall_aghfonts)
+    3 src/latex/latex.pp.css
+    4 src/latex/res/aghfonts/aghtex_mwgsymb*
+  * mathsyma+mathbb 結合 → mathbb
+    できるだけブロック体の方が良いので (イタリックにして後で問題になったら嫌なので)、
+    ブロック体であり、かつ、latex の標準で利用可能である mathbb のフォントと結合する事にした。
+    1 mathbb の太さ 10 版を作成する
+    2 mathbb の文字を amthsyma に移動する。
+    3 mathbb を backup/ に移動し、mathsyma を mathbb に改称する。
+    3 src/latex/Makefile.pp, src/addon/Makefile.pp, out/Makefile.pp: mathsyma 削除
+    4 src/addon/aghtex4ie/mwgtex4ie/dllmain.cpp(install_aghfonts, uninstall_aghfonts): mathsyma 削除
+    5 src/latex/latex.pp.css: aghtex_mathsyma.* を aghtex_mathbb に変更。
+
+  以上の書き換えによって、aghfonts のフォントセットは現在以下の通りとなっている。
+
+    名称      alphabet    greeks      symbols   備考
+  1 mathrm    直立体      直立体      基本      -
+  2 mathit    イタリック  イタリック  変体3     -
+  3 mathbb    黒板体      -           変体1     -
+  4 mathfrak  亀甲        -           変体2     -
+  5 mathcal   カリグラフ  -           変体4     -
+  6 mathscr   スクリプト  -           -         (未使用)
+  7 mathbm    イタリ太字  イタリ太字  -         (synthesize補完用)
+
+
+
+  * \big 括弧の配置場所について 2013-11-07 09:02:18
+
+    と、ここで大弧の類を symbols の変体に設定しようとしたら、
+    mathfrak に既に fraktur 版の []()/ の記号が入っていた。
+    考えてみたら、[]()/\{} の記号は ASCII 領域にあるので被る。
+    mathit の []()/\{} のスロットを使う場合もイタリックな物を本来其処に入れたい物。
+
+    * mathit には symbol の変体は入れない (symbol の標準形のイタリック版が入るべき)
+
+      mathbb に関しては、元々 bb 体自体が記号的な物で、
+      また、他の記号類に対しても同様の bb 体を用意するという事も考えにくいので問題にならなかった。
+      同様に mathcal や mathscr に代入する事自体もそれ程問題にはならないと考える。
+      mathfrak についても、fraktur 版の記号が既に其処に存在しているという事がなければ問題はなかっただろう。
+      ただ、mathit に関してのみは将来的に「イタリック体」として使いたいという可能性を考慮に入れて、
+      symbols の変体の類を勝手に代入するという事はしない様にしたい。
+
+    * 全角字形の方に入れる?
+
+      ASCII で mathfrak に既に存在している物と被ってしまう事が問題になっていた。
+      それならば変体などの記号類は全角形の方に定義してしまうと言うのも手である。
+      幸いにして全角形が使用される事は (海外では) 殆どない。
+
+      しかし、問題点としてはスラッシュ・バックスラッシュの形が、
+      全角と半角で著しく異なる事である。全角にすると傾きが 45 度になってしまう。
+      (括弧の類については、全角にしても、
+      「横に 2 倍になって正方形に近い括弧になった」等という事はないのだが。)
+      スラッシュ・バックスラッシュだけが問題だというのであれば、
+      スラッシュ・バックスラッシュ類の他の unicode ポイントを探して、
+      其処にデータを保持する様にすれば良い。
+
+      がしかし、バックスラッシュに対応するポイントは少ない。
+      u5c (backslash) か u2216 (set minus), u20E5 (combining backslash),
+      uff3c (全角 backslash), 
+    
+    * 或いは変則的な割り当てについてちゃんと記録を残して mathit 等を汚染する?
+
+      現状の mathit がどの様に mathit に相応しくない記号類と混じり合っているかについて、
+      ちゃんと記録に残しておけば混ざり合わせても良い様な気もする。
+      (しかし、それでも []()/\{} のイタリック版は確かに字形として既に存在している…。)
+
+18.6 aghtex_mathit のアセンダが極端に小さい [2014-09-29]
+  勿論 aghtex_mathrm (mathsymb) より小さい。
+  しかし、他の標準的なフォントと較べても小さい。
+  これだと \textstyle で2段重ねにする時に重なり合ってしまって良くない。
+  \displaystyle であっても様々な所で、高さが数字などとずれている可能性がある。
+
+  アセンダを調整する手っ取り早い方法は高さのある文字を無理矢理収録する事である。
+  適当に slash をコピーして、その上端を 819 (設計上のアセンダ) になる様にした。
+
+P19. ctxc 再構築
+
+  現在 .ctx から .js への変換プログラム ctxc.exe は C# で書かれている。
+  しかし、C# は余り移植性がない。何か別の言語で書き直したい。
+  楽そうなのは awk などを使う方法である。
+  しかし awk は行指向の言語であるので現在の行に跨った変換をする方式に対応するのは難しい。
+
+
+  A 現在の文法は変えない
+    o 現在の文法を変えて実装しやすくすると言う手もあるが、
+      既に書かれたコードを何れにしても変換できる様にしたいので
+      結局鍼灸療法の文法に対応する事になって意味がない。
+      といって、完全に新しい文法しか受け付けなくするのも面倒である。
+      更に、文法を変えた後にやはり余り良い文法ではなかったと元に戻すのも大変である。
+
+  B JavaScript の文法で扱える範囲に戻す
+    実は一番現実的なのはこれかもしれない。
+    o 将来他の人がソースコードを弄りたいと思った時に変な言語を使っていると問題がある。
+      説明をするのも面倒だし、折角興味を持ってくれた人の興味を削ぐ形にもなる。
+    o また、現在の変換後のコードは似た様なコードが並んでいて冗長な気がする。
+      これも自動生成されたコードとはいえあまり綺麗でないので嬉しくない。
+    x 現在、一つの .js ファイルに統合する事を目指しているが、
+      これを実行すると一つの .ctx も余さず全部 JavaScript の形式に戻さなければならないのではないか。
+      →既存の .ctx は既存の ctxc.exe を使って変換した後に更に結合をする事にすればよい。
+    
+  取り敢えず B の方向性がうまく行くかどうかを考える。
+
+    * @"文字列リテラル" は TeX を扱う上でないと困るので残す。
+      これは幸いにして行に収まるリテラルなので awk/sed 等で処理可能である。
+
+    * 取り敢えず Command2 から対応していく事にする。
+
+    * Command1 についても Command1 用の cmdtype を定義する事にすれば
+      直ぐに対応する事が出来る様な気がする。
+      - 或いは、この際だから B の方向に .ctx を書き直す時に Command2 の形式に書き直しても良い。
+        Command1 の形式は昔に書かれた物だから再度テストした方が良いかもしれない、
+        という意味に置いて Command1 のまま残しておいた様な所もあるが、
+      - 実際の所 Command1 だからと言って大してテストしている訳でもないので、
+        古いコマンドを Command1 として区別しておく必要もないと思う。
+
+    * command 書換手順
+
+      - command f?\cmdName(argdef) def;
+        _Ctx.DefineCommand({cmdName:["f?;argdef",def]});
+        に書き換える。
+
+      - context "contextName" new(){ ... }
+      - context "contextName" { ... }
+        (function(){
+          var _Ctx=ns.ContextFactory.GetInstance("contextName");
+          var _CtxName="contextName"; // ← environment 生成コードから使用される
+          ...
+        })();
+
+        ※元々のコードは with で囲む物であったが、
+          スコープを明確に分離する事にした。
+          1 これでクロージャで外側の変数を拾ったりする事がなくなる反面、
+            context 間で共通の変数は外側で宣言する必要が出る。
+          2 AddCommandHandler などと factory の関数を直接使用しているコードは、
+            全て _Ctx.AddCommandHandler などの様に書き直す必要がある。
+
+        ※因みに以下の形式に書き換えるのであれば今の書き方でも
+          先頭行に対する置換だけ行えば良いので OK?
+          new function(){
+            var _Ctx=ns.ContextFactory.GetInstance("contextName");
+            var _CtxName="contextName"; // ← environment 生成コードから使用される
+            
+          }
+
+    * 取り敢えず texsym.ctx を用いて、簡単に移行する事が出来そうな事を確かめた。
+      それよりも ctxc.cs を改造して結合用の出力を行う様に変更したい。
+      その為に必要な事は…
+
+      1 agh.register などのスクリプト本体が行うべき処理は出力しない
+      2 無駄なコメントやクレジットは不要 (どうせ各 .ctx ファイルに記入しそうな気もするし)
+      3 
+
+
+■表示の不具合
+
+B01.IE7 で文字の大きさを変更すると、レイアウトが滅茶苦茶になる現象 [保留]
+  [現象]
+  display:inline を指定している要素全般に対して、
+  その外から見た幅が 0 になってしまう現象。
+  (要するに、後続する要素が上に重なって表示されてしまう。)
+  ※ IE6 では起こっていない。
+  
+  [調査]
+  所が、色々な display を試したりしても、
+  もっと表示が崩れるか、或いは表示が変わらないかのどちらかである。
+  と、色々別の要素に入れてみたり etc. を試していても動かなくて諦めかけていた所、
+  何故かいきなり正常に表示される様になった。
+  コードをこの現象に気付く前の状態に戻してみたが、やはり正常に表示される。
+  結局原因は分からずじまいである。
+  
+  [\frac 変更]
+  序でだが、IE7 では display:inline の類に IE6 よりは対応している様で、
+  分数の表示も、他のブラウザと同様の html で実現できるようであったので、
+  他のブラウザと同じ html を出力する様に変更した。
+  
+  [現象]
+  と…茲で、再度この現象が発生した…。
+  どうやら、初めに表示した段階では、表示が崩れる事がないが、
+  頁の文字の大きさを変更するとこの現象が発生する様である。
+  
+  同様に、\hat コマンドなど文字の上に別の記号を重ねるコマンドでも、
+  文字の大きさを変更すると本体の文字が表示されなくなるという現象がある事が分かった。
+  
+  [対応] 今の所、対応する気はない。
+  文字の大きさを変更しなければ一応表示出来ているので、
+  html は一応ちゃんと IE 向けに調整出来ていると思いたい。
+  その上で、IE 上の操作で表示が崩れるという現象にも対応できる様に html を調整するのは面倒。
+  というか、普通に表示出来ている様に見えるのに、文字の大きさを変えると表示出来なくなると言うのは…。
+  
+B02.[移動:B07. 上付・下付の問題]
+
+B03. IE では widehat overbrace 系統が駄目 [保留]
+  1. IE6: 中に積分記号が混じっていると、何故か真ん中に降りてくる。
+  2. IE7: 上の方に寄りすぎ。
+  
+    見てみると、後方互換モードでは期待した位置に表示されている。
+    標準準拠モードでは上に依りすぎた位置に表示されている。
+
+B04. IE 以外では \! に対応出来ていない。[完 2011/12/03]
+  
+B05. 変な所で改行 in tex\:math td □
+  他にも white-space:nowrap を追加するべき場所はないだろうか?
+  →今の所、特に無い様な気がする。
+
+B06. \sum の上下の空白が気になる。[完 2012/06/19 15:27:08]
+  <li>やはり \sum の上下の空白は気になると言う事</li>
+
+B07. 上付・下付の問題
+B07.1 [完]
+B07.2 [完]
+B07.3 [完]
+B07.4 [移動: 問題8]
+B07.5 vphantom に上付・下付を指定できるようにする■
+B07.6 Chrome で上付分数の位置が可笑しい。上過ぎる。[完 2012/06/19 23:09:14]
+  ■他のブラウザでも上付分数が上に寄りすぎていないか調べる。
+B07.7 [完]上付と下付の同時指定
+    
+  
+B08. [Opera Bug] 特定の記号の上下に長い空白領域が出来る。
+  (大体解決した。line-height による方法)
+  
+  ・≧≦記号でも同様の事が起こる。■
+    これらの記号は特別なタグで囲まれていないので、これも fsym 等で囲んで、
+    line-height の指定等が適用される様にする必要有り
+
+B09. Chrome で fx.css と sf.css の両方をロードしているらしい問題 [完 2011/05/28]
+B10. Safari で改行が入ってしまう問題 [完 2011/05/28]
+B11. IE7 で分数が正しく表示されていないという事 [完 2011/05/28]
+
+B12. \(\) や $$ $$ で囲んだ場合の text-align が center になっていない■
+  これは、初期の頃の見た目の問題で敢えて center にしていなかった様な気がする。
+  (自分のブラウザは文字の大きさに対して横幅が広いので、
+  中央揃えにすると数式が存外右端に移動してしまう。)
+  然し、現状では例えば mwg.kick.js では p.tex:eqn は
+  わざわざ text-align:center にしているので、元々のコードでも中央にしてしまって OK である。
+  
+  →と思っていたら、\(-\) は $-$ で囲むのと同じ事だから text-align も何もないし、
+    $$-$$ に到っては抑も対応していなかった。
+
+B13. (勘違い)
+  eqnarray* の中の = が ＝ に変換されていない。
+  と思ったら、これは元々変換する様にはなっていなかった。
+  GMail 埋め込みの場合、eqnarray* 内だと GMail の td に対する CSS Rule が適用されて、
+  = が短く見える様なフォントになっていた所為で、そう錯覚したのだった。
+  (或いは = も + や - と同じように全角の ＝ に置き換えた方がよいのかも知れない。
+
+  しかも 数字も <tex:num> 等で囲んでいる筈なのに、囲まれていない。
+  …と思ったら勘違いだった様だ。tex:num は数字を囲む物ではなくて、
+  分数の分子を囲む物であった。
+  変換されていない様な気がしたのは、GMail のスタイルシートの
+  td 要素に対する CSS Rule が勝手に適用されたからの様である。
+
+B14. overbrace underbrace の高さ  
+    今の実装では、overbrace, underbrace に付加した文字列の高さが確保されていない。
+    つまり、手動で空白を空けておかなければ下の行や上の行に重なって表示されてしまう。
+    然し、分数の表示の仕組みを利用すれば、行の高さを保持したまま、
+    上に文字列を付加したり下に文字列を付加したりする事が出来るはずである。
+
+<li>mwg.LaTeX2XHTML - このまとめを書いていて気付いた事
+  <ul>
+  <li>どうやら &lt; が HTML にそのまま (&amp;lt; にせずに) 出力されているらしい事</li>
+  </ul>
+</li>
+
+B15. \RAW@ コマンドとセキュリティ [完 2012/06/19]
+
+■その他の不具合
+
+2. 「領域終了例外」というのは見ても良く分からないので、変更する事にした。
+  grep して変更する。現在は取り敢えず end_of_region という名前になっている。
+  unexpectedEOR に変更した方が良いか?
+  
+  * 全体的にロカールに対応した方が良いかも知れない。■
+  * \unknown command undefined と表示されてしまう。[完]
+  
+
+left コマンドの引数が変な物の場合に alert が表示される。 [2011/12/02 04:02:11]
+  これは昔デバッグに使用したか何かで表示する様にした物であろう。
+  今はそんな物が出ても邪魔なだけなので、
+  表示しない事にした。
+
+■変更
+
+■注意
+実装を弄ったりする際の注意
+
+1. 新しい context を定義する時
+　text_modifier やら initializer やら何やら色々あって、
+　どの様に実装したらよいのかという事が分からなくなってしまったので、茲に整理する事にする。
+
+　・initializer に於いて直接の context だけで行いたい処理がある場合
+　
+　　例: 引数読み取り
+　　\def\sample#myctx>1{}
+　　\sample{xyz {bbb} ccc} で、aaa 及び ccc だけに text_modifier を適用したい場合
+	context "myctx"{
+		context.initializer=function(mainctx){
+			if(mainctx.baseCtxs.$contains(this)){ // 直接の context だけ
+				mainctx.text_modifier=function(){
+					処理
+				}
+			}
+		};
+	}
+　
+　関連情報
+　~~~~~~~~
+　・context_cast に関して
+　　context_cast に配列を渡した場合には、
+　　　配列内の context を base にした新しい context が <作成> される。
+　　　因みに配列の中の要素に関しては一々 context_cast がかけられる。
+　　context_cast に文字列を渡した場合には、Document に属する既存の context が <選択> される。
+　　　未だ document に指定した名前の context が用意されていない場合に限り、
+　　　同名の ContextFactory から context が作成される。
+　　context_cast に Context インスタンスを渡した場合はその儘
+　　context_cast に ContextFactory インスタンスを渡した場合には、それを以て新 context を <作成> する。
+　　
+　　文字列を渡した際には既に document に存在している物が選択されるだけなので、
+　　「内 context に入る度に毎回大量の context が作成されるのではないか?」という心配はなくなる。
+　　結局、作成される context の数は、配列を渡した回数と ContextFactory を渡した回数を足した物だけである。
+
+　・Command2 の引数読み取りの際の説明で 「context "○○" を用いて読み取り」等という物があるが、
+　　これはその名前の context を直接用いる訳ではなくて、
+　　それを直接の base に持つ context を作成して読み取るという事である。
+　　
+　　従って、「"○○" を用いて読み取り」の context を initializer 内で認識する為には、
+　　mainctx.baseCtxs の中に ○○ が入っているか否かを確認すれば良いだけである。
+　
+　・text_modifier が継承されない事
+　　継承をしたければ initializer 内で毎回設定する必要がある。
+　　
+　　この様な実装になっているのは、text_modifier の既定値が "null" だからである。
+　　この時、もし継承されるようなことになっていれば、例えば、
+　　\[\mbox{aaaa}\]
+　　なる TeX ソースについて \mbox 内の aaaa にも math mode での text 修飾が実施されてしまう。
+　　
+　　因みに既定値が null であるのは、
+　　1. 勿論 text は大量に出て来る物であって、
+　　　それらに対して一々関数を実行していると処理が重くなるからである。
+　　　
+　　　然し、実際の所は text ハンドラが用意されているか居ないのかの判定もしなければならない訳だし、
+　　　text の scanner 読み取りの方が空関数を呼び出すよりも処理が思い様に思う。
+　　　ので、この理由は説得力に欠ける。
+　　2. text 修飾が複数ある時
+　　　例えば、修飾 A を実行する context の中で、修飾 B を実行する context がある場合には、
+　　　修飾 B だけ実行すればよいという訳ではない。
+　　　と言って、修飾 B を実行した後で修飾 A を実行したり、
+　　　或いは修飾 A を実行した後に修飾 B を実行するというのも解決にはならない。
+　　　
+　　　実際には、修飾の重なり方によって、その場その場で修飾の重なり方が異なる。
+　　　従って、単純な継承の機構や、修飾の既定値などは全然意味を為さないのである。
+　　
+
+■透明 png の作り方纏め
+
+☆ PIXIA を使う方法
+1. PIXIA をインストール
+2. PIXIA Plugin の S_PNG.dll を導入する
+3. PIXIA で透明になっていないファイルを開く
+4. 名前を付けて保存で png 形式にして [保存]
+5. Dialogue が出て設定を訊かれるので、"左上の pixel の色を透明にする" という英語を選んで保存する
+
+この方法だと、パレットが変になって、例えば IE で正しく表示されなかったりする。
+VIX を使った方法もあったので、そちらの方がよい。
+
+☆ VIX を使う方法
+1. VIX を入手
+2. 透明になっていないファイルを開く
+3. メニューの減色で 256 色ぐらいにする
+4. 別名で保存で、透明にしたい色を指定して保存する。
+
+■CSS Hack
+
+・<!--[if IE 6]<style>...</style>-->
+  IE 6 のみ
+
+・namespace\:* 要素指定
+  IE ○
+  Fx ×
+
+・.namespace\:className クラス指定
+  IE ×
+  Fx ○
+
+・elem>elem 子指定
+  IE6 ×
+  Fx ○
