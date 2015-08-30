@@ -34,7 +34,7 @@ dist-aghfonts:
 
 
 ChangeLog.htm: ChangeLog.lwiki
-	lwiki convert $< > $@
+	lwiki convert --header --aghbase=out $< > $@
 ChangeLog.txt: ChangeLog.htm
 	w3m -T text/html -no-graph $< > $@
 all: ChangeLog.txt

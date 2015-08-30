@@ -1,23 +1,27 @@
 // -*- mode:text -*-
 *ChangeLog
+**2015-08-30 KM, agh-3.2.0.392
+-git repository 初期化
+-minor version 番号を増やす。
+ versioning scheme を改める。積極的に patch level を更新する。最後の番号は commit で数える。
 **2015-01-16 KM, ver 3.1.0.389
 -agh.regex.js: bugfix, <?js $replace indexable?> の処理が誤っていた。
 -agh.class.js: bugfix, プロパティアクセサを片方だけ override した時に、他方が継承されない。
--agh.class.js: bugfix, Object.defineProperties の関数名を間違えていた。
--agh.class.js: Object.defineProperty を用いた実装を追加。
+-agh.class.js: bugfix, <?js Object.defineProperties?> の関数名を間違えていた。
+-agh.class.js: <?js Object.defineProperty?> を用いた実装を追加。
 -agh.class.js: <?js newclass#__add?> の overload 追加: <?js __add(eventName,func)?>.
--agh.dom.js (getRectangle): bugfix, getRectangle, 'page' のスクロール量の計算部分。
--agh.dom.js (captureMouse, releaseMouse): bugfix, うまく動かないので色々弄った。
--agh.dom.js (getRectangle): bugfix, padding-box の計算が誤っていた (スクロール量を逆に解釈していた)。
--agh.js (Function#get_name): bugfix, '<?js $?>' が関数名に含まれる可能性を入れていなかった (agh.class で用いる)。
+-agh.dom.js (<?js getRectangle?>): bugfix, <?js getRectangle?>, <?js 'page'?> のスクロール量の計算部分。
+-agh.dom.js (<?js captureMouse?>, <?js releaseMouse?>): bugfix, うまく動かないので色々弄った。
+-agh.dom.js (<?js getRectangle?>): bugfix, padding-box の計算が誤っていた (スクロール量を逆に解釈していた)。
+-agh.js (<?js Function#get_name?>): bugfix, '<?js $?>' が関数名に含まれる可能性を入れていなかった (agh.class で用いる)。
 -agh.js: キーボードコマンド <?kbd C-: ...?> を使える様に。agh.debug.js の呼出を行う。
 -agh.text.color.js: php に対応。
--agh.fly.js: agh.fly.processContents 公開
--agh.forms.js: agh.Forms.TabPage に対応。
+-agh.fly.js: <?js agh.fly.processContents?> 公開
+-agh.forms.js: <?js agh.Forms.TabPage?> に対応。
 -agh.forms.js: 古いコードを agh.forms1.js に分離。
 -agh.forms.css: 廃止。agh.forms.js で動的に追加する様に変更。
--agh.js (addEventListener for IE): 実装し直し, event.type, target, currentTarget, preventDefault, stopPropagation, isDefaultPrevented, isPropagationStopped の polyfill.
--agh.dom.js: preventDefault, stopPropagation だけで済むように書き換え。
+-agh.js (addEventListener for IE): 実装し直し, <?js event.type?>, <?js target?>, <?js currentTarget?>, <?js preventDefault?>, <?js stopPropagation?>, <?js isDefaultPrevented?>, <?js isPropagationStopped?> の polyfill.
+-agh.dom.js: <?js preventDefault?>, <?js stopPropagation?> だけで済むように書き換え。
 -agh.js: 重複読込チェック
 -gzjs.cs: 大幅な修正
  -85文字符号化による自己展開スクリプトの出力
@@ -386,9 +390,9 @@
 **2013-07-06, KM, agh-3.1.0.140
 -latex/cmd:\atop: [bugfix] 内部で DOC 変数 (ns.Command 形式) を使用。doc 変数 (ns.Command2 形式)を使用するべき。
 -latex/doc/latex.chk.math.std-test.htm: [bugfix] 廃止された Array.prototype.$each 関数の使用。agh(Array.prototype) で使用可能にした。
-**2013/04/24, KM, agh-3.1.0.138
+**2013-04-24, KM, agh-3.1.0.138
 -latex/latex.cor.js:ns.Scanner4.Next: [bugfix] 全角空白は特別文字として処理されるべきなのに、通常文字列として読み取ろうとして単語切り出しに失敗していたのを修正。
-**2013/02/07, KM, agh-3.1.0.137
+**2013-02-07, KM, agh-3.1.0.137
 -latex/latex.pp.css: tex\:i.aghtex-accent-container: アクセントの高さが乱れていたので top:0 を指定。
 -latex/main.ctx/cmd:cal: \cal コマンドを追加。
 -latex/font:mathsymb-1.0.32: \u2254, \u2255 追加。(6 glyphs)
@@ -396,23 +400,23 @@
 -latex/font:mathsyma-1.0.17: \u222b, \u222e 積分記号。(6 glyphs)
 -latex/main.ctx:\int, \oint: mathsyma の積分記号を使用する様に変更。
 -latex/latex.pp.css:\int, \oint: display:inline-block に変更 (line-height:1.05em 指定を有効にする為)。
-**2013/02/06, KM, agh-3.1.0.130
+**2013-02-06, KM, agh-3.1.0.130
 -latex/main.ctx: \over (plain-TeX の分数コマンド) に対応
 -latex/main.ctx/env:enumerate, itemize: class="tex-ie" 等を class="aghtex-ie" に変更
 -latex/main.ctx/env:enumerate, itemize: \item[mark] に対応。
-**2013/01/31, KM, agh-3.1.0.127
+**2013-01-31, KM, agh-3.1.0.127
 -addon/aghtex4gmail: groups 仕様変更に対応。[1.1.3.993]
 -addon/aghtex: \begin{document} 及び `#tex-para# 形式の変換結果で title 属性を設定しない様に変更。 [1.1.3.994]
 -latex/latex.cor.js/Command2.CreateArgReader.cmd2_argreader, Command2ArgUntil: [bugfix] prefix 失敗時に output.error を呼び出すべき所、output.get_error を呼び出して停止していた。
 -latex/latex.cor.js/Command2.CreateArgReader.cmd2_argreader: Command2ArgRead に名称変更。
-**2013/01/25, KM, agh-3.1.0.125
+**2013-01-25, KM, agh-3.1.0.125
 -addon/aghtex4thunderbird: [bugfix] 動作しない問題。agh_bgpage.htm の中身が mwg から agh に移行されていなかった。
 -latex/vphantom: [Fx-workaround] Fx で vphantom の縦位置がおかしい。
  -Fx には overflow:hidden;display:inline-block; の組合せで縦配置がおかしくなるバグがあるようである。
  -[[491549 ? overflow:hidden + display:inline-block causes vertical misalignment>https://bugzilla.mozilla.org/show_bug.cgi?id=491549]]
  -workaround として child node の vertical-align を baseline 以外にしろ、と書いてあるが効かなかった。(それに今回は baseline にしたい。)
  -visibility:hidden にしているので overflow:visible でも問題ない。visible に変える事にした。
-**2013/01/14, KM, agh-3.1.0.123
+**2013-01-14, KM, agh-3.1.0.123
 -latex/mod:para.\centerline: [bugfix] コマンド定義の種類が文字列なのに "f" と指定されていた。
 -latex/mod:color: [bugfix] predefined colors が登録されていなかった
 -latex/mod:color: [bugfix] \colorbox, \fcolorbox の出力するタグが閉じていなかった (tex:mbox で閉じるべき所を tex:i で閉じていた)
@@ -421,7 +425,7 @@
 -latex/mod:counter.\addtocounter: [bugfix] isNaN 判定が存在しない関数を使って行われていた。
 -latex/mod:counter.\addtocounter: [bugfix] array 環境でエラーをした時に定義されていない変数 output に触っていた。
 -latex/pkg:amsmath.env:multline, env:multline*, env:gather, env:gather* 対応
-**2012/12/25, KM, agh-3.1.0.115
+**2012-12-25, KM, agh-3.1.0.115
 -latex/font:mathsymb-1.0.29: 字体のコピー, \u02ca-&gt;\u00b4, \u02c9-&gt;\uaf (6 glyphs)
 -latex/font:mathsyma-1.0.14: ベクトル記号, 高さ位置合わせ (9 glyphs)
  -フォントが欠けた時に位置がずれるのは嫌なので、上付矢印記号は真ん中の高さに定義し直す。
@@ -453,7 +457,7 @@
 -addon/aghtex4chrome.js: 上記のバグを避ける為に replace(/\r\n/g,"\n") していたのを削除
 -latex/font:mathit: ギリシャ文字を mathit, mathbm (太字版) に移動する (220 glyphs)
 -26 latex/font:mathsymb: ギリシャ大文字, ギリシャ小文字直立体 (165 glyphs)
-**2012/12/24, KM, agh-3.1.0.89
+**2012-12-24, KM, agh-3.1.0.89
 -latex/mod_ref: %%\label コマンド, トラップを上書きできる様に CTXV_LABEL_TYPE で場合分けする%%
  -userC に対して \label コマンドを上書きする事で実現する様に変更した。
  -ContextVariable の使用も止めかけたが、クロージャによる参照を使わないと行けないので、やはり使用する。
@@ -477,16 +481,16 @@
 -latex/latex.cor.js: 文字コードによる空白判定, LETTERS_SPACE 廃止。
 -latex/cls:article: \author を複数回指定した時の動作について確認 (revtex の場合には author が追加される。)→ article の場合は上書きされる動作で違いない
 -latex/latex.pp.css: [bugfix] \dotfill が実線になっている。\hfill 等の幅についても調整。
-**2012/12/23, KM, agh-3.1.0.67
+**2012-12-23, KM, agh-3.1.0.67
 -addon/aghtex4chrome/*.tex: [bugfix] @ を含むコマンド名が色付けされていない (色付けの際は全て \makeatletter の内側として扱う)
 -addon/aghtex4chrome/*.tex: 印刷時のスタイルシート
--latex/error-globalization: 特別名のエラー文字列を format 関数で生成する様に統一する, 
+-latex/error-globalization: 特別名のエラー文字列を format 関数で生成する様に統一する,
 -latex/mod_ref: %%\label{tab:*} 等に対応する。%% env:figure, table 内の \label の名前の動作について確認する。
 -latex/mod_ref: \label の仕様をまるで勘違いしていた。書き直し。
 -latex.\section: latex: "fA" 応用で \chapter コマンド再構築?
 -latex.\section: a.aghtex-ref で章にジャンプすると章題が隠れる問題
 -latex.\section: optional argument (ページ上部に表示する内容) (目次にはこちらを使用する事にする)
-**2012/12/22, KM, agh-3.1.0.59
+**2012-12-22, KM, agh-3.1.0.59
 -latex/main.ctx: \let コマンドに対応
 -latex/mode.para.ctx: equation* 環境に対応
 -latex/pkg:url: [bugfix] プリアンブルで \urldef 等が使えない。全コマンドの類を ctx:global に移動 (\url 等もどうせ \DeclareUrlCommand 等で userC 上に登録されるから)。
@@ -498,7 +502,7 @@
  -思い違い? 他の物が原因でその様な動作になったのだろう。
 -latex/aghtex4chrome/*.tex: ソースの色付け
 -latex/ctx:mode.para: \eject, \pagebreak, \clearpage, \doubleclearpage, \supereject, \dosupereject
-**2012/12/21, KM, agh-3.1.0.51
+**2012-12-21, KM, agh-3.1.0.51
 -addon/aghtex4chrome: *.tex ファイルの表示に対応
 -addon/aghtex4chrome: [bugfix] url が *.tex#hoge の場合に表示されない問題
 -addon/aghtex4chrome: [bugfix] *.tex ファイルの mime type が text/plain でないとファイルに保存されて表示されない問題
@@ -521,18 +525,18 @@
 -latex/aghtex4chrome/*.tex:1.0.2.408: Powered by の文字列
 -latex/mod:array: [bugfix] alignment 読み取りの文字ハンドラで cmdName とするべき所を argv にしていた。
 -latex/main.ctx: \newcommand 上書きチェックと、\renewcommand 対応
-**2012/12/19, KM, agh-3.1.0.31
+**2012-12-19, KM, agh-3.1.0.31
 -aghtex4firefox: 対応
 -agh.js: Array.prototype 汚染を除去
 -addon/aghtex4gmail.js: 編集時のボタンのフォントを等幅に。
-**2012/12/16, KM, agh-3.1.0.28
+**2012-12-16, KM, agh-3.1.0.28
 -addon/aghtex4gmail.htm: mwgtex4ie の説明を書く。
 -latex/aghfonts: mathsymb, mathsyma のアルファベット字体 (BaKoMa 由来) を削除
 -latex/aghfonts: mathbb, mathfrak, mathcal を生成
 -latex/aghfonts: mwg_cmsy10_mod, mwg_eufm10, mwg_msbf10 を aghfonts で置換
  -latex/mwg_cmsy10_mod, mwg_msbm10, mwg_eufm10: aghtex4ie で表示できる様にフォント名と @font-face 名を統一する。
 -latex/latex.pp.css: 使用していないルール *.mwg-tex-box を削除
-**2012/12/15, KM, agh-3.1.0.23
+**2012-12-15, KM, agh-3.1.0.23
 -addon/aghtex4ie: [bugfix] FrameElement にメンバを追加できない? 問題。
 -addon/aghtex4ie: [gmail 仕様変更], window.document 直下に mailbody が移動。
 -addon/aghtex4ie: [bugfix] initialize_frame で未初期化時に遅延が正しく設定されない問題。
@@ -543,14 +547,14 @@
 -latex/font: フォント名変更 mwg_mathsyma → aghtex_mathsyma, sfd ファイル名の変更, 太さ情報の設定
 -addon/aghtex4ie, aghtex4seahorse: [bugfix] aghtex_mathsymb, aghtex_mathsyma 追加
 -addon/mwgtex4ie: フォントを一時的にインストールする様にする
-**2012/12/12, KM, agh-3.1.0.13
+**2012-12-12, KM, agh-3.1.0.13
 -prog.std.css: mwg -&gt; agh 修正
 -latex/doc: mwg -&gt; agh 修正
 -agh.lang.ps: mwg -&gt; 修正
 -agh.lang.ps/doc: mwg -&gt; agh 修正
 -mwg.kick.js/agh-fly-type: tex.color -&gt; color に変更
 -mwg.kick.js/pre.className: diff または agh-prog-* の形式のみ残し他は削除
-**2012/12/12, KM, agh-3.1.0.7 (+115 記録を付け始めてからの項目数)
+**2012-12-12, KM, agh-3.1.0.7 (+115 記録を付け始めてからの項目数)
 -mwg3: バックアップを取る様に Makefile を記述
 -agh: ライブラリの名前を mwg3 (myoga v3) から agh (ageha) に変更する事を決定。徐々に移行予定。以下の理由に基づく:
  -mwg という名前は c++ library など他にも沢山使っている
@@ -572,7 +576,7 @@
  -agh/addon/aghtex4thunderbird: 変更
  -agh/addon/aghtex4ie/aghtex4ie.dll: dll の名前を変更して再コンパイル。dll の名前を変更する時には、mwgtex4ie.def 及び mwgtex4ie.rgs の中の mwgtex4ie.DLL の部分を変更
  -agh/addon/aghtex4seahorse: 変更
-**2012/12/11, KM,
+**2012-12-11, KM, mwg-3&color(royalblue){.0.50}
 -latex/latex.cor.js/Command2: コマンドの type として "fA" を追加。引数読み取りのタイミングを定義関数で制御。
 -latex/env:figure, env:table: [bugfix] 何か変だと思ったら、一つの figure 内に複数の \label, \caption が存在しても良い様だ。
  -latex/mod_ref: env:figure, env:table について完全に勘違いをしていた。修正。
@@ -581,7 +585,7 @@
  -output.buff.push に置換
  -複数の連続する buff.push を結合 (Array.push は複数の引数を受け取って同時に複数の要素を挿入できる)
  -→ Firebug が入っていなければ大して速度は向上していない…
-**2012/12/10, KM,
+**2012-12-10, KM, mwg-3&color(royalblue){.0.49}
 -latex/latex.cor.js/Scanner4: [optimize] wbegin, update_wstart は Next からしか呼び出されていない。
 -latex/latex.cor.js: [optimize] mwg.is 呼び出し回数が多い。代わりにできるだけその場で instanceof 演算子を用いて判定する。
  -取り敢えず、String, Number, Boolen 以外は instanceof で充分の様だから、それを用いる。
@@ -591,7 +595,7 @@
  -1/4 程度呼び出し回数が減ったが余り減っていない。unique な呼出の回数を調べて flatten を考えた方が良いかも。
 -latex/latex.cor.js: [optimize] $each, $each_inv, $contains, $map, $filt 等の操作を直接記述。
 -latex/css: a.mwgtex-cite, a.mwgtex-footnote の色
-**2012/12/09, KM,
+**2012-12-09, KM, mwg-3&color(royalblue){.0.48}
 -latex/doc: 変更履歴 (構成.txt, latex.history.htm, latex.hist.*.htm) の整理
 -latex/mwg.latex.css: エラーメッセージのスタイルの変更。
 -latex/latex.cor.js: Scanner.Next1Char: 誰も使っていない様子なので削除。
@@ -602,7 +606,7 @@
  -latex/latex.cor.js: バグも出なかったので取り敢えず Scanner3 削除
  -latex/latex.cor.js/LETTERS_CMD_END, LETTERS_TXT_END, LETTERS_SPECIAL, LETTERS_ALPHA: 使われていないので削除
 -latex/latex.cor.js: #%[EnableMacroYomikiri=1] 誰も参照していないので削除
-**2012/12/08, KM,
+**2012-12-08, KM, mwg-3&color(royalblue){.0.47}
 -latex.\footnote, \footnotemark, \footnotetext
 -latex.\footnote: \section またはページ (\end{document}) の最後に出力する様にする。
 -latex/cls:article: \section のコマンドの整理
@@ -613,7 +617,7 @@
 -latex.\begin{minipage}: 実装, mpfootnote
 -latex.\enskip
 -latex.\hfill, \dotfill, \hrulefill: (暫定実装)
-**2012/12/07, KM,
+**2012-12-07, KM, mwg-3&color(royalblue){.0.46}
 -latex.\label: context によるトラップに対応。
  -ContextVariable: 'mod_ref/label:eq', 'mod_ref/label:fig', 'mod_ref/label:tb' を使用。
  -ContextVariable が Set されている場合、label 名を Assign する。この値は最終的に Set した側が処理をする。
@@ -622,7 +626,7 @@
 -latex/env:eqnarray: 最終行の式番号, \nonumber の設定のバグを修正。
 -latex/env:figure, table: 実装, \caption, 位置オプションは現在無視 (常にその場に出力)
  -Done %%TODO: env:figure, env:table: 位置オプション, \caption%%
-**2012/12/06, KM,
+**2012-12-06, KM, mwg-3&color(royalblue){.0.45}
 -latex/ctx:mode.lr: 追加。中の改行を無視。
 -latex.\mbox: [bugfix] mode.lr で読み取り, display:inline-block, vertical-align:baseline
 -latex/ctx:mode.math: 空白類を無視する様に変更。
@@ -633,7 +637,7 @@
 -tools/ctxc.cs: \ の代わりに # を用いる事ができる様にする: e.g. letter s@#" \t\v\n\f"() "";
 -latex/pkg:url: \url, \urlstyle, \urldef, \DeclareUrlCommand, \UrlLeft, \UrlRight
 -latex/env:eqnarray: 式番号, \nonumber の対応。
-**2012/12/04, KM,
+**2012-12-04, KM, mwg-3&color(royalblue){.0.44}
 -latex/mod_ref.ctx: \ref, \label, \cite, env:thebibliography, \bibindex, env:figure, env:table 等を分離
 -latex/mod_ref.ctx: \ref, \cite の参照を解決する関数を作成。 doc.ResolveReferences() (Parse の後に呼び出して使う)
  -Done %%TODO: <?xml <tex:cite name="hoge">?</tex:cite>?> 置換%%
@@ -641,7 +645,7 @@
 -latex/mod_ref.ctx: \bibindex のカウンタは enumiv らしいのでそれを用いる様に変更。
 -latex.\fcolorbox: [bugfix] output 変数を初期化していなかった
 -latex/cls:article: \maketitle, \title, \author, \date
-**2012/12/02, KM,
+**2012-12-02, KM, mwg-3&color(royalblue){.0.43}
 -latex/latex.cor.js/Command2: 余分な単語を含む引数読み取りに対応 (\def\cmd[#1]#2{} 等)。
  -ns.Command2.CreatePrefixChecker 追加
 -latex.\documentclass{article}: 対応。h1-h6 を用い、CSS を用いて表示を変更できる様に。
@@ -657,7 +661,7 @@
 -latex/pkg:color: \color, \textcolor, \fcolorbox, \colorbox, \definecolor, \DefineNamedColor, \normalcolor
  Done %%TODO, color, colorbox, \definecolor{name}{rgb|gray|cmyk}{0-1,...}, pagecolor, textcolor, \colorbox[named]{color}{content}%%
 -latex.\usepackage: , で区切った複数のパッケージを読込。
-**2012/11/29, KM,
+**2012-11-29, KM, mwg-3&color(royalblue){.0.42}
 -latex/font:mwgsyma-1.0.9: ヒンティング情報の埋込
 -latex/font:mwgsyma-1.0.10: 太さの異なる 3 フォントを生成
 -latex/font:mwgsymb-1.0.24: アクセント記号 \ua8, \u2c6-\u2c7, \u2c9-\u2cb, \u2d8-\u2d9, \u2dc-\u2dd, \u300-\u304, \u306-\u308, \u30b-\u30c, \u20d6-\u20d7, \u20e1 (69 glyphs)
@@ -666,18 +670,18 @@
 -latex/font:mwgsymb-1.0.25: アクセント記号 ヒント調整 \u2c6, \u2c7, \u2ca, \u2cb
 -latex/font:mwgsymb-1.0.26: アクセント記号 \u2d7, \u320, \u323, \u327, \ub8, \u361 (18 glyphs)
 -latex/font:mwgsyma-1.0.12: アクセント記号 \u2e (3 glyphs)
--latex.\left: [bugfix] Sf vertical-align:middle の指定が効いていなかった 
+-latex.\left: [bugfix] Sf vertical-align:middle の指定が効いていなかった
 -latex.\sum: 再構築
  -[bugfix] IE6, IE8-qks で表示の高さがずれる (新しい方法でも起こったが解決)
  -[bugfix] Op で上付・下付の文字列の位置が変
  -latex.\biguplus: font:mathsymb: \u2A04
  -%%正しく動作していた古いコードの再利用も考える?%% 不要だった
  -latex.\sum: 動作確認 Fx,Cr,Op, 修正 Sf,IE OK
-**2012/11/28, KM,
+**2012-11-28, KM, mwg-3&color(royalblue){.0.41}
 -latex/font:mwgsymb-1.0.23: ヒンティング情報の埋込 (今迄できていなかった…)
-**2012/11/27, KM,
+**2012-11-27, KM, mwg-3&color(royalblue){.0.40}
 -latex.^, _: [bugfix] 上付・下付の同時指定について HTML 記述に誤り。入れ子で下付にした時に問題が発生していた。
-**2012/11/25, KM,
+**2012-11-25, KM, mwg-3&color(royalblue){.0.39}
 -latex.\int: 積分記号をフォントで埋め込み。
 -latex.\left: 上付・下付の margin を調整。
 -latex.\int: 動作確認 IE6,IE8,Cr,Fx,Sf OK, Op 修正
@@ -687,7 +691,7 @@
 -latex.\overbrace: 実装。動作確認 Cr,Sf,Op,Fx OK 修正 IE
 -latex.\widehat, etc: underbrace, overbrace の実装を応用。
 -mwg.std.css: [bugfix] body.nav72 が IE 後方互換モードで正しく動作していなかった。
-**2012/11/24, KM,
+**2012-11-24, KM, mwg-3&color(royalblue){.0.38}
 -latex/上付下付: 上付と下付の間に間が空きすぎているのを修正。
 -latex/上付下付: 下付に分数などを表示した時の位置を修正。
 -latex/font:mwgsymb.sfd, mwgsymb10.sfd, mwgsymb20.sfd: ギリシャ文字の文字幅を調整。
@@ -706,14 +710,14 @@
 -latex/font:mwgsymb: 高さ調整 \u219f, \u21a1, \u22da, \u22db, \u2a8b, \u2a8c (18 glyphs)
 -latex/font:mwgsymb: 高さ調整 \u2ab7, \u2ab8, \u2ab9, \u2aba, \u2ac9, \u2aca, \u2acb, \u2acc, \u2ad3-\u2ad6 (36 glyphs)
 -latex/font:mwgsymb: 高さ調整 \u22e6-\u22e9, \u2a85, \u2a86, \u2a89, \u2a8a (24 glyphs)
-**2012/11/23, KM,
+**2012-11-23, KM, mwg-3&color(royalblue){.0.37}
 -latex/cmd:\underbrace: CSS2.1 table vertical-align
  CSS2.1 table vertical-align に対応しているブラウザ (Cr, Fx, Op) で table.style.verticalAlign="baseline" を利用した実装に変更。これで完全に underbrace される数式の baseline を外側と一致させる事が出来る様になった。Sf 及び IE では動かない様子だったので、古い形式の表示で継続。
 -latex/main.ctx: [bugfix] IE8 で分数の高さが変な事になっていた。仕様がないので IE6 と同じ方式に切り替えた。連分数は正しく表示できない。
 -latex/cmd:\underbrace: [bugfix] IE で vertical-align が滅茶苦茶 (昔は表示できていた気がするのだが…)。
 -latex/cmd:\sqrt,\left: [bugfix] IE8 縦 stretch ができていない (width:expression(); が動作していない)
  別の方法で実現できる事が分かったので、そちらで実装する事にした。
-**2012/11/19, KM,
+**2012-11-19, KM, mwg-3&color(royalblue){.0.36}
 -latex/cmd:\underbrace: underbrace で指定した括弧と文字列が
  折り返した文字列で隠されてしまう。暫定的な処置として padding-bottom を追加。
 -latex/mwg.latex.*.css: CSS2.1 で td 要素に vertical-align:baseline を指定できると今更知った。設定を追記
@@ -725,195 +729,196 @@
  いつの間にかに Chrome が仕様を変更していた様だ。
 ----
 *Prehistory of myoga library
-2012/11/19 以前は変更履歴をまとめて付けてはいなかった。しかし、バックアップ、スナップショット、実装の為のメモやファイルのタイムスタンプから、大まかな流れを辿る事は出来る。
+2012/11/19 以前は変更履歴をまとめて付けてはいなかった。しかし、バックアップ、スナップショット、実装の為のメモやファイルのタイムスタンプから、大まかな流れを辿る事は出来る。&color(royalblue){青で記した version 番号}は後付けの物である。
+
 概要: 最も歴史が長いのは、myoga library の中でも大きな一角を占める数式の表示に関する部分である。当初は数式の表示は、LaTeX の影響を受けた簡易化された文法に従って変換を行う物であったが、2006 年に LaTeX の文法による実装に移行し、段落モードのコマンド・環境などにも対応した。myoga library 自体はその際に、 LaTeX から HTML への変換コードを "デバグする為のライブラリ" として登場した。更に、LaTeX 変換コード本体を吸収して今に至る。因みにデバグの為の機能は何回かのバージョンアップを経て殆ど失われている。最近は、ブラウザ自体の JavaScript デバグの為の機能が充実している為、特に自分で DOM Inspector や Object Tree を表示するコードを書く必要が無くなった為である。
-**2012/06/24, KM,
+**2012-06-24, KM, mwg-3&color(royalblue){.0.35}
 -latex.問題7.2: [bugfix] 循環マクロ検出 Scanner3 対応
 -latex.問題8: マクロがコマンド引数として読み取られない
 -latex.表示7.7. 上付と下付の同時指定
-**2011/06/19, KM,
+**2011-06-19, KM, mwg-3&color(royalblue){.0.34}
 -latex.表示6: [bugfix] \sum の上下の空白について
 -latex.表示7.6: Chrome で上付分数の位置が可笑しい。上過ぎる。
 -latex.表示15: [bugfix] \RAW@ コマンド廃止とセキュリティ
-**2011/04/16, KM,
+**2011-04-16, KM, mwg-3&color(royalblue){.0.33}
 -latex.Test18: アクセント記号調整
-**2011/12/04, KM,
+**2011-12-04, KM, mwg-3&color(royalblue){.0.32}
 -latex: 計画5: CSS, 自動生成を mwg_pp.awk に移行
-**2011/12/03, KM,
+**2011-12-03, KM, mwg-3&color(royalblue){.0.31}
 -latex.表示4: IE 以外での \! の対応, 負の margin-left による実現
-**2012/12/02, KM,
+**2012-12-02, KM, mwg-3&color(royalblue){.0.30}
 -latex.計画3.1: \def パターンマッチング 実装
 -latex: [bugfix] newcommand 既定の引数の読み取りの修正。
-**2011/11/29, KM,
+**2011-11-29, KM, mwg-3&color(royalblue){.0.29}
 -latex.問題7: [bugfix] 循環マクロ
-**2011/05/30, KM,
+**2011-05-30, KM, mwg-3&color(royalblue){.0.28}
 -latex.計画16.9. [bugfix] mathrm が太字になる
 -latex.計画16.10. [bugfix] 数式用イタリックが適用されていない
 -latex.計画16.11. [bugfix] mathfrak の字間が空いている
 -latex.計画16.12. [bugfix] 太字にならない
-**2011/05/29, KM,
+**2011-05-29, KM, mwg-3&color(royalblue){.0.27}
 -latex: WebFonts への本格的対応, css 記述, etc.
  -latex.計画16.4: IE, Fx, Op 以外で Web Fonts が synthesized されない事
  -latex.計画16.5: 何故か italic と slanted の font-style が逆転していたので修正
  -latex.計画16.7: [Op, workaround] Opera で入っていない字体が空白になってしまう事 [経過観察]
  -latex.計画16.8: [Op, workaround] Opera 正規表現は非一致 group に対して null を返す。
 -latex/documentclass.ctx.js: latex/latex.ctx.js に名前を変更
-**2011/05/28, KM,
+**2011-05-28, KM, mwg-3&color(royalblue){.0.26}
 -latex: WebFonts への本格的対応, css 記述, etc.
  -latex.計画16.2: Fraktur のフォントを eufrak から eufm に変更した事による、フォントサイズの調整
  -latex.計画16.3: [bugfix] Fx で Web font の一部が適用されないという事
 -latex.表示7.1: [bugfix] 積分上付の上付が変な位置になっている事
 -latex.表示7.2: [bugfix] Cr, 上付の中に高さのある物があると記号が下に落ちる
 -latex.表示7.3: tex\:sup&gt;tex\:in
--latex.表示9: [bugfix] Chrome で mwg.latex.fx.css と mwg.latex.sf.css の両方をロードしているらしい問題: 
+-latex.表示9: [bugfix] Chrome で mwg.latex.fx.css と mwg.latex.sf.css の両方をロードしているらしい問題:
 -latex.表示10: [bugfix] Safari で改行が入ってしまう問題
--latex.表示11: [bugfix] IE7 で分数が正しく表示されていないという事 
-**2011/05/27, KM,
+-latex.表示11: [bugfix] IE7 で分数が正しく表示されていないという事
+**2011-05-27, KM, mwg-3&color(royalblue){.0.25}
 -latex.\!: IE 調整 letter-spacing+padding-right
 -latex: [Op workaround] 特定の記号の上下に長い空白領域が出来る問題
 -latex: [Op workaround] mathcal の下側に一行分の空白が出来る問題
 -latex: 廃止 tex:fmincho
 -latex: [bugfix] 記号類は tex:frm ではなく tex:fsym.rm で囲むべき
-**2011/05/26, KM,
+**2011-05-26, KM, mwg-3&color(royalblue){.0.24}
 -latex: [提起] 表示5. 変な所で改行 in tex\:math td
 -latex: [提起] 表示7.1 積分上付の上付が変な位置になっている事
 -latex: [提起] 表示7.2 Cr, 上付の中に高さのある物があると記号が下に落ちる
 -latex: [提起] 計画16. 本格的に Web フォントを使用するという計画
-**2011/05/24, KM,
+**2011-05-24, KM, mwg-3&color(royalblue){.0.23}
 -mwg.lang.ps: 描画パス GraphicsSvg.output_point インライン化
 -mwg.lang.ps: mwg.lang.ps-canvas
-**2011/03/10, KM,
+**2011-03-10, KM, mwg-3&color(royalblue){.0.22}
 -mwg.lang.ps: 最適化 ns.Optimizer2 整理
-**2011/03/09, KM,
+**2011-03-09, KM, mwg-3&color(royalblue){.0.21}
 -mwg.lang.ps: mwg.lang.ps-opt
 -mwg.lang.ps: 最適化 関数化での定数伝播最適化
-**2011/03/06, KM,
+**2011-03-06, KM, mwg-3&color(royalblue){.0.20}
 -mwg.lang.ps: 描画パス パス再設計
 -mwg.lang.ps: 最適化 JavaScript 関数化
 -mwg.lang.ps: 最適化 比較関数
-**2011/03/04, KM,
+**2011-03-04, KM, mwg-3&color(royalblue){.0.19}
 -mwg.lang.ps: mwg.lang.ps-io
 -mwg.lang.ps: ファイル ns.ScannerF 実装
-**2011/03/01, KM,
+**2011-03-01, KM, mwg-3&color(royalblue){.0.18}
 -mwg.lang.ps: 配列の <?js __readonly__?>/<?js __packed__?> 属性について
 -mwg.lang.ps: 属性関連のオペレータの実装
 -mwg.lang.ps: exp 関数は自然対数の指数関数ではなくて、pow (x^y の関数) であったと言う事
 -mwg.lang.ps: 最適化 ExecutableArray 入れ子リテラルの初期インスタンス化
-**2011/02/28, KM,
+**2011-02-28, KM, mwg-3&color(royalblue){.0.17}
 -mwg.lang.ps: 描画パス IE/VML 文字表示位置変換
 -mwg.lang.ps: 描画パス SVG 文字表示位置変換
 -mwg.lang.ps: userdict/globaldict の修正
 -mwg.lang.ps: 三角関数の角度は degree 単位であると言う事
-**2011/02/26, KM,
+**2011-02-26, KM, mwg-3&color(royalblue){.0.16}
 -mwg.lang.ps: ファイルを分割 mwg.lang.ps.js, 2011/02/26 mwg.lang.ps-svg, 2011/02/26 mwg.lang.ps-cmd, 2011/02/26 mwg.lang.ps-geo
 -mwg.lang.ps: ns.vector2 廃止
-**2011/02/19, KM,
+**2011-02-19, KM, mwg-3&color(royalblue){.0.15}
 -mwg.lang.ps: 実装メモ
-**2011/02/15, KM,
+**2011-02-15, KM, mwg-3&color(royalblue){.0.14}
 -mwg.lang.ps: postscript 文法の本格的な調査
-**2011/02/22, KM,
+**2011-02-22, KM, mwg-3&color(royalblue){.0.13}
 -latex: Sf アクセント記号調整 (~2011/02/22)
 -latex: [bugfix] Cr アクセント記号調整
-**2011/02/10, KM,
+**2011-02-10, KM, mwg-3&color(royalblue){.0.12}
 -mwg.lang.ps: mwg.postscript.js
-**2010/11/25, KM,
+**2010-11-25, KM, mwg-3&color(royalblue){.0.11}
 -latex: \verb コマンドに対応
 -latex: latexsym.sty 追加
 -latex: 記号追加 \lor \land; 移動 \Box
-**2010/11/23, KM,
+**2010-11-23, KM, mwg-3&color(royalblue){.0.10}
 -latex: [bugfix] Environment 中での InsertText
 -latex: [bugfix] Fatal: environment 終了直後の単語が消滅
 -latex: 連分数対応
-**2010/11/22, KM,
+**2010-11-22, KM, mwg-3&color(royalblue){.0.9}
 -latex: [bugfix] GetArgumentRaw
 -latex.\left..\right: 拡張
 -latex: mwg.latex.css tex:fbb 削除
 -latex: [bugfix] デフォルト引数の raw 読み取り (GetOptionalArgumentRaw) が動作しない
-**2010/11/21, KM,
+**2010-11-21, KM, mwg-3&color(royalblue){.0.8}
 -latex: アクセント記号等
 -latex: \widehat
 -latex: \vphantom
 -latex: \newcommand マクロ動作の変更
 -latex: \stackrel 系コマンド再定義
-**2010/11/11, KM,
+**2010-11-11, KM, mwg-3&color(royalblue){.0.7}
 -latex: [bugfix] Opera でエラーメッセージが表示されない。
 -latex/array2.ctx: [bugfix] 過剰列だと、過剰列の警告を出す前に落ちる。
 -latex/array2.ctx: [bugfix] 二重 hline の間隔がブラウザによって異なる
 -latex/array2.ctx: [bugfix] 古いタグ &lt;col align /&gt; を使っていた。IE でしか対応していない。HTML5 でも削除予定。
-**2010/07/11, KM,
+**2010-07-11, KM, mwg-3&color(royalblue){.0.6}
 -latex: [bugfix] Opera -o-background-size から background-size へ変更
-**2009/10/31, KM,
+**2009-10-31, KM, mwg-3&color(royalblue){.0.5}
 -latex: Environment も ctxc で処理できる様に
-**2009/10/30, KM,
+**2009-10-30, KM, mwg-3&color(royalblue){.0.4}
 -latex: documentclass.ctx は完全に移行
-**2009/10/26, KM,
+**2009-10-26, KM, mwg-3&color(royalblue){.0.3}
 -latex: ns.Environment.CreateDynamicEnvironment の実装
-**2009/10/25, KM,
+**2009-10-25, KM, mwg-3&color(royalblue){.0.2}
 -latex: CSS クラスの tex:array の廃止
 -latex: Opera に対応
-**2009/10/07, KM,
+**2009-10-07, KM, mwg-3&color(royalblue){.0.1}
 -前のデスクトップから移動
-**≦ 2009/08/08, KM, mwg v3
+**≦ 2009-08-08, KM, mwg-3&color(royalblue){.0.0}
 -書き直し。v3 に移行。
-**2009/07/28, KM,
+**2009-07-28, KM,
 -latex/latex.cor.js: 削除 scanner.getMathText
 -latex/latex.cor.js: 追加 scanner.is(type,word)
-**2009/07/25, KM,
+**2009-07-25, KM,
 -latex: ブラウザ別 CSS の統一的管理
 -latex: [bugfix] subsection 等の中身の HTML が表示されてしまう
 -latex: InsertText の挿入位置
-**2009/07/16, KM,
+**2009-07-16, KM,
 -latex: \hbar が数式中で斜め字体になっていなかったので修正
-**2009/07/13, KM,
+**2009-07-13, KM,
 -latex: 計画14. Command 再考
 -latex: \begin{cmdName} - \end{cmdName} に対応
 -latex: latex.kick.js で mwg.onlatexkickready を event として実行する様にした。
-**2009/01/07, KM,
+**2009-01-07, KM,
 -latex: 問題5. [bugfix] compatMode の違いで表示が崩れてしまう事
-**2008/10/21, KM,
+**2008-10-21, KM,
 -latex.\int, \oint: \int \oint に対する上付・下付 (両方付けた時)
-**2008/10/20, KM,
+**2008-10-20, KM,
 -latex: CSS ファイルの読込に関して, 初期化時に自分で css をロード
 -latex.\left \right: 上付・下付文字
 -latex.\varギリシャ大文字: 対応
-**2008/08/01, KM,
+**2008-08-01, KM,
 -latex.\newcommand: [bugfix] 二重に newcommand を使用すると、TeX の儘出力されてしまう。
-**2008/07/25, KM,
+**2008-07-25, KM,
 -latex: alpha-mode (Scanner アルファベットをタグで囲む設定) に関する考察
 -latex.\newcommand: [bugfix]
-**2008/07/24, KM,
+**2008-07-24, KM,
 -latex: [bugfix] GetArgument*
-**2008/07/20, KM,
+**2008-07-20, KM,
 -latex.\sqrt: 調整
-**≦ 2008/05/11, KM, mwg v2
+**≦ 2008-05-11, KM, mwg-v2
 -書き直し。v2 に移行。
-**2008/04/20, KM,
+**2008-04-20, KM,
 -latex.\sqrt: 調整
-**2008/04/19, KM,
+**2008-04-19, KM,
 -latex.\overbrace, \underbrace: 調整
-**2008/04/03, KM,
+**2008-04-03, KM,
 -latex/latex.cor.js: 作成。mwg.LaTeX2XHTML v3
-**≦ 2006/08/21, KM, mwg v1
+**≦ 2006-08-21, KM, mwg-v1
 -余り覚えていないが JavaScript のデバグ用ライブラリとしてスタート
 -IE 上でオブジェクトのツリーを表示する為のコード
 -当初は mwg.base.js と mwg.debug.js
-**2006/08/26, KM, 
+**2006-08-26, KM,
 -latex: この時迄に footnote や picture 環境など、現在はない変な機能まで実装していた筈。
-**～ 2006/08/08, KM, 
+**～ 2006-08-08, KM,
 -latex: counter
-**～ 2006/08/04, KM, 
+**～ 2006-08-04, KM,
 -latex: 一通りの機能は完了
-**2006/07/27, KM, 
+**2006-07-27, KM,
 -latex: 書き始め
 -latex: 積分記号
-**2006/04/15, KM,
+**2006-04-15, KM,
 LaTeX の文法について調査 (LaTeX が決してマイナーな言語ではないと知って)
 -LaTeX2e の chm を分解して一部翻訳
 -2006/05/20: chm の翻訳を進める
 -2006/06/02: 図書館で本を借りてコマンドを調べる
 -2006/06/02-04, 12, 15-18: chm の翻訳を進める
 -2006/07/19-20: chm の翻訳を進める
-**2005/07/26, KM, sushiki2
+**2005-07-26, KM, sushiki2
 -sushiki2: 文法の変更
  -sushiki2:上付, 下付: ^c, _c, ^( superscript ), _(superscript)
  -sushiki2:伸縮括弧: 全角の括弧で表現, （content）, ｛content｝, ［content］, 〔content〕
@@ -922,20 +927,20 @@ LaTeX の文法について調査 (LaTeX が決してマイナーな言語では
 -sushiki2: 積分記号: I[], I[sub], I[sub;sup]
 -sushiki2: 表・行列: 例 {{a_(11);a_(12);a_(13)}{a_(21);a_(22);a_(23)}{a_(31);a_(32);a_(33)}}
 -sushiki2: 段組 (stackrel 的な): Cl{expr1;expr2;...}
-**2005/04/30, KM, sushiki2
+**2005-04-30, KM, sushiki2
 -sushiki.htc から移行
-**2005/03/14, KM, sushiki.htc
+**2005-03-14, KM, sushiki.htc
 -sushiki.htc: 絶対値, (| content |)
 -sushiki.htc: L 型階乗, (L L)
 -sushiki.htc: 上付, (^ content ^)
 -sushiki.htc: 下付, { content }
 -sushiki.htc: 変換しない (\verb の様な物), #[ content ]#
-**2004/12/19, KM, sushiki.htc
+**2004-12-19, KM, sushiki.htc
 -sushiki.htc: 伸縮括弧に大括弧を追加 #2( content )2#
-**2004/12/04, KM, sushiki.htc
+**2004-12-04, KM, sushiki.htc
 -sushiki.htc: 伸縮する括弧 (LaTeX の \left-\right に対応)
  -#0( content )0#, #1( content )1#
  -G[ content ]G, C[ content ]C, F[ content ]F
-**2004/11/14, KM, sushiki.htc
+**2004-11-14, KM, sushiki.htc
 -sushiki.htc: 根号を表示する機能, R{ content }
 -sushiki.htc: 分数を表示する機能, [ numerator / denominator ]
