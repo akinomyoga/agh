@@ -4,6 +4,7 @@ all:
 .PHONY: all dist
 
 dist_excludes= \
+ --exclude=./$(AGHDIR)/.git \
  --exclude=./$(AGHDIR)/dist \
  --exclude=./$(AGHDIR)/src/addon/aghtex4ie/mwgtex4ie/Debug/* \
  --exclude=./$(AGHDIR)/src/addon/aghtex4ie/mwgtex4ie/Release/* \
