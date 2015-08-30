@@ -1,0 +1,74 @@
+/* mode:css */
+
+div.aghtex-texview-content{
+  margin:1ex;
+  text-align:justify;
+  font-family:aghtex_roman,aghtex_mincho,serif;
+}
+@media screen{
+  body{
+    background-color:#eee;
+  }
+  div.aghtex-texview-content{
+    padding:2em;max-width:70em;
+    border-bottom:1px solid silver;border-right:1px solid silver;
+    color:black;background-color:white;
+  }
+}
+
+/*---------------------------------------------------------------------------*/
+/* Stylesheet for menu */
+
+@media screen{
+  body{
+    padding-left:200px;
+  }
+  div.aghtex-viewtex-menu{
+    display:block;
+    position:fixed;left:0;top:0;width:200px;height:90%;
+    overflow-x:hidden;overflow-y:auto;
+  }
+}
+@media print{
+  div.aghtex-viewtex-menu{
+    display:none;
+  }
+}
+
+a.aghtex-viewtex-menu-button{
+  display:block;margin:3px;padding:1ex;
+  color:white;background-color:#444;
+  text-align:center;font-weight:bold;
+  font-family:'Times Roman','Times New Roman',serif;
+  cursor:pointer;-webkit-user-select:none;-moz-user-select:none;
+}
+a.aghtex-viewtex-menu-button:hover{
+  background-color:#666;}
+a.aghtex-viewtex-on{
+  border-left:10px solid #caa;border-right:10px solid #caa;}
+a.aghtex-viewtex-off{
+  border-left:10px solid #888;border-right:10px solid #888;}
+div.aghtex-viewtex-menu-download{
+  text-align:center;padding:1ex;}
+
+span.agh-color-tex-command{color:purple;}
+span.agh-color-tex-comment{color:gray;}
+span.agh-color-tex-control{color:red;}
+
+pre.aghtex-viewtex-source{
+  background-color:white;max-width:70em;}
+
+div.aghtex-viewtex-toc{
+  font-family:'Times Roman','Times New Roman',serif;
+  margin:-3px 3px 3px;border:1px solid silver;
+  background-color:white;padding:1ex;}
+div.aghtex-viewtex-toc-contents{font-weight:bold;text-align:center;margin:1ex;}
+div.aghtex-viewtex-toc>a{display:block;color:darkred;}
+div.aghtex-viewtex-toc>a:hover{color:gray;}
+div.aghtex-viewtex-toc>a.aghtex-viewtex-toc-part{font-weight:bold;}
+div.aghtex-viewtex-toc>a.aghtex-viewtex-toc-chapter{font-weight:bold;}
+div.aghtex-viewtex-toc>a.aghtex-viewtex-toc-section{margin-left:1ex;}
+div.aghtex-viewtex-toc>a.aghtex-viewtex-toc-subsection{margin-left:2ex;}
+div.aghtex-viewtex-toc>a.aghtex-viewtex-toc-subsubsection{margin-left:3ex;}
+
+/*---------------------------------------------------------------------------*/

@@ -1,0 +1,2 @@
+content aghtex4firefox.addon.agh chrome/content/ contentaccessible=yes
+overlay chrome://browser/content/browser.xul chrome://aghtex4firefox.addon.agh/content/browserOverlay.xul

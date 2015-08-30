@@ -1,0 +1,75 @@
+// mwgtex4ie.idl : mwgtex4ie の IDL ソース
+//
+
+// このファイルは、タイプ ライブラリ (mwgtex4ie.tlb) およびマーシャリング コードを
+// 作成するために MIDL ツールによって処理されます。
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(069073F0-741B-4399-871D-D7D278FCDD24),
+	dual,
+	nonextensible,
+	helpstring("IMwgtex4IeBho interface"),
+	pointer_default(unique)
+]
+interface IMwgtex4IeBho : IDispatch{};
+
+[
+	object,
+	uuid(0B7933E3-EDD9-4293-8B9D-1FDA6EDF04A0),
+	dual,
+	nonextensible,
+	helpstring("IHttpsProtocolHook interface"),
+	pointer_default(unique)
+]
+interface IHttpsProtocolHook : IDispatch{};
+
+[
+	object,
+	uuid(7543FADC-2527-4b5d-B7BC-D3894984AEC6),
+	dual,
+	nonextensible,
+	helpstring("IHttpsProtocolHookFactory interface"),
+	pointer_default(unique)
+]
+interface IHttpsProtocolHookFactory : IDispatch{};
+
+[
+	uuid(B7644CDB-1973-40B5-9216-9406F0F93A84),
+	version(1.0),
+	helpstring("aghtex4ie 1.0 タイプ ライブラリ")
+]
+library mwgtex4ieLib
+{
+	importlib("stdole2.tlb");
+
+	[
+		uuid(95E7C414-8D83-42A9-B243-9366FD6CFA67),
+		helpstring("agh.addon.aghtex4ie/bho")
+	]
+	coclass Mwgtex4IeBho
+	{
+		[default] interface IMwgtex4IeBho;
+	};
+
+	[
+		uuid(C98B7CCA-A4C0-4a9a-AF52-5520897B6CAE),
+		helpstring("agh.addon.aghtex4ie/https")
+	]
+	coclass HttpsProtocolHook
+	{
+		[default] interface IHttpsProtocolHook;
+	};
+
+	[
+		uuid(B9932C9A-9379-4359-A609-8EEA4EE0D695),
+		helpstring("agh.addon.aghtex4ie/httpsfactory")
+	]
+	coclass HttpsProtocolHookFactory
+	{
+		[default] interface IHttpsProtocolHookFactory;
+	};
+};

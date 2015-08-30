@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <meta http-equiv="Content-Script-Type" content="text/javascript"/>
+  <title>agh.addon.aghtex4thunderbird/preview</title>
+  <script type="application/x-javascript" charset="utf-8" src="agh/agh.js"></script>
+  <script type="application/x-javascript" charset="utf-8" src="agh/agh.text.js"></script>
+  <script type="application/x-javascript" charset="utf-8" src="agh/agh.lang.tex.js"></script>
+  <script type="application/x-javascript" charset="utf-8" src="aghtex.js"></script>
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="aghtex.css" />
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="aghtex4thunderbird.css" />
+  <style type="text/css">
+  body{border-left:1px solid gray;height:100%;padding:0px;margin:0px;}
+  #status{position:fixed;bottom:0px;margin:0px;background-color:gray;color:white;width:100%;}
+  #preview_area{padding:1ex;padding-bottom:4em;}
+  </style>
+</head>
+<body style="padding:1px;margin:0;">
+<div id="preview_area"></div>
+<p id="status">agh.addon.aghtex4thunderbird/preview</p>
+<script type="text/javascript">
+  document.body.style.backgroundColor="#ffe";
+  document.getElementById("status").addEventListener("click",function(){
+    alert("About agh.addon.aghtex4thunderbird\n"
+    +"  agh-urlbase = "+agh.scripts.MWG_URLBASE+";\n"
+    +"  user-agent  = "+window.navigator.userAgent.toString()+";\n"
+    +"  aghtex-mode = "+agh.LaTeX2XHTML.compatMode+";");
+  },false);
+</script>
+</body>
+</html>

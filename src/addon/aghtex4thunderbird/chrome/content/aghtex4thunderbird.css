@@ -1,0 +1,34 @@
+/* aghtex4thunderbird stylesheet -*- mode:css;coding:utf-8 -*- */
+span.aghtex-math,
+div.aghtex-para,
+div.aghtex-eqnarray{white-space:normal;font-size:120%;}
+
+/*
+p.aghtex-equation{text-align:center;margin-top:0.5ex;margin-bottom:0.5ex;}
+span.aghtex-math{font-size:150%;}
+div.aghtex-para{font-size:120%;}
+div.aghtex-eqnarray{font-size:150%;}
+
+span.aghtex-button,
+span.aghtex-preview-button,
+span.aghtex-switch-button{
+  background-color:gray;
+  color:white;
+  padding:2px;
+  cursor:pointer;
+  text-decoration:underline;
+  font-weight:bold;
+  font-size:x-small;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+}
+
+*.aghtex-switch-on  *.aghtex-switch-src{display:none!important;}
+*.aghtex-switch-off *.aghtex-switch-tex{display:none!important;}
+span.aghtex-switch-button{
+  position:absolute;
+  right:3px;
+  top:3px;
+}
+*.aghtex-switch-off span.aghtex-switch-button{color:silver;}
+*/

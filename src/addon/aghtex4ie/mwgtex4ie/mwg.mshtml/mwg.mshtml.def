@@ -1,0 +1,75 @@
+// -*- mode:C++;coding:shift_jis -*-
+#pragma%x begin_class.r/__className__/HTMLDocument/
+#pragma%  x declare_interface0.r/__no__/2/.r/__interface__/IHTMLDocument2/
+#pragma%  x declare_interface .r/__no__/1/.r/__interface__/IHTMLDocument/ 
+#pragma%  x declare_interface .r/__no__/3/.r/__interface__/IHTMLDocument3/
+#pragma%  x declare_interface .r/__no__/4/.r/__interface__/IHTMLDocument4/
+#pragma%  x declare_interface .r/__no__/5/.r/__interface__/IHTMLDocument5/
+#pragma%  [returnType="HTMLElementCollection",returnInterface="IHTMLElementCollection"]
+#pragma%  x declare_methodA.r/__no__/3/.r/__memberName__/getElementsByTagName/.r/__params__/BSTR tagName/.r/__args__/tagName/
+#pragma%  [returnType="HTMLElement",returnInterface="IHTMLElement"]
+#pragma%  x declare_methodA.r/__no__/2/.r/__memberName__/createElement/.r/__params__/BSTR tagName/.r/__args__/tagName/
+#pragma%  [returnType="HTMLElement",returnInterface="IHTMLElement"]
+#pragma%  x declare_rpropertyA.r/__no__/2/.r/__memberName__/body/
+#pragma%  [returnType="HTMLWindow",returnInterface="IHTMLWindow2"]
+#pragma%  x declare_rpropertyA.r/__no__/2/.r/__memberName__/parentWindow/
+#pragma%  [returnType="HTMLElementCollection",returnInterface="IHTMLElementCollection"]
+#pragma%  x declare_rpropertyA.r/__no__/2/.r/__memberName__/images/
+#pragma%x end_class
+
+#pragma%x begin_class.r/__className__/HTMLWindow/
+#pragma%  x declare_interface0.r/__no__/2/.r/__interface__/IHTMLWindow2/
+#pragma%  x declare_interface .r/__no__/3/.r/__interface__/IHTMLWindow3/
+#pragma%  x declare_interface .r/__no__/4/.r/__interface__/IHTMLWindow4/
+#pragma%  x declare_interface .r/__no__/5/.r/__interface__/IHTMLWindow5/
+#pragma%  [returnType="CComVariant"]
+#pragma%  x declare_methodB.r/__no__/2/.r/__memberName__/execScript/.r/__params__/BSTR code,BSTR lang/.r/__args__/code,lang/
+#pragma%x end_class
+
+#pragma%x begin_class.r/__className__/HTMLStyle/
+#pragma%  x declare_interface0.r/__no__/1/.r/__interface__/IHTMLStyle/
+#pragma%  x declare_interface .r/__no__/2/.r/__interface__/IHTMLStyle2/
+#pragma%  x declare_interface .r/__no__/3/.r/__interface__/IHTMLStyle3/
+#pragma%  x declare_interface .r/__no__/4/.r/__interface__/IHTMLStyle4/
+#pragma%  x declare_interface .r/__no__/5/.r/__interface__/IHTMLStyle5/
+#pragma%  [returnType="BSTR"]
+#pragma%  x declare_apropertyB.r/__no__/1/.r/__memberName__/display/
+#pragma%  [returnType="VARIANT"]
+#pragma%  x declare_apropertyB.r/__no__/1/.r/__memberName__/backgroundColor/
+#pragma%x end_class
+
+#pragma%x begin_class.r/__className__/HTMLElement/
+#pragma%  x declare_interface0.r/__no__/1/.r/__interface__/IHTMLElement/
+#pragma%  x declare_interface .r/__no__/2/.r/__interface__/IHTMLElement2/
+#pragma%  x declare_interface .r/__no__/3/.r/__interface__/IHTMLElement3/
+#pragma%  x declare_interface .r/__no__/4/.r/__interface__/IHTMLElement4/
+#pragma%  [returnType="HTMLStyle",returnInterface="IHTMLStyle"]
+#pragma%  x declare_rpropertyA.r/__no__/1/.r/__memberName__/style/
+#pragma%  [returnType="HTMLElementCollection",returnInterface="IHTMLElementCollection"]
+#pragma%  x declare_methodA   .r/__no__/2/.r/__memberName__/getElementsByTagName/.r/__params__/BSTR tagName/.r/__args__/tagName/
+#pragma%  [returnType="VARIANT"]
+#pragma%  x declare_methodB   .r/__no__/1/.r/__memberName__/getAttribute/.r/__params__/BSTR attributeName,LONG lFlags=1/.r/__args__/attributeName,lFlags/
+#pragma%  [returnType="void"]
+#pragma%  x declare_methodC   .r/__no__/1/.r/__memberName__/setAttribute/.r/__params__/BSTR attributeName,VARIANT attributeValue,LONG lFlags=1/.r/__args__/attributeName,attributeValue,lFlags/
+#pragma%x end_class
+
+#pragma%x begin_class.r/__className__/HTMLElementCollection/
+#pragma%  x declare_interface0.r/__no__/1/.r/__interface__/IHTMLElementCollection/
+#pragma%  [returnType="long"]
+#pragma%  x declare_rpropertyB.r/__no__/1/.r/__memberName__/length/
+#pragma%  [returnType="CComPtr<IDispatch>"]
+#pragma%  x declare_methodB   .r/__no__/1/.r/__memberName__/item/.r/__params__/CComVariant key,CComVariant arg2/.r/__args__/key,arg2/
+#pragma%  m declare_content (
+  public:
+    HTMLElement operator[](int index){
+      if(index<0||this->length<=index)
+        return HTMLElement(CComPtr<IHTMLElement>());
+      
+      CComPtr<IDispatch> dispElem=this->item(CComVariant(index),CComVariant());
+      if(!dispElem)
+        return HTMLElement(CComPtr<IHTMLElement>());
+      
+      return HTMLElement(CComQIPtr<IHTMLElement>(dispElem));
+    }
+#pragma%  )
+#pragma%x end_class

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+  <Description about="urn:mozilla:install-manifest">
+    <em:id>agh.addon.aghtex4firefox@kch.murase</em:id>
+    <em:name>agh.addon.aghtex4firefox</em:name>
+    <em:version>%VERSION%</em:version>
+    <em:creator>Koichi Murase</em:creator>
+    <em:homepageURL>http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/addon/</em:homepageURL>
+    <!--
+    <em:updateURL>http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/addon/agh.addon.aghtex4firefox.xml</em:updateURL>
+    -->
+    <em:iconURL>chrome://aghtex4firefox.addon.agh/content/agh.icon.agh_48x48.png</em:iconURL>
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+        <em:minVersion>1.5</em:minVersion>
+        <em:maxVersion>17.0.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+  </Description>
+</RDF>

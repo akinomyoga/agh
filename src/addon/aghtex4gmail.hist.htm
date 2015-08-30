@@ -1,0 +1,1698 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="ja-JP" xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP" xmlns:tex="http://myoga.web.fc2.com/latex/">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Script-Type" content="text/stylesheet" />
+  <meta name="author" content="Koichi Murase" />
+  <title>mwg3.addon.mwgtex 開発記録</title>
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://padparadscha/agh/mwg.std.css" />
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://padparadscha/agh/prog.std.css" />
+  <meta name="agh-fly-type" content="text.color" />
+  <script type="text/javascript" charset="utf-8" src="http://padparadscha/agh/agh.fly.js"></script>
+</head>
+<body>
+<div class="linkbar2" id="pagetop">
+  <span class="left">-- ≪</span>
+  <span class="right">≫ --</span>
+  <span class="center">mwg3.addon.mwgtex</span>
+</div>
+<hr style="height:1px;" />
+<h1>mwg3.addon.mwgtex 開発記録</h1>
+<!--########################################################################-->
+<h2>メールで数式?</h2>
+<!--========================================================================-->
+<p>というか電子メールって、本当の紙の手紙よりも自由度が格段に制限されている気がする。
+絵を埋め込む事ができても自由に配置する事は難しいし。
+テキスト形式で編集している時には、そもそも画像を埋め込んだり一部を強調したりする事すらできない。
+Web の自由度比べたら天と地の差である。
+(HTML メールとは何だったのか?
+字体を変えたり画像を埋め込んだりできるだけのテキストメール?
+メーラはもっとまともなエディタを用意しても良いのではないかと思う。)
+</p>
+<h4>既存の物</h4>
+<ul>
+<li><a href="https://addons.mozilla.org/en-US/thunderbird/addon/equations/">Equations :: Add-ons for Thunderbird</a>
+  <p>これはもうメンテナンスされていない。最新版の Thunderbird には対応していない。</p>
+</li>
+<li><a href="https://addons.mozilla.org/ja/thunderbird/addon/latex-it/">LaTeX It! :: Add-ons for Thunderbird</a>
+  <p>これは最新版の Thunderbird でも動く…筈なのだが、
+  実際に入れてみると出て来るはずの LaTeX It! ボタンが出てこない…どうしてだろう。
+  </p>
+</li>
+</ul>
+<!--========================================================================-->
+<h3>数式表示</h3>
+<p>アイディアは基本的にテキストメールだけれども、
+表示する時にテキストに埋め込まれた LaTeX ソースの部分を数式として表示するという物。
+こうすれば、以下の様な利点がある。でも良く考えたら、問題点も存在する。
+</p>
+
+<ul>
+<li>○ メールのサイズが大きくならない(無駄に添付ファイルを付けなくても済む)
+  <p>これを解決する方法の一つとして、
+  自動的に数式を画像に変換するサーバを利用するという方法がある。
+  この方法を採用したのが Equations である。
+  然し、これは使用しているサーバがサービスを終了してしまうとメールを見られなくなってしまう。
+  (まあ、ソースが表示されるのであれば問題ないかも知れない…が
+  多分 img タグの場合マウスを翳さないと (alt に設定した) ソースは見られない。)
+  </p>
+</li>
+<li>○ テキストでしか表示出来ない環境でも OK
+  <p>LaTeX ソースがそのまま表示されるだけだから。
+  メールを編集する際もテキストとして編集するだけでよいから、
+  モバイル端末からでも数式 (というか LaTeX ソース) を埋め込んだメールを出す事ができる。
+  そもそも、「数式を埋め込むというよりは LaTeX ソースでメールを書く」という事だから、
+  普段テキストメールを使うという人も抵抗なく使えると思う。
+  (既に、LaTeX ソースっぽい文法でメールを書いている人は多いと思う。)
+  </p>
+</li>
+<li>○ メールに対して返信する人が、前の人の書いた数式に手を加えて返信する事ができる
+  <p>テキストメールとして LaTeX ソースを記述するのだから可能なのは当たり前である。
+  もし画像として埋め込んでしまうと少し手を加えようとしても
+  初めから全部ソースを書かなければならなくなってしまう。
+  メタ情報として LaTeX ソースを画像に付与 (例えば alt 属性などに) する事もできるが、
+  それだとそれに対応したメール編集ソフトを使わなければならない様な気がする。
+  </p>
+</li>
+<li>× テキストメールとして編集されるので、LaTeX ソースに間違いがあると気付かない。
+  <p>編集の際にプレビュー機能が必要である。
+  他のアドオンの場合には、ボタンを押すと画像に置換されるので、
+  画像の内容が辺になっていればその場で気付く事ができる。
+  それにプレビューがあった方が編集しやすい。
+  </p>
+  <p>→ Thunderbird の場合、外部エディタで編集する事ができるので、
+  プレビュー機能付きの LaTeX 専用のエディタを登録して、
+  それで編集する様にすれば良いだけかも知れない。
+  </p>
+</li>
+<li>△ 実現方法? 環境毎に用意しなければならない可能性。
+  <ul>
+  <li>Thunderbird の場合はアドオンとして、表示を変えるようにすることができる。</li>
+  <li>GMail や hotmail 等の webmail を使用する際は GM スクリプトなどのユーザスクリプトを提供する事で対応出来る。</li>
+  <li>Outlook は設定でメールに埋め込まれたスクリプトを可能にする事ができる様なので、
+    メールにスクリプトの呼出を埋め込んでしまえば良い? (本当にできるのか知らないが)
+  </li>
+  </ul>
+</li>
+</ul>
+<!--########################################################################-->
+<h2>mwg3.addon.mwgtex4chrome</h2>
+<p>Chrome の Extension を作るという事</p>
+<ul>
+<li><a href="http://dev.screw-axis.com/doc/chrome_extensions/">Chrome Extensions API リファレンス</a>
+  <ul>
+  <li><a href="http://dev.screw-axis.com/doc/chrome_extensions/guide/content_script/">コンテント・スクリプト | Chrome Extensions API リファレンス</a></li>
+  <li><a href="http://dev.screw-axis.com/doc/chrome_extensions/guide/autoupdating/">自動更新 | Chrome Extensions API リファレンス</a></li>
+  </ul>
+</li>
+<li>Microformats
+  <p>これは、HTML に拡張的な意味論を持たせる仕様の集合。でも、class 属性ベースみたい?なので、
+  テキストベースのメールや掲示板などの書込に適用する事はできないのではないかと思う。
+  </p>
+  <ul>
+  <li><a href="http://microformats.org/">Microformats</a></li>
+  <li><a href="http://microformats.org/wiki/ja">Microformats Wikiにようこそ！ &middot; Microformats Wiki</a></li>
+  <li><a href="http://microformats.org/wiki/hcard-ja">hCard 1.0 &middot; Microformats Wiki</a></li>
+  </ul>
+</li>
+<li><a href="http://gihyo.jp/dev/serial/01/chrome-extensions/0001">続・先取り！ Google Chrome Extensions：第1回　Chrome ExtensionsのAPI#1｜gihyo.jp … 技術評論社</a></li>
+<li><a href="http://gihyo.jp/dev/serial/01/chrome-extensions/0002">続・先取り！ Google Chrome Extensions：第2回　User ScriptsとContent Scripts｜gihyo.jp … 技術評論社</a></li>
+<li><a href="http://chrome.half-moon.org/45.html">Greasemonkey - Google Chrome まとめWiki</a></li>
+<li><a href="http://d.hatena.ne.jp/os0x/20090522/chrome2">Google Chrome 2.0 で使える(自作の) User Scripts - 0xFF</a></li>
+<li><a href="http://d.hatena.ne.jp/os0x/20090917/chrome3">Google Chrome 3.0 で使える自作のUser Scripts - 0xFF</a></li>
+<li><a href=""></a></li>
+</ul>
+
+<h3>.tex ファイルを直接表示する事 []</h3>
+<p>実装自体は簡単にできたが、mime-type が text/plain でないと、タブで表示する代わりにダウンロードされてしまって駄目。
+ダウンロードする代わりに別の動作をする方法について調べてみたら、以下の物を見つけた。
+(今迄ずっと探していたがようやく見つけた。今迄は検索のキーワードが悪かったのだろうか。)
+</p>
+<ul>
+<li><a href="https://www.google.co.jp/search?q=chrome+extension+open+file+with+browser&amp;oq=chrome+extension+open+file+with+browser&amp;sugexp=chrome,mod=5&amp;sourceid=chrome&amp;ie=UTF-8#hl=ja&amp;safe=off&amp;tbo=d&amp;sclient=psy-ab&amp;q=chrome+extension+open+file+in+a+tab+instead+of+downloading&amp;oq=chrome+extension+open+file+in+a+tab+instead+of+downloading&amp;gs_l=serp.3...17020.21244.2.21460.23.23.0.0.0.0.97.1778.23.23.0...0.0...1c.1.uKk00qm58_w&amp;pbx=1&amp;bav=on.2,or.r_gc.r_pw.r_cp.r_qf.&amp;bvm=bv.1355534169,d.dGY&amp;fp=6e8a0b6e73593bae&amp;bpcl=40096503&amp;biw=1278&amp;bih=866">chrome extension open file in a tab instead of downloading - Google 検索</a></li>
+<li><a href="http://stackoverflow.com/questions/7694217/override-downloading-a-file-type-with-chrome-extensions">Override downloading a file type with Chrome Extensions - Stack Overflow</a></li>
+<li><a href="https://github.com/rgrp/chrome-csv-viewer">rgrp/chrome-csv-viewer ・ GitHub</a>
+  <p>ここで行っているのは、全てのページの全ての csv へのリンク要素 (a) の onclick イベントにハンドラを設定する方法である。
+  これをやっていいんだったらそもそも悩む必要もない…。唯単にリンク先などを書き換えれば良いだけである…。
+  </p>
+</li>
+<li><a href="https://developer.chrome.com/extensions/webRequest.html">chrome.webRequest - Google Chrome</a>
+  Google Chrome WebRequest API で何とかできそう?
+  <ul>
+  <li>というか、<a href="https://developer.chrome.com/extensions/webRequest.html#event-onHeadersReceived">onHeadersReceived event</a> の中で
+    Header の Content-Type を text/plain に変更してしまえば OK?
+<pre class="agh-prog-js">
+chrome.webRequest.onHeadersReceived.addListener(function(details){
+  var h=details.responseHeaders;
+  for(var i=0;i&lt;h.length;i++){
+    if(h[i].name.toLower()!='content-type')continue;
+
+    h[i].value=h[i].value.replace(/^\s*[^\s\;]*/,"text/plain");
+    return;
+  }
+
+  h.push({name:"Content-Type",value:"text/plain"});
+  return {responseHeaders:h};
+},{
+  urls:["*://*/*.tex"]
+},[
+  "responseHeaders"
+]);
+</pre>
+  </li>
+  </ul>
+</li>
+<li><a href="http://mzsm.me/2012/02/10/chrome17-webrequest-api/">webRequest APIをざっくり理解する。(あるいはChrome拡張の作り方) | mzsm.me</a></li>
+</ul>
+
+<h3>background page で TeX 変換を実行する事</h3>
+<p>現在は各ページで latex.*.js を読み込んで初期化し、その後に変換をして表示している。
+然し latex.*.js は長く初期化に時間が掛かるので、background page にだけ読み込む様にしたい。
+其処で、background page で初期化を実行して、その後は変換は全て background page にある関数を使用する様にしたい。
+</p>
+<p>→ と思って書き換えてみたら、content script からは background page の関数を呼び出す事はできない様だ。
+これはセキュリティ上の問題もさる事ながら、抑も別プロセスで動いているという事もある様だ。
+勝手に引数や戻り値をマーシャリングして渡してくれるという事はない様である。
+正しく background page と content script の間でやりとりを実行する為には message passing の仕組みを利用する必要がある様だ。
+</p>
+<ul>
+<li><a href="http://www.muratayusuke.com/2010/10/31/chrome_extensioncontent-script_background-page/">Chrome拡張でContent ScriptとBackground Pageのメッセージのやり取りをする | 村田佑介.com</a>
+  <ul><li>分かりにくい</li></ul>
+</li>
+<li><a href="http://d.hatena.ne.jp/sDaigo/20100107/1262828127">Chrome Extensions - Content Script - Playground of Mine</a></li>
+<li><a href="http://gihyo.jp/dev/feature/01/chromeExt/0003?page=2">第3回　Chrome Extensionsの作り方#2：先取り！ Google Chrome Extensions｜gihyo.jp … 技術評論社</a></li>
+<li><a href="http://developer.chrome.com/extensions/extension.html">chrome.extension - Google Chrome</a>
+  <ul>
+  <li>chrome.self.onConnect は chrome.extension.onConnect に名前が変わった模様?</li>
+  </ul>
+</li>
+</ul>
+<p>その他留意点</p>
+<ul>
+<li>DOM が構築された直後 (onload 前) に Content Scripts が実行されて欲しい時には、manifest.json の content_scripts 以下に、"run_at": "document_end" を追加する。</li>
+<li>manifest.json/content_scripts/css で latex.sf.css を読み込ませるとフォントの読込に失敗する様なので、手で直接 head に入れる事にする。</li>
+</ul>
+
+<h3>ローカルのファイルの場合、自動更新する事</h3>
+<p>といっても頻繁に XMLHttpRequest でダウンロードしまくっていると時間が掛かって仕方がない。
+なので、ファイルシステムに何とかアクセスして更新時刻を取得しようとしたが…。
+先ず HTML 5 File API ならばファイルの file.lastModifiedDate プロパティで更新日時を取得できる様だ。
+しかし、HTML 5 File API を使うには input 要素でディレクトリをユーザに指定して貰わなければならない。
+(そもそも HTML 5 File API は普通の javascript から実行できるので、セキュリティ上そんなに自由な事はできないのは当然だ。)
+或いは Google Chrome の FileSystem API を使えば自由にアクセスできるのではないかと思ったが、
+FileSystem API はどうやら Extension 専用のストレージ領域を使えると言うだけで、
+一般のファイルにアクセスできる様な物ではない様だ。
+</p>
+<p>そうするとうまく分からないが If-Modified-Since ヘッダを付けて XMLHttpRequest をして見るしかないだろうか。
+XMLHttpRequest をローカルのファイルに対して実行した時にどの様に動作するのかよく分からないので、
+動作について色々実験をしながら調べていくしかない。面倒だ。
+因みに XMLHttpRequest と If-Modified-Since で検索してみると色々な人が試している様子である。
+</p>
+<ul>
+<li><a href="http://www.semblog.org/msano/archives/000386.html">msanolog: [Ajax tips] XMLHttpRequest と If-Modified-Since</a></li>
+</ul>
+<p>実際に file:/// の内容に対して XMLHttpRequest を実行してみた。
+先ず responseHeaders には何も設定されていない。
+ローカルなファイルに対しても、適当に HTTP Headers を追加してくれるという訳ではない様だ。
+また If-Modified-Since の指定も唯無視されているだけの様である。
+(そもそも Headers に Last-Modified がないのだからそれが自然な気がする。)
+そして、変更されていようが変更されて無かろうが responseText にはデータが入っている。
+従って、変更されたかどうかを確認する為には responseText を、
+直前の変換で用いた物と直接比較するしかない様である…。
+</p>
+
+
+<!--########################################################################-->
+<h2>mwg3.addon.mwgtex4firefox</h2>
+<ul>
+<li><a href="https://arantius.com/misc/greasemonkey/script-compiler.php">User Script Compiler</a></li>
+<li><a href="https://developer.mozilla.org/ja/Code_snippets/Tabbed_browser">タブブラウザ用コード - MDN</a></li>
+<li><a href="https://developer.mozilla.org/En/Listening_to_events_on_all_tabs">Listening to events on all tabs - MDN</a></li>
+<li><a href="http://dev.ariel-networks.com/articles/workshop/firefox-extension-development/">Firefox拡張機能(extension)の作り方 &mdash; ありえるえりあ</a></li>
+<li><a href=""></a></li>
+<li><a href=""></a></li>
+</ul>
+
+<p>Thunderbird での経験があった事、
+ユーザスクリプトを Firefox アドオンに変換するプログラムで簡単なスクリプトを変換した結果を見る事が出来た事から、
+実装の仕方について悩む所はなかった。
+おかげですぐに動く状態にする事が出来た。
+</p>
+<p>しかし、GMail の動作がおかしい。
+特に、編集中のメッセージがある時に reload しても編集中のメッセージが表示されない。
+原因を探ってみると、どうも agh.js を読み込むといけない様である。
+何かの関数を上書きしてしまっているのが原因だろうか。
+</p>
+<p>→ どうやら Array.prototype に一つでも余分な関数を追加すると死ぬ様である [2012/12/19 04:27:44 v1.0.0.20]</p>
+<p>何とか Array.prototype 汚染を除去した。
+String.prototype も汚染しているがこちらに対しては、致命的な影響を生むとは考えにくいので汚染したままである。
+多少のバグが発生したがそれも修正して現在の所動いている [2012/12/19 13:20:58 v1.0.0.25]
+</p>
+
+<!--########################################################################-->
+<h2>その他の環境</h2>
+<ul>
+<li>Outlook
+  <ul>
+  <li><a href="http://msdn.microsoft.com/en-us/office/Video/bb738107">How Do I: Create an Outlook Add-in?</a>
+    <p>サンプルを Microsoft Download Center でダウンロードすれば良い。</p>
+  </li>
+  </ul>
+</li>
+<li>Outlook Express
+  <ul>
+  <li><a href="http://www.codeproject.com/KB/COM/Outlook_Express_Messages.aspx">Reading and Writing Messages in Outlook Express - CodeProject</a></li>
+  </ul>
+</li>
+<li>Opera
+  <ul>
+  <li><a href="http://www.opera.com/addons/extensions/develop/">Opera アドオン: エクステンションの開発</a></li>
+  </ul>
+</li>
+<li><a href=""></a></li>
+</ul>
+<!--########################################################################-->
+<h2>mwg3.addon.mwgtex4ie</h2>
+<ul>
+<li><a href="http://www.codeproject.com/KB/shell/">Shell and IE programming - CodeProject</a></li>
+<li><a href=""></a></li>
+<li><a href=""></a></li>
+<li><a href=""></a></li>
+<li>AddOn
+  <ul>
+  <li><a href="http://petelepage.com/blog/?s=Writing+ie+addons">Pete LePage on the Web &raquo; Search results for &quot;Writing ie addons&quot;</a></li>
+  <li><a href="http://msdn.microsoft.com/en-us/library/aa741312%28VS.85%29.aspx">Internet Explorer Architecture</a></li>
+  <li><a href="http://msdn.microsoft.com/en-us/library/Bb250489">Building Browser Helper Objects with Visual Studio 2005</a>
+    →正に此処にあるのが丁度ページをロードした時の物!
+    <p>日本語 <a href="http://msdn.microsoft.com/ja-jp/library/bb250489(v=vs.85).aspx">Visual Studio 2005 によるブラウザ ヘルパ オブジェクトのビルド</a></p>
+  </li>
+  <li><a href="http://www.codeproject.com/KB/shell/Attach_BHO_with_C_.aspx">How to attach to Browser Helper Object (BHO) with C# in two minutes - CodeProject</a></li>
+  <li><a href="http://stackoverflow.com/questions/2491030/browser-helper-object-doesnot-get-loaded-in-ie8">internet explorer - Browser Helper Object doesnot get loaded in IE8 - Stack Overflow</a>
+    <p>IE8 でロードされない時は: [HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main] で "Enable Browser Extensions" = "yes".</p>
+  </li>
+  <li><a href="http://d.hatena.ne.jp/replication/20100304/1267628837">IE7ProでThe IE7pro BHO hasn't been loadedというエラーが出る件 - 大人になったら肺呼吸</a>
+    <ul>
+    <li>[ツール]-[オプション]-[詳細設定]-[サードパーティ製のブラウザ拡張を有効にする] にチェックを入れる。</li>
+    <li>[Tools]-[Internet Options...]-[Details]-[Enable third-party browser extensions] にチェックを入れる。</li>
+    </ul>
+  </li>
+  </ul>
+  <p>そう言えば、昔何か IE 向けに書いた事があった様な…。</p>
+</li>
+<li>MenuExt
+  <ul>
+  <li><a href="http://www18.atpages.jp/skydreamer/maniax/ieext.php">ドリーム工房 - IE の拡張メニューと連携を取るプログラム</a></li>
+  <li><a href="http://support.microsoft.com/kb/177241/ja">[InetSDK] ブラウザの標準コンテキスト メニューに項目を追加する</a></li>
+  <li><a href="http://winofsql.jp/sh/html/menuex_image_html.htm">IE 拡張メニューインストーラ　【ページ上の画像を使用したHTML作成</a></li>
+  </ul>
+</li>
+<li>UserScript
+  <ul>
+  <li><a href="http://paro2day.blog122.fc2.com/blog-entry-628.html">IEでGreasemonkeyスクリプトを使う Trixie IE7pro : Web - Paroday</a></li>
+  <li><a href="http://www.bhelpuri.net/Trixie/">Trixie</a></li>
+  <li><a href="http://www.ie7pro.com/">IE7Pro - The Ultimate Add-On for Internet Explorer</a></li>
+  <li><a href="http://www.ie7pro.com/user-script.html">user-script</a></li>
+  <li><a href="http://d.hatena.ne.jp/replication/20091216/1260919414">IE7でGreasemonkeyのようなユーザスクリプトを利用する方法 - 大人になったら肺呼吸</a></li>
+  </ul>
+</li>
+</ul>
+
+<!--************************************************************************-->
+<h3>BHO ビルド</h3>
+<ul>
+<li>レジストリに登録する GUID は IHelloWorld インターフェイスの物ではなくて、HelloWorld コクラスの物。</li>
+<li>アドオン画面で表示されているバージョン番号は mwgtex4ie.rc の PRODUCTVERSION</li>
+<li>アドオン画面で表示されている会社名は、mwgtex4ie.rc/CompanyName に。</li>
+<li>アドオン画面で表示されている名前は、Mwgtex4IeBho.rgs の中にある文字列達。デフォルトで "なんたら Class" になっている。</li>
+<li></li>
+</ul>
+<p>break point を仕掛けても引っかかってこない?</p>
+<ul>
+<li>本当にロードされているのか心配になったので、<del>エントリーポイント</del> SetSite でメッセージボックスを表示させてみた。
+  <p>→ちゃんと起動時に表示される。(エントリーポイントに仕掛けたつもりだったが、
+  よく見たら SetSite に仕掛けていた。SetSite が呼び出されているのであれば問題ないであろう。)</p>
+</li>
+<li>多分、デバッガがちゃんとブレークポイントを仕掛けられていないのであろう。</li>
+</ul>
+<p>ちゃんと SetSite が動作している様なので、試しにチュートリアルにある物を書いてみる。</p>
+<ul>
+<li>ちゃんと、ページ毎に MessageBox が表示されるし、</li>
+<li>適当に書いた「背景色を変更する」関数も動作している。</li>
+</ul>
+
+<h4>VARIANT について</h4>
+<p>VARIANT の扱い方が良く分からなくて冗長な事を書いたりしていた。
+一番原始的な方法だと以下の様になる?</p>
+<pre class="agh-prog-cpp">
+static const CComBSTR bstrBackgroundColor(L"#fee");
+VARIANT varBackgroundColor;
+V_VT(&amp;varBackgroundColor)=VT_BSTR;
+varBackgroundColor.bstrVal=bstrBackgroundColor;
+style-&gt;put_backgroundColor(varBackgroundColor);
+</pre>
+<p>でも、よく見てみると CComVariant というオブジェクトがサンプルの RemoveImages 内で使われている。
+以下の様にしてもちゃんと動いた。</p>
+<pre class="agh-prog-cpp">
+static const CComBSTR bstrBackgroundColor(L"#fee");
+CComVariant varBackgroundColor(bstrBackgroundColor);
+style-&gt;put_backgroundColor(varBackgroundColor);
+</pre>
+<p>もしかして、bstr を初期化しないでも文字列から初期化出来るのかな…</p>
+<pre class="agh-prog-cpp">
+CComVariant varBackgroundColor(L"#eef");
+style-&gt;put_backgroundColor(varBackgroundColor);
+</pre>
+<p>これでも動く。という事は実は単に下の様にすれば良いだけだったのか…。</p>
+<pre class="agh-prog-cpp">
+style->put_backgroundColor(CComVariant(L"#ffe"));
+</pre>
+
+<p>何れにしても C++ から JavaScript のオブジェクトを操作するのは面倒くさい。
+何でこんな面倒な設計にしたのだろう…。と思うが、例外処理は余り使いたくなかったのだろう。
+勝手に C++ のラッパクラスを作って JavaScript と同じように記述できるように色々枠組を整えていたが…。
+今気付いたのだけれど、以下の様にすればいいだけじゃん…。
+</p>
+<pre class="agh-prog-cpp">
+CComPtr&lt;IHTMLWindow2&gt; window;
+if(S_OK!=pDocument-&gt;get_parentWindow(&amp;window)||window==NULL)return;
+
+CComVariant ret;
+window->execScript(CComBSTR(
+  "var images=document.images;\n"
+  "if(images!=null){\n"
+  "  for(var i=0;i&lt;images.length;i++){\n"
+  "    var img=images.item(i);\n"
+  "    img.style.display=\"none\";\n"
+  "  }\n"
+  "}\n"
+),NULL,&amp;ret);
+</pre>
+<p>サンプルでは上の処理を面倒な感じに記述しているけれども。</p>
+
+<h4>Reload をうまく検知出来ていないという事</h4>
+<p>F5 を押したり、同じ url を打ったりすると reload になる。
+この時ちゃんと BHO が動作しない様である。そもそも DOCUMENTCOMPLETE がやって来ない様なのである。
+</p>
+<ul>
+<li><a href="http://labs.cybozu.co.jp/blog/kaorun/2007/07/ie67bho.html">IE6/7対応のBHOでページのリロードを確実に取得する (Neutral Scent)</a></li>
+</ul>
+<!--************************************************************************-->
+<h3>IInternetProtocol の実装</h3>
+<p>urn moniker を拡張して、勝手に mwg プロトコルでも何でも作ってしまう?
+でも、これを使ったとしても「別ドメイン」として扱われてロードを拒否されるとやはり駄目である…。
+(無理矢理 https を書き換えて mail.google.com/mwg3/ を仮想的に作ってしまうのは可能なのだろうか???)
+</p>
+<ul>
+<li><a href="http://www.misuzilla.org/dist/net/mphandler/">Protocol Handlers for Microsoft Internet Explorer - misuzilla.org</a></li>
+<li><a href="http://d.hatena.ne.jp/uupaa/20080904/1220462674">IE5～IE7でも、RFC2397(Dataスキーム, DataURI)を使えるようにした! - latest log</a>
+  <p>因みに、これは、data scheme の内容を JavaScript でデコードして div タグの集合で画像を表現するという物。</p>
+</li>
+<li><a href="http://msdn.microsoft.com/en-us/library/aa767916(v=vs.85).aspx">About Asynchronous Pluggable Protocols</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/aa767743(v=vs.85).aspx">Asynchronous Pluggable Protocols</a></li>
+<li><a href="http://msdn.microsoft.com/ja-jp/library/1f6c88af.aspx">Programming Pluggable Protocols</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/kk8d8dz9.aspx">Introducing Pluggable Protocols</a></li>
+</ul>
+<p>うーん。以下を見ると、やっぱり勝手にプロトコルを作ってしまっても駄目そうである。</p>
+<ul>
+<li><a href="http://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q1045013070">background-image: url(data:image/gif;base64,AAAA); を定義すると、IE8 で「この... - Yahoo!知恵袋</a></li>
+<li><a href="http://robm.fastmail.fm/articles/ie7-dataurl.html">IE7 and url(data:=...) via https gives mixed content warning</a></li>
+</ul>
+<p>何しろ data scheme ですら安全でないと認識されてしまうのだから。
+一体何の為の data scheme なのやら…。
+</p>
+
+<div class="note">
+  <p>IE は酷いブラウザ…実装の目的と論理があっていない。
+  「先進的な機能を実験的に色々実装していて、新しいブラウザの世界を模索している」様に見せかけて仕様からしてバグな物が沢山。。
+  頭の悪い人にプログラムを書かせてはならないという事の、分かり易い実例である。
+  世の中に出回っているプログラムでこんな酷いの他にない。
+  </p>
+  <p>例えば VML みたいに。VML は普通のサイトでは紹介されていない様な変な機能も沢山用意しているが、
+  例えば座標変換なんかは行列すら知らない人が出鱈目に数値を掛けたり足したりする実装にしたのだろう。
+  しかもその数式すら公開されていない。一体どう言う数式でこういう結果になるのか? というのは長らくの疑問である。
+  具体的にはこれ→<a href="http://msdn.microsoft.com/en-us/library/bb229474(v=VS.85).aspx">Matrix Attribute (Skew)(VML)</a>
+  名前的に Affine 変換の行列か何かだと思ってしまうが、これはそもそも線形変換ですらない。
+  丸一日掛けて、四次元空間の中のあらゆる値を指定して、sxx,sxy,syx,syy に対する式を何とか逆算出した事があるが、
+  勿論行列の掛け算とは全く関係ない。因みに、px py に到っては滅茶苦茶小さい値を指定しないとまともな結果にならない上に、
+  指定しなければならない値が丸め誤差で潰れている様で、どういう数式になっているか求めようもない様に思われたので、諦めた。
+  所で、この skew というのは w3c.org の vml には採用されていない。当然である。
+  w3c.org が賢いとは全然思わない。IE の vml 開発者が猿並みの知能しかなかったと言うだけの事である。
+  でも、このせいでまともな座標変換が vml には用意されていないのである。
+  </p>
+  <p>或いは、position:absolute やら position:relative で指定した要素の正確な位置を JavaScript から
+  正確に取得するのも至難の業である。zoom スタイルを指定したりすればすぐに良く分からない様に変わるし、
+  その辺り (hasLayout) もちゃんと考慮に入れても不確定な部分が残っている。
+  これは丸三日ぐらい掛けて色々調べたが結局訳分からん。大体うまく計算出来ている様に思われて…
+  何回か適当に要素を入れ子にするとやっぱり計算値がずれて来る。
+  </p>
+  <p>ああ思い出すだけで腹立たしい。</p>
+</div>
+<p>従って望みは以下の何れか</p>
+<ol>
+<li>Protocol Handlers で https に干渉して、https://mail.google.com/mail/mwg3/ 辺りに仮想的なディレクトリを作る。(既存の protocol handler に干渉出来るのか?</li>
+<li>UrnMoniker の呼出ポイントに API Hook して書き換える。COM だったら QueryInterface の辺りから書き換えないと行けない…。</li>
+<li>セキュリティ判定の関数を突き止めてそれを書き換える。</li>
+</ol>
+<p>取り敢えず https に干渉する方向で考える。</p>
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/library/aa767759(v=vs.85).aspx">RegisterNameSpace Method</a>
+  <ol>
+  <li>IClassFactory factory を IInternetSession::RegisterNameSpace(factory,clsid_of_https,"https") を使ってプロセスに登録する。</li>
+  <li>factory は
+    <a href="http://msdn.microsoft.com/en-us/library/aa767859(v=vs.85).aspx">IInternetProtocolRoot Interface</a>,
+    <a href="http://msdn.microsoft.com/en-us/library/aa767883(v=vs.85).aspx">IInternetProtocol Interface</a>
+    を実装するオブジェクトを生成する。
+    この辺りの interfaces の実装は上の C# による例が参考になる。
+  </li>
+  </ol>
+</li>
+<li><a href="http://msdn.microsoft.com/en-us/library/aa767914(v=vs.85).aspx">Registering an Application to a URL Protocol</a>
+  <p>うーん。COM オブジェクトとして URL Protocol を提供すると面倒くさいが、
+  プログラムとして URL Protocol を提供すると滅茶苦茶簡単の様である…。
+  </p>
+</li>
+<li>多分、RegisterNameSpace で特定の scheme (今回は https でやりたい) の一部の要求だけ差し換えられる。
+  <p>差し換える目的ではなくて、どの様な要求が為されているかを調べる為に BHO の SetSite の瞬間に、
+  RegisterNameSpace を実行することがあるようなのである。</p>
+  <ul>
+  <li><a href="http://stackoverflow.com/questions/2569878/hooking-the-http-https-protocol-in-ie-causes-get-requests-to-be-sequential">internet explorer - Hooking the http/https protocol in IE causes GET requests to be sequential - Stack Overflow</a></li>
+  <li><a href="http://social.msdn.microsoft.com/Forums/is/ieextensiondevelopment/thread/6501f9a4-e006-447a-a1e5-00cc44daa472">Registering namespace handler via IInternetSession::RegisterNameSpace in IE8 doesn't notify about start page related requests</a></li>
+  <li><a href="http://www.codeproject.com/Messages/2651207/Re-how-to-Registering-namespace-handlers-for-HTTP-and-HTTPS-protocols-within-the-Internet-Explorer-process.aspx">Re: how to Registering namespace handlers for HTTP and HTTPS protocols within the Internet Explorer process ? - ATL / WTL / STL Discussion Boards - CodeProject</a></li>
+  </ul>
+</li>
+<li><a href="http://www.mars.dti.ne.jp/~kattoshi/PluggableProtocol.htm">非同期カスタムプロトコルの実装</a>
+  <p>ここは分かり易い。実例で載っている。</p>
+  
+  <p>序でに WTL の説明のページ</p>
+  <ul>
+  <li><a href="http://home.att.ne.jp/banana/akatsuki/doc/atlwtl/index.html">ATL/WTL</a></li>
+  <li><a href="http://home.att.ne.jp/banana/akatsuki/doc/atlwtl2/index.html">ATL/WTL - ATL/WTL による Windows プログラミング</a></li>
+  </ul>
+</li>
+</ul>
+
+<h4>IInternetProtocol/IClassFactory</h4>
+<p>見よう見まねで適当に IInternetProtocol と IClassFactory を実装してみる事にする。</p>
+<ol>
+<li>先ずは idl ファイルを弄って新しく coclass の定義を追加する?
+  <p><a href="http://keicode.com/com/com05.php">単純な COM コンポーネントの作成 - Web/DB プログラミング徹底解説</a>
+  →適当にクラスを追加してみると、mwgtex4ie_i.h mwgtex4ie_i.c に CLSID 等の定義が追加される。
+  </p>
+  <p>idl の書き方が良く分からないので適当に書いたのだけれども、何かコンパイル出来ているみたいなので取り敢えず先に進む。
+  この辺りは後で問題になるかも知れない点である□
+  </p>
+</li>
+<li>次に、IInternetProtocol を実装するクラスを書く。
+  <p>適当に IInternetProtocol だけを実装すると、InternalQueryInterface やら Lock/Unlock やらの関数がないと怒られる。
+  なので、BHO の時のクラスを真似して CComObjectRootEx と CComCoClass の両方を勝手に継承する事にした。
+  </p>
+  <p>先ず、CoClass と class の違いも良く分かっていないし、
+  ThreadModel が STA で良いのかどうかも良く分からないのだが、
+  まあ、コンパイルが通っている様なので、取り敢えず先に進む□
+  </p>
+  
+  <p>と思ったら msdn にこんなの <a href="http://msdn.microsoft.com/ja-jp/library/8bycx62d.aspx">CComClassFactory クラス</a> がある。
+  此処には、IClassFactory を実装する時は</p>
+  <ol>
+  <li>CComClassFactory から派生して</li>
+  <li>CreateInstance を上書きしろと書いてある。</li>
+  <li>そして、MyClass (Factory 生成されるオブジェクトのクラス) の方には DECLARE_CLASSFACTORY_EX(MyClassFactory) を書けとの事。</li>
+  </ol>
+  <p>CreateInstance の実装は <a href="http://eternalwindows.jp/com/comserver/comserver03.html">クラスオブジェクトの実装</a> を参考にした。
+  良く分からないけれど、こんなんでいいのだろうか…。</p>
+<pre class="agh-prog-cpp">
+STDMETHODIMP CHttpsProtocolHookFactory::CreateInstance(IUnknown *pUnkOuter,REFIID riid,void **ppvObject){
+  *ppvObject = NULL;
+
+  if(pUnkOuter!=NULL)
+    return CLASS_E_NOAGGREGATION;
+
+  CComPtr&lt;CHttpsProtocolHook&gt; p=new CHttpsProtocolHook();
+  if(!p)return E_OUTOFMEMORY;
+
+  return p-&gt;QueryInterface(riid,ppvObject);
+}
+</pre>
+
+</li>
+<li>と思ったら抽象クラスはインスタンス化できないと言われてしまう…。
+  <ol>
+  <li>仮想関数を別の基底クラスから継承する?
+    <ul>
+    <li>インターフェイスを定義しないと行けないのだろうか…。
+      うーん、こうなったらもう BHO の時と同じに個別にインターフェイスを定義して、
+      それを DispatchImpl で参照する様にするか。。
+      →実際にインターフェイスを定義してみたけれども、相変わらず抽象クラスと言う事になっている。
+      どの関数が定義されていないのだろうか…。
+    </li>
+    <li>んー。どうも FinalConstruct/FinalRelease みたい??
+      →これも関係なかった。
+    </li>
+    <li>後残っている関数は GetIDsOfNames/GetTypeInfo/GetTypeInfoCount ぐらいしかない。
+      →うーん。これはどうやって実装したらよいのか分からない。
+        というかちゃんと実装されている様な気がする。
+      <p>仮想関数一覧:</p>
+<pre class="agh-prog-cpp">
+&amp;CHttpsProtocolHook::Abort;
+&amp;CHttpsProtocolHook::AddRef;
+&amp;CHttpsProtocolHook::Continue;
+&amp;CHttpsProtocolHook::GetIDsOfNames;
+&amp;CHttpsProtocolHook::GetTypeInfo;
+&amp;CHttpsProtocolHook::GetTypeInfoCount;
+&amp;CHttpsProtocolHook::Invoke;
+&amp;CHttpsProtocolHook::LockRequest;
+&amp;CHttpsProtocolHook::Read;
+&amp;CHttpsProtocolHook::Release;
+&amp;CHttpsProtocolHook::Resume;
+&amp;CHttpsProtocolHook::Seek;
+&amp;CHttpsProtocolHook::Start;
+&amp;CHttpsProtocolHook::Suspend;
+&amp;CHttpsProtocolHook::Terminate;
+&amp;CHttpsProtocolHook::UnlockRequest;
+</pre>
+    </li>
+    <li>うむむ。と思って CMwgtex4IeBho を試しに new しようとしたら、実はこれも抽象クラスだからインスタンス化できないのだと。
+    でも、ちゃんと BHO として動作しているのを確認したはずである…という事は、
+    CMwgtex4IeBho を継承する別のクラスからインスタンス化されているという事だろうか…。
+    しかし、全ての参照を検索してみたが、他に使われている様な場所は存在していない…。
+    </li>
+    </ul>
+  </li>
+  <li>m_pfnCreateInstance?
+    <p>うーん。また検索し直してみる。ATL を使って実装する時は根本的にやり方が異なるのかも知れない。
+    <a href="http://books.google.co.jp/books?id=ImlftNNqn6MC&amp;pg=PA414&amp;lpg=PA414&amp;dq=CreateInstance+CComClassFactory&amp;source=bl&amp;ots=pjGZ2D49Jl&amp;sig=rCDSMRy461lEp3OHGeSRyM9lE0U&amp;hl=ja&amp;ei=O0roTuriB6SpiAfI_oDzCA&amp;sa=X&amp;oi=book_result&amp;ct=result&amp;resnum=5&amp;ved=0CEUQ6AEwBA#v=onepage&amp;q=CreateInstance%20CComClassFactory&amp;f=false">Developer's workshop to COM and ATL 3.0 - Andrew W. Troelsen - Google ブックス</a>
+    </p>
+<pre class="agh-prog-cpp">
+STDMETHODIMP CHttpsProtocolHookFactory::CreateInstance(IUnknown *pUnkOuter,REFIID riid,void **ppvObject){
+  if(ppvObject==NULL)
+    return E_POINTER;
+
+  *ppvObject=NULL
+  if(pUnkOuter!=NULL&amp;&amp;!InlineIsEqualUnknown(riid))
+    return CLASS_E_NOAGGREGATION;
+
+  return this-&gt;m_pfnCreateInstance(pUnkOuter,riid,ppvObject);
+}
+</pre>
+    <p>でも、これだと結局 m_pgnCreateInstance に SetVoid 関数で関数を設定しなければならない様である。。</p>
+  </li>
+  <li>CComObject?
+    <p>或いは <a href="http://support.microsoft.com/kb/181265/en-us">How to create ATL COM objects in Visual C++</a></p>
+<pre class="agh-prog-cpp">
+STDMETHODIMP CHttpsProtocolHookFactory::CreateInstance(IUnknown *pUnkOuter,REFIID riid,void **ppvObject){
+  CComObject&lt;CHttpsProtocolHook&gt;* p;
+  HRESULT hr=CComObject&lt;CHttpsProtocolHook&gt;::CreateInstance(&amp;p);
+  if(hr!=S_OK)return hr;
+  return p-&gt;QueryInterface(riid,ppvObject);
+}
+</pre>
+    <p>何かこれが正解の様な気がしてきた…。CMwgtex4IeBho も CComObject としてインスタンス化されているのではないだろうか??
+    </p>
+    <p>所で p の解放は自動的に行われるのかそうでないのか…。
+      これ自体が COM オブジェクトならば Release で参照カウンタが 0 になった瞬間に自動的に解放されるであろう。
+      これが単なる COM オブジェクト実体への参照であるというのであれば、これを正しく release しないと、
+      実体の方の参照カウンタが無駄に残ってしまい良くない事になる。
+    →<a href="http://msdn.microsoft.com/ja-jp/library/9e31say1(v=vs.80).aspx">CComObject::CreateInstance</a>
+      これが COM オブジェクト本体の様である。そして Release で参照カウントが 0 になれば自動的に解放される。
+      後、その場で AddRef しろと書いてある。良く考えたら上のコードだと QueryInterface に失敗するとメモリリークになる。
+    </p>
+  </li>
+  </ol>
+</li>
+<li>さて、実装して登録してみたらすんなりと Start が呼び出される所までは辿り着いた。
+  <p>然し、ここで INET_E_USE_DEFAULT_PROTOCOLHANDLER を返すとエラーになって終了してしまう…。
+  取り敢えず、https ではなくて適当な mwg に登録してデバグする事にした。
+  と思って、再度 Start の解説ページ (<a href="http://msdn.microsoft.com/en-us/library/aa767863(v=vs.85).aspx">Start Method</a>) を読んでみると、
+  <a href="http://msdn.microsoft.com/en-us/library/ms686558(v=vs.85).aspx">Aggregation</a> をサポートしろと書いてある…。
+  うーん。↓こんなんでいいのかな…。
+  </p>
+<pre class="agh-prog-cpp">
+STDMETHODIMP CHttpsProtocolHookFactory::CreateInstance(IUnknown *pUnkOuter,REFIID riid,void **ppvObject){
+  HRESULT hr;
+
+  if(ppvObject==NULL)return E_POINTER;
+  *ppvObject=NULL;
+
+  if(pUnkOuter!=NULL&amp;&amp;!InlineIsEqualUnknown(riid)){
+    //return CLASS_E_NOAGGREGATION;
+    CComAggObject&lt;CHttpsProtocolHook&gt;* p;
+    hr=CComAggObject&lt;CHttpsProtocolHook&gt;::CreateInstance(pUnkOuter,&amp;p);
+    if(!SUCCEEDED(hr))return hr;
+
+    p-&gt;AddRef();
+    hr=p-&gt;QueryInterface(riid,ppvObject);
+    p-&gt;Release();
+    return hr;
+  }else{
+    CComObject&lt;CHttpsProtocolHook&gt;* p;
+    HRESULT hr=CComObject&lt;CHttpsProtocolHook&gt;::CreateInstance(&amp;p);
+    if(!SUCCEEDED(hr))return hr;
+
+    p-&gt;AddRef();
+    hr=p-&gt;QueryInterface(riid,ppvObject);
+    p-&gt;Release();
+    return hr;
+  }
+}
+</pre>
+  <p>これをすると結局エラーになる。
+  というか、Aggregation って他のクラスの一部にそのまま初期化するって言う物の様だから、
+  新しく作ったオブジェクトの上に構築しても仕様がない…。
+  渡された ppvObject の上に構築すればよいのだろうか。(でも、CreateInstance の説明を読む限りはその様な事は何も書かれていない。)
+  うーん。でも、<a href="http://support.microsoft.com/kb/173823/en-us">How To Aggregate a COM Object with ATL</a> を見ると、
+  新しく作ったオブジェクトの上に構築してそのポインタを親オブジェクトに書き込んでいる様だからやっぱりいいのかな…。
+  </p>
+  <p>うーん。IUnknown である事の判定もするかな…
+  と思ってよく見ると、既にそう言う判定のコードが書いてある。
+  でも、よく見たら何か反転して居るではないか!
+  実際に呼ばれる時に MessageBox を出してみた所、確かに条件判定で全て Aggregate でない側に制御が移っている。
+  何処かで書き換えている時にミスしたのか…。→これを修正したらちゃんと動く様になった。
+  (とは言っても、未だ何のコンテンツも提供していないので何も起きないが。)
+  </p>
+</li>
+<li>データ送信
+  <p>何とか DEFAULT_PROTOCOLHANDLER に任せる様にするのは動く様になった。
+  今度は特定の url に対して対応するデータを送る様にするのを実装する。
+  </p>
+  <p>→所が IE が落ちてしまう。Read の戻り値が変なのだろうか?
+  完全にデータが送信し終わった時には S_FALSE を返し、
+  未だ未送信のデータが残っている時に S_OK を返せと
+  <a href="http://msdn.microsoft.com/en-us/library/aa767887(v=VS.85).aspx">Read Method</a>
+  には書かれているが、未だ未送信のデータが残って*いた*場合に S_OK を返す様に変更してみる。
+  →うーん。それでも落ちる。(因みに Read の呼出回数は増えた。ちゃんと動作は変わっている。)
+  </p>
+  <p>今度は最後の null 文字も含めて送信してみる→それでも駄目。</p>
+  <p>もしかして返答する内容を間違えているのだろうか?
+  例えば、HTTP header 等も含めて返さなければならないなど。
+  ちょっと data scheme の実装で何を返しているのか調べてみる事にする。
+  →と思ったけれど、データをその儘返答している。
+    唯、ReportProgress によって MimeType を報告している様である。
+  →MimeType を報告する様にしてみたがやはり駄目だった。
+  </p>
+  <p>駄目になるのはどうも Terminate を実行した後である。
+  何か実装しなければならないインターフェイスが他にもあるのだろうか…。
+  </p>
+  <p>或いは Read に失敗しているのかも知れない…。Read が二回も呼び出される理由が良く分からないからである。
+    極端に小さなバッファサイズが与えられているのだろうか…。
+    分からないので、試しに Read に渡されているバッファサイズ cb を調べてみる事にした。
+    →何か大きな値が指定されている。うーん。
+      というか、もしかして Urnmon は戻り値は見ていなくて単に pcbRead の大きさを見ているだけなのだろうか…。
+      もし前回の読み取りで pcbRead が正の値を取っていたのであれば、
+      読み取りが終了したとの通知を受けていても、
+      一回は試し読みをするという事…?
+  </p>
+  <p>と思ってよく見てみたら、データが存在している時に Start でそれに対応する戻り値を返すのを忘れていた。
+    全て、INET_E_USE_DEFAULT_PROTOCOLHANDLER を返していた…。
+    しかし、ReportData をすると INET_E_USE_DEFAULT_PROTOCOLHANDLER
+    であってもちゃんと読み取りが実行される様だ。
+    そして読み取り終わった後にエラーで落ちる。
+  →E_PENDING を返す様に変更したらちゃんと内容が表示される様になった。OK
+  </p>
+</li>
+</ol>
+<!--************************************************************************-->
+<h3>実行</h3>
+<p>seahorse の時の実装の苦労の甲斐あって、
+直ぐに実行する事が出来た。変換も正しくされている。
+(予想通りセキュリティ警告が出るのを防ぐ事が出来ている。
+実際に mwg:// 等でアクセスしようとするとエラーになる。)
+</p>
+<p>概ね良い様に見えるが、どうもフォントがロードされていない様である。
+https だとフォントがロードされないという事を訴えている人がいるみたいだが、
+これは限定された状況でしか起こらない様でもある。
+</p>
+<ul>
+<li><a href="http://stackoverflow.com/questions/7748140/font-face-eot-not-loading-over-https">css - @font-face EOT not loading over HTTPS - Stack Overflow</a></li>
+</ul>
+<p>或いは、フォントのロードに urlmon を使っていないのかも知れない…
+と思って実際に何がダウンロードされているのか観察してみたが、
+ちゃんと eot もダウンロードされていた。
+</p>
+<!--
+C:\usr\cygwin\home\koichi\prog\js\mwg3\src\addon\mwgtex4ie\mwgtex4ie\Debug/mwg3.addon.mwgtex4ie/mwg3/index.txt
+mwg://hello/mwg3.addon.mwgtex4ie/mwg3/latex/int.png
+javascript:var s=document.getElementsByTagName("script");var a=[];for(var i=0;i<shttps://groups.google.com/group/boostjp?hl=ja.length;i++)a.push(s[i].src);alert(a.join("\n"));
+https://groups.google.com/group/boostjp?hl=ja
+
+javascript:alert(window.mwg.wait(["latex.cls.js"],function(){alert(1);}));
+javascript:alert(window.mwg.scripts.wait(["latex/latex.cls.js"],function(){alert(1);}));
+
+https://mail.google.com/mwg3.addon.mwgtex4ie/mwg3/mwg.js
+mwg://a/mwg3.addon.mwgtex4ie/mwg3/latex/mwg_cmmi12.eot
+https://mail.google.com/mail/?hl=ja&shva=1#label/%E5%8E%9F%E5%AD%90%E6%A0%B8%E7%90%86%E8%AB%96%2F%5BML%5D%2FminiHIC2011/133e3b1909b438dd
+-->
+<!--************************************************************************-->
+<h3>動かなくなっている [2012/12/15]</h3>
+<p>久しぶりに IE7 で覗いてみたらエラーが出る様になっていた。
+どうやら frame 要素に対して元から存在していないメンバを追加する事ができなくなった様だ。
+例外が発生し、e.message は "書き込みできません。" となっている。
+元々、frame 要素に新しいメンバを追加していたのは、その frame が初期化済みかどうかを判定する為であった。
+なので、新しいメンバを使う代わりに配列に初期化済みの frame のインスタンスの一覧を作成する事で対応する事にした。
+</p>
+<pre class="agh-prog-js diff">
+     window.setInterval(function(){
+       var frames=document.frames;
+       for(var i=0,iN=frames.length;i&lt;iN;i++){
+         try{
+           var f=frames(i);
+ 
+-          if(f.aghtex_processed!=null)continue;
+-          f.aghtex_processed=true; // ERR
++          if(!register_frame(f))continue;
+           
+           var _window=f;
+           initialize_frame(_window);
+         }catch(ex){
+           alert("aghtex:\r\n  error!\r\n  error_message = "+ex.message);
+         }
+       }
+     },500);
+</pre>
+
+<p>然し、それでもちゃんと動作しない様子である。
+何処で動作が止まっているかを調べる。
+</p>
+<ul>
+<li>frame の初期化関数は呼ばれている</li>
+<li>onmousemove に対する hook (attachEvent) も動作している。</li>
+<li>onmousemove に対する attachEvent の回数は Chrome で動作させた時と同じく 3 回行われている。</li>
+<li>★onmousemove に対するハンドラが一切呼び出されていない様だ?
+  <ul>
+  <li>attachEvent が GMail によって置き換えられているという事もない</li>
+  <li>gmail によって cancelBubble が設定されている? →でも chrome では正しく動作している…。</li>
+  <li>他の方法で TeX 変換を開始する様に変更するか? →しかし、他のブラウザと共通のコードで動かしたい。</li>
+  <li>onmousemove で設定したハンドラが勝手に上書き・解除されている?</li>
+  </ul>
+</li>
+<li>と思っていたら、どうやら開いている画面によって onmousemove に対するハンドラの呼び出し回数 (フレームの数) は異なる様だ。
+  <p>Chrome の場合には同様の画面では 4 回の mousemove イベントの設定が行われている。
+  IE の場合には同じ状況で 3 回しか onmousemove 設定が行われていない。
+  GMail が IE と Chrome で同じ様な要素の構成にしているかどうかは保証できないが、
+  もし同じであるとするならば IE での onmousemove 設定先の検知に失敗している事になる。
+  </p>
+</li>
+<li>また、IE で onmousemove の設定時に アクセスが拒否されましたの様なエラーメッセージが表示される様でもある。</li>
+<li>Firebug Lite で見てみた所、メールの本文は iframe, frame の中にあるのではなく、本体の window.document 以下に直接あるという事が分かった。
+  <ul>
+  <li>以前は iframe の内側にあった様な機がするから、仕様が変更になったのだろう。</li>
+  <li>一番外側の window 自体についても initialize_frame を呼び出す様に変更する事にして見た。</li>
+  <li>が、何も起こらない。エラーも発生しない…。よく分からないので再起動してみたら javascript のエラーメッセージが表示された。</li>
+  <li>window.setTimer が存在しないという警告…あれ、setTimer なんて関数在ったっけ…と思ったら setTimeout だった。
+    <p>今迄動作していたのに何故今更と思ったが、よく考えたら今迄は初期化が完了した後に initialize_frame が呼び出されていたのだろう。
+    この部分を呼び出す必要がなかったので、今迄は一度もこの部分が実行されずエラーにもならなかったという事。
+    </p>
+  </li>
+  <li>これを修正したらすんなり動く様になった。フォントの問題は以前として残っているが。
+  また、アクセスが拒否されましたの例外も何故か未だ発生している (頻度は小さい様なので取り敢えず今は無視する)。
+  </li>
+  </ul>
+</li>
+</ul>
+
+<h4>IE で Bookmarklet を作れなくなっているという事</h4>
+<p>Firebug Lite の Bookmarklet を作ろうと思ってお気に入りに登録してから url を編集しようとしたが、編集する為の欄が存在しない。</p>
+<p>直接ファイルのプロパティを開いてみてもインターネットショートカット専用のタブが存在していない。
+どうやら、調べてみた所 IE を既定のブラウザにしていない場合インターネットショートカットの編集の為のタブは表示されない様である。
+といって、お気に入りを設定する為だけに一時的に IE を既定のブラウザにするのも (関連づけが荒らされそうで) 嫌である。
+</p>
+<p>テキストエディタで開いてみたらただの .ini だという事が分かったので、適当に既存の url を編集して登録してみたが…。
+実際に押してみると印刷画面が表示されてしまって何も実行されない (実際に印刷してみると、頁番号などヘッダとフッタだけ書かれた空の物が印刷される)。
+url の指定が誤っているのかと思い、適当に escape() してみたが、やはり結果は変わらず印刷が実行されてしまう。。。
+インターネットショートカットの中身の記述の仕方が間違っているのだろうか…。
+</p>
+<p>面倒になって結局 Firebug Lite の起動スクリプトを直接アドレスバーに貼り付けて実行する事にした。
+と思ったら F12 ボタンで普通に開発者用ツールが起動した… (少し探してなかったから IE8 だとまだ無いのかと勘違いした…)</p>
+
+<h3>フォントの問題について</h3>
+<p>そう言えば、一時的にフォントをシステムにインストールする Windows API 関数があった様な…。
+探したら AddFontResource 系の関数 (Win 2000 以降) でこれができる様である。
+特に今回使っている用途では <code class="agh-prog-cpp">AddFontResourceEx(_T("フォント.ttf"),FR_PRIVATE,0);</code> でいけそう?
+</p>
+
+<p>以下の手順で実装を試みる</p>
+<ol>
+<li>ローカルにフォントがインストールされている時には、それを使えるか確認</li>
+<li>一時的にインストールしたフォントを使用できるか確認</li>
+<li>一時的に FR_PRIVATE でインストールしたフォントを使用できるか確認</li>
+</ol>
+
+<h4>ローカルにフォントがインストールされている時、それを使えるか確認 [OK]</h4>
+<p>mwg_cmmi12.ttf (mwg_cmmi10_jsmath20) をローカルにインストールして、それを使う事ができるかどうかを確認する。</p>
+<p>IE の @font-face の仕様を見てみたが、url の形式でしかフォントを指定する事が出来ない様である。
+つまり、@font-face で作成したフォントとは別に、直接ローカルのフォント名を指定しなければならない。
+</p>
+<p>ローカルのフォント名を直接指定するのだから正しく表示されて当たり前だが、
+ちゃんとローカルのフォント名を直接指定すれば正しく表示されるという事を確認した。
+</p>
+
+<p>しかし、現在の所フォント名は mwg_cmmi10_jsmath20 などという変な物になっている。これを修正したい。→修正した。
+</p>
+<p>また、@font-face で定義する名前とフォントのファミリ名を一致する様にした。
+こうしておけば、@font-face のフォント名と、ローカルにインストールしたフォントのファミリ名を両方記述する必要がなくなるのではないかと思う。
+→実際に試してみた所、ちゃんとローカルのフォントを使用して表示されているので成功。
+</p>
+
+<h4>一時的にインストールしたフォントを使用する事が出来るか</h4>
+<p>実際にやってみるとフォントがロードされていない様である。
+詳しく見てみると、AddFontResource 関数の呼び出しの時点で失敗している。
+もしかして、これはダブルクリックで .ttf ファイルを開こうとしても先程から開けない事と関係があるのだろうか。
+フォントファイルに何らかの欠陥があるのかも知れない…と思って他のフォントファイルを開いてみると…開ける。
+色々やっていて、デスクトップ/sys/fonts/ 以下にある eufrak.ttf は開く事が出来るという事に気付いた。
+agh/src/latex/res/eufrak.ttf は開けないというのに…もしかすると cygwin が設定する属性の関係で開けないのかも知れない。
+と思って試しに chmod 700 にして見たら eufrak.ttf が開ける様になった…。
+</p>
+<p>ロードするフォントの属性を全て変更して再度試して見たら、
+ちゃんとインストールしたフォントが使用されている事が確認できた。
+→他のフォントについても同様に表示できている。
+</p>
+
+<h4>FR_PRIVATE</h4>
+<p>これは何の問題もなくすぐにできた。
+ちゃんとフォントをロードできている。
+</p>
+
+<!--########################################################################-->
+<h2>mwg3.addon.mwgtex4seahorse</h2>
+<ul>
+<li><a href="http://www.sleipnir-wiki.jp/index.php?%C1%C8%A4%DF%B9%FE%A4%DF%A5%B9%A5%AF%A5%EA%A5%D7%A5%C8%A4%CE%BD%F1%A4%AD%CA%FD">タブブラウザ Sleipnir オンラインデータベース(組み込みスクリプトの書き方)</a></li>
+<li><a href="http://www.sleipnir-wiki.jp/index.php?SeaHorse%A5%B9%A5%AF%A5%EA%A5%D7%A5%C8">タブブラウザ Sleipnir オンラインデータベース(SeaHorseスクリプト)</a></li>
+<li><a href="http://browserjs.blog102.fc2.com/blog-entry-187.html">Browser.js  [スクリプト] Sleipnir：今日のSeaHorseスクリプト 7</a></li>
+<li><a href="https://sites.google.com/site/958site/">958lab</a></li>
+<li><a href=""></a></li>
+</ul>
+
+<!--************************************************************************-->
+<h3>リソース参照方法</h3>
+<p>先ずは、適当にサンプルを拾ってきて中を眺める。
+今一番問題となりそうなのはリソースとして入れる画像やフォントの類。
+</p>
+<ul>
+<li>SeaHorse でスクリプトと一緒に入れたリソースにアクセスする方法が提供されていれば、それを使う。</li>
+<li>data scheme で画像を埋め込む方法 (でも、レンダリングエンジンが Trident なのでできない可能性が高い。</li>
+<li>tkynt2 等他のサーバーから画像を入れる。(でも、これはセキュリティ上の問題で禁止されているかも知れない</li>
+</ul>
+<p>→ と、思ったら、丁度一番初めに覗いたサンプルに答えらしき物が。
+どうも、直接 file:/// でアクセス出来る…という事なのか?
+んー。でも、これは @type SleipnirScript となっているし、ユーザースクリプトではないのかも知れない…???
+というか、SleipnirScript と SeahorseScript の違いは何だろうか?
+</p>
+<pre class="agh-prog-js">
+    // ベースフォルダパス
+    this.basePath = sleipnir.ScriptFullName.replace(sleipnir.ScriptName, '').replace(/\.js$/, '') + 'AddSDToSleipnirStart';
+    this.baseURL = 'file:///' + this.basePath.replace(/\\/g, '/').replace(/&amp;/g, '%26').replace(/ /g, '%20');
+    this.skinURL = this.baseURL + '/' + (_window.ckeArr ? _window.ckeArr["skin_theme"] || 'ie8' : 'fwht');
+</pre>
+<p>取り敢えず、意図した通りに動くかどうかを確認する。
+試しに script を読み込んでみた…が、ちゃんと読み込まれていない様である。
+tkynt2 からはちゃんと mwg.js が読み込まれていたのに、ローカルからはやはり読み取ってくれない様だ…
+と思ったのだが良く考えてみたらローカルの方に mwg.js を配置するのを忘れていた。
+→実際に配置してみたがやはりローカルからは読み込んでくれない様だ。
+(直接 file:///.../mwg.js の URL を指定すれば正しくダウンロードしてくれる事も確かめた)
+</p>
+<p>→何か許可の様な物を指定する事ができるのか? と、
+  参考にした物を参照してみたが、特にその様な設定をしている様子は見られない。
+  css から背景画像を読み込むだけならばセキュリティ上の問題は生じないと考えられているのだろうか??
+  css で local のファイルを指定してみたらちゃんと表示されていた。
+  つまり、ローカルの「画像」なら読み込んでくれるという事。
+</p>
+
+<!--========================================================================-->
+<h4>スクリプト読込について</h4>
+<p>sleipnir の API を見ていたらファイルを開く関数がある。
+これを使ってファイルの内容を読み取りそれを eval しろという事だろうか?
+試しに読み取って実行してみようとしたが、文字が駄目だと言われて実行出来ない。
+先頭の BOM を除去する様にしてみたけれどもやはり実行出来ない。
+(因みに、ファイル末端の判定方法が分からない。今は取り敢えず 10000 行読み取る事にしているが…)
+</p>
+<p>と思っていたら sleipnir.RunScript という名前の関数がある様である。これを使えば実行出来そうである。
+それで読み取ろうとしたけれども実行出来ない。
+先ず BOM を消してみたけれども、それでも駄目。エラーが起こる位置が変わった様な気がするけれども。
+次に、改行を全部 Windows 改行に変えてみたけれども、それでも駄目だった。
+あれ…そう言えば文字コードはどうやって指定すれば良いのだろう…??
+utf-8 だという事をどうやって教えれば良いのかが分からない…もしかして自動判定とか全然無くて、
+文字コードは shift_jis なのだろうか……。
+と思って shift_jis で mwg.js を保存し直して実行してみたらちゃんと実行出来てしまった…。
+</p>
+<p>だけど…latex/latex.*.js では utf-8 だと思って普通に Unicode 文字で記述している部分がある…。
+shift_jis に直接変換すると文字化けてしまって駄目である。
+(普通、script 読み取りは script タグで行う物だから、
+それに charset を指定すれば良かっただけなのだが…。)
+</p>
+<p>更に調べていたら、何と、sleipnir script の開発者は、
+そもそも sleipnir.OpenFile とかは使い物にならないので使わないらしい。
+WSH の CreateObject がそのまま使えるので、それを使う
+<a href="http://seaoak.cocolog-nifty.com/read/2009/09/post-f453.html">ファイルの末尾がわからない: Seaoak's READ</a>。
+sleipnir.OpenFile…こんな中途半端な馬鹿オブジェクトを用意する位なら何もない方が増し。騙された。忿々。
+</p>
+<p>それで、FSO の方の使い方は…</p>
+<pre class="agh-prog-js">
+var fso = sleipnir.CreateObject('Scripting.FileSystemObject');
+var file = fso.OpenTextFile(fname);
+var text = file.ReadAll();
+var array = text.split('\n');
+file.Close();
+</pre>
+<p>これで文字コードを指定して開ける方法が分かればよい。</p>
+<ul>
+<li><a href="http://www.atmarkit.co.jp/fwin2k/operation/wsh10/wsh10_01.html">＠IT：運用　Windows管理者のためのWindows Script Host入門　第10回　WSHスクリプトからのファイル操作（1）</a>
+  <p>基本的に OpenTextFile("filename",1 /* 読み取り */,0 /* ファイルは作らない */,文字コード);</p>
+  <p>此処によると第四引数に文字コードを指定すればよいとの事。0 が ASCII, -1 が Unicode, -2 が デフォルト。</p>
+  <p>第四引数の値は windows codepage じゃないかという気もするが、分からない。</p>
+  <ul>
+  <li><a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dd317756(v=vs.85).aspx">Code Page Identifiers</a></li>
+  <li><a href="http://msdn.microsoft.com/ja-jp/library/cc448089.aspx">WideCharToMultiByte 関数</a></li>
+  <li>utf-8 は cp65001</li>
+  <li><a href="http://gete.blog.shinobi.jp/Entry/11/">ふぁいんどぱわー　調べる人の冒険！（チラシの裏よりチョット上） ConvertINetMultiByteToUnicode</a>
+    <p>うーん。でもやっぱり codepage とは値が一致していない様な気がする。</p>
+  </li>
+  </ul>
+</li>
+<li><a href="http://msdn.microsoft.com/ja-jp/library/cc428044.aspx">OpenTextFile メソッド</a>
+  <p>うーん。初めから公式のページを探すべきだった。これは utf-8 では開けそうにない…。
+  自分でデコードする羽目になるのだろうか…。
+  </p>
+</li>
+</ul>
+<p>調べていたら、utf-8 は fso では扱えないから、別の奴を使うらしい。</p>
+<ul>
+<li><a href="http://d.hatena.ne.jp/replication/20091006/1254755257">ADODB.Streamオブジェクトを利用したUTF-8ファイルの読み書き - 大人になったら肺呼吸</a>
+  <p>そう言えば、昔別の物を書いていた時にも散々悩んだ挙げ句に、この ADODB.Stream に辿り着いた様な気がする。
+  滅茶苦茶昔の話だから余り覚えていないが…。</p>
+</li>
+</ul>
+<pre class="agh-prog-vbs">
+  ' ファイルの中身を戻り値として返す
+  Public Function ReadAll(fileName)
+    On Error Resume Next
+    Dim medthodName : medthodName = name &amp; "." &amp; "ReadAll"
+    
+    With CreateObject("ADODB.Stream")
+      .Charset = "UTF-8"
+      .Open
+      .LoadFromFile(fileName)
+      ReadAll = .ReadText
+      .Close
+    End With
+    If Err.Number &lt;&gt; 0 Then
+      errNo = Err.Number
+      errDesc = Err.Description
+      On Error GoTo 0
+      Call Err.Raise(errNo, medthodName, errDesc)
+    End If
+    
+  End Function
+</pre>
+<p>これを適当に書き換えて js にすれば良い。</p>
+<pre class="agh-prog-js">
+function load_utf8(){
+  try{
+    var f=CreateObject("ADODB.Stream");
+    f.Chrset="UTF-8";
+    f.Open();
+    f.LoadFromFile(filename);
+    var ret=f.ReadText;
+    f.Close();
+    return ret;
+  }catch(e){
+    return null;
+  }
+}
+</pre>
+<p>→これで漸く utf-8 のファイル内容を正しく読み取る事ができる様になった。
+然も、ちゃんと utf-8 の BOM も理解している。(多分。まあ、動いているから OK)</p>
+<!--========================================================================-->
+<h4>window?</h4>
+<p>所で、スクリプトの中から window.mwg に触ろうとすると悉く失敗すると思っていたら、
+window オブジェクトが存在していない様であった…。うーん。
+</p>
+<ul>
+<li>window ×</li>
+<li>document.defaultView ×</li>
+<li>document.window ×</li>
+<li>_window ○:
+  参考のスクリプトを見てみたら _window という物があったので、試しにそれで見たらちゃんと取得出来た。
+  tkynt2 で初期化しておけばちゃんと window.mwg も初期化されている様である。
+</li>
+</ul>
+<p>と思っていたら、この辺りの事はちゃんと解説サイトなんかにも書いてある。
+Sleipnir\documents\Sleipnir-Script.txt にも書いてあった。
+window だけでなく document も _document 等の様にしてアクセスしなければならないそうだ。
+後、var window=_window; var document=_document; としても問題は生じない様だ。
+</p>
+<!--========================================================================-->
+<h4>css の読込について</h4>
+<p>IE8 に update したからなのか何なのか、ページを更新する度に一々煩いメッセージを表示する。
+因みに警告メッセージで「安全でないコンテンツ」を読み込む様に指定しても、css ファイルの内容はページに反映されていない様である。
+これは、css をローカルから読み取ろうとしているからであろうか…?
+</p>
+<ul>
+<li>→試しに latex.cor.js を読み込まずに、load_css 関数を呼び出したり呼び出さなかったりしてみた。
+  やはり、css をローカルから読み取ろうとすると警告が出る様である。
+  (もしかして、画像の類もローカルから読み取るのは IE8 から禁止されるのだろうか…?)
+</li>
+<li>load_css を書き換えて何もしない様に変更したら警告は出なくなった。
+  所で、mwg.js の load にバグを発見した。
+  switch で勝手に fall-through していて、.css ファイルに対して load_css の後に load_js も実行していた様である。
+  但し、load_css の時点で .css ファイルが登録されるので、load_js は既登録ファイルとして何も実行していなかった為に今迄大丈夫だった。
+</li>
+<li>所で、Sleipnir には URI アクションという物を設定する事ができて、URI 毎にアクセスのセキュリティレベルを変更する事ができる様だ。
+  しかし、これでアドオンの URI を変更してもやはり警告は出て来る様である。
+  (URI アクションは、中に含まれている画像などに対しても有効である様だから、アドレスバーのアドレスでなくても大丈夫の筈??)
+  https://mail.google.com/ の方のセキュリティレベルを変更してもやはり警告は出るままである。
+</li>
+</ul>
+<p>どうもこの問題はローカルのファイルを読み込もうとしているからと言うよりは、
+「別ドメイン」のデータを読み込もうとしている為に起こっている問題の様に思われる。
+→試しに tkynt2 から読み込ませる様にしてみたら、やはり同様の警告が出てきた。
+</p>
+
+<p>文字列として埋め込む方法。style タグを記述してそれを直接記述する…。</p>
+<ul>
+<li>試しに div 要素を作成してその innerHTML に style タグを流し込んでみると…中には何も生成されなかった…。div は空っぽの儘。</li>
+<li>次に div 要素の代わりに head 要素を作成してその innerHTML に style タグを流し込もうとすると…そもそも head 要素の innerHTML に値を代入する事は出来ない様だ。</li>
+<li>うーん。手で一つ一つ設定するしかないのだろうか…。</li>
+<li>と思ったら <a href="http://stackoverflow.com/questions/524696/how-to-create-a-style-tag-with-javascript">html - How to create a &lt;style&gt; tag with Javascript - Stack Overflow</a> 何て言うのがある。
+  div.innerHTML に指定する時に &lt;br/&gt; を先に付加しておけば良い様だ。
+</li>
+</ul>
+
+<!--========================================================================-->
+<h4>最後の手段</h4>
+<p>→ [この節は mwgtex4ie に移動]</p>
+
+
+
+<!--========================================================================-->
+<h4>まとめ</h4>
+<ul>
+<li>.js
+  <p><del>これはローカルからは読み取ってはくれない様である。
+  仕様がないので、全て一つのファイルに結合してしまう…?
+  でも、拡張を色々見ていると .js を別ファイルにしている様な気がする…。
+  どうやって読み込んでいるのかを調べれば或いは簡単に解決出来るかも知れない。
+  </del></p>
+  <p><del>RunScript で実行する事ができる。
+  但し、ファイルは shift_jis でなければならない。(BOM があっても無駄)</del>
+  </p>
+  <p>1. CreateObject で COM オブジェクトを作成して内容を読み取り、
+  2. それを eval すれば良い。CreateObject するのは ADODB.Stream
+  </p>
+</li>
+<li>.css
+  <p>未確認である。もしこれも読み取ってくれないのであれば、
+  やはり .js の中に結合してしまうと言う手がある。</p>
+</li>
+<li>画像
+  <p>これは、css で指定する限りはローカルからでも読み取ってくれる様である。</p>
+  <p>img の src に指定した場合にどうなるかについては未確認である。</p>
+</li>
+<li>フォント
+  <p>これも未確認。もし駄目なら tkynt2 等に頼るしかない。</p>
+</li>
+</ul>
+
+<h3>addEventListener エミュレーション</h3>
+<p>基本的には attachEvent を使用すればよい。</p>
+
+<p>但し、attachEvent した儘だとメモリリークが発生する。
+IE では JavaScript のオブジェクトは(多分) COM であり、COM は参照カウント式のメモリ管理になっている。
+従って、循環参照があるとオブジェクトを開放する事ができないのである。
+これに対処する為には、ページの unload 時に detachEvent するのが良い。
+</p>
+<ul>
+<li><a href="http://msdn.microsoft.com/ja-jp/library/bb250448(v=vs.85).aspx">Internet Explorer リーク パターンを理解して解決する</a></li>
+<li><a href="http://d.hatena.ne.jp/zorio/20060316/1142528060">IEのメモリリーク - zorioの日記</a></li>
+<li><a href="http://dev.ariel-networks.com/Members/uchida/ie306eattachevent30e130e230ea30ea30fc30af3059308b4ef6/">IEのattachEventでメモリリークする件で — ありえるえりあ</a></li>
+<li><a href="http://d.hatena.ne.jp/vividcode/20090710/1247227990">IE でも event.currentTarget を使えるようにする - vivid memo</a></li>
+<li><a href="http://d.hatena.ne.jp/vividcode/20090711/1247315714">名前つきの関数リテラルに関するよくわからない IE の挙動 - vivid memo</a></li>
+</ul>
+<!--************************************************************************-->
+<h3>iframe 内での実行について</h3>
+<ol>
+<li>[SeaHorse] スクリプトの実行が終わるとその間に生成されたオブジェクトは全て消えて無くなる。
+  <p>つまり、SeaHorse の側で関数を定義して attachEvent しても、
+  スクリプトの実行が終わると (=初期化が終わると) 関数が消えて無くなるという事である。
+  →これはどうやら window.eval の中で関数を生成して attachEvent を実行すればスクリプトの実行が終わっても、
+    ちゃんと関数は消えて無くならない様である。
+  </p>
+</li>
+<li>window.setInterval で定期的に新しい frame ができていないか確認して、
+  新しい frame が出来ていたら初期化関数を実行する様にする事にした。
+  然し、初期化は実行されている様であるが、onmousemove が実行されていない様な気がする…。
+  と、思っていたら event.target が null だと関数を実行しない様になっていたのであった。
+  IE の場合には target ではなくて srcElement とかそんな所であろう。
+</li>
+<li>今度は、ちゃんと初期化する関数も呼ばれている様だが、
+  Range が一つも作成されていない様である。
+  要素の判定の仕方についての問題だろうか。
+  →どうも、document.ELEMENT_NODE 等の定数が定義されていない様である。
+</li>
+<li>今度はエラーが発生して落ちる…と思ったら、
+  getElementsByClassName の代替実装の中に変な事をしている部分があったので修正。
+  更に、関数の中から外側の this を触ろうとして駄目になっている部分もあったので修正。
+</li>
+<li>css が読み込めていない事を除けば、何とか変換出来ている様である。
+  然し、編集プレビューの初期化の際にやはりエラーが発生している様である。
+  →addEventListener を書き換えた時に this.eedit が this.edit に化けていた様である。
+  →更に、fontSize の値として "normal" は不正な様である。medium でなければならない。
+</li>
+<li>編集プレビューで改行が増えている様な気がする。
+  →html_escape_pre にて \r\n が二重改行に化けていた様である。修正した。
+</li>
+</ol>
+
+<!--************************************************************************-->
+<h3>まとめ</h3>
+<ul>
+<li>[SeaHorse] スクリプトの実行が終わると attachEvent した関数がなくなる
+  <p>関数の生成を window.eval の中で実行すれば良い。というか、全ての処理を window.eval の中で実行する様にする。</p>
+</li>
+</ul>
+
+<!--########################################################################-->
+<h2>mwg3.addon.mwgtex4thunderbird</h2>
+<p>Thunderbird のアドオンを作るという事</p>
+<ul>
+<li><a href="http://d.hatena.ne.jp/mallowlabs/20080807/1218106360">Thunderbird の拡張機能(アドオン)を作ってみた - mallowlabsの備忘録</a></li>
+<li><a href="https://addons.mozilla.org/en-us/thunderbird/addon/dom-inspector-6622/">DOM Inspector for Thunderbird</a></li>
+<li><a href="http://wiki.livedoor.jp/huyukarakaze/d/ThunderBird%A5%A2%A5%C9%A5%AA%A5%F3%BA%EE%C0%AE%CA%FD%CB%A1#content_6_6">ThunderBirdアドオン作成方法 - 個人用メモ - livedoor Wiki（ウィキ）</a>
+  <p>タイトルしかない。詐欺サイト。</p>
+  <p>以下 Thunderbird のアドオンを作っている人達。
+  でも、別に作り方について説明をしている訳ではないのでは参考にはならない様な気がする。</p>
+  <ul>
+  <li><a href="http://hogi.sakura.ne.jp/ja/index.rhtml">h.ogi's place</a></li>
+  <li><a href="http://www.kenmaz.net/index.html">kenmaz.net</a></li>
+  </ul>
+</li>
+<li>公式 Reference:
+  <a href="https://developer.mozilla.org/en/Extensions/Thunderbird/Building_a_Thunderbird_extension">Building a Thunderbird extension 1: introduction - MDN</a>
+  <ul>
+  <li><a href="https://developer.mozilla.org/en/Building_an_Extension">Building an Extension - MDN</a> - これは Firefox の拡張の作り方</li>
+  <li><a href="https://addons.mozilla.org/ja/developers/docs/reference">API &amp; Language References :: Add-on Documentation :: Developer Hub :: Add-ons for Firefox</a></li>
+  <li></li>
+  </ul>
+</li>
+<li>自動更新
+  <ul>
+  <li><a href="http://www.kis-lab.com/serikashiki/FF/FF02.html">install.rdf</a></li>
+  <li><a href="https://developer.mozilla.org/en/Extension_Versioning,_Update_and_Compatibility#Update_RDF_Format">Extension Versioning, Update and Compatibility - MDN</a></li>
+  <li><a href=""></a></li>
+  </ul>
+</li>
+</ul>
+<!--************************************************************************-->
+<h3>DOM Inspector</h3>
+<p>開発をする為には DOM Inspector が必要不可欠との事。入れてみた。
+良い感じに使える。ブラウザと似た様な感じである。
+序でに、DOM Inspector 自体のソースも覗いてみた。
+</p>
+<p>先ず、DOM Inspector の Inspect Content Document を使ってみてみると、
+予想通りメールの本文の表示は html 形式によって行われているという事が分かった。
+後は、表示する瞬間に html 形式の部分を書き換える事ができれば良い。
+</p>
+<ul>
+<li>dominspector/chrome/inspector/content/inspector:
+  window.addEventListener("load",関数,); で、
+  アドオンのウィンドウを表示する時の動作を登録出来る。
+  
+  <p>他にも色々</p>
+<pre class="agh-prog-js">
+./extensions/wsm-colorpicker.js:48:  window.addEventListener("load", AddColorPicker_delayCheck, false);
+./inspector.js:80:window.addEventListener("load", InspectorApp_initialize, false);
+./inspector.js:81:window.addEventListener("unload", InspectorApp_destroy, false);
+./inspector.js:172:    el.addEventListener("pageshow", BrowserPageShowListener, true);
+./jsutil/xul/inTreeBuilder.js:280:      // addEventListener doesn't work for dnd events, apparently... so we use the attributes
+./object.js:53:window.addEventListener("load", ObjectApp_initialize, false);
+./object.js:54:window.addEventListener("unload", ObjectApp_destroy, false);
+./sidebar.js:65:window.addEventListener("load", InspectorSidebar_initialize, false);
+./viewers/accessibleEvent/accessibleEvent.js:62:window.addEventListener("load", AccessibleEventViewer_initialize, false);
+./viewers/accessibleEvents/accessibleEvents.js:67:window.addEventListener("load", AccessibleEventsViewer_initialize, false);
+./viewers/accessibleObject/accessibleObject.js:64:window.addEventListener("load", AccessibleObjectViewer_initialize, false);
+./viewers/accessibleProps/accessibleProps.js:71:window.addEventListener("load", AccessiblePropsViewer_initialize, false);
+./viewers/accessibleProps/accessiblePropViewerMgr.js:153:  this.tabsElm.addEventListener("select", this, false);
+./viewers/accessibleRelations/accessibleRelations.js:65:window.addEventListener("load", AccessibleRelationsViewer_initialize, false);
+./viewers/accessibleTree/accessibleTree.js:73:window.addEventListener("load", AccessibleTreeViewer_initialize, false);
+./viewers/boxModel/boxModel.js:56:window.addEventListener("load", BoxModelViewer_initialize, false);
+./viewers/computedStyle/computedStyle.js:58:window.addEventListener("load", ComputedStyleViewer_initialize, false);
+./viewers/dom/columnsDialog.js:62:window.addEventListener("load", ColumnsDialog_initialize, false);
+./viewers/dom/columnsDialog.js:63:window.addEventListener("unload", ColumnsDialog_destroy, false);
+./viewers/dom/dom.js:74:window.addEventListener("load", DOMViewer_initialize, false);
+./viewers/dom/dom.js:75:window.addEventListener("unload", DOMViewer_destroy, false);
+./viewers/dom/dom.js:848:      doc.addEventListener("mousedown", MouseDownListener, true);
+./viewers/dom/dom.js:849:      doc.addEventListener("mouseup", EventCanceller, true);
+./viewers/dom/dom.js:850:      doc.addEventListener("click", ListenerRemover, true);
+./viewers/dom/dom.js:854:      doc.addEventListener("mouseout", ListenerRemover, true);
+./viewers/dom/FindDialog.js:55:window.addEventListener("load", FindDialog_initialize, false);
+./viewers/dom/insertDialog.js:47:window.addEventListener("load", InsertDialog_initialize, false);
+./viewers/dom/pseudoClassDialog.js:59:window.addEventListener("load", PseudoClassDialog_initialize, false);
+./viewers/domNode/domNode.js:58:window.addEventListener("load", DOMNodeViewer_initialize, false);
+./viewers/domNode/domNodeDialog.js:46:window.addEventListener("load", DomNodeDialog_initialize, false);
+./viewers/jsObject/jsObject.js:53:window.addEventListener("load", JSObjectViewer_initialize, false);
+./viewers/styleRules/styleRules.js:65:window.addEventListener("load", StyleRulesViewer_initialize, false);
+./viewers/stylesheets/stylesheets.js:56:window.addEventListener("load", StyleSheetsViewer_initialize, false);
+./viewers/xblBindings/xblBindings.js:61:window.addEventListener("load", XBLBindingsViewer_initialize, false);
+./viewers/xblBindings/xblBindings.js:216:      req.addEventListener("load", gDocLoadListener, true);
+</pre>
+</li>
+<li>メールの本文を表示した瞬間に呼び出して貰う様にするにはどうしたらよいのか?
+</li>
+<li>[Inspect Content Document] メニューでの処理をみれば、どうやってメール本文にアクセスすればいいか分かるかも。
+  inspector.js:511: appendContainedDocuments が怪しい。
+  これは指定した "docShell" の中の document を取得する為の関数。
+
+  docShell は以下で取得されている。
+  inspector:465: 
+  // Get the window's main docshell
+  var windowDocShell =
+    XPCU.QI(windows.getNext(), "nsIXULWindow").docShell;
+</li>
+</ul>
+<!--************************************************************************-->
+<h3>quotecolors.js</h3>
+<p>これは、メールを表示する時に、引用部分の表示を変更する物。
+stylesheet を挿入するだけの様だが、表示画面の内容に干渉している様である。
+参考になる。
+</p>
+<p>実際にイベントを登録しているのは、quotecolors.js:74: の様である。
+document が何処から来るのかは不明であるが、これは拡張を登録する際の設定で変わるのかも知れない。
+</p>
+<pre class="agh-prog-js">
+  initBrowserRef : function()
+  {
+  
+    if(gbQCPrintMode) {
+      this.oMsgBrowser = document.getElementById("content");
+    }
+    else {
+      this.oMsgBrowser = document.getElementById("messagepane");
+    }
+    
+    if(this.oMsgBrowser)
+      this.oMsgBrowser.addEventListener("load", this.applyColorsToMsg, true);
+  
+  },
+</pre>
+<p>その他にも、変更を課すかどうかの条件判定が色々複雑な様なので、これは参考にした方が良いと思う。
+勝手に内容を弄ると不味い事になる場合もあるのかも知れないので。
+</p>
+<ul>
+<li><a href="http://thunderbird.geckodev.org/index.php?%E7%9B%AE%E7%9A%84%E5%88%A5%E6%8B%A1%E5%BC%B5%E4%B8%80%E8%A6%A7">目的別拡張一覧 - Mozilla Thunderbird まとめサイト</a>
+  <p>quotecolors は此処で紹介されていた。他のアドオンで表示の内容を変更する物は無い様である。</p>
+</li>
+<li><a href="http://www.geocities.jp/chimantaea_mirabilis/QuoteColors/">Quote Colors Japanese Translations</a></li>
+<li><a href="http://quotecolors.mozdev.org/">mozdev.org - quotecolors: index</a></li>
+</ul>
+
+<p>→ これはどうもバージョンの古い Thunderbird に対する拡張の様で、やはり参考にならない。</p>
+<!--************************************************************************-->
+<h3>公式のチュートリアルから</h3>
+<ol>
+<li>良く分からないが取り敢えず何を拡張するかの指定は、
+chrome.manifest に書くらしい。
+</li>
+<li>サンプルとして手に入れた、quotecolors には chrome.manifest は含まれていなかった。
+  どうやら、古い拡張の様である。少なくとも、Thunderbird のアドオン検索で探してみたけれども、
+  quotecolors は含まれていなかった。
+</li>
+<li>結局チュートリアルは、何処かに変なボタンを追加するだけの物であって、表示内容に干渉する方法は良く分からない。
+</li>
+<li>表示内容に干渉する方法の二通りのパターンは:
+  <ul>
+  <li>表示した後に、表示内容にスクリプトを適用して変更をする。</li>
+  <li>表示する前に、変換を適用する。これは、既に引用部分のマークアップなどをしている部分を置換、
+  または機能を追加するという事である。
+  </li>
+  </ul>
+</li>
+<li>Thunderbird/Firefox の extension に含まれているファイル達は、
+  chrome://なんたらかんたら/ の url で参照する事ができる。
+  これは、Google Chrome の場合と同様である。
+</li>
+<li>メール内容を表示する時に使われる stylesheet は
+  <ul>
+  <li>chrome://messagebody/skin/messageBody.css</li>
+  <li>chrome://messenger/skin/messageQuotes.css</li>
+  </ul>
+  <p>の辺りに存在している。これの内容を変更する場合には、
+  override chrome://original.css chrome://myextension/hoge.css
+  等という内容を manifest に書けばよい。
+  </p>
+</li>
+<li><a href="http://h0.web.u-psud.fr/logicielslibres/KSud_2010_2011/Apps/FramabirdPortable/App/Framabird/chrome/messenger.manifest">messenger.manifest</a>
+  <p>この拡張は messageBody.css を override している。怪しい。
+  特に怪しいのは、</p>
+  <ul>
+  <li>overlay chrome://messenger/content/messengercompose/messengercompose.xul chrome://messenger-smime/content/msgCompSMIMEOverlay.xul
+    <p>これは、名前の通りにメールの編集画面である。</p>
+  </li>
+  <li>overlay chrome://messenger/content/messageWindow.xul chrome://messenger-smime/content/msgReadSMIMEOverlay.xul
+    <p>これは、メインウィンドウっぽい?</p>
+  </li>
+  <li>overlay chrome://messenger/content/messenger.xul chrome://messenger/content/search/searchOverlay.xul
+    <li>うーん。これもメインウィンドウの中の構成についての言及?</li>
+  </li>
+  <li>overlay chrome://messenger/content/msgHdrViewOverlay.xul chrome://messenger-smime/content/msgHdrViewSMIMEOverlay.xul
+    <p>これがいかにも怪しい感じのウィンドウである。というか中になにも表示されていないだけだが。</p>
+    <ul>
+    <li>chrome://messenger-smime/content/msgHdrViewSMIMEOverlay.js</li>
+    <li>chrome://messenger/content/msgHdrViewOverlay.js</li>
+    <li>chrome://global/content/nsDragAndDrop.js</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>というか、メッセージの内容はメインウィンドウから辿っていく事ができると判明。
+  以下の構造になっている。
+<pre>
+document
+&gt;window#messengerWindow
+&gt;hbox#tabmail-container
+&gt;xul:tabbox
+&gt;tabpanels#tabpanelcontainer
+&gt;box#mailContent
+&gt;box#messengerBox
+&gt;vbox
+&gt;box#messagesBox
+&gt;vbox#messagepanebox
+&gt;vbox#singlemessage
+&gt;hbox#messagepanewrapper
+&gt;browser#messagepane
+&gt;document
+</pre>
+  <p><a href="http://oshiete.goo.ne.jp/qa/3034292.html">Thunderbird の ヘッダ関連の挙動をカスタマイズしたい - E-Mail - 教えて！goo</a>
+  ←ここで回答している人で、やけに詳しい人がいる。
+  </p>
+</li>
+<li>どうやら Thunderbird 自体スクリプトの塊の様である。
+  全ての動作は Program Files/Mozilla Thunderbird/omni.jar の中に入っている。
+  今回特に必要なのは、chrome/messenger/ の中身。
+  <ul>
+  <li>messageWindow.xul の中に browser#messagepane が定義されているという事が判明した。
+  スクリプトなども messageWindow.xul から呼び出されている様である。
+  これらのスクリプトのなかから messagepane に対して操作を実行している物を探し出せば良さそう。
+  </li>
+  <li>取り敢えず、phishingDetector.js が中に含まれている
+    link を検索してチェックするスクリプトの様だから、
+    参考になるんじゃないかという気がする。
+    messagepane を使用している関数は gPhishingDetector.analyzeMsgForPhishingURLs。
+    <p>そしてこの関数を呼び出しているのは、mailWindowOverlay.js の中の関数である。
+    OnMsgLoaded/OnMsgParsed </p>
+<pre class="agh-prog-js">
+// this is called when layout is actually finished rendering a
+// mail message. OnMsgLoaded is called when libmime is done parsing the message
+function OnMsgParsed(aUrl)
+</pre>
+    <p>更にこれを呼び出しているのは msgHdrViewOverlay.js の中の関数 onEndMsgDownload/onEndMsgHeaders。
+    そしてこれを呼び出している関数は…見付からない。。</p>
+  </li>
+  </ul>
+</li>
+<li>messageWindow.xul を弄れば良いと分かった所で、overlay の仕方を調べる事にした。
+  <p>検索してみると、実際に作成をしている人がいる:
+  <a href="http://www.moetora.com/log/20081105.html">萌虎.com</a>。
+  [一方で、公式のチュートリアルは流れを簡単に説明しただけで、サンプルですらない (実際に動かさない)。
+  しかも、何が必要で何がオプションなのかも良く分からないし。(overlay は必ず必要なのか?)]
+  それよりは、この様な現在やろうとしている事に近い事をやっている物は、参考になりそう。
+  </p>
+  <p>というか、今やりたい事の答えが殆ど書かれている様な…。</p>
+</li>
+<li>
+  <p>どうやら、自分の作った拡張は読み込まれてはいる様だが、
+  実際に機能していない。overlay されていない様な気がする。
+  直接呼び出せばちゃんと script も実行されている様である。</p>
+  <p>どうも、overlay する対象が間違っている様な気もする。
+  色々調べると <a href="https://addons.mozilla.org/ja/thunderbird/addon/open-all-links/versions/">Open all links :: Versions :: Add-ons for Thunderbird</a>
+  で、chrome://messenger/content/message.xul の代わりに chrome://messenger/content/mailWindowOverlay.xul を overlay しろと書いてある。
+  因みに、inspector もそれに overlay している様である。
+  </p>
+  <p>現在 overlay しようとしているのは message.xul ではなくて messageWindow.xul ではあるが、
+  試しに overlay してみる事にした。→今度はちゃんと overlay された。
+  overlay する時の対象が制限されているという事だろうか?
+  そして、この overlay によって、#messagepane をちゃんと認識している様である。
+  </p>
+  <p>背景の色を変更する事に成功した!</p>
+</li>
+</ol>
+<!--************************************************************************-->
+<h3>実装 2011/12/04</h3>
+<p>取り敢えずこれで目途は立った。
+後は、適当に mwg.js を読み込ませて内容を書き換えればよいだけである。</p>
+<ol>
+<li>メールの表示の際には javascript は off になっている様である。
+  実際にスクリプトが実行されていない。
+  因みに、Thunderbird のようこそ画面などの別の画面の場合には javascript が実行されている。
+  <p>これは明らかにセキュリティ上の理由からである。
+  勝手に on にする訳にも行かない。
+  なので、外部で TeX ソースに変換して外部から挿入するしかない。
+  元々 mwg ライブラリは別の場所で読み込んで実行する事を想定していない。
+  従って、本当に動作するかどうかは試してみないと分からない。
+  </p>
+  <p>先ず、mwg ライブラリが初期化を行う為には、var head=document.getElementsByTagName('head')[0] が存在していないと行けない。
+  然し、実際にブラウザの外で試してみた所、document.getElementsByTagName('head') までは実行出来るが、検索結果は空の様である。
+  つまり、head 要素はブラウザの外の環境には存在していないという事。
+  スクリプトや css を外部から読み込む際に制限が掛かるかも知れない。
+  (head 要素の外で追加してしまえばよいだろうか?)
+  </p>
+</li>
+<li>仕様がないので、mwg.js を外部で読み込んで、外部で変換した結果を外部からメール表示の部分に挿入する事にした。
+  <p>その為に先ずは mwg.js を外部で読み込まなければならない。
+  しかし、読込に失敗する…というか、読込には成功している様だが他の部分で例外が出るようになってしまっているようだ。
+  調べてみると、どうも Array.prototype を汚染すると (何を追加したとしても) 後で例外が起こる様である。
+  因みに、その場ではちゃんと汚染に成功して、新しいメンバ関数もちゃんと動作している様であった。
+  うーん。for in でループを回しているという事だろうか。
+  </p>
+  <p>やはり、Array 自体に対する汚染や、String.prototype に対する汚染はしても大丈夫な様なので、
+  for in でループを回している箇所があって、其処で変な物まで列挙されているというのが原因の様である。
+  こういう時はカスタムイテレータを自分で定義して for in の動作を変えてしまえば良い様である。
+  </p>
+  <ul>
+  <li><a href="http://jintrick.net/agenda/2008/02/javascript-4.html">Javascriptのイテレータ備忘録 (agenda)</a></li>
+  <li><a href="http://d.hatena.ne.jp/jintrick/20070904">Javascript1.7のカスタムイテレータとXPath - Hatena::agenda</a></li>
+  </ul>
+  <p>Array の列挙子は、添字 0 から length-1 番迄の要素を返す様な実装で構わないだろう…
+  (益々汚染の度合いが増えている様な…メンバも列挙する事を期待しているコードがあったら死ぬ。)
+  </p>
+<pre class="agh-prog-js">
+  Array.prototype.__iterator__=function(){
+    var self=this;
+    var index=0;
+    return {
+      item:function(index){return self[index];},
+      next:function(){
+        if(index&lt;self.length)
+          return self[index++];
+        else{
+          index=0;
+          throw StopIteration;
+        }   
+      }
+    };
+  };
+</pre>
+  <p>実際にやってみた所、for in で確かに使う事ができているけれども、
+  何故か別の所の for in で例外になって死んでいる…。
+  <del>やはりカスタムイテレータを設定するのは危険という事だろうか…。
+  と、思ってよく見てみると死んでいるのは for(in) ではなくて、
+  if(in) であった。もしかして __iterator__ を定義する時にはそれに対応して
+  メンバが存在しているかどうかを確かめる関数も定義しなければならないという事だろうか?
+  </del>
+  唯、自分が next 関数の仕様を勘違いしていただけだった。
+  返さなければならないのは、要素ではなく key の方。
+  と思ったけれども、どうやらそうでもなくて引数によって切り替えなければならないのか?
+  </p>
+  <ul>
+  <li><a href="http://d.hatena.ne.jp/javascripter/20080916/1221577824">Arrayにfor..in、for eachを使っても順序が保証されるようにする(__iterator__) - 素人がプログラミングを勉強するブログ</a>
+    <p>ここでは引数によって返す物を切り替えている。
+    但し、此処に載っている例は、再帰定義になっているので無限ループになっている。
+    直接は使えない(何でこんな動かない物が載っているのだろう。互換性の問題で動いたりする環境もあるのだろうか)。
+    </p>
+    <p>__iterator__ の引数が true の時には key を返し、false の時には value を返している。
+    然し、これでもちゃんと動かない…。→これは間違っていた。
+    </p>
+    <p>このページは本当に間違いだらけ。存在しない方が良いページ。</p>
+  </li>
+  <li><a href="http://jintrick.net/agenda/2008/02/javascript-4.html">Javascriptのイテレータ備忘録 (agenda)</a>
+    <p>改めてこちらを見てみたら、ちゃんと書いてある。for each(let [k,value] in hoge) の時には、
+    __iterator__ は第一引数が false で呼び出されるのだと。
+    そして、__iterator__.next は [key,value] を返さなければならないのだ。
+    </p>
+    <p><del>と思って、その様に実装してみたのだが動いていない様子である…。</del>
+    each を書くのを忘れていた。for each でやったらちゃんと期待通りの動作になっていた。
+    然し、それでも、Thunderbird は動作しない様である。
+    </p>
+  </li>
+  </ul>
+  <p>と! 思ったら! そもそも __iterator__ を呼び出していないのに失敗している様である。
+  つまり、自分の設定した __iterator__ でない __iterator__ が呼び出されていて、
+  その __iterator__ が自分が勝手に追加した __iterator__ を列挙してしまっているという事なのだろうか??
+  →実際に何も列挙しない iterator を返す様にしてみたが同様の問題が発生している。
+    つまり、__iterator__ の返す物自体に問題がある訳ではないと思われる。
+  それでも __iterator__ を設定した時と、別の勝手な名前のメンバを設定した時でエラーの動作が異なる。
+  どういう事になっているのだろう?
+  </p>
+</li>
+<li>別の background page を用意して其処に mwg.js を読み込ませる?
+  <ul>
+  <li>browser 要素を挿入する計画
+    <p>どうも、Array.prototype 汚染の所為で Thunderbird のメインウィンドウに mwg.js を読み込むのは難しそうだ。
+    と言う事で方針を変更して、別のブラウザオブジェクトを初期化してその中に mwg.js を読み込ませるというのはどうであろう?
+    </p>
+    <p><del>どうも、唯単に browser 要素を追加するだけで動いている様である…。</del>
+    追加した browser 要素を見えないようにするためには hidden="true" を指定しておけばよいらしい
+    (<a href="http://kittttttan.web.fc2.com/xul/extension3a.html">はじめに - ３章：XUL入門 - Firefox拡張機能開発チュートリアル (XHTML)</a>)。
+    </p>
+    <p>※ 所で、status bar の様子が何か変な様な気がするが…
+    でも、これは browser 要素を追加しなくても変みたいだから気にしなくても良いのか…?
+    </p>
+    <p><del>更に、これに javascript を読み込ませたいと思ったら、適当な html を読み込ませれば良いだけな気がする。</del>
+    エラーも何も出てこないから動いているのかと思っていたら、そもそも読み込まれてすら居なかった? 様である。
+    というのも getElementById で探しても null しか帰ってこないからである。
+    </p>
+  </li>
+  <li>うーん。自前で iframe 要素を作成したら?
+    <p>それでも、何故か内容が読み込まれていない。</p>
+    <ul>
+    <li>iframe.src=なんたらでは読み込まれず、iframe.setAttribute("src","なんたら"); としなければならない様である。</li>
+    <li>更に、XUL hierarchy の何処かに挿入されるまでは読み込まれない様である。</li>
+    <li>因みに、document.appendChild は存在しているが、これで直接 document の下に追加しようとすると怒られる。</li>
+    <li>iframe.style.display="none" にしておけば表示されない。それでもちゃんとロードしてくれている。</li>
+    </ul>
+  </li>
+  </ul>
+  <p>この方法でなんとか行ける様である。
+  処理は messageWindow 側で行おうとしたが、mwg がロードされていない所為で思いの外不便…。
+  という訳で殆どの変換処理を bgpage の中で実行する事にした。
+  </p>
+</li>
+</ol>
+<!--************************************************************************-->
+<h3>編集プレビュー 2011/12/08</h3>
+<ol>
+<li>先ずは overlay
+  <p>取り敢えず拡張の対象は以下の場所にある。
+  editor は雰囲気はブラウザの様子である。
+  つまり、contentDocument で中身を参照する事ができそうな気がする。</p>
+<pre>
+#document
+&gt;window#msgcomposeWindow
+&gt;hbox>vbox>vbox#appcontent
+&gt;editor#content-frame
+</pre>
+  <p>適当に msgcomposeWindow overlay とかで検索してみると…
+  chrome://messenger/content/messengercompose/messengercompose.xul を overlay すれば良い?</p>
+  <ul>
+  <li><a href="http://forums.mozillazine.org/viewtopic.php?f=19&t=1850495">extracting nsiMsgCompFields object in thunderbird extension &bull; mozillaZine Forums</a> 2010/04/19</li>
+  <li><a href="http://d.hatena.ne.jp/mallowlabs/20080807/1218106360">Thunderbird の拡張機能(アドオン)を作ってみた - mallowlabsの備忘録</a> 20080807</li>
+  <li><a href=""></a></li>
+  </ul>
+  <p>実際に overlay してみるとちゃんと js が実行されている様なので OK</p>
+  <ul>
+  <li>#appcontent 取得可能</li>
+  <li>#content-frame 取得可能</li>
+  <li>window.setTimeout OK</li>
+  <li>window.clearTimeout OK</li>
+  </ul>
+</li>
+<li>コントロールの追加
+  <p>適当に hbox を作成してそれを挿入するというのは簡単にできたが、コントロールの幅や高さを指定する方法が分からない。
+  hbox に入れて幅を指定しなければできるだけ一杯横に広がる物じゃないかと思っていたが、そうではない様である。
+  例えば、hbox に二つの子要素を追加して大体両方とも幅 50% にするにはどうしたら良いのだろうか…?
+  </p>
+  <p>と思ったら、一杯に伸ばす為には flex を使えば良い様である。
+  しかも、複数の要素で flex を使用すれば勝手に flex の数値の比で分配される様である。
+  </p>
+  <p>所が実際にやってみると微妙にプレビュー画面の方が大きく表示されてしまっている…。
+  何でだろう。更にウィンドウを縮めていくとどんどんプレビュー画面の比率が大きくなっていく。
+  どうも、プレビュー画面 iframe の最小幅? 既定幅? の様な物が在る様な気がする。
+  →試しに iframe の幅を 10px とかに設定してみたら、やはり占める割合の不均等性が増しになった。</p>
+</li>
+<li>content-frame の中身にアクセス。
+  <p>editor はどうせ雰囲気からして iframe と同じで contentWindow やら contentDocument から中身を見られるだろう…
+  と思って実際に試してみたら contentWindow も contentDocument も undefined である。
+  どうした物か。
+  </p>
+  <ul>
+  <li>2009⁄05⁄07 <a href="http://remotehost.blog54.fc2.com/blog-entry-22.html">あるプログラマの千鳥足跡: Thunderbird のアドオンを作ってみる　Part 7 - メール本文チェック</a>
+    <p>このページではちゃんと contentDocument にアクセスできているようである。</p>
+  </li>
+  <li><a href="http://forums.mozillazine.org/viewtopic.php?f=19&t=1284705">[Thunderbird] How to modify editor contents? &bull; mozillaZine Forums</a>
+    <p>…と思っていたら、実は editor の中身を触りたい時には GetCurrentEditor() を呼び出して戻ってくるオブジェクトを使えば良い?
+    返ってくるオブジェクトは <a href="https://developer.mozilla.org/En/NsIEditor">nsIEditor - MDN</a>。
+    でも、此処には使えそうなメソッドはない…。
+    </p>
+    <p>何となく Thunderbird の editor.js を覗いてみたら、GetCurrentEditor().document とやっていた。
+    もしかすると、これで触れるのかも知れない。…と思ったら…GetCurrentEditor の戻り値自体が undefined であった。
+    これは初期化のタイミングが不味いという事だろうか?
+    </p>
+  </li>
+  </ul>
+  <p>という事で、contentEditor に addEventListener("load") してみた。
+  そしたらちゃんと contentFrame.contentDocument/congtentWindow が存在していた。
+  因みに、load は二回発火する様であり、初めの発火では GetCurrentEditor() は null であり、
+  次の発火で GetCurrentEditor() が与えられる様である。
+  但し、GetCurrentEditor().document の類は依然として undefined である様だ。
+  </p>
+  <p>さて編集内容の変化を検出する為には、イベント名を調べなければならない。
+  んー。色々見てみたけれど、contentFrame 自体のイベントは余り期待しない方が良さそう?
+  "load" 位しかない様な気がする。(何処かにちゃんとした説明はないだろうか)
+  </p>
+  <ul>
+  <li>editor.js を見ても大した物はなかった。
+    <ul>
+    <li>click</li>
+    <li>toolbarbutton 要素 command</li>
+    <li>toolbarbutton 要素 contextmenu</li>
+    </ul>
+  </li>
+  <li>nsIEditor には何かあるみたいである。
+    <ul>
+    <li>addEditorObserver <a href="http://www.oxymoronical.com/experiments/apidocs/interface/nsIEditorObserver">nsIEditorObserver Interface</a></li>
+    <li>addEditActionListener <a href="http://www.oxymoronical.com/experiments/xpcomref/applications/Firefox/3.5/interfaces/nsIEditActionListener">nsIEditActionListener in Firefox 3.5</a></li>
+    <li><a href=""></a></li>
+    </ul>  
+  </li>
+  <li>他の方法として、document の中の要素に addEventListener する事ができる(かもしれない)
+    でも、もしイベントを editor の方で横取りしていたとするとこの方法は使えない。
+  </li>
+  </ul>
+  <p>→試しに addEditorObserver({EditAction:function(){}}); と登録してみたら、
+  ちゃんと動作している様である。これは、正しく編集によって内容が変化した時に呼び出される様である。
+  </p>
+</li>
+</ol>
+
+<h4>プレビューボタンを追加するの事</h4>
+<p>プレビューボタンを押してから初めてプレビューが開始される様にしたい。
+プレビューボタンを本文中に追加してしまうと、プレビューボタンを削除出来たり、
+或いは送信するメールに変な物が混ざったりしてしまいそうなので、
+Thunderbird のツールバーに新しいボタンとして追加する事にした。
+</p>
+<p>xul のツールバーにボタンを追加するとちゃんと Thunderbird の上で表示される様になった。
+しかし、.js で document.getElementById しても取得できないようである。
+初期化の順番の問題だろうか? (script を toolbarbutton 要素よりも後に読み込んでも同じであった。)
+→結局、toolbarbutton の oncommand 属性に関数を指定したらちゃんと動く様になった。
+</p>
+<p>然し、今度は新規メール作成ウィンドウを閉じようとすると Thunderbird 自体が落ちる様になってしまった。
+タイミングとしては「メールは保存されていません、保存しますか?」のダイアログを出す直前である。
+原因を探っていくと、content-frame 要素を DOM Tree 上で別の場所に移動するとなる様であった。
+</p>
+<p>今迄はそんな問題は発生していなかったので、
+初期化の瞬間に移動しても問題なかったのに、遅延して移動すると問題が発生するという事だろうか。
+其処で、プレビューボタンを押す前から DOM Tree 上で勝手に移動する様に変更する。
+</p>
+<!--************************************************************************-->
+
+<hr style="height:1px;" />
+<div class="linkbar2">
+  <span class="left">-- ≪</span>
+  <span class="right">≫ --</span>
+  <span class="center">mwg3.addon.mwgtex</span>
+</div>
+<div class="address2">
+  <span class="left">起稿 2011-11-28 更新 2011-12-02</span>
+  <address class="right">Copyright &copy; 2011, K. Murase (murase at nt.phys.s.u-tokyo.ac.jp)</address>
+</div>
+</body>
+</html>

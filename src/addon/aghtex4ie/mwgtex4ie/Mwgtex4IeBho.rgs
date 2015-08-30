@@ -1,0 +1,26 @@
+HKCR
+{
+	aghtex4ie.Mwgtex4IeBho.1 = s 'agh.addon.aghtex4ie/bho'
+	{
+		CLSID = s '{95E7C414-8D83-42A9-B243-9366FD6CFA67}'
+	}
+	aghtex4ie.Mwgtex4IeBho = s 'agh.addon.aghtex4ie/bho'
+	{
+		CLSID = s '{95E7C414-8D83-42A9-B243-9366FD6CFA67}'
+		CurVer = s 'aghtex4ie.Mwgtex4IeBho.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {95E7C414-8D83-42A9-B243-9366FD6CFA67} = s 'agh.addon.aghtex4ie/bho'
+		{
+			ProgID = s 'aghtex4ie.Mwgtex4IeBho.1'
+			VersionIndependentProgID = s 'aghtex4ie.Mwgtex4IeBho'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7644CDB-1973-40B5-9216-9406F0F93A84}'
+		}
+	}
+}

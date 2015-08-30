@@ -1,0 +1,73 @@
+/* aghtex addon stylesheet */
+p.aghtex-equation{text-align:center;margin-top:0.5ex;margin-bottom:0.5ex;}
+span.aghtex-math{font-size:120%;}
+div.aghtex-para,
+div.aghtex-full{font-size:120%;}
+div.aghtex-eqnarray{font-size:120%;}
+
+/*-- buttons ----------------------------------------------------------------*/
+span.aghtex-button,
+span.aghtex-preview-button,
+span.aghtex-switch-button{
+  background-color:gray;
+  color:white;
+  padding:2px;
+  cursor:pointer;
+  text-decoration:underline;
+  font-weight:bold;
+  font-size:x-small;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+}
+
+/*-- on/off -----------------------------------------------------------------*/
+*.aghtex-switch-on  *.aghtex-switch-src{display:none!important;}
+*.aghtex-switch-off *.aghtex-switch-tex{display:none!important;}
+span.aghtex-switch-button{
+  position:absolute;
+  right:3px;
+  top:3px;
+}
+*.aghtex-switch-off span.aghtex-switch-button{color:silver;}
+
+/*-- preview ----------------------------------------------------------------*/
+span.aghtex-preview-button{
+  position:absolute;
+  right:16px;
+  top:3px;
+}
+div.aghtex-preview-container>textarea{
+  border-width:0px;margin:0;padding:0;
+  font-family:monospace;
+}
+div.aghtex-preview-container>div{display:inline-block;}
+div.aghtex-preview-container>div.aghtex-edit-frame,
+div.aghtex-preview-container>div.aghtex-preview-frame{
+  margin:0;padding:0;
+  display:inline-block;
+  vertical-align:top;
+  overflow:auto;
+}
+div.aghtex-preview-container>div.aghtex-preview-frame>div{
+  margin:0;padding:1ex;
+  border:1px solid silver;
+  background-color:#FFFFF0;
+  font-size:85%;
+}
+
+/*-- workaround for Google Group Stylesheet ---------------------------------*/
+tex\:math tex\:abc.l{
+  color:inherit!important;
+  cursor:inherit!important;
+  white-space:inherit!important;
+  background-color:inherit!important;
+}
+tex\:big.m,tex\:big2.m,tex\:big3.m,tex\:big4.m,
+tex\:vphantom.m{float:inherit!important;width:inherit!important;}
+tex\:fsym.rm{
+  vertical-align:baseline;
+  width:auto;
+  padding:0;
+}
+td.tex-arr2{vertical-align:baseline;}
+tex\:math td{font-family:inherit;}

@@ -10,5 +10,10 @@
 # generated files
 /ChangeLog.htm
 /ChangeLog.txt
+/src/Makefile
 /src/agh.lang.ps/Makefile
 /src/latex/Makefile
+/src/addon/Makefile
+/src/addon/aghtex4firefox/mat
+/src/addon/aghtex4seahorse/mat
+/src/addon/aghtex4thunderbird/mat

@@ -1,0 +1,28 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		'%APPID%' = s 'aghtex4ie'
+		'aghtex4ie.dll'
+		{
+			val AppID = s '%APPID%'
+		}
+	}
+}
+HKLM {
+  NoRemove SOFTWARE {
+    NoRemove Microsoft {   
+      NoRemove Windows {
+        NoRemove CurrentVersion {
+          NoRemove Explorer {
+            NoRemove 'Browser Helper Objects' {
+              ForceRemove '{95E7C414-8D83-42A9-B243-9366FD6CFA67}' = s 'agh.addon.aghtex4ie/bho' {
+                val 'NoExplorer' = d '1'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

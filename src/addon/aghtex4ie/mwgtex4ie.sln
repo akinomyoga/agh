@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mwgtex4ie", "mwgtex4ie\mwgtex4ie.vcproj", "{D46597B1-23DA-4510-AC42-B7F49C0EC11F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mwgtex4iePS", "mwgtex4ie\mwgtex4iePS.vcproj", "{7F2B44A9-06A9-4D84-9E45-F9372FAC92C5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D46597B1-23DA-4510-AC42-B7F49C0EC11F} = {D46597B1-23DA-4510-AC42-B7F49C0EC11F}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D46597B1-23DA-4510-AC42-B7F49C0EC11F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D46597B1-23DA-4510-AC42-B7F49C0EC11F}.Debug|Win32.Build.0 = Debug|Win32
+		{D46597B1-23DA-4510-AC42-B7F49C0EC11F}.Release|Win32.ActiveCfg = Release|Win32
+		{D46597B1-23DA-4510-AC42-B7F49C0EC11F}.Release|Win32.Build.0 = Release|Win32
+		{7F2B44A9-06A9-4D84-9E45-F9372FAC92C5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7F2B44A9-06A9-4D84-9E45-F9372FAC92C5}.Release|Win32.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

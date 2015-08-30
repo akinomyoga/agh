@@ -1,0 +1,10 @@
+; mwgtex4ie.def : モジュール パラメータを宣言します。
+
+LIBRARY      "aghtex4ie.DLL"
+
+EXPORTS
+	DllCanUnloadNow		PRIVATE
+	DllGetClassObject	PRIVATE
+	DllRegisterServer	PRIVATE
+	DllUnregisterServer	PRIVATE
+	DllInstall		PRIVATE

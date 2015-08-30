@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="ja-JP" xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP" xmlns:tex="http://myoga.web.fc2.com/latex/">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Script-Type" content="text/stylesheet" />
+  <meta name="author" content="Koichi Murase" />
+  <title>agh.addon</title>
+  <meta name="agh-fly-type" content="color tex" />
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/mwg.std.css" />
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/prog.std.css" />
+  <script type="text/javascript" charset="utf-8" src="http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/agh.fly.jgz"></script>
+</head>
+<body class="tex:math_bqd">
+<div class="linkbar2" id="pagetop">
+  <span class="left">-- ≪</span>
+  <span class="right">≫ --</span>
+  <span class="center">agh.addon.aghtex</span>
+</div>
+<hr style="height:1px;" />
+<h1>Extensions/Ageha (agh.addon)</h1>
+<!--<p>Ageha library を用いた extensions を陳列する場所だから "揚羽展翅板" とかいうタイトルにしようと思ったけれど…。</p>-->
+<!--########################################################################-->
+<h2>AgehaTeX Extension (agh.addon.aghtex)</h2>
+<h3>概要 ～ メールに書いた TeX を数式で表示 ～</h3>
+<p>agh.addon.aghtex を使えば、
+メールの本文中にある TeX の記述を綺麗な数式で表示する事ができます!
+agh.addon.aghtex は色々の環境に対する拡張・アドオンとして提供しています。
+数式を TeX の文でテキストメール中に書く人は、
+これを導入するだけで表示が綺麗になります。と、思います。。
+</p>
+
+<h4>目次</h4>
+<p>それぞれの環境におけるアドオン・拡張は以下から</p>
+<table class="normal center">
+<tr><th>メール環境</th><th>説明見出し</th><th>ファイル</th><th>種類</th><th>ソース</th></tr>
+<tr><td>Thunderbird</td>
+  <td><a class="internal" href="#agh.addon.aghtex4thunderbird">agh.addon.aghtex4thunderbird</a></td>
+  <td>[<a href="agh.addon.aghtex4thunderbird.xpi">.xpi</a>]</td><td>アドオン</td>
+  <td>[<a href="agh.addon.aghtex4thunderbird.tar.xz">.tar.xz</a>]</td></tr>
+<tr><td>Chrome (web mail)</td>
+  <td><a class="internal" href="#agh.addon.aghtex4chrome">agh.addon.aghtex4chrome</a></td>
+  <td>[<a href="agh.addon.aghtex4chrome.crx">.crx</a>]</td><td>拡張</td>
+  <td>[<a href="agh.addon.aghtex4chrome.tar.xz">.tar.xz</a>]</td></tr>
+<tr><td>Firefox (web mail)</td>
+  <td><a class="internal" href="#agh.addon.aghtex4firefox">agh.addon.aghtex4firefox</a></td>
+  <td>[<a href="agh.addon.aghtex4firefox.xpi">.xpi</a>]</td><td>アドオン</td>
+  <td>[<a href="agh.addon.aghtex4firefox.tar.xz">.tar.xz</a>]</td></tr>
+<tr><td>IE (web mail)</td>
+  <td><a class="internal" href="#agh.addon.aghtex4ie">agh.addon.aghtex4ie</a></td>
+  <td>[<a href="agh.addon.aghtex4ie.zip">.zip</a>]</td><td>BHO</td>
+  <td>[<a href="agh.addon.aghtex4ie.tar.xz">.tar.xz</a>]</td></tr>
+<tr><td>Sleipnir 2 SeaHorse (web mail)</td>
+  <td><a class="internal" href="#agh.addon.aghtex4seahorse">agh.addon.aghtex4seahorse</a></td>
+  <td>[<a href="agh.addon.aghtex4seahorse.zip">.zip</a>]</td><td>ユーザスクリプト</td>
+  <td>[<a href="agh.addon.aghtex4seahorse.tar.xz">.tar.xz</a>]</td></tr>
+<tr><td>Safari (web mail)</td><td>未対応</td><td>対応するかも</td><td>拡張</td><td>-</td></tr>
+<tr><td>Opera (web mail)</td><td>未対応</td><td>対応するかも</td><td>拡張</td><td>-</td></tr>
+<tr><td>Outlook Express</td><td>未対応</td><td>対応予定無し</td><td>アドイン</td><td>-</td></tr>
+<tr><td>Outlook 2003/2007</td><td>未対応</td><td>対応予定無し<!-- (VS に AddIn テンプレートがある。)--></td><td>アドイン</td><td>-</td></tr>
+<tr><td>Windows Live Mail 2009/2011</td><td>未対応</td><td>対応予定無し</td><td>アドイン</td><td>-</td></tr>
+<tr><td>Apple Mail.app</td><td>未対応</td>
+  <td>対応予定無し<!-- (Objective C で一応拡張は作れるらしい/Cocoa の機能??)--></td><td>Cocoa バンドル?</td><td>-</td></tr>
+<tr><td>Becky!</td><td>未対応</td><td>対応予定無し<!--(プラグイン用 API がある。)--></td><td>プラグイン</td><td>-</td></tr>
+<!--
+<tr><td></td><td></td><td></td><td></td></tr>
+-->
+</table>
+<p>web mail としている物に関しては今の所以下のサイトに対応しています。</p>
+<ul>
+<li>GMail, Google Groups, Google Sites</li>
+</ul>
+
+<h4>使い方</h4>
+<p>特定の記号で囲んだ部分を、対応する `$\LaTeX$ の数式・レイアウトに変換して表示します。</p>
+<table class="normal center">
+<tr><th>始まり</th><th>間</th><th>終わり</th><th>説明</th></tr>
+<tr><td><code>$</code></td><td>数式モードの `$\TeX$ (二重改行は不可)</td><td><code>$</code></td><td>インラインの数式に変換します。</td></tr>
+<tr><td><code>$$</code></td><td>数式モードの `$\TeX$ (二重改行は不可)</td><td><code>$$</code></td><td>独立行の数式に変換します。</td></tr>
+<tr><td><code>\begin{eqnarray*}</code></td><td>数式モードの `$\TeX$</td><td><code>\end{eqnarray*}</code></td><td>複数行の数式に変換します。</td></tr>
+<tr><td><code>`#tex-para#</code></td><td>文章モードの `$\TeX$</td><td><code>##'</code></td><td>`$\TeX$ で整形された文章に変換します。</td></tr>
+<!--
+<tr><td><code>`#[tex-para[</code></td><td>文章モードの `$\TeX$</td><td><code>]]#'</code></td><td>`$\TeX$ で整形された文章に変換します。</td></tr>
+-->
+</table>
+<p>※ コマンドには一つ一つ対応していますので、対応していないコマンドも沢山あります。
+また、\usepackage しないと使えないコマンドは、基本的に未だ対応が進んでいません。
+</p>
+<p>使いたいけれど未対応なコマンドが在れば教えて下さい。
+(何かの \usepackage に入っている物でも構いません。使い方や表示の規則なども説明してくれると助かります。)
+必ず対応する訳ではありませんが、要望の多い物から順に実装していくつもりです。
+</p>
+
+<h4>長所と短所</h4>
+<p>基本的にテキストメールに、特定の記号で囲んだ TeX を書いただけの物を対象としています。
+メールを閲覧する時に $ で囲まれた部分などを見易く整形して表示するだけで、他は唯のテキストメールと同じです。
+この様な形態のために色々の長所と短所があります。
+</p>
+<ul>
+<li>○ 前の人の書いた数式に手を加えて返信出来る。議論に最適</li>
+<li>○ メールのサイズが大きくならない
+  <p>余分な画像などを添付したりサーバー上にアップロードしたりしなくて済む</p>
+</li>
+<li>○ テキストしか扱えないメーラでも TeX ソースとして扱える。
+  <ul>
+  <li>テキストでしか読めない環境では、TeX ソースとして読む事ができる。</li>
+  <li>対応していないメーラからでも、TeX ソースを埋め込んだメールを送れる。</li>
+  </ul>
+</li>
+<li>× メールを出す側も見る側も agh.addon.aghtex を入れていないと恩恵を受けられない。
+  <ul>
+  <li>調子に乗って複雑な数式を TeX で書くと、対応していないメーラで見ている人に不親切</li>
+  <li>その為にあらゆるメール環境に agh.addon.aghtex を対応させたいが限度がある。</li>
+  </ul>
+</li>
+</ul>
+<p>競合する物。メールで数式を扱う為の物は他にもあります。</p>
+<ul>
+<li><a href="https://addons.mozilla.org/ja/thunderbird/addon/latex-it/">LaTeX It! :: Add-ons for Thunderbird</a> (Thunderbird 用アドオン)
+  <p>これはローカルの TeX 環境を用いて式をコンパイルし、それを画像としてメールに埋め込んで送信する物です。</p>
+</li>
+</ul>
+
+<h4>ライセンス</h4>
+<ul>
+<li>未だ考えていません。取り敢えず以下は最低限の項目。その内変わります。</li>
+<li>これを使用した事によって何が起こっても責任は負いません。
+  <p class="marked">※ でも、問題について報告してくれるのは歓迎です。
+  それでも問題解決の義務は負いませんが。解決するかも知れないし解決しない(できない)かも知れません。</p>
+</li>
+<li>埋込フォントは AMSFonts に手を加えた物で、SIL Open Font License (OFL) を継承します。</li>
+<!--
+<li>BaKoMa Fonts を使用しています。以下、BaKoMa フォントのライセンス:
+  <ul>
+  <li><a href="../latex/BaKoMa-CM.Fonts">BaKoMa-CM.Fonts</a></li>
+  <li><a href="../latex/BaKoMa-AMS.Fonts">BaKoMa-AMS.Fonts</a></li>
+  </ul>
+  <p>二次頒布の際・派生物を頒布する際はこのライセンスにも制限を受ける事を御確認下さい。</p>
+</li>
+-->
+</ul>
+<p class="marked">※ BaKoMa Fonts は何だか得体が知れないし、よく分からないライセンスなので使うのを止めました。</p>
+
+<!--************************************************************************-->
+<h3 id="agh.addon.aghtex4chrome">agh.addon.aghtex4chrome</h3>
+<p>Google Chrome で GMail を見る時の為の拡張です。</p>
+<ul>
+<li>GMail, Google Groups, Google Sites で動作</li>
+<li>編集時プレビュー機能付き</li>
+</ul>
+<h4>入れ方</h4>
+<ul>
+<li>1 以下をダウンロードして保存します。
+  <p>[<a href="agh.addon.aghtex4chrome.crx">agh.addon.aghtex4chrome.crx</a>]</p>
+</li>
+<li>2 拡張機能タブを開きます。
+  <p>アドレスに chrome://extensions を指定するか、
+  [右上のメニューボタン]-[ツール]-[拡張機能] を選ぶ事で開けます。</p>
+</li>
+<li>3 拡張機能ページの中に 1 でダウンロードした
+agh.addon.aghtex4chrome.crx をドラッグ&amp;ドロップします。
+  <p>何か訊いてきたら内容を確認して OK を押して下さい。</p>
+</li>
+<li>4 自動更新機能を使いたければ拡張機能ページの agh.addon.aghtex4chrome の中の、
+  [ファイルの URL へのアクセスを許可する] にチェックを入れて下さい。
+</li>
+</ul>
+<h4>消し方</h4>
+<ul>
+<li>1 拡張機能タブを開きます。
+  <p>アドレスに chrome://extensions を指定するか、
+  [右上のメニューボタン]-[ツール]-[拡張機能] を選ぶ事で開けます。</p>
+</li>
+<li>2 拡張機能ページの agh.addon.aghtex4chrome の項目の右に表示されているごみ箱マークをクリックします。
+  <p>何か訊いてきたら内容を確認して OK を押して下さい。</p>
+</li>
+</ul>
+
+<!--************************************************************************-->
+<h3 id="agh.addon.aghtex4thunderbird">agh.addon.aghtex4thunderbird</h3>
+<p>Thunderbird でメールを見る時の為のアドオンです。</p>
+<ul>
+<li>テキストメールで動作。HTML メールでは動作しない事にしています</li>
+</ul>
+<h4>入れ方</h4>
+<ul>
+<li>[<a href="agh.addon.aghtex4thunderbird.xpi">agh.addon.aghtex4thunderbird.xpi</a>]
+  <ol>
+  <li>上からダウンロードして保存する</li>
+  <li>Thunderbird で [アドオンマネージャ] を開く。([メニュー]-[ツール]-[アドオン] もしくは Alt-T Alt-A)</li>
+  <li>[アドオンマネージャ] の [拡張機能] を選択</li>
+  <li>ダウンロードしたファイルを、"アドオンマネージャ" にドラッグ&amp;ドロップ
+    <p>※ 何故か二回ドラッグ&amp;ドロップしないといけない事がある</p>
+  </li>
+  <li>確認のダイアログが出るので [インストール] を押す。</li>
+  <li>(インストールしたらダウンロードした .xpi ファイルは削除して問題ありません。)</li>
+  </ol>
+</li>
+</ul>
+<p>何か変な事が起こったら、アドオンマネージャから無効化または削除して下さい。</p>
+<!--************************************************************************-->
+<h3 id="agh.addon.aghtex4firefox">agh.addon.aghtex4firefox</h3>
+<p>Mozilla Firefox で GMail を見る時の為の拡張です。</p>
+<h4>入れ方</h4>
+<ul>
+<li>[<a href="agh.addon.aghtex4firefox.xpi">agh.addon.aghtex4firefox.xpi</a>]
+  <ol>
+  <li>上からダウンロードして保存する</li>
+  <li>Firefox で [アドオンマネージャ] を開く。([メニュー]-[ツール]-[アドオン] もしくは Alt-T Alt-A)</li>
+  <li>[アドオンマネージャ] の [拡張機能] を選択</li>
+  <li>ダウンロードしたファイルを、"アドオンマネージャ" にドラッグ&amp;ドロップ
+    <p>※ 何故か二回ドラッグ&amp;ドロップしないといけない事がある</p>
+  </li>
+  <li>確認のダイアログが出るので [インストール] を押す。</li>
+  <li>(インストールしたらダウンロードした .xpi ファイルは削除して問題ありません。)</li>
+  </ol>
+</li>
+</ul>
+<p>何か変な事が起こったら、アドオンマネージャから無効化または削除して下さい。</p>
+<!--************************************************************************-->
+<h3 id="agh.addon.aghtex4ie">agh.addon.aghtex4ie</h3>
+<p>Microsoft Internet Explorer 用のアドオンです。</p>
+<h4>インストール (Windows)</h4>
+<ol>
+<li>これをダウンロードして下さい: [<a href="agh.addon.aghtex4ie.zip">agh.addon.aghtex4ie.zip</a>]</li>
+<li>agh.addon.aghtex4ie.zip のプロパティを見て [ブロックの解除] ボタンが表示されている場合は、
+  そのボタンを押してブロックの解除をして下さい。
+</li>
+<li>適当な所に展開して中の install.bat をダブルクリックして下さい。
+  <p class="marked">※ インストール先 (%PROGRAMFILES%\Myoga\agh.addon.aghtex4ie) のディレクトリが開かれます。</p>
+</li>
+<li>※IE を再起動してから有効になります。</li>
+<li>※ダウンロードした .zip と展開したファイルはもう必要ないので削除して構いません。</li>
+</ol>
+<h4>アンインストール (Windows)</h4>
+<ol>
+<li>%PROGRAMFILES%\Myoga\agh.addon.aghtex4ie\uninstall.bat を実行して下さい。
+  <p>ディレクトリ %PROGRAMFILES%\Myoga\agh.addon.aghtex4ie を開いて中の uninstall.bat をダブルクリックするか、
+  ファイル名を指定して実行 ([Win+R]) で %PROGRAMFILES%\Myoga\agh.addon.aghtex4ie\uninstall.bat を指定すれば実行できます。
+  </p>
+  <p class="marked">
+  %PROGRAMFILES%\Myoga\agh.addon.aghtex4ie 以下に個人のデータを置いている場合には予め退避しておいて下さい。
+  ディレクトリ毎削除されます。
+  </p>
+</li>
+<li>%PROGRAMFILES%\Myoga ディレクトリが残りますが、中に他に何もない場合には削除して問題ありません。</li>
+</ol>
+<!--************************************************************************-->
+<h3 id="agh.addon.aghtex4seahorse">agh.addon.aghtex4seahorse</h3>
+<p><strong>対応中</strong></p>
+<p>Sleipnir 2 のプラグイン SeaHorse 用の Sleipnir スクリプトです。</p>
+
+<h4>インストール (Windows)</h4>
+<ol>
+<li>SeaHorse を Sleipnir2 に入れていない人は入れて下さい。SeaHorse 入れ方:
+  <ol style="list-style-type:arabic;">
+  <li>ここへ Sleipnir2 で行く: <a href="http://www.fenrir-inc.com/jp/sleipnir2/plugins/seahorse.html">Sleipnir - プラグイン Web ページへの機能追加やデザイン変更などのカスタマイズを可能にする SeaHorse | フェンリル</a></li>
+  <li>[ダウンロード] を押す。</li>
+  <li>入れますかというダイアログが出るので [OK] を押す。</li>
+  <li>再起動しますかと聞かれるので [再起動] で再起動する。</li>
+  </ol>
+</li>
+<!--
+<li>agh.addon.aghtex4ie を未だインストールしていない場合は、
+  [agh.addon.aghtex4ie のインストール] を参考にインストールして下さい。
+</li>
+-->
+<li>次に agh.addon.aghtex4seahorse 本体を入れます:
+  <ol style="list-style-type:arabic;">
+  <li>これをダウンロードする: [<a href="agh.addon.aghtex4seahorse.zip">agh.addon.aghtex4seahorse.zip</a>]</li>
+  <li>適当な場所に解凍する。</li>
+  <li>中の agh.addon.aghtex4seahorse.user.js と agh.addon.aghtex4seahorse ディレクトリを、
+    (Sleipnir インストール場所)\plugins\seahorse\ に移動する。
+    <p>(Sleipnir インストール場所) は大体 C:\Program Files\Fenrir\Sleipnir 的な所にある。</p>
+  </li>
+  <li>Sleipnir を再起動する。</li>
+  <li>(ダウンロードした .zip と解凍した後の残骸はもう不要です。捨てても構いません。)</li>
+  </ol>
+</li>
+</ol>
+<!--************************************************************************-->
+<h3>変更履歴</h3>
+<ul>
+<li>ToDo
+  <ul>
+  <li>aghtex4gmail: groups 編集プレビュー (編集は HTML 形式のみになっている?)</li>
+  </ul>
+</li>
+<li>1.1.5.1048 [2013-11-06]
+  <ul>
+  <li>1.1.5.1048:
+    latex.*.js の代わりに agh.lang.tex.js を読み込む様に変更。
+    aghtex に対して行われた諸々の変更を適用。
+  </li>
+  </ul>
+</li>
+<li>1.1.4.1019 [2013-07-30]
+  <ul>
+  <li>1.1.4.1019:aghtex4chrome: 文字エンコーディング自動判定機能の実装 [2013-07-30]</li>
+  </ul>
+</li>
+<li>1.1.3.1004 [2013-04-25]
+  <ul>
+  <li>1.1.3.993:aghtex4gmail: groups 仕様変更に対応。</li>
+  <li>1.1.3.994:aghtex: \begin{document} 及び `#tex-para# 形式の変換結果で title 属性を設定しない様に変更。</li>
+  <li>1.1.3.1003:latex: 諸々の修正</li>
+  <li>1.1.3.1004:latex: [bugfix] Scanner4, 全角空白</li>
+  </ul>
+</li>
+<li>1.1.2.989 [2013/01/26]
+  <ul>
+  <li>1.1.2.988:aghtex4thunderbird: [bugfix] 動作しないバグ。</li>
+  </ul>
+</li>
+<li>1.1.1.987 [2013/01/14]</li>
+<li>1.1.0.967 [2013/01/01]
+  <ul>
+  <li>1.1.0.965 version 番号の統一
+    <ul>
+    <li>aghtex4chrome 1.0.4.464</li>
+    <li>aghtex4thunderbird 1.0.1.243</li>
+    <li>aghtex4ie 1.0.0.117</li>
+    <li>aghtex4seahorse 1.0.0.115</li>
+    <li>aghtex4firefox 1.0.0.26</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li>aghtex4chrome-1.0.4.463 [2012/12/24]
+  <ul>
+  <li>1.0.4.383: *.tex, background page で変換を実行</li>
+  <li>1.0.4.408: *.tex, メニュー(数式・ソース切替), Powered by の文字列</li>
+  <li>1.0.4.463: *.tex, 自動更新, Download link, ソース色付け, 目次の表示, その他多くの bugfix</li>
+  </ul>
+</li>
+<li>aghtex4chrome-1.0.3.353 [2012/12/21]
+  <ul>
+  <li>1.0.3.305: agh.addon.aghtex4chrome に名前変更</li>
+  <li>1.0.3.308: [chrome 仕様変更] リソースファイルの読込許可の設定</li>
+  <li>1.0.3.314: [chrome 仕様変更] アイコンの設定</li>
+  <li>1.0.3.320: AMSFonts に入れ替え</li>
+  <li>1.0.3.351: *.tex ファイルの表示に対応</li>
+  </ul>
+</li>
+<li>aghtex4firefox-1.0.0 [2012/12/19]
+  <ul>
+  <li>[2012/12/18] 1.0.0.3 取り敢えず動いている。が、GMail の機能を一部破壊している様子。</li>
+  <li>[2012/12/19] 1.0.0.25 Array.prototype 汚染が原因であった。除去完了。</li>
+  </ul>
+</li>
+<li>aghtex4ie-1.0.0 [2012/12/18]
+  <ul>
+  <li>1.0.0.58 https Pluggable Protocol Handler 完了</li>
+  <li>1.0.0.63 mwg.js 読み込み成功</li>
+  <li>1.0.0.72 動いている。でもフォントがロードされていない…。</li>
+  <li>1.0.0.85 [bugfix] FrameElement にメンバを追加できなくなっていたので修正 [2012/12/15]</li>
+  <li>1.0.0.100 gmail 仕様変更対応: 本文が iframe 内ではなくルートの document 内に移動していた [2012/12/15]</li>
+  <li>1.0.0.101 [bugfix] addEventListener を使用している箇所があった [2012/12/15]</li>
+  <li>1.0.0.114 フォントのロードに成功</li>
+  <li>1.0.0.115 フォント対応完了</li>
+  <li>1.0.0.116 Release</li>
+  </ul>
+</li>
+<li>mwgtex4seahorse-1.0.0
+  <ul>
+  <li>1.0.0.37: mwg.js 無事にロード成功</li>
+  <li>1.0.0.110: リソースの問題はある物の、取り敢えず動作確認</li>
+  </ul>
+</li>
+<li>mwgtex4thunderbird-1.0.1 [2012/06/26]
+  <ul>
+  <li>1.0.0.152: 表示形式によって変換されないのを修正。引用文の中も変換する様に修正。</li>
+  <li>1.0.0.182: 編集プレビューに対応</li>
+  <li>1.0.0.197: コードの整理</li>
+  <li>1.0.0.223: プレビューボタン</li>
+  <li>1.0.0.236: \documentclass - \begin{document} - \end{document} に対応。</li>
+  <li>1.0.0.237: [latex] アクセント記号の表示方法を変更。</li>
+  <li>1.0.0.239: [latex] 引数読取修正, 上付下付同時指定, 内部処理用 \RAW@ コマンドの廃止, \sum の表示方法の変更</li>
+  <li>1.0.1.240: 既定で \usepackage{amsmath,amssymb} を読み込み。公開。</li>
+  </ul>
+</li>
+<li>mwgtex4chrome-1.0.2 [2012/06/26]
+  <ul>
+  <li>1.0.2.253 文字の大きさボタン</li>
+  <li>1.0.2.254 [bugfix] 小文字の背景色 (GMail CSS Rule .l 対策)</li>
+  <li>1.0.2.256 [bugfix] 記号のレイアウト (GMail CSS Rule .rm 対策)</li>
+  <li>1.0.2.257 構成変更。名称変更。</li>
+  <li>1.0.2.274 コード整理。</li>
+  <li>1.0.2.279 文字の大きさを変更。大きすぎると言われたので。</li>
+  <li>1.0.2.294 \documentclass - \begin{document} - \end{document} に対応。</li>
+  <li>1.0.2.295 [latex] amssymb の記号, アクセント記号の表示方法を変更。</li>
+  <li>1.0.2.297 [latex] 引数読取修正, 上付下付同時指定, 内部処理用 \RAW@ コマンドの廃止, \sum の表示方法の変更</li>
+  <li>1.0.2.300 既定で \usepackage{amsmath,amssymb} を読み込む様に変更。公開。</li>
+  </ul>
+</li>
+<li>mwgtex4thunderbird-1.0.0 [2011/12/04]
+  <ul>
+  <li>1.0.0.18: messagepane ではスクリプトを実行出来ない事が判明</li>
+  <li>1.0.0.72: messageWindow に mwg.js を読み込むのは諦める。</li>
+  <li>1.0.0.99: mwg.js を background page で読み込む事ができた。多分。</li>
+  <li>1.0.0.125: 取り敢えず何とか数式に変換出来ている。フォントがロードされない…。</li>
+  <li>1.0.0.133: 諦めてフォントは data scheme で埋め込む事にした。</li>
+  <li>1.0.0.140: 1.0.0 公開</li>
+  </ul>
+</li>
+<li>mwgtex4chrome-1.0.1 [2011/12/04]
+  <ul>
+  <li>1.0.1.125 [latex] 数式モード中での \rm 等に対応</li>
+  <li>1.0.1.127 $-$ 及び $$-$$ の中に二重改行を許さない様に変更。これで予期しない変換は減るはず。</li>
+  <li>1.0.1.132 [latex/bugfix] エラーメッセージに undefined が混入していると思ったら、mwg.Escape.backslash の欠陥だった。</li>
+  <li>1.0.1.161 [latex/bugfix] マクロ無限ループの検出と停止の実装。 [bugfix] gmail での textarea 検出の修正</li>
+  <li>1.0.1.162 [latex] amsmath split 環境に対応。</li>
+  <li>1.0.1.176 TeX 表示の on/off を切り替えるボタン。</li>
+  <li>1.0.1.179 [latex/bugfix] newcommand 既定の引数の読み取り。</li>
+  <li>1.0.1.195 [latex] \def (パターンマッチング) に制限付きで対応。</li>
+  <li>1.0.1.196 [latex/bugfix] left 引数エラーの処理。以前のデバグ用コードを消した</li>
+  <li>1.0.1.214 プレビューの連動スクロール</li>
+  <li>1.0.1.220 `#tex-para# - ##' を TeX で変換する機能</li>
+  <li>1.0.1.225 [latex/bugfix] パターンマッチング文字列引数読み取りのバグ修正。</li>
+  <li>1.0.1.247 1.0.1 release</li>
+  </ul>
+</li>
+<li>mwgtex4chrome-1.0.0 [2011/11/27]
+  <ul>
+  <li>1.0.0.21 複数の HTML 要素に跨る TeX ソースを結合して要素を置換する機能</li>
+  <li>1.0.0.32 $-$ を数式に変換する機能</li>
+  <li>1.0.0.56 $$-$$ \begin{eqnarray*}-\end{eqnarray*} を数式に変換する機能</li>
+  <li>1.0.0.73 プレビューに対応</li>
+  <li>1.0.0.85 Google Groups, Google Sites にも対応</li>
+  <li>1.0.0.99 Google Groups でのプレビューに対応</li>
+  <li>1.0.0.121 プレビューボタンに対応。これを押すまでは勝手にプレビューを始めない。</li>
+  <li>1.0.0.123 release 少し修正をして取り敢えず公開</li>
+  </ul>
+</li>
+</ul>
+
+<!--************************************************************************-->
+<hr style="height:1px;" />
+<div class="linkbar2">
+  <span class="left">-- ≪</span>
+  <span class="right">≫ --</span>
+  <span class="center">agh.addon.aghtex</span>
+  <!--
+    2011-12-11
+    2012/03/04 02:44:39
+  -->
+</div>
+<div class="address2">
+  <span class="left">起稿 2011/11/28 更新 2013/07/30</span>
+  <address class="right">Copyright &copy; 2011-2013, K. Murase (murase at nt.phys.s.u-tokyo.ac.jp)</address>
+</div>
+<!--************************************************************************-->
+</body>
+</html>

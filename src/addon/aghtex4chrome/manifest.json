@@ -1,0 +1,120 @@
+// -*- js -*-
+// C:\cygwin\home\koichi\prog\js\agh\out\addon\aghtex4gmail
+{
+  "name": "agh.addon.aghtex4chrome",
+  "version":"%VERSION%",
+  "manifest_version":2,
+  "update_url":"http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/addon/agh.addon.aghtex4chrome.xml",
+  "key":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCYaFHl7+XFkrRbx/Gi/iWyoHRyJmLs61fSOG7+HF1ToKLhofmsMUw4b/ftguf21tqb/dqXbPIMdacLMEdBn71eelL5zbI0kq9NnskcD0uxaAk+Qd3kgF0XmwHUlyHtgjAXYa/P53r9gs4/KKb5A9QTSYDmYe2q04wg+guHKNTdfQIDAQAB",
+  "icons":{
+    "16":"agh.icon.agh_16x16.png",
+    "48":"agh.icon.agh_48x48.png",
+    "128":"agh.icon.agh_128x128.png"
+  },
+  "homepage_url":"http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/addon/",
+  "description":"Displays mathematical formulae in GMail, Google Groups and Google Sites",
+  "web_accessible_resources":[
+    "aghtex.css",
+    "agh/latex/latex.sf.css",
+
+    // images .png
+    "agh/latex/int.png",
+    "agh/latex/oint.png",
+    "agh/latex/root.png",
+    "agh/latex/paren1l.png",
+    "agh/latex/paren1r.png",
+    "agh/latex/paren2l.png",
+    "agh/latex/paren2ov.png",
+    "agh/latex/paren2r.png",
+    "agh/latex/paren2ud.png",
+    "agh/latex/paren4l.png",
+    "agh/latex/paren4r.png",
+    "agh/latex/paren5l.png",
+    "agh/latex/paren5r.png",
+    "agh/latex/stretch_bslash.png",
+    "agh/latex/stretch_darr.png",
+    "agh/latex/stretch_darr2.png",
+    "agh/latex/stretch_hat.png",
+    "agh/latex/stretch_larr.png",
+    "agh/latex/stretch_lrarr.png",
+    "agh/latex/stretch_rarr.png",
+    "agh/latex/stretch_slash.png",
+    "agh/latex/stretch_tilde.png",
+    "agh/latex/stretch_uarr.png",
+    "agh/latex/stretch_uarr2.png",
+    "agh/latex/stretch_udarr.png",
+    "agh/latex/stretch_udarr2.png",
+
+    // images .svg
+    "agh/latex/stretch_langle.svg",
+    "agh/latex/stretch_lbrace.svg",
+    "agh/latex/stretch_lparen.svg",
+    "agh/latex/stretch_rangle.svg",
+    "agh/latex/stretch_rbrace.svg",
+    "agh/latex/stretch_rparen.svg",
+    "agh/latex/stretch_sqrt.svg",
+
+    // fonts
+    "agh/latex/aghtex_mathit.ttf",
+    "agh/latex/aghtex_mathbm.ttf",
+    "agh/latex/aghtex_mathrm.ttf",
+    "agh/latex/aghtex_mathcal.ttf",
+    "agh/latex/aghtex_mathbb.ttf",
+    "agh/latex/aghtex_mathfrak.ttf",
+    // "agh.icon.agh_128x128.png",
+    "agh.icon.agh_16x16.png"
+  ],
+  "content_scripts":[
+    {
+      "matches":[
+        "https://mail.google.com/mail/*",
+        "http://mail.google.com/mail/*",
+        "https://groups.google.com/group/*",
+        "http://groups.google.com/group/*",
+        "https://groups.google.com/forum/*",
+        "http://groups.google.com/forum/*",
+        "https://sites.google.com/site/*",
+        "http://site.google.com/site/*"
+      ],
+      "css":[
+        "aghtex.css",
+        "agh/latex/latex.sf.css"
+      ],
+      "js":[
+        "agh/agh.js",
+        "agh.hook_path.js",
+        "agh/agh.text.js",
+        "agh/agh.lang.tex.js",
+        "aghtex.js",
+        "aghtex4gmail.js",
+        "aghtex4chrome.js"
+      ],
+      "all_frames":true
+    },{
+      "matches":[
+        "http://*/*.tex",
+        "https://*/*.tex",
+        "file:///*/*.tex"
+      ],
+      "css":[
+        "aghtex.css",
+        "viewtex.css"
+      ],
+      "js":[
+        "aghtex4chrome.js"
+      ],
+      "run_at":"document_end"
+    }
+  ],
+  "background":{
+    "page":"background.htm"
+  },
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "http://*/*.tex",
+    "https://*/*.tex"
+    // "file:///*/*.tex"
+    // "*://*/*.tex"
+  ]
+}

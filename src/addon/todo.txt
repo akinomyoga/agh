@@ -1,0 +1,35 @@
+
+load check for mwg
+  javascript:alert(document.getElementsByTagName("head")[0].innerHTML);
+  javascript:alert(mwg);
+
+
+mwgtex4gmail
+　文字を大きくするボタン
+　　何でか知らないけれども、既定での文字の大きさが小さい。
+　　それに合わせてプレビュー画面の文字の大きさも小さくしていたが、
+　　実際に編集してみるとやはり小さいので大きくしたい。
+　　という事で文字を大きくするボタンを追加しようと思う。
+
+
+thunderbird
+  連動スクロール
+
+
+latex:
+  \sum 及び \hat の類の再設計を検討する。 ***
+  \RAW@ 削除 ***
+  ams の pmatrix の類を実装する。 ***
+    \begin{pmatrix} の類
+  \begin{array} vertical-align がおかしい。動いていない
+  \text \math
+
+ie
+  公開要件
+    F5 等の更新を検出する事
+
+seahorse
+  mwgtex4ie の読込を試す。
+  CreateObject("mwgtex4ie.なんたらbho")
+    
+
