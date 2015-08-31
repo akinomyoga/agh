@@ -627,11 +627,11 @@ var Reg={};
       case "":case '"':case '`':
       // 式展開が有効な場合
         var reg=new RegExp(rex_here_expr+rex_term,"gm");
-        if(r=match_from(reg,_)){
+        if((r=match_from(reg,_))){
           this.enq(_cls(color_expr(r[0]),"agh-text-ruby-string"));
           _.lastIndex=_.index+r[0].length;
           return $[0]+k1;
-        }else if(r=match_from(reg_here_expropen,_)){
+        }else if((r=match_from(reg_here_expropen,_))){
           d.push_expr('<',rex_term);
           this.enq(_cls(color_expr(r[0]),"agh-text-ruby-string"));
           _.lastIndex=_.index+r[0].length;
@@ -641,7 +641,7 @@ var Reg={};
       case "'":
       // 式展開が無効な場合
         var reg=new RegExp("[\\s\\S]*?"+rex_term,"gm");
-        if(r=match_from(reg,_)){
+        if((r=match_from(reg,_))){
           this.enq(_cls(_h(r[0]),"agh-text-ruby-string"));
           _.lastIndex=_.index+r[0].length;
           return $[0]+k1;
@@ -1649,122 +1649,6 @@ nsColor.cpp=function(str,option){
   // MultiRegex の更に進化した version
   // 途中で regex の種類を変更する事ができる。
 
-  // ■buff に関連する処理の部分を分離すれば replace だけでなく each や split なども実装できる?
-  function GlobalIndexibleReplace(input,regex,handler,start,end){
-    /*?lwiki
-     * :@fn GlobalIndexibleReplace(input,regex,handler,start=0,end=input.length);
-     *  :@param regex : RegExp
-     *   置換部分列の決定に用いる正規表現を指定します。
-     *  :@param handler : function(matches,context)
-     *   置換部分列の置換結果を計算する関数を指定します。
-     *   :@param matches : Array
-     *    一致部分列およびキャプチャの配列が渡されます。
-     *    0番目の要素に一致部分列全体が設定されます。
-     *    1番目以降にキャプチャ部分列が設定されます。
-     *   :@param context : Object
-     *    :@var[in]     context.input
-     *     置換対象の文字列が渡されます。
-     *    :@var[in,out] context.regex : RegExp
-     *     置換部分列の決定に用いた正規表現が渡されます。
-     *     次の置換部分列の決定に用いる正規表現を返します。
-     *    :@var[in,out] context.handler : Function
-     *     置換結果の決定に用いられた関数が渡されます。常に handler 自身です。
-     *     次の置換部分列の置換結果の計算に用いられる handler を返します。
-     *    :@var[in,out] context.index
-     *     置換部分列の開始位置が渡されます。
-     *    :@var[in,out] context.lastIndex
-     *     置換部分列
-     *    :@var[in,out] context.他
-     *     handler の呼出を超えて共有する変数を自由に設定できます。
-     *   :@return
-     *    置換後の文字列を返します。
-     *    undefined を返した場合は置換を行いません。
-     *  :@param start = 0 : Number
-     *   置換対象の範囲の開始境界を指定します。
-     *  :@param end = input.length : Number
-     *   置換対象の範囲の末端境界を指定します。
-     */
-    if(start==null)
-      start=0;
-    else if(start<0)
-      start=Math.max(0,start+input.length);
-
-    if(end==null)
-      end=0;
-    else if(end<0)
-      end=Math.max(0,end+input.length);
-    else if(end>input.length)
-      end=input.length;
-
-    if(end<=start)return input;
-
-    var buff=[];
-    if(start>0)buff.push(input.slice(0,start));
-    var ctx={input:input,regex:regex,handler:handler};
-    for(var itext=start;itext<end;){
-      // ctx.regex.exec()
-      var m,mend;
-      {
-        var reg=ctx.regex; // assert(reg.global);
-        var originalLastIndex=reg.lastIndex;
-        reg.lastIndex=itext;
-        m   =reg.exec(input);
-        mend=reg.lastIndex;
-        reg.lastIndex=originalLastIndex;
-
-        // vIE<9 ではゼロ幅一致の時 lastIndex が勝手に 1 増やされる。
-        if(agh.browser.vIE<9&&m!=null&&m[0].length===0)mend--;
-      }
-      if(m==null||end<mend){
-        buff.push(input.slice(itext));
-        break;
-      }
-
-      // update context
-      ctx.index    =mend-m[0].length;
-      ctx.lastIndex=mend;
-      ctx.captures =m;
-
-      // ctx.handler()
-      var replaced=ctx.handler(m,ctx);
-      if(ctx.index<itext)
-        ctx.index=itext;
-      if(ctx.lastIndex<ctx.index)
-        ctx.lastIndex=ctx.index;
-
-      // output
-      if(replaced===undefined){
-        if(itext<ctx.lastIndex)
-          buff.push(input.slice(itext,ctx.lastIndex));
-      }else{
-        if(itext<ctx.index)
-          buff.push(input.slice(itext,ctx.index));
-        buff.push(replaced);
-      }
-
-      // update itext
-      //   零幅一致の場合は1文字進める
-      if(ctx.lastIndex>itext)
-        itext=ctx.lastIndex;
-      else
-        buff.push(input.substr(itext++,1));
-    }
-
-    return buff.join("");
-  }
-
-  function GlobalReplace(input,regex,handler){
-    var ctx={input:input,regex:regex,handler:handler};
-    return input.replace(regex,function($0){
-      var count=arguments.length;
-      ctx.input=arguments[count-1];
-      ctx.index=arguments[count-2];
-      ctx.captures=arguments;
-      var replaced=handler(arguments,ctx);
-      return replaced===undefined?$0: replaced;
-    });
-  }
-
   agh.Text.RegexConverterRule=function(reg,handler){
     if(reg instanceof RegExp){
       this.reg=reg;
@@ -1884,9 +1768,9 @@ nsColor.cpp=function(str,option){
     convert:function(input){
       this._instantiate();
       if(this.isIndexible)
-        return GlobalIndexibleReplace(input,this.m_instance_regex,this.m_instance_handler);
+        return agh.RegExp.indexibleReplace(input,this.m_instance_regex,this.m_instance_handler);
       else
-        return GlobalReplace(input,this.m_instance_regex,this.m_instance_handler);
+        return agh.RegExp.replace(input,this.m_instance_regex,this.m_instance_handler);
     },
     switchContext:function(ctx){
       this._instantiate();

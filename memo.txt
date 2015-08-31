@@ -7,14 +7,7 @@ agh/js - Ageha JavaScript Library v3.2
 
 命名規則概略
 
-  % 関数名
-  %
-  % - 基本的には動詞 (命令形) で始める
-  % - 動詞 (三単現) で始まる関数名は、副作用がなく bool を返す判定関数を表す。
-  % - 一単語からなる名詞の関数名は、何らかの値の取得関数を表す。対応する設定関数は存在しない (存在する場合は対称性の為に get/set prefix をつけるべきである)。
-  % - 取得・設定関数は get/set で始める。
-  %
-  % 副作用が■
+  命名規則の統一を考える為に、様々な環境でどの様な命名規則が使われるのかについてまとめてみる事にする。
 
   * 識別子の構成方法
 
@@ -59,12 +52,14 @@ agh/js - Ageha JavaScript Library v3.2
     mem/str/wcs 等々。
 
     単体の名詞を関数名とする場合は、副作用なく何らかの値を取得する関数である。
+    C++ ではこの類の取得関数があるが、対応する設定関数は普通用意されない。
     引数を取らない物と引数を取る物をオーバーロードして、
     前者を値の取得関数とし後者を値の設定関数とする事もある。
+    例えば jQuery などはこれである。
 
     is/can で始まる関数は、術語関数 (副作用が無く真偽値を戻す) を表す。
-    更に、動詞 (三単現) で始まる関数も術語関数とする事もある。
-    Ruby では ? で終わる関数名を用いる。
+    更に、動詞 (三単現) で始まる関数を術語関数とする事も多い。
+    Ruby では ? で終わる関数名を用いる。elisp では p で終わる関数名を用いる。
 
     Ruby では ! で終わるメソッド名は、
     オブジェクトに対する破壊的な操作を表す。
@@ -164,6 +159,14 @@ agh/js - Ageha JavaScript Library v3.2
     |   JavaScript の実装にはまともな物がないのだろうかと諦めていた所だったが意外とちゃんとした物もあった。
     |   但し、正規表現を連結して効率を高めるという発想には到っていない様だ (もしかするとこちらの方が早い可能性も?)。
     |   また、stage の概念などもやはり無いようである。
+    |
+    | google-code-prettify 評価=◎
+    |   [[google/code-prettify>https://github.com/google/code-prettify]]
+    |
+    |   実装手法: agh.text.color.js と同じく各言語要素の正規表現を一つに結合して一致を試みる方法を採っている。
+    |   stage の概念はない。
+    |
+    |   ただ対応している言語は少ないかも。
 
     既存実装を色々見てみたが大体馬鹿な実装で、
     ちゃんとした実装も agh.text.color.js を超える物は存在しないようだ。
@@ -171,43 +174,6 @@ agh/js - Ageha JavaScript Library v3.2
 
     現在の正規表現の実装に関しても確認を行っておく
     →この際だから整理する事にした。[2015-08-30 agh.regex.js 整理] を参照の事。
-
-  * agh.regex.js 整理
-
-    agh.regex.js の中で提供されている関数・クラスには以下のような物がある。
-
-    | String.prototype.$replace; → 使っている人はいるのか疑問。削除or整理する。
-    | // RegExp.prototype.countGroup; → 削除
-    | RegExp.addFlags;
-    | class agh.Text.MultiRegex
-    |   register(regex,handler)
-    |   replace_fast : 単純な複数一致
-    |   replace_last : replace2 を利用した実装。途中で位置を変更できる
-    | replace2
-    |   replace2local
-    |     何かバグがある様に見えるので修正を行う。というか実装途中??
-    |     →修正した。
-    |   replace2global
-    |     これは agh.text.color.js の GlobalIndexibleReplace で再実装されている気がする。
-    |     削除(または置き換え)予定である。
-
-    取り敢えず agh.text.color.js にある機能を agh.regex.js に移動する方向で replace 機能を整理する。
-
-    1 先ず初めに $replace 及び replace2 の使用箇所を特定し、依存性について確認する。
-    2 $replace 及び replace2 を削除し、代替物に置き換える。
-      簡単に代替物が見付からない場合には暫定的に残し後で削除する事にする。
-    3 $replace, replace2 に代わる新しい関数を実装し agh.RegExp を介して公開する事にする。
-      あるいは上記の replace2 を agh.RegExp に移動するという方向でも良い。
-
-    使用箇所について確認を行う。$replace の使用箇所は以下の2箇所である。
-
-    ./agh.regex.js:235:    return str.$replace(this.m_reg,function($G,$R){
-    ./agh.text.color.js:78:    return str.$replace(this.mrx,this);
-
-    agh.text.color.js に関しては単純に this.mrx.replace に置き換える事ができる。
-    agh.regex.js の方についても this.m_reg instanceof RegExp なので replace2 に置き換える事ができる。
-    replace2 に関しては agh.RegExp.indexibleReplace として公開する事にした。
-    一旦 commit する事にする。
 
 Known Bugs:
 
@@ -483,3 +449,63 @@ latex
 
     - latex:env: letter, quote, quotation, picture, tabbing, theorem, titlepage, verse
     - latex: \listoffigures, \listoftables, \abstractname, \bibname, \contentsname, \listfigurename, \listtablename
+
+-------------------------------------------------------------------------------
+  実装メモ - log
+-------------------------------------------------------------------------------
+
+2015-08-30
+
+  * agh.regex.js 整理
+
+    agh.regex.js の中で提供されている関数・クラスには以下のような物がある。
+
+    | String.prototype.$replace; → 使っている人はいるのか疑問。削除or整理する。
+    | // RegExp.prototype.countGroup; → 削除
+    | RegExp.addFlags;
+    | class agh.Text.MultiRegex
+    |   register(regex,handler)
+    |   replace_fast : 単純な複数一致
+    |   replace_last : replace2 を利用した実装。途中で位置を変更できる
+    | replace2
+    |   replace2local
+    |     何かバグがある様に見えるので修正を行う。というか実装途中??
+    |     →修正した。
+    |   replace2global
+    |     これは agh.text.color.js の GlobalIndexibleReplace で再実装されている気がする。
+    |     削除(または置き換え)予定である。
+
+    取り敢えず agh.text.color.js にある機能を agh.regex.js に移動する方向で replace 機能を整理する。
+
+    1 先ず初めに $replace 及び replace2 の使用箇所を特定し、依存性について確認する。
+    2 $replace 及び replace2 を削除し、代替物に置き換える。
+      簡単に代替物が見付からない場合には暫定的に残し後で削除する事にする。
+    3 $replace, replace2 に代わる新しい関数を実装し agh.RegExp を介して公開する事にする。
+      あるいは上記の replace2 を agh.RegExp に移動するという方向でも良い。
+
+    使用箇所について確認を行う。$replace の使用箇所は以下の2箇所である。
+
+    ./agh.regex.js:235:    return str.$replace(this.m_reg,function($G,$R){
+    ./agh.text.color.js:78:    return str.$replace(this.mrx,this);
+
+    agh.text.color.js に関しては単純に this.mrx.replace に置き換える事ができる。
+    agh.regex.js の方についても this.m_reg instanceof RegExp なので replace2 に置き換える事ができる。
+    replace2 に関しては agh.RegExp.indexibleReplace として公開する事にした。一旦 commit する事にする。
+
+    次に indexibleReplace の replace2global を新しい実装 GlobalIndexibleReplace に変更したい。
+    その為に先ずは API が一致しているかどうかを確認する。
+    replace2global の handler の引数は ($G,$I) である。
+    $G は exec の結果がそのまま入る。$I はメンバーとして regex, input, index, lastIndex, captures が指定される。
+    GlobalIndexibleReplace の方も確認してみたが同じ様である。但し、$I に新しいメンバ handler が存在する。
+    但し、GlobalIndexibleReplace は $I.regex の変更がそれ以降の置換に反映されるという所が異なる。
+    しかしながら regex を変更する様な事は行っていないはずなので大丈夫だと思われる。
+    検索したら RegexConverter#switchContext という関数の中で regex/handler を設定するコードがあったが、、
+    これは GlobalIndexibleReplace を使う前提でのコードであって replace2global の為のコードではない。
+
+    replace2local についても GlobalIndeibleReplace に合わせて拡張を行った。LocalIndexibleReplace と名称を変更する。
+    また、agh.text.color.js の GlobalReplace についても agh.regex.js の agh.RegExp.replace に移動する事にした。
+    GlobalReplace に関しては start,end の範囲の指定はできない。
+    (これに対応しようとすると indexibleReplace と同様に複雑になる。それならば indexibleReplace を呼べばよい。
+    もともと GlobalReplace を用意したのはわざわざ indexibleReplace の様な複雑な事をしなくても良い場合の為であった。
+    その場合は実の所、単純に String#replace を呼び出せば良いが、
+    使い方を indexibleReplace と統一する為の wrapper として GlobalReplace がある。)

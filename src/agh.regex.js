@@ -22,7 +22,7 @@ agh.scripts.register("agh.regex.js",["agh.js"],function(){
 
     // 変換
     var tgt=this;
-    if(agh.is(tgt,Array)){
+    if(tgt instanceof Array){
       if(r)tgt=agh.Array.map(tgt,agh.Text.Escape.regexp);
       tgt=tgt.join("|");
       if(b)tgt="\\b(?:"+tgt+")\\b";
@@ -80,115 +80,208 @@ agh.scripts.register("agh.regex.js",["agh.js"],function(){
     else
       return reg;
   };
-  agh.RegExp.indexibleReplace=(function(){
-    function replace2local(text,reg,handler){
-      // global でない場合は、
-      // キャプチャと位置を同時に得られる関数は replace しかない
-      var $G=[];
-      var index=-1;
-      text.replace(reg,function($0){
-        var iC=arguments.length-2;
-        for(var i=0;i<iC;i++)
-          $G.push(arguments[i]);
-        index=arguments[iC+1];
-      });
 
-      if(index<0)return text;
-
-      var r=handler($G,{
-        regex:reg,
-        input:text,
-        index:index,
-        lastIndex:index+$G[0].length,
-        captures:$G
-      });
-      return text.substr(0,index)+r+text.substr($I.lastIndex);
+  function createHandlerFromString(tmpl){
+    if(tmpl.match(/\$(?:\d+|[\&\+\`\'])/)){
+      return function($G,$I){
+        return tmpl.replace(/\$(?:(\d+)|([\&\+\`\']))/g,function($0,$1,$2){
+          if(!!$1){
+            var r="";
+            do{
+              if($1 in $G)return $G[$1]+r;
+              r=$1.substr($1.length-1)+r;
+              $1=$1.substr(0,$1.length-1);
+            }while($1.length>0);
+          }else{
+            if($2=="&")return $0;
+            if($2=="`")return $I.input.substr(0,$I.index);
+            if($2=="&")return $I.input.substr($I.lastIndex);
+            if($2=="+")return $G[$G.length-1];
+          }
+          return $0;
+        });
+      };
+    }else{
+      return function($G,$I){
+        return tmpl;
+      };
     }
-    function replace2global(text,reg,handler){
-      var bkLast=reg.lastIndex;
-      reg.lastIndex=0;
-      var ret=[];
-      var len=text.length;
-      var $I={regex:reg,input:text};
-      for(var itext=0;itext<len;){
-        // 次の一致
-        var $G=reg.exec(text);
-        if($G==null){
-          ret.push(text.substr(itext));
+  }
+
+  agh.RegExp.indexibleReplace=(function(){
+    function LocalIndexibleReplace(input,reg,handler,start,end){
+      var m=null;
+      var ctx={regex:reg,input:input,handler:handler};
+
+      // reg.exec(input) => set m, ctx.index, ctx.lastIndex
+      if(start==0){
+        // global でない場合は、
+        // キャプチャと位置を同時に得られる関数は replace しかない
+        input.replace(reg,function($0){
+          m=Array.prototype.slice.call(arguments,0,-2);
+          ctx.index=arguments[arguments.length-2];
+          ctx.lastIndex=ctx.index+$0.length;
+        });
+      }else{
+        // global な version を生成するしかない。
+        if(reg.aghGlobalVersion==null)
+          reg.aghGlobalVersion=reg.global?reg:agh.RegExp.addFlags(reg,'g');
+
+        reg.aghGlobalVersion.lastIndex=start;
+        m=reg.aghGlobalVersion.exec(input);
+        if(m!=null){
+          ctx.lastIndex=reg.aghGlobalVersion.lastIndex;
+          // vIE<9 ではゼロ幅一致の時 lastIndex が勝手に 1 増やされる。
+          if(agh.browser.vIE<9&&m[0].length===0)ctx.lastIndex--;
+          ctx.index=ctx.lastIndex-m[0].length;
+        }
+      }
+
+      if(m==null||end<ctx.lastIndex)return input;
+
+      ctx.captures=m;
+
+      var replaced=handler(m,ctx);
+      if(replaced===undefined)return input;
+      if(ctx.index<start)ctx.index=start;
+      if(ctx.lastIndex<ctx.index)ctx.lastIndex=ctx.index;
+      return input.slice(0,ctx.index)+replaced+input.substr(ctx.lastIndex);
+    }
+
+    // ■buff に関連する処理の部分を分離すれば replace だけでなく each や split なども実装できる?
+    function GlobalIndexibleReplace(input,regex,handler,start,end){
+      /*?lwiki
+       * :@fn GlobalIndexibleReplace(input,regex,handler,start=0,end=input.length);
+       *  :@param regex : RegExp
+       *   置換部分列の決定に用いる正規表現を指定します。
+       *  :@param handler : function(matches,context)
+       *   置換部分列の置換結果を計算する関数を指定します。
+       *   :@param matches : Array
+       *    一致部分列およびキャプチャの配列が渡されます。
+       *    0番目の要素に一致部分列全体が設定されます。
+       *    1番目以降にキャプチャ部分列が設定されます。
+       *   :@param context : Object
+       *    :@var[in]     context.input
+       *     置換対象の文字列が渡されます。
+       *    :@var[in,out] context.regex : RegExp
+       *     置換部分列の決定に用いた正規表現が渡されます。
+       *     次の置換部分列の決定に用いる正規表現を返します。
+       *    :@var[in,out] context.handler : Function
+       *     置換結果の決定に用いられた関数が渡されます。常に handler 自身です。
+       *     次の置換部分列の置換結果の計算に用いられる handler を返します。
+       *    :@var[in,out] context.index
+       *     置換部分列の開始位置が渡されます。
+       *    :@var[in,out] context.lastIndex
+       *     置換部分列
+       *    :@var[in,out] context.他
+       *     handler の呼出を超えて共有する変数を自由に設定できます。
+       *   :@return
+       *    置換後の文字列を返します。
+       *    undefined を返した場合は置換を行いません。
+       *  :@param start = 0 : Number
+       *   置換対象の範囲の開始境界を指定します。
+       *  :@param end = input.length : Number
+       *   置換対象の範囲の末端境界を指定します。
+       */
+      var buff=[];
+      if(start>0)buff.push(input.slice(0,start));
+      var ctx={input:input,regex:regex,handler:handler};
+      for(var itext=start;itext<end;){
+        // ctx.regex.exec()
+        var m,mend;
+        {
+          var reg=ctx.regex; // assert(reg.global);
+          var originalLastIndex=reg.lastIndex;
+          reg.lastIndex=itext;
+          m   =reg.exec(input);
+          mend=reg.lastIndex;
+          reg.lastIndex=originalLastIndex;
+
+          // vIE<9 ではゼロ幅一致の時 lastIndex が勝手に 1 増やされる。
+          if(agh.browser.vIE<9&&m!=null&&m[0].length===0)mend--;
+        }
+        if(m==null||end<mend){
+          buff.push(input.slice(itext));
           break;
         }
-        // vIE<9 ではゼロ幅一致の時 lastIndex が勝手に 1 増やされる。
-        if(agh.browser.vIE<9&&$G[0].length===0)reg.lastIndex--;
 
-        // 一致情報
-        var end=reg.lastIndex;
-        var start=end-$G[0].length;
-        $I.index    =start;
-        $I.lastIndex=end;
-        $I.captures =$G;
+        // update context
+        ctx.index    =mend-m[0].length;
+        ctx.lastIndex=mend;
+        ctx.captures =m;
 
-        // 間の部分
-        if(itext<start)
-          ret.push(text.slice(itext,start));
+        // ctx.handler()
+        var replaced=ctx.handler(m,ctx);
+        if(ctx.index<itext)
+          ctx.index=itext;
+        if(ctx.lastIndex<ctx.index)
+          ctx.lastIndex=ctx.index;
 
-        // 置換
-        reg.lastIndex=bkLast;
-        ret.push(handler($G,$I));
-        bkLast=reg.lastIndex;
-        reg.lastIndex=$I.lastIndex;
-        itext=$I.lastIndex;
-
-        // 零幅一致
-        if(start==end&&start==$I.lastIndex&&start<text.length){
-          ret.push(text.substr(itext++,1));
-          reg.lastIndex++;
+        // output
+        if(replaced===undefined){
+          if(itext<ctx.lastIndex)
+            buff.push(input.slice(itext,ctx.lastIndex));
+        }else{
+          if(itext<ctx.index)
+            buff.push(input.slice(itext,ctx.index));
+          buff.push(replaced);
         }
+
+        // update itext
+        //   零幅一致の場合は1文字進める
+        if(ctx.lastIndex>itext)
+          itext=ctx.lastIndex;
+        else
+          buff.push(input.substr(itext++,1));
       }
 
-      reg.lastIndex=bkLast;
-      return ret.join("");
-    }
-    function createHandlerFromString(tmpl){
-      if(tmpl.match(/\$(?:\d+|[\&\+\`\'])/)){
-        return function($G,$I){
-          return tmpl.replace(/\$(?:(\d+)|([\&\+\`\']))/g,function($0,$1,$2){
-            if(!!$1){
-              var r="";
-              do{
-                if($1 in $G)return $G[$1]+r;
-                r=$1.substr($1.length-1)+r;
-                $1=$1.substr(0,$1.length-1);
-              }while($1.length>0);
-            }else{
-              if($2=="&")return $0;
-              if($2=="`")return $I.input.substr(0,$I.index);
-              if($2=="&")return $I.input.substr($I.lastIndex);
-              if($2=="+")return $G[$G.length-1];
-            }
-            return $0;
-          });
-        };
-      }else{
-        return function($G,$I){
-          return tmpl;
-        };
-      }
+      return buff.join("");
     }
 
-    return function(text,reg,rep){
+    return function(input,reg,rep,start,end){
       //-- 引数の調整
-      reg=agh(reg,RegExp);
-      if(!agh.is(rep,Function)){
+      if(!(reg instanceof RegExp))
+        reg=agh(reg,RegExp);
+      if(!(rep instanceof Function))
         rep=createHandlerFromString((rep||"").toString());
-      }
 
-      if(!reg.global){
-        return replace2local(text,reg,rep);
-      }
+      if(start==null)
+        start=0;
+      else if(start<0)
+        start=Math.max(0,start+input.length);
 
-      return replace2global(text,reg,rep);
+      if(end==null)
+        end=0;
+      else if(end<0)
+        end=Math.max(0,end+input.length);
+      else if(end>input.length)
+        end=input.length;
+
+      if(end<=start)
+        return input;
+      else if(reg.global)
+        return GlobalIndexibleReplace(input,reg,rep,start,end);
+      else
+        return LocalIndexibleReplace(input,reg,rep,start,end);
     };
   })();
+
+  agh.RegExp.replace=function(input,reg,handler){
+    if(!(reg instanceof RegExp))
+      reg=agh(reg,RegExp);
+    if(!(handler instanceof Function))
+      handler=createHandlerFromString((handler||"").toString());
+
+    var ctx={input:input,regex:reg,handler:handler};
+    return input.replace(reg,function($0){
+      var count=arguments.length;
+      ctx.captures=Array.prototype.slice.call(arguments,0,-2);
+      ctx.index=arguments[count-2];
+      ctx.lastIndex=ctx.index+$0.length;
+      var replaced=handler(ctx.captures,ctx);
+      return replaced===undefined?$0:replaced;
+    });
+  };
 
 //==============================================================================
 //	【1】agh.Text.MultiRegex
