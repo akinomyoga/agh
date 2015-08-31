@@ -1691,6 +1691,8 @@ nsColor.cpp=function(str,option){
 
   agh.Text.RegexConverter=function RegexConverter(flags,pairs){
     this.rules=[];
+    if(flags!=null)
+      this.m_flags=flags;
     if(pairs instanceof Array){
       for(var i=0,iN=pairs.length;i<iN;i++){
         var pair=pairs[i];
@@ -1703,15 +1705,16 @@ nsColor.cpp=function(str,option){
     }
   };
   agh.memcpy(ns.RegexConverter.prototype,{
+    m_flags:'g',
     isIndexible:false,
     m_version:0,
     m_instance_version:-1,
-    addRule:function(rule,regex){
+    addRule:function(rule,handler){
       this.m_version++;
       if(rule instanceof ns.RegexConverterRule)
         this.rules.push(rule);
       else
-        this.rules.push(new ns.RegexConverterRule(rule,regex));
+        this.rules.push(new ns.RegexConverterRule(rule,handler));
     },
     _instantiate:function(){
       if(this.m_instance_version===this.m_version)
@@ -1740,7 +1743,7 @@ nsColor.cpp=function(str,option){
       }
 
       this.m_instance_version=this.m_version;
-      this.m_instance_regex=new RegExp(rex,"g");
+      this.m_instance_regex=new RegExp(rex,this.m_flags);
 
       var self=this;
       this.m_instance_handler=function(m,ctx){
@@ -1978,6 +1981,23 @@ nsColor.cpp=function(str,option){
   sed.addRule(/(\S.*?)(\r?\n|\r|$)/g,function(m,c){return '<span class="agh-syntax-error">'+_h(m[1])+'</span>'+(m[2]?'<br/>':"");});
   sed.addRule(ruleHtmlEscape);
   registerSyntaxHighlighter("sed",createSyntaxHighligher(sed));
+
+  //---------------------------------------------------------------------------
+  // test implementation: bash
+  var bash=new ns.RegexConverter("gm",[
+    [
+      /(^|\s+)#.*?(?:\r\n?|\r|$)/g,
+      function(m,ctx){return _h(m[1])+'<span class="agh-syntax-comment">'+_h(m[0].slice(m[1].length))+'</span>';}
+    ],[
+      /\$?"(?:[^\\"]|\\[\s\S])*"|`(?:[^\\"]|\\[\s\S])*`|\$'(?:[^\\]|\\[\s\S])*'|'[^']*'/,
+      function(G,C){return '<span class="agh-syntax-string">'+_h(G[0])+'</span>';}
+    ],[
+      /^.*?\$ /,
+      function(G,C){return '<span class="agh-syntax-comment">'+_h(G[0].slice(0,-1))+'</span> ';}
+    ],ruleHtmlEscape
+  ]);
+  registerSyntaxHighlighter("bash",createSyntaxHighligher(bash));
+
 })();
 
 });

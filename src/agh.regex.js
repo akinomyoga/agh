@@ -109,6 +109,42 @@ agh.scripts.register("agh.regex.js",["agh.js"],function(){
   }
 
   agh.RegExp.indexibleReplace=(function(){
+    /*?lwiki
+     * :@fn agh.RegExp.indexibleReplace(input,regex,handler,start=0,end=input.length);
+     *  :@param regex : RegExp
+     *   置換部分列の決定に用いる正規表現を指定します。
+     *   global の設定されている場合、複数回の置換を行います。
+     *   global が設定されていない場合、最初の一致に対してのみ置換を行います。
+     *  :@param handler : function(matches,context)
+     *   置換部分列の置換結果を計算する関数を指定します。
+     *   :@param matches : Array
+     *    一致部分列およびキャプチャの配列が渡されます。
+     *    0番目の要素に一致部分列全体が設定されます。
+     *    1番目以降にキャプチャ部分列が設定されます。
+     *   :@param context : Object
+     *    :@var[in]     context.input
+     *     置換対象の文字列が渡されます。
+     *    :@var[in,out] context.regex : RegExp
+     *     置換部分列の決定に用いた正規表現が渡されます。
+     *     次の置換部分列の決定に用いる正規表現を返します。
+     *    :@var[in,out] context.handler : Function
+     *     置換結果の決定に用いられた関数が渡されます。常に handler 自身です。
+     *     次の置換部分列の置換結果の計算に用いられる handler を返します。
+     *    :@var[in,out] context.index
+     *     置換部分列の開始位置が渡されます。
+     *    :@var[in,out] context.lastIndex
+     *     置換部分列
+     *    :@var[in,out] context.他
+     *     handler の呼出を超えて共有する変数を自由に設定できます。
+     *   :@return
+     *    置換後の文字列を返します。
+     *    undefined を返した場合は置換を行いません。
+     *  :@param start = 0 : Number
+     *   置換対象の範囲の開始境界を指定します。
+     *  :@param end = input.length : Number
+     *   置換対象の範囲の末端境界を指定します。
+     */
+
     function LocalIndexibleReplace(input,reg,handler,start,end){
       var m=null;
       var ctx={regex:reg,input:input,handler:handler};
@@ -150,39 +186,6 @@ agh.scripts.register("agh.regex.js",["agh.js"],function(){
 
     // ■buff に関連する処理の部分を分離すれば replace だけでなく each や split なども実装できる?
     function GlobalIndexibleReplace(input,regex,handler,start,end){
-      /*?lwiki
-       * :@fn GlobalIndexibleReplace(input,regex,handler,start=0,end=input.length);
-       *  :@param regex : RegExp
-       *   置換部分列の決定に用いる正規表現を指定します。
-       *  :@param handler : function(matches,context)
-       *   置換部分列の置換結果を計算する関数を指定します。
-       *   :@param matches : Array
-       *    一致部分列およびキャプチャの配列が渡されます。
-       *    0番目の要素に一致部分列全体が設定されます。
-       *    1番目以降にキャプチャ部分列が設定されます。
-       *   :@param context : Object
-       *    :@var[in]     context.input
-       *     置換対象の文字列が渡されます。
-       *    :@var[in,out] context.regex : RegExp
-       *     置換部分列の決定に用いた正規表現が渡されます。
-       *     次の置換部分列の決定に用いる正規表現を返します。
-       *    :@var[in,out] context.handler : Function
-       *     置換結果の決定に用いられた関数が渡されます。常に handler 自身です。
-       *     次の置換部分列の置換結果の計算に用いられる handler を返します。
-       *    :@var[in,out] context.index
-       *     置換部分列の開始位置が渡されます。
-       *    :@var[in,out] context.lastIndex
-       *     置換部分列
-       *    :@var[in,out] context.他
-       *     handler の呼出を超えて共有する変数を自由に設定できます。
-       *   :@return
-       *    置換後の文字列を返します。
-       *    undefined を返した場合は置換を行いません。
-       *  :@param start = 0 : Number
-       *   置換対象の範囲の開始境界を指定します。
-       *  :@param end = input.length : Number
-       *   置換対象の範囲の末端境界を指定します。
-       */
       var buff=[];
       if(start>0)buff.push(input.slice(0,start));
       var ctx={input:input,regex:regex,handler:handler};
@@ -200,10 +203,8 @@ agh.scripts.register("agh.regex.js",["agh.js"],function(){
           // vIE<9 ではゼロ幅一致の時 lastIndex が勝手に 1 増やされる。
           if(agh.browser.vIE<9&&m!=null&&m[0].length===0)mend--;
         }
-        if(m==null||end<mend){
-          buff.push(input.slice(itext));
+        if(m==null||end<mend)
           break;
-        }
 
         // update context
         ctx.index    =mend-m[0].length;
@@ -235,6 +236,8 @@ agh.scripts.register("agh.regex.js",["agh.js"],function(){
           buff.push(input.substr(itext++,1));
       }
 
+      if(itext<input.length)
+        buff.push(input.slice(itext));
       return buff.join("");
     }
 
@@ -251,13 +254,13 @@ agh.scripts.register("agh.regex.js",["agh.js"],function(){
         start=Math.max(0,start+input.length);
 
       if(end==null)
-        end=0;
+        end=input.length;
       else if(end<0)
         end=Math.max(0,end+input.length);
       else if(end>input.length)
         end=input.length;
 
-      if(end<=start)
+      if(end<start)
         return input;
       else if(reg.global)
         return GlobalIndexibleReplace(input,reg,rep,start,end);
@@ -443,44 +446,35 @@ agh.memcpy(MulReg.prototype,{
     var inds    =this.inds;
     var hdls    =this.hdls;
     var regs    =this.regs;
-    // 置換
-    //----------------------------------
+    var ctx     ={input:str,regex:this.m_reg,handler:null};
     return str.replace(this.m_reg,function rep_replace_fast($0){
       // 一致した正規表現の特定
       var i=self.get_reg_index(str,arguments);
-      //var i=-1;
-      //for(var j=0;j<len;j++)
-      //	if(arguments[inds[j].all]!=null){i=j;break;}
       if(i<0)return $0;
 
-      var $R={
-        input:str,
-        regex:regs[i],
-        index:arguments[igroup],
-        lastIndex:arguments[igroup]+$0.length
-      };
-      var $G=[];
+      ctx.index    =arguments[igroup];
+      ctx.lastIndex=arguments[igroup]+$0.length;
+      ctx.captures =arguments;
       var index=inds[i];
-      for(var j=index.all,jN=index.end;j<jN;j++)$G.push(arguments[j]);
-      return hdls[i].call(obj,$G,$R);
+      var captures=Array.prototype.slice.call(arguments,index.all,index.end);
+      return hdls[i].call(obj,captures,ctx);
     });
   },
   replace_last:function(str,obj){
     this.instantiate();
+    var self    =this;
     var igroup=this.igroup;
     var len		=this.m_len;
     var inds	=this.inds;
     var hdls	=this.hdls;
     var regs	=this.regs;
-    //----------------------------------
-    return agh.RegExp.indexibleReplace(str,this.m_reg,function($G,$R){
-      for(var i=0;i<len;i++){
-        var index=inds[i];
-        if(!$G[index.all])continue;
-        $G=$G.slice(index.all,index.end);
-        return hdls[i].call(obj,$G,$R);
-      }
-      return $G[0];
+    return agh.RegExp.indexibleReplace(str,this.m_reg,function(m,ctx){
+      var i=self.get_reg_index(str,m);
+      if(i<0)return m[0];
+
+      var index=inds[i];
+      var captures=m.slice(index.all,index.end);
+      return hdls[i].call(obj,captures,ctx);
     });
   },
   set_replace:function(value){
