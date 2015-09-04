@@ -66,15 +66,18 @@
   function for_tag(elem,tagName,proc){
     agh.Array.each(elem.getElementsByTagName(tagName),proc);
   }
-  
-  var kick_type=(function get_kick_type(){
+
+  function read_meta(name,defaultValue){
+    name=name.toLowerCase();
     var metas=document.getElementsByTagName("meta");
     for(var i=0;i<metas.length;i++){
-      if(!(/^agh-fly-type$/i).test(metas[i].name))continue;
+      if(!metas[i].name||metas[i].name.toLowerCase()!==name)continue;
       return metas[i].content;
     }
-    return "";
-  })();
+    return defaultValue;
+  }
+
+  var kick_type=read_meta("agh-fly-type","");
 
   function initialize_aghfly(){
     if(agh.fly)return;
@@ -416,11 +419,10 @@
 
       var escapeEntityMap={'<':'&lt;','>':'&gt;','"':'&quot;','&':'&amp;'};
       function escapeEntity(text){
-        return text.replace(/[\<\>\"\&]/g,function($0){return escapeEntityMap[$0]})
+        return text.replace(/[\<\>\"\&]/g,function($0){return escapeEntityMap[$0];});
       }
 
       function extractAllTargets(elem,params){
-
         var targets=[];
 
         function processTextNode_inlineMath(node,reg_range){
@@ -477,13 +479,13 @@
 
             // obsoleted classes: tex:eqn, tex:eqnarr
             if(/(?:^|\s)tex\:eqn(?:\s|$)/.test(elem.className)){
-              if(!(/(?:^|\s)nocenter(?:\s|$)/.test(elem.className)))
+              if(!/(?:^|\s)nocenter(?:\s|$)/.test(elem.className))
                 elem.style.textAlign="center";
               targets.push({type:"math",target:elem,options:elem.className});
               processNodes(elem.childNodes,true);
               return;
             }else if(/(?:^|\s)tex\:eqnarr(?:\s|$)/.test(elem.className)){
-              if(!(/(?:^|\s)nocenter(?:\s|$)/.test(elem.className)))
+              if(!/(?:^|\s)nocenter(?:\s|$)/.test(elem.className))
                 elem.style.textAlign="center";
               targets.push({type:"eqnarr",target:elem,options:elem.className});
               processNodes(elem.childNodes,true);
@@ -498,7 +500,7 @@
                 elem.title=getTextContent(elem);
               targets.push({type:"imath",target:elem});
               processNodes(elem.childNodes,true);
-              return
+              return;
             }else if(/(?:^|\s)(?:aghfly-tex-|tex\:)para(?:\s|$)/.test(elem.className)){
               if(elem.title==null||elem.title=="")
                 elem.title=getTextContent(elem);
@@ -508,7 +510,7 @@
             }
           }
 
-          if(!(/(?:^|\s)aghfly-tex-suppress(?:\s|$)/.test(elem.className))){
+          if(!/(?:^|\s)aghfly-tex-suppress(?:\s|$)/.test(elem.className)){
             var original_regex=params.regexInlineMath;
 
             if(/(?:^|\s)(?:aghfly-tex-imath|tex\:dollared)(?:\s|$)/.test(elem.className))
@@ -544,20 +546,23 @@
       var ID_AGHFLY_PARA='aghflyPx'+getRandomAlphaHex8()+getRandomAlphaHex8();
       var ID_AGHFLY_MATH='aghflyMx'+getRandomAlphaHex8()+getRandomAlphaHex8();
 
-      function extractTeXSourceAndEmbeddedNodes(elem,out_buff,out_nodes){
+      function extractTeXSourceAndEmbeddedNodes(elem,sourceBuffer,nodeBuffer,params){
         var children=elem.childNodes;
         for(var j=0,jN=children.length;j<jN;j++){
           var child=children[j];
           if(child.nodeType===3){
-            out_buff.push(getTextContent(child));
+            var content=getTextContent(child);
+            if(params.filterSource instanceof Function)
+              content=params.filterSource(content);
+            sourceBuffer.push(content);
           }else{
-            out_buff.push('{\\',ID_EMBEDDED_NODE,'}');
-            out_nodes.push(child);
+            sourceBuffer.push('{\\',ID_EMBEDDED_NODE,'}');
+            nodeBuffer.push(child);
           }
         }
       }
 
-      function targets_constructFullTeXSource(targets,buff){
+      function targets_constructFullTeXSource(targets,buff,params){
         for(var i=0,iN=targets.length;i<iN;i++){
           var ent=targets[i];
           ent.embedded=[];
@@ -595,7 +600,7 @@
 
           buff.push('\\begin{',aghflyEnvironmentName,'}');
           buff.push(prefix);
-          extractTeXSourceAndEmbeddedNodes(ent.target,buff,ent.embedded);
+          extractTeXSourceAndEmbeddedNodes(ent.target,buff,ent.embedded,params);
           buff.push('%\n'); // 中身に % が含まれている場合対策
           buff.push(suffix);
           buff.push('\\end{',aghflyEnvironmentName,'}');
@@ -634,17 +639,41 @@
         return CMDH_EMBEDDED;
       }
 
-      return function _transform(elem){
+      return function _transform(elem,params){
         if(!elem)elem=document.body;
+        if(!params)params={};
 
-        var params={};
-        if(/(?:^|\s)aghfly-inline-math(?:\s|$)/.test(document.body.className)){
-          // class="aghfly-inline-math"
-          params.regexInlineMath=/\`?\$((?!\s)[^$]*[^$\s])\$/g;
-        }else if(/(?:^|\s)(?:aghfly-inline-math-bqd|tex\:math_bqd)(?:\s|$)/.test(document.body.className)){
-          // class="aghfly-inline-math-bqd"
-          // class="tex:math_bqd" (obsolete)
-          params.regexInlineMath=/\`\$([^\$]+)\$/g;
+        if(!params.regexInlineMath){
+          if(/(?:^|\s)aghfly-inline-math(?:\s|$)/.test(document.body.className)){
+            // class="aghfly-inline-math"
+            params.regexInlineMath=/\`?\$((?!\s)[^$]*[^$\s])\$/g;
+          }else if(/(?:^|\s)(?:aghfly-inline-math-bqd|tex\:math_bqd)(?:\s|$)/.test(document.body.className)){
+            // class="aghfly-inline-math-bqd"
+            // class="tex:math_bqd" (obsolete)
+            params.regexInlineMath=/\`\$([^\$]+)\$/g;
+          }
+        }
+
+        if(read_meta("aghfly-reverts-symbols",false)){
+          var symbolsTable={
+            Α:'{A}',        Β:'{B}',         Γ:'{\\Gamma}',  Δ:'{\\Delta}',   
+            Ε:'{E}',        Ζ:'{Z}',         Η:'{H}',        Θ:'{\\Theta}',   
+            Ι:'{I}',        Κ:'{K}',         Λ:'{\\Lambda}', Μ:'{M}',         
+            Ν:'{N}',        Ξ:'{\\Xi}',      Ο:'{O}',        Π:'{\\Pi}',      
+            Ρ:'{P}',        Σ:'{\\Sigma}',   Τ:'{T}',        Υ:'{\\Upsilon}', 
+            Φ:'{\\Phi}',    Χ:'{\\Chi}',     Ψ:'{\\Psi}',    Ω:'{\\Omega}',   
+
+            α:'{\\alpha}',    β:'{\\beta}',     γ:'{\\gamma}',    δ:'{\\delta}',    
+            ε:'{\\epsilon}',  ζ:'{\\zeta}',     η:'{\\eta}',      θ:'{\\theta}',    
+            ι:'{\\iota}',     κ:'{\\kappa}',    λ:'{\\lambda}',   μ:'{\\mu}',       
+            ν:'{\\nu}',       ξ:'{\\xi}',       ο:'{o}',          π:'{\\pi}',       
+            ρ:'{\\rho}',      ς: '{\\varsigma}', σ:'{\\sigma}',    τ:'{\\tau}',      
+            υ:'{\\upsilon}',  φ:'{\\varphi}',   χ:'{\\chi}',      ψ:'{\\psi}',      
+            ω:'{\\omega}'
+          };
+          params.filterSource=function(tex){
+            return tex.replace(/[Α-ω]/g,function($0){return symbolsTable[$0]||$0;});
+          };
         }
 
         var targets=extractAllTargets(elem,params);
@@ -652,7 +681,7 @@
         var buff=[];
         buff.push('\\usepackage{amsmath,amssymb,bm}');
         buff.push(preambleSource);
-        targets_constructFullTeXSource(targets,buff);
+        targets_constructFullTeXSource(targets,buff,params);
 
         //console.log("dbg: buff.join()="+buff.join(""));
         var doc=new agh.LaTeX.Document(buff.join(''),["global","mode.para"]);
