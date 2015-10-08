@@ -82,9 +82,9 @@ agh.scripts.register("agh.regex.js",["agh.js"],function(){
   };
 
   function createHandlerFromString(tmpl){
-    if(tmpl.match(/\$(?:\d+|[\&\+\`\'])/)){
+    if(tmpl.match(/\$(?:\d+|[\&\+\`\'_$])/)){
       return function($G,$I){
-        return tmpl.replace(/\$(?:(\d+)|([\&\+\`\']))/g,function($0,$1,$2){
+        return tmpl.replace(/\$(?:(\d+)|([\&\+\`\'_$]))/g,function($0,$1,$2){
           if(!!$1){
             var r="";
             do{
@@ -93,10 +93,12 @@ agh.scripts.register("agh.regex.js",["agh.js"],function(){
               $1=$1.substr(0,$1.length-1);
             }while($1.length>0);
           }else{
-            if($2=="&")return $0;
-            if($2=="`")return $I.input.substr(0,$I.index);
-            if($2=="&")return $I.input.substr($I.lastIndex);
-            if($2=="+")return $G[$G.length-1];
+            if($2==="&")return $G[0];
+            if($2==="+")return $G[$G.length-1];
+            if($2==="`")return $I.input.substr(0,$I.index);
+            if($2==="'")return $I.input.substr($I.lastIndex);
+            if($2==="_")return $I.input;
+            if($2==="$")return $2;
           }
           return $0;
         });
@@ -185,11 +187,13 @@ agh.scripts.register("agh.regex.js",["agh.js"],function(){
     }
 
     // ■buff に関連する処理の部分を分離すれば replace だけでなく each や split なども実装できる?
-    function GlobalIndexibleReplace(input,regex,handler,start,end){
+    function GlobalIndexibleReplace(input,regex,handler,start,end,ctx){
       var buff=[];
       if(start>0)buff.push(input.slice(0,start));
-      var ctx={input:input,regex:regex,handler:handler};
-      for(var itext=start;itext<end;){
+      ctx.input=input;
+      ctx.regex=regex;
+      ctx.handler=handler;
+      for(var itext=start;itext<=end;){
         // ctx.regex.exec()
         var m,mend;
         {
@@ -229,11 +233,12 @@ agh.scripts.register("agh.regex.js",["agh.js"],function(){
         }
 
         // update itext
-        //   零幅一致の場合は1文字進める
         if(ctx.lastIndex>itext)
           itext=ctx.lastIndex;
-        else
+        else if(reg==ctx.regex){
+          // 零幅一致・状態無変化の場合は1文字進める
           buff.push(input.substr(itext++,1));
+        }
       }
 
       if(itext<input.length)
@@ -241,7 +246,7 @@ agh.scripts.register("agh.regex.js",["agh.js"],function(){
       return buff.join("");
     }
 
-    return function(input,reg,rep,start,end){
+    return function(input,reg,rep,start,end,ctx){
       //-- 引数の調整
       if(!(reg instanceof RegExp))
         reg=agh(reg,RegExp);
@@ -260,22 +265,27 @@ agh.scripts.register("agh.regex.js",["agh.js"],function(){
       else if(end>input.length)
         end=input.length;
 
-      if(end<start)
-        return input;
-      else if(reg.global)
-        return GlobalIndexibleReplace(input,reg,rep,start,end);
+      if(end<start)return input;
+
+      if(ctx==null)ctx={};
+
+      if(reg.global)
+        return GlobalIndexibleReplace(input,reg,rep,start,end,ctx);
       else
-        return LocalIndexibleReplace(input,reg,rep,start,end);
+        return LocalIndexibleReplace(input,reg,rep,start,end,ctx);
     };
   })();
 
-  agh.RegExp.replace=function(input,reg,handler){
+  agh.RegExp.replace=function(input,reg,handler,ctx){
     if(!(reg instanceof RegExp))
       reg=agh(reg,RegExp);
     if(!(handler instanceof Function))
       handler=createHandlerFromString((handler||"").toString());
 
-    var ctx={input:input,regex:reg,handler:handler};
+    if(ctx==null)ctx={};
+    ctx.input=input;
+    ctx.regex=reg;
+    ctx.handler=handler;
     return input.replace(reg,function($0){
       var count=arguments.length;
       ctx.captures=Array.prototype.slice.call(arguments,0,-2);

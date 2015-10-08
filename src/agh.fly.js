@@ -656,19 +656,19 @@
 
         if(read_meta("aghfly-reverts-symbols",false)){
           var symbolsTable={
-            Α:'{A}',        Β:'{B}',         Γ:'{\\Gamma}',  Δ:'{\\Delta}',   
-            Ε:'{E}',        Ζ:'{Z}',         Η:'{H}',        Θ:'{\\Theta}',   
-            Ι:'{I}',        Κ:'{K}',         Λ:'{\\Lambda}', Μ:'{M}',         
-            Ν:'{N}',        Ξ:'{\\Xi}',      Ο:'{O}',        Π:'{\\Pi}',      
-            Ρ:'{P}',        Σ:'{\\Sigma}',   Τ:'{T}',        Υ:'{\\Upsilon}', 
-            Φ:'{\\Phi}',    Χ:'{\\Chi}',     Ψ:'{\\Psi}',    Ω:'{\\Omega}',   
+            Α:'{A}',        Β:'{B}',         Γ:'{\\Gamma}',  Δ:'{\\Delta}',
+            Ε:'{E}',        Ζ:'{Z}',         Η:'{H}',        Θ:'{\\Theta}',
+            Ι:'{I}',        Κ:'{K}',         Λ:'{\\Lambda}', Μ:'{M}',
+            Ν:'{N}',        Ξ:'{\\Xi}',      Ο:'{O}',        Π:'{\\Pi}',
+            Ρ:'{P}',        Σ:'{\\Sigma}',   Τ:'{T}',        Υ:'{\\Upsilon}',
+            Φ:'{\\Phi}',    Χ:'{\\Chi}',     Ψ:'{\\Psi}',    Ω:'{\\Omega}',
 
-            α:'{\\alpha}',    β:'{\\beta}',     γ:'{\\gamma}',    δ:'{\\delta}',    
-            ε:'{\\epsilon}',  ζ:'{\\zeta}',     η:'{\\eta}',      θ:'{\\theta}',    
-            ι:'{\\iota}',     κ:'{\\kappa}',    λ:'{\\lambda}',   μ:'{\\mu}',       
-            ν:'{\\nu}',       ξ:'{\\xi}',       ο:'{o}',          π:'{\\pi}',       
-            ρ:'{\\rho}',      ς: '{\\varsigma}', σ:'{\\sigma}',    τ:'{\\tau}',      
-            υ:'{\\upsilon}',  φ:'{\\varphi}',   χ:'{\\chi}',      ψ:'{\\psi}',      
+            α:'{\\alpha}',    β:'{\\beta}',     γ:'{\\gamma}',    δ:'{\\delta}',
+            ε:'{\\epsilon}',  ζ:'{\\zeta}',     η:'{\\eta}',      θ:'{\\theta}',
+            ι:'{\\iota}',     κ:'{\\kappa}',    λ:'{\\lambda}',   μ:'{\\mu}',
+            ν:'{\\nu}',       ξ:'{\\xi}',       ο:'{o}',          π:'{\\pi}',
+            ρ:'{\\rho}',      ς: '{\\varsigma}', σ:'{\\sigma}',    τ:'{\\tau}',
+            υ:'{\\upsilon}',  φ:'{\\varphi}',   χ:'{\\chi}',      ψ:'{\\psi}',
             ω:'{\\omega}'
           };
           params.filterSource=function(tex){

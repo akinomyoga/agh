@@ -17,6 +17,7 @@ agh.scripts.register("agh.text.color.js",[
   "agh.js","agh.text.js","agh.regex.js","agh.text.color.css"
 ],function(){
 
+var agh=this;
 var ns=agh.Text;
 var _h=agh.Text.Escape.html;
 var _cls=agh.String.tagClass;
@@ -1649,10 +1650,12 @@ nsColor.cpp=function(str,option){
   // MultiRegex の更に進化した version
   // 途中で regex の種類を変更する事ができる。
 
-  agh.Text.RegexConverterRule=function(reg,handler){
+  ns.RegexConverterRule=function(reg,handler){
     if(reg instanceof RegExp){
       this.reg=reg;
       this.rex=reg.source;
+    }else if(reg instanceof Object&&'regex' in reg&&'handler' in reg){
+      return ns.RegexConverterRule.call(this,reg.regex,reg.handler);
     }else{
       this.rex=""+reg;
       this.reg=new RegExp(this.rex);
@@ -1662,32 +1665,58 @@ nsColor.cpp=function(str,option){
     if(handler instanceof Function)
       this.handler=handler;
     else{
-      if(!(/\$(?:([&`'\$])|([0-9]+))/).test(handler))
+      if(!(/\$(?:([&`'+$_])|([0-9]+))/).test(handler))
         this.handler=function(G,C){return handler;};
       else{
         this.handler=function(G,C){
-          return handler.replace(/\$(?:([&`'\$])|(\d+))/g,function($0,$C,$N,index,input){
+          return handler.replace(/\$(?:([&`'+$_])|(\d+)|\{((?:[^\\{}]|\\.)+)\})/g,function($0,$C,$N,$X,index,input){
             if($C){
               switch($C){
-              case '&':return $0;
-              case '`':return input.slice(0,index);
-              case "'":return input.slice(index+$0.length);
+              case '&':return G[0];
+              case "+":return G[G.length-1];
               case '$':return '$';
+              case '_':return C.input;
+              case '`':return C.input.slice(0,C.index);
+              case "'":return C.input.slice(C.lastIndex);
               }
-            }else{
+            }else if($N){
               var tail='';
               for(;$N.length>0;){
                 if($N in G)return G[$N]+tail;
-                tail=$N.slice(-1);
+                tail=$N.slice(-1)+tail;
                 $N=$N.slice(0,-1);
               }
+            }else if($X){
+              // ToDo
             }
             return $0;
           });
         };
       }
     }
+    return void 0;
   };
+
+  var RegexConverterState=function(){
+    this._cstack=[];
+  };
+  agh.memcpy(RegexConverterState.prototype,{
+    pushConverter:function(conv,lparam){
+      if(lparam==null)lparam=true;
+      this._cstack.push({regex:this.regex,handler:this.handler,lparam:lparam});
+      conv._instantiate();
+      this.regex  =conv.m_instance_regex;
+      this.handler=conv.m_instance_handler;
+    },
+    popConverter:function(){
+      if(this._cstack.length<=0)return false;
+      var top=this._cstack[this._cstack.length-1];
+      this._cstack.pop();
+      this.regex=top.regex;
+      this.handler=top.handler;
+      return top.lparam;
+    }
+  });
 
   agh.Text.RegexConverter=function RegexConverter(flags,pairs){
     this.rules=[];
@@ -1698,6 +1727,8 @@ nsColor.cpp=function(str,option){
         var pair=pairs[i];
         if(pair instanceof Array){
           this.addRule.apply(this,pair);
+        }else if('regex' in pair&&'handler' in pair){
+          this.addRule(pair.regex,pair.handler);
         }else{
           this.addRule(pair);
         }
@@ -1770,16 +1801,17 @@ nsColor.cpp=function(str,option){
     },
     convert:function(input){
       this._instantiate();
-      if(this.isIndexible)
-        return agh.RegExp.indexibleReplace(input,this.m_instance_regex,this.m_instance_handler);
-      else
+      if(this.isIndexible){
+        var state=new RegexConverterState;
+        return agh.RegExp.indexibleReplace(input,this.m_instance_regex,this.m_instance_handler,null,null,state);
+      }else
         return agh.RegExp.replace(input,this.m_instance_regex,this.m_instance_handler);
-    },
-    switchContext:function(ctx){
-      this._instantiate();
-      ctx.regex  =this.m_instance_regex;
-      ctx.handler=this.m_instance_handler;
     }
+    // switchContext:function(ctx){
+    //   this._instantiate();
+    //   ctx.regex  =this.m_instance_regex;
+    //   ctx.handler=this.m_instance_handler;
+    // }
   });
   if(agh.browser.vFx<34){
     // Fx33 以下は非一致キャプチャグループに対し undefined ではなく "" を返す。
@@ -1843,7 +1875,7 @@ nsColor.cpp=function(str,option){
   //   return '<span class="agh-syntax-comment">'+_h(m[0])+'</span>';
   // });
   var ruleHtmlEscapeDict={'&':'&amp;','<':'&lt;','>':'&gt;','\n':'<br/>','\r\n':'<br/>','\r':'<br/>'};
-  var ruleHtmlEscape=new ns.RegexConverterRule(/[<>&]|\r\n?|\r| +/g,function(m){
+  var ruleHtmlEscape=new ns.RegexConverterRule(/[<>&]|\r\n?|\r| {2,}/g,function(m){
     return ruleHtmlEscapeDict[m[0]]||m[0].replace(/ (?!$)/g,'&nbsp;');
   });
 
@@ -1865,6 +1897,8 @@ nsColor.cpp=function(str,option){
       this.rexdict[name]=this.resolve(rex);
     },
     resolve:function(rex){
+      if(rex instanceof RegExp)rex=rex.source;
+
       var ret={names:{}};
       var self=this;
       var groupCount=0;
@@ -1986,8 +2020,8 @@ nsColor.cpp=function(str,option){
   // test implementation: bash
   var bash=new ns.RegexConverter("gm",[
     [
-      /(^|\s+)#.*?(?:\r\n?|\r|$)/g,
-      function(m,ctx){return _h(m[1])+'<span class="agh-syntax-comment">'+_h(m[0].slice(m[1].length))+'</span>';}
+      /(^|\s+)#.*?(?:\r\n?|\n|$)/g,
+      function(G,C){return _h(G[1])+'<span class="agh-syntax-comment">'+_h(G[0].slice(G[1].length))+'</span>';}
     ],[
       /\$?"(?:[^\\"]|\\[\s\S])*"|`(?:[^\\"]|\\[\s\S])*`|\$'(?:[^\\]|\\[\s\S])*'|'[^']*'/,
       function(G,C){return '<span class="agh-syntax-string">'+_h(G[0])+'</span>';}
@@ -1996,7 +2030,194 @@ nsColor.cpp=function(str,option){
       function(G,C){return '<span class="agh-syntax-comment">'+_h(G[0].slice(0,-1))+'</span> ';}
     ],ruleHtmlEscape
   ]);
-  registerSyntaxHighlighter("bash",createSyntaxHighligher(bash));
+  registerSyntaxHighlighter("bash-interactive",createSyntaxHighligher(bash));
+
+  //---------------------------------------------------------------------------
+  // 試験実装
+  var rfac=new RegexFactory;
+
+  var rule_comment=new ns.RegexConverterRule({
+    regex:/\#.*?(?:\r\n?|\n|$)/g,handler:function(G,C){
+      return '<span class="agh-syntax-comment"><span class="agh-syntax-comment-delimiter">#</span>'+_h(G[0].slice(1))+'</span>';
+    }
+  });
+  var rule_escapedCharacter=new ns.RegexConverterRule({
+    regex:/\\./g,
+    handler:function(G,C){return '<span class="agh-syntax-escaped">'+_h(G[0])+'</span>';}
+  });
+  var push_stringNest={beg:'<span class="agh-syntax-string-delimiter">',end:'</span></span>'};
+  var rule_string=new ns.RegexConverterRule({
+    regex:/\$?\"(?:[^\\\"`$]|\\.)*(\"|$|(?=[`$]))|\'[^\']*\'|\$\'[^\\\']*(\'?)/g,
+    handler:function(G,C){
+      if(/^\$\'/.test(G[0])){
+        if(G[2]=='\''){
+          return '<span class="agh-syntax-string"><span class="agh-syntax-string-delimiter">$\'</span>'+
+            _h(G[0].slice(2,-1))+'<span class="agh-syntax-string-delimiter">\'</span></span>';
+        }else{
+          C.pushConverter(bash_escapedString,push_stringNest);
+          return '<span class="agh-syntax-string"><span class="agh-syntax-string-delimiter">$\'</span>'+_h(G[0].slice(2));
+        }
+      }else if(/^\'/.test(G[0])){
+        return '<span class="agh-syntax-string"><span class="agh-syntax-string-delimiter">\'</span>'+
+          _h(G[0].slice(1,-1))+'<span class="agh-syntax-string-delimiter">\'</span></span>';
+      }
+
+      var i1=/^\$/.test(G[0])?2:1;
+      if(G[1]==='"'){
+        return '<span class="agh-syntax-string"><span class="agh-syntax-string-delimiter">'+G[0].slice(0,i1)+'</span>'
+          +_h(G[0].slice(i1,-1))
+          +'<span class="agh-syntax-string-delimiter">'+G[0].slice(-1)+'</span></span>';
+      }else{
+        C.pushConverter(bash_string,push_stringNest);
+        return '<span class="agh-syntax-string"><span class="agh-syntax-string-delimiter">'+G[0].slice(0,i1)+'</span>'+_h(G[0].slice(i1));
+      }
+    }
+  });
+  var push_variableNest={beg:'<span class="agh-syntax-variable-delimiter">',end:'</span></span>'};
+  rfac.defineRegex("parameterName",/(?:[1-9]\d*\b|[_a-zA-Z][_\w]*\b|[-0@*#?$!0_])/);
+  var rule_paramExpansion=new ns.RegexConverterRule({
+    regex:rfac.resolve(/\$%{parameterName}|\$\{([!#]?%{parameterName})(?:[^\\}`'"$]|\\.)*(?:(\}|(?=[`'"$]))|$)/).rex,
+    handler:function(G,C){
+      if(G[1]){
+        var buff=[];
+        buff.push('<span class="agh-syntax-variable-delimiter">${</span>');
+        buff.push('<span class="agh-syntax-variable">',_h(G[1]),'</span>');
+
+        var tailLen=G[0].length-2-G[1].length;
+        if(G[2])tailLen-=G[2].length;
+        if(tailLen>0)
+          buff.push(_h(G[0].substr(2+G[1].length,tailLen)));
+
+        if(G[2]==='}'){
+          buff.push('<span class="agh-syntax-variable-delimiter">}</span>');
+        }else if(G[2]===''){
+          C.pushConverter(bash_paramx,push_variableNest);
+        }
+
+        return buff.join("");
+      }else{
+        return '<span class="agh-syntax-variable-delimiter">$</span><span class="agh-syntax-variable">'+_h(G[0].slice(1))+'</span>';
+      }
+    }
+  });
+  var rule_escapedCharacterS=new ns.RegexConverterRule({
+    regex:/\\[\\\"`$]/g,
+    handler:function(G,C){return '<span class="agh-syntax-escaped">'+_h(G[0])+'</span>';}
+  });
+  var push_processxNest={beg:'</span><span class="agh-syntax-variable-delimiter">',end:'</span>'};
+  var rule_processExpansion=new ns.RegexConverterRule({
+    regex:/\$\(|`/g,
+    handler:function(G,C){
+      if(/^\$\(/.test(G[0])){
+        C.pushConverter(bash_processx,push_processxNest);
+        return '<span class="agh-syntax-variable-delimiter">$(</span><span class="agh-syntax-default">';
+      }else{
+        C.pushConverter(bash_processString,push_variableNest);
+        return '<span class="agh-syntax-string"><span class="agh-syntax-string-delimiter">`</span>';
+      }
+    }
+  });
+  var rule_keywords_dict={};
+  function add_keyword(){
+    for(var i=0;i<arguments.length;i++){
+      var a=arguments[i];
+      rule_keywords_dict[a]='<span class="agh-syntax-keyword">'+a+'</span>';
+    }
+  }
+  function add_builtin(){
+    for(var i=0;i<arguments.length;i++){
+      var a=arguments[i];
+      rule_keywords_dict[a]='<span class="agh-syntax-builtin">'+a+'</span>';
+    }
+  }
+  // in は for, case の第三単語の場合のみ。[[ や ]] は固有の文脈を作る。
+  add_keyword('!','{','}');
+  add_keyword('function');
+  add_keyword('for','select','while','until','do','done');
+  add_keyword('case','esac');
+  add_keyword('if','then','elif','else','fi');
+  // [ は終わりの ] とセットで着色したい
+  add_builtin(
+    '.',':',
+    'alias','bg','bind','break','builtin','caller','cd','command','compgen','complete',
+    'compopt','continue','declare','dirs','disown','echo','enable','eval','exec',
+    'exit','export','false','fc','fg','getopts','hash','help','history','jobs','kill',
+    'let','local','logout','mapfile','popd','printf','pushd','pwd','read','readarra',
+    'readonly','return','set','shift','shopt','source','suspend','test','times','trap',
+    'true','type','typeset','ulimit','umask','unalias','unset','wait'
+  );
+  var rule_keywords=new ns.RegexConverterRule({
+    regex:/(?:[!{}.:]|\b[a-z]+)(?=$|[\s;&|<>()])/g,
+    handler:function(G,C){
+      return (rule_keywords_dict[G[0]]||G[0]);
+    }
+  });
+  var rule_options=new ns.RegexConverterRule({
+    regex:/-[-a-zA-Z0-9]*/g,
+    handler:function(G,C){
+      return '<span class="agh-syntax-attribute">'+G[0]+'</span>';
+    }
+  });
+
+  var popHandler=function(G,C){
+    var param=C.popConverter();
+    if(G[0]=='')
+      return param.beg+param.end;
+    else
+      return param.beg+_h(G[0])+param.end;
+  };
+
+  // $'...' の内部
+  var bash_escapedString=new ns.RegexConverter("g",[
+    {regex:/\'|$/g,handler:popHandler},
+    {regex:/\\(?:[abeEfnrtv\\\'\"]|[0-7]{1,3}|x[0-9a-fA-F]{1,3}|u[0-9a-fA-F]{1,4}|U[0-9a-fA-F]{1,8})/,handler:'<span class="agh-syntax-escaped">$&</span>'},
+    ruleHtmlEscape
+  ]);
+  // `...` の内部
+  var bash_processString=new ns.RegexConverter("g",[
+    {regex:/\`|$/,handler:popHandler},
+    rule_escapedCharacterS,
+    ruleHtmlEscape
+  ]);
+  // ${...} の内部
+  var bash_paramx=new ns.RegexConverter("g",[
+    {regex:/\}|$/g,handler:popHandler},
+    rule_paramExpansion,
+    rule_processExpansion,
+    rule_string,
+    rule_escapedCharacter, // ← どの escape が有効かは外側の context に依存する
+    ruleHtmlEscape
+  ]);
+  // "..." の中身
+  var bash_string=new ns.RegexConverter("g",[
+    {regex:/\"|$/g,handler:popHandler},
+    rule_paramExpansion,
+    rule_processExpansion,
+    rule_escapedCharacterS,
+    ruleHtmlEscape
+  ]);
+  // $(...) の中身
+  var bash_processx=new ns.RegexConverter("g",[
+    {regex:/\)|$/g,handler:popHandler},
+    rule_comment,
+    rule_paramExpansion,
+    rule_processExpansion,
+    rule_string,
+    rule_escapedCharacter,
+    ruleHtmlEscape
+  ]);
+  var bash_command=new ns.RegexConverter("g",[
+    rule_comment,
+    rule_paramExpansion,
+    rule_processExpansion,
+    rule_string,
+    rule_escapedCharacter,
+    rule_keywords,
+    rule_options,
+    ruleHtmlEscape
+  ]);
+  bash_command.isIndexible=true;
+  registerSyntaxHighlighter("bash",createSyntaxHighligher(bash_command));
 
 })();
 

@@ -16,6 +16,12 @@
 /src/latex/.gen
 /src/addon/Makefile
 /src/addon/aghtex4firefox/mat
+/src/addon/aghtex4ie/mwgtex4ie.ncb
+/src/addon/aghtex4ie/mwgtex4ie.suo
+/src/addon/aghtex4ie/mwgtex4ie/Debug
+/src/addon/aghtex4ie/mwgtex4ie/Release
+/src/addon/aghtex4ie/mwgtex4ie/mwgtex4ie.vcproj.GAUGE.koichi.user
+/src/addon/aghtex4ie/mwgtex4ie/mwgtex4iePS.vcproj.GAUGE.koichi.user
 /src/addon/aghtex4seahorse/mat
 /src/addon/aghtex4thunderbird/mat
 /src/agh.text.encode/Makefile

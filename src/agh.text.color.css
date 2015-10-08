@@ -110,14 +110,21 @@ span.agh-text-el-identifier{color:purple;}
 span.agh-text-el-token{color:red;}
 span.agh-text-el-attr{color:darkcyan;}
 
+span.agh-syntax-default{color:black;background-color:white;}
 span.agh-syntax-comment{color:gray;}
 span.agh-syntax-keyword{color:blue;}
+span.agh-syntax-builtin{color:red;}
+span.agh-syntax-attribute{color:darkcyan;}
 span.agh-syntax-identifier{color:purple;}
 span.agh-syntax-label{color:#c0c;}
+span.agh-syntax-escaped{color:darkcyan;font-weight:bold;}
 span.agh-syntax-string{background-color:#eee;}
+span.agh-syntax-string-delimiter{background-color:#eee;font-weight:bold;}
 span.agh-syntax-numeric{background-color:#ffe;}
 span.agh-syntax-regex{background-color:#fee;}
 span.agh-syntax-error{color:#c00;background-color:#fee;}
+span.agh-syntax-variable{color:darkorange;}
+span.agh-syntax-variable-delimiter{color:purple;}
 
 span.agh-syntax-sed-address{color:green;}
 
