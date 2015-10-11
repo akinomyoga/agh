@@ -1,0 +1,6 @@
+# generated files
+res/*
+gzjs.exe
+inflate/gzcut.exe
+inflate/out
+inflate/Makefile
