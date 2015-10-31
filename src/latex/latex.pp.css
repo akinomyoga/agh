@@ -868,8 +868,8 @@ tex\:fsym.aghtex-int>tex\:fsym.aghtex-dotsi{
   font-size:60%;margin:0 -0.3ex 0 -0.2ex;}
 
 img.aghtex-int{width:1em;height:2.5em;vertical-align:middle;}
-tex\:sub.aghtex-int{vertical-align:-2.0em;position:relative;left:-0.1em;}
-tex\:sup.aghtex-int{vertical-align:2.0em;position:relative;left:-0.1em;}
+tex\:sub.aghtex-int{vertical-align:-1.7em;margin-left:-0.6em;}
+tex\:sup.aghtex-int{vertical-align:1.7em;margin-left:0.1em;margin-right:-0.1em;}
 
 table.aghtex-int{height:3.3em;border-collapse:collapse;font:inherit;margin-right:-0.2em;}
 /*%%if mode=="Opera" (*/
