@@ -109,7 +109,7 @@ $(MWGTEX4CR_OUTDIR).xml: aghtex4chrome/update.xml aghtex4chrome/version.txt
 	sed "s/%VERSION%/$$(cat aghtex4chrome/version.txt)/" $< > $@
 aghtex4chrome_files:=$(aghtex4chrome_files) $(MWGTEX4CR_OUTDIR)/manifest.json
 $(MWGTEX4CR_OUTDIR)/manifest.json: aghtex4chrome/manifest.json aghtex4chrome/version.txt
-	sed "s/%VERSION%/$$(cat aghtex4chrome/version.txt)/" $< > $@
+	sed -e "s/%VERSION%/$$(cat aghtex4chrome/version.txt)/" -e '/^[[:space:]]*\/\//d' $< > $@
 
 .PHONY: aghtex4chrome
 aghtex4chrome: $(aghtex4chrome_files)
