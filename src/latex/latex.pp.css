@@ -123,6 +123,15 @@ tex\:i.aghtex-itemize-mark1{position:absolute;left:-1ex;}
 tex\:i.aghtex-itemize-mark2{position:absolute;right:0px;}
 
 /*----------------------------------------------------------
+		基本共通コマンド (mod:common)
+----------------------------------------------------------*/
+
+/* tex\:i.aghtex-overline{text-decoration:overline;} */
+/* tex\:i.aghtex-underline{text-decoration:underline;} */
+tex\:i.aghtex-overline{border-top-width:1px;border-top-style:solid;margin-top:1px;}
+tex\:i.aghtex-underline{border-bottom-width:1px;border-bottom-style:solid;margin-top:1px;}
+
+/*----------------------------------------------------------
 		重ね合わせ・アクセント等 (mod:math)
 ----------------------------------------------------------*/
 /* 重ね合わせ */
@@ -150,7 +159,11 @@ tex\:i.aghtex-accent-symbol-vecU{position:relative;margin-left:-0.5ex;margin-rig
 
 tex\:i.aghtex-accent-symbol-acc {top:-0.25em;}
 tex\:i.aghtex-accent-symbol-accL{top:-0.05em;}
-tex\:i.aghtex-accent-symbol-accU{top:-0.25em;left:0.15em;}
+/*%%if mode=="Gecko" (*/
+tex\:i.aghtex-accent-symbol-accU{top:-0.33em;left:0.15em;}
+/*%%else*/
+tex\:i.aghtex-accent-symbol-accU{top:-0.28em;left:0.15em;}
+/*%%end*/
 tex\:i.aghtex-accent-symbol-vec {top:-0.65em;}
 tex\:i.aghtex-accent-symbol-vecL{top:-0.45em;}
 tex\:i.aghtex-accent-symbol-vecU{top:-0.65em;left:0.15em;}

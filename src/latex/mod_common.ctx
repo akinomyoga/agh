@@ -387,10 +387,6 @@ context "global"{
   command s@\LaTeX () '<tex:La>L<span>A</span></tex:La><tex:TeX>T<span>E</span>X</tex:TeX>';
   command s@\LaTeXe() '<tex:La>L<span>A</span></tex:La><tex:TeX>T<span>E</span>X</tex:TeX>2<span style=\'vertical-align:-10%;\'>ε</span>';
   
-  // 書式
-  command s@\overline (#>1)  '<span style="text-decoration:overline;">#1</span>';
-  command s@\underline(#>1)  '<u>#1</u>';
-  
   // 特別な文字 
   command s@\copyright()          '<tex:fsym class="rm">©</tex:fsym>'; // u00A9
 
@@ -411,6 +407,10 @@ context "global"{
 
   command s@\lq()               "`";
   command s@\rq()               "'";
+
+  // 書式
+  command s@\overline (#>1)  '<tex:i class="aghtex-overline">#1</tex:i>';
+  command s@\underline(#>1)  '<tex:i class="aghtex-underline">#1</tex:i>';
 
   //---------------------------------------------------------------------------
   // \mbox

@@ -86,6 +86,14 @@ agh/js - Ageha JavaScript Library v3.2
   ToDo
 -------------------------------------------------------------------------------
 
+2015-10-31
+
+  * \overline: math mode でしか使えない筈だが mod_common.ctx でグローバルに定義されている。
+
+  * 実は border-color の指定を省略した時はその要素の color (文字色) を用いて描画される筈だとか。
+
+  * IE7 で上付アクセントの位置が変である。
+
 2015-09-14
 
   * 計画 agh.syntax.js
@@ -520,9 +528,52 @@ latex
     - latex:env: letter, quote, quotation, picture, tabbing, theorem, titlepage, verse
     - latex: \listoffigures, \listoftables, \abstractname, \bibname, \contentsname, \listfigurename, \listtablename
 
+
 -------------------------------------------------------------------------------
   実装メモ - log
 -------------------------------------------------------------------------------
+
+2015-10-31
+
+  * \overline の線の位置が変である。
+
+    → \overline, \underline の線は text-decoration ではなく border として描画する様に変更。
+
+    \overline を使用した時一本の線が上部表示される事を期待するが、
+    今迄の実装では text-decoration:overline を用いていた為に、
+    各文字の上に線が引かれるという状態になっていた。
+    これだと様々な高さの文字が混在している場合に線ががたがたに分裂したり、
+    overline 内部に分数があった場合などに棒が分子分母それぞれに対して引かれたりする。
+    これは期待した動作ではないので、text-decoration ではなく
+    border-top を用いて線を引くように変更する。
+
+    border-top を用いることによる問題点は線の色を文字の色に合わせることができないという事である。
+    しかしこれは仕方がないので保留とする。
+
+    所で、TeX には元々 text-decoration:overline に相当するような、
+    各文字の上に線を引くという機能は存在しないのだろうか?
+
+    b. \underline についても同様に分数にした時に線が分裂してしまうなどの問題が生じそうである。
+
+      既存の text-decoration による実装の問題点について確認する:
+
+      o 文字の高さが異なる時でも baseline の方は位置が合っている筈なので、線ががたがたになったりする事は無い。
+      x しかし、margin 等の空白がある場合に線がそこで切れる事になる。
+      x 分数など中に構造がある時に全体に対して一本線が引かれるのではなく、各要素について下線が引かれる。
+
+      というか本来の TeX の \underline の動作はどの様な物であったか?
+      素直に考えるとやはり内部に構造があったとしても全体に対して下線が引かれるという形になっているはずである。
+      CSS でいう text-decoration は寧ろ TeX では自体やフォントの問題であって \overline や \underline
+      等の構造を記述するコマンドはその様な事はしないのである。
+      従って、underline に関しても border-bottom を用いた実装に変更しても良いかも知れない。
+
+      % x しかしながら問題点は border-bottom を用いると baseline の位置ではなくて、
+      %   領域の一番下の端に線が引かれてしまうということである。
+      %   疑問: 元々の LaTeX の \underline はやはり baseline の位置に線を引く物であったか?
+      %   →実際に試してみた所 ''\underline は baseline の位置に線を引く物ではなく'' 全体の下に下線を引く物であった。
+      %     特に中身の高さに応じて位置が変化するという事も確認できた。
+
+      →寧ろ text-decoration:underline ではなくて border-bottom で対応する必要がある。
 
 2015-08-30
 
