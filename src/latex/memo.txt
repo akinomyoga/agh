@@ -25,8 +25,6 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
   * Old memo.txt (このファイルの後半にある) の整理を行う
 
-  * \int_{...} の位置調整。
-
 
 ------------------------------------------------------------------------------
   Log
@@ -35,6 +33,53 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 終了した ToDo 及び関連する議論はここに残す。
 
 2015-10-31
+
+  * アクセント上部のスペース
+
+    現在アクセントは position:absolute で表示しているのでその高さは配置に全く影響を与えない。
+    これは例えば inline での配置において行の高さを変えないという点に置いては利点であるが、
+    分数の分母に持ってきた時や根号の中に持ってきた時などに上にある描画物と重なってしまい問題である。
+    行の高さが乱れてしまうのは許容して、アクセントを使用する時には上に余白を付加する様にした方がよいと考える。
+
+    実現方法として
+
+    a. aghtex-accent で display:inline-block;padding-top:0.2em などとする?
+
+      display:inline-block にするのは padding-top が働くようにする為である。
+      padding-top を付加した事によってアクセント (position:absolute;left:0;top:0;) の位置が変わる。
+      従って、同時にアクセントの縦位置 top について -0.2em をしなければならない。
+
+      x 実際に Fx と Cr で試してみたがブラウザによって微妙に配置の高さに差異が出る様である。
+        つまりブラウザ毎に縦位置の修正量を調整する必要がある。
+
+      x また、accent を inline-block に変えてしまう事による副作用がないか慎重になる必要がある。
+
+      x この方法だと IE の古い version などで inline-block の高さ合わせが期待通りにならない?
+        (baseline で合わせたい所だが IE6 の inline-block の vertical-align で baseline が動くか不明)
+
+      他の方法についても考えてから決定した方が良い様に思われる。
+
+    b. aghtex-accent で display:inline-block;margin-top:0.2em などとする?
+
+      padding-top だと中身のアクセント記号の position:absolute 原点に影響を与えてしまう。
+      一方で margin-top にしておけば中身の原点に影響を与えずに済む。
+      つまり、アクセントの縦位置の修正・微調整は不要という事になる。
+
+      margin-top の場合にも display:inline-block は必要である。
+      vertical-align:baseline は既定値なのでわざわざ指定する必要はない。
+
+      + \sqrt や分数の場合には問題はないようだ。
+
+      + \overline の場合は display:inline-block にしないと
+        正しく margin を使った線の配置にならない様だ。
+        \overline に display:inline-block を附記する。
+
+      他にも問題になるコマンドが存在するかもしれないが、
+      それらについて個別に対応する事にする。
+
+    b の方法で安定的に (既存部分に大きな影響を与えずに) 対応可能な様なので、
+
+  * \int_{...} の位置調整。
 
   * \overline の線の位置が変である。
 

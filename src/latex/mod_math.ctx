@@ -695,7 +695,7 @@ context "mode.math"{
       if(agh.browser.vSf)
         cls_container+=' aghtex-accent-sf aghtex-accent-sf-'+type;
 
-      var ht1='<tex:i class="aghtex-accent">';
+      var ht1='<tex:i class="aghtex-accent aghtex-accent-'+type+'">';
       var ht2='<tex:i class="'+cls_container+'"><tex:i class="aghtex-accent-symbol-';
       var ht3='">'+htsymb+'</tex:i></tex:i></tex:i>';
 
