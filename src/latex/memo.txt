@@ -19,11 +19,60 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
   * \overline: math mode でしか使えない筈だが mod_common.ctx でグローバルに定義されている。
 
-  * 実は border-color の指定を省略した時はその要素の color (文字色) を用いて描画される筈だとか。
-
-  * IE7 で上付アクセントの位置が変である。
+  * IE8 で上付アクセントの位置が変である。
 
   * Old memo.txt (このファイルの後半にある) の整理を行う
+
+  * CreateAccentCommandQksB (IE6, IE7) の廃止。CreateAccentCommand と同様の実装に切り替え。
+
+    今迄の経験に従うと CreateAccentCommandQksB を使ったアクセントを sqrt や frac の分母に入れると、
+    高さが潰れてしまうなどの問題が生じる。単に CreateAccentCommand の実装に移行すれば良いだけと予想される。
+
+    書き換え手順:
+    0. 問題が生じるかどうか確認する。
+    1. CreateAccentCommand の実装に移行して問題が生じないかテストする。
+    2. CreateAccentCommand に切り替える。
+
+  * \stackrel 実装見直し。
+
+    現在の実装だと CreateAccentCommandQksT と同様に
+    sqrt/frac の中に於いた時に高さが変になるなどの問題が起こると予想される。
+    CreateAccentCommand と同じ実装方法に変更する必要がある。
+
+    0. 問題が生じるかどうか確認する。
+
+  * 実は border-color の指定を省略した時はその要素の color (文字色) を用いて描画される筈だとか。
+
+    →Fx Cr IE8 IE6 で確認。何れに於いても期待通りに文字色が採用される様だ。
+
+    更にいうならば文字色と同じ色を使用するという意味の色指定 currentColor という物もある様だ。
+    但し IE6 などの古いブラウザで対応しているかどうかについては怪しい。
+
+  * 根号などの伸縮記号についても color を反映させる方法について。
+
+    どうやら CSS 上では現在の color の値を指し示す値として currentColor という物を使える様だ。
+    と思って stretch_sqrt.svg の色を確認してみた所既に currentColor になっていた。
+    しかし、currentColor は背景として指定している場合には反映されない様だ。
+    調べてみたが、外部の currentColor を参照する方法は用意されていないように見える。
+
+    a 一方で表示画像の内容に対して filter をかけて色を置き換えるという手もある?
+      調べてみた所 css に filter は追加されたようだが、特定の色だけ置き換えるという filter は無いようだ。
+      つまりこの方法は実現不能という事である。
+
+      また filter をかけてしまうとラスタ形式になってしまい印刷した時にぎざぎざになる。
+      どちらにしても余り好ましくない。
+
+    b 或いはまた別の方法として mask を使うという手もある様だ。
+      background-color で要素を塗り潰しておいて
+      .svg を用いてそれを mask して切り抜くという形である。
+
+      -webkit-mask: url(stretch_sqrt.svg) no-repeat 100% 100%;
+      -webkit-mask-size: cover;
+
+      やってみたら意外と簡単に望み通りの結果を実現できてしまった。
+      しかし印刷してみるとラスタ形式になってしまっているという事が分かる。
+      また Chrome の描画の都合なのか、mask にすると縁が微妙に mask されずに残り無駄な線が入る様だ。
+      この方法もやはり微妙なので様子見する事にする。
 
 
 ------------------------------------------------------------------------------
@@ -31,6 +80,23 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 ------------------------------------------------------------------------------
 
 終了した ToDo 及び関連する議論はここに残す。
+
+2015-11-01
+
+  * latex/latex.pp.css (accents): IE7 workaround, IE7 以下では display:inline-block を用いた空白付加を行わない。
+
+    実際に試してみた所、全然効果がない。CSS がそもそも適用されていない様だ…。
+    と思っていたらそもそもアクセントの実現方法が IE6 では異なるのであった。
+    改めて確かめてみるとやはり qks または IE8 未満では表示方法が異なる様だった。
+    詳細はすぐみても分からないが結構無理のある表示方法だったように思うから、
+    表示が変になってしまうのも無理はないだろう。
+
+    改めて最新のアクセント表示の方法 (position:absolute を用いた方法) が IE でどの様になるのか確認する。
+    →なんと期待通りに表示されている…。
+    確かに使っているのは position:absolute 関係の CSS だけで
+    IE6 での実装が怪しくなりそうな機能は使っていない。
+
+    CreateAccentCommand に移行する事に決定した。移行した。CreateAccentQksT は廃止する。
 
 2015-10-31
 

@@ -552,13 +552,8 @@ context "pkg:amsmath/mode.math" new(){
   _Ctx.AddCommandHandler("underleftrightarrow",mod_math.CreateCommandUnderStretch("stretch_lrarr.png","underleftrightarrow"));
   
   // \dddot, \dddot
-  if(ns.compatMode=="IE-qks"||agh.browser.vIE<8){
-    _Ctx.AddCommandHandler("dddot", mod_math.CreateAccentCommandQksT(1.5,"<tex:small3>…</tex:small3>"));
-    _Ctx.AddCommandHandler("ddddot",mod_math.CreateAccentCommandQksT(1.8,"<tex:small3>....</tex:small3>"));
-  }else{
-    _Ctx.AddCommandHandler("dddot", mod_math.CreateAccentCommand('vec','<tex:fsym class="aghtex-syma-mincho">&#x22EF;</tex:fsym>',true)); // combining = &#x20DB;
-    _Ctx.AddCommandHandler("ddddot",mod_math.CreateAccentCommand('vec','<tex:fsym class="aghtex-syma-mincho">&#x2509;</tex:fsym>',true)); // combining = &#x20DC;
-  }
+  _Ctx.AddCommandHandler("dddot", mod_math.CreateAccentCommand('vec','<tex:fsym class="aghtex-syma-mincho">&#x22EF;</tex:fsym>',true)); // combining = &#x20DB;
+  _Ctx.AddCommandHandler("ddddot",mod_math.CreateAccentCommand('vec','<tex:fsym class="aghtex-syma-mincho">&#x2509;</tex:fsym>',true)); // combining = &#x20DC;
 
   // TODO: command s:mode.math\align
 

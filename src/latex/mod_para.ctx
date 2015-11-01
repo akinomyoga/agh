@@ -91,39 +91,28 @@ context "mode.para"{
   command f\dg()      {mod_common.TagCurrentContext(doc,"tex:fgt");};
   command s@\boldmath(#>1) '<tex:fmbm>#1</tex:fmbm>';
 
+  _Ctx.DefineCommand({
+    "'":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00B4;</tex:fsym>'), // alt = &#x02CA;
+    "=":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00AF;</tex:fsym>'), // alt = &#x02C9;
+    "u":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D8;</tex:fsym>'),
+    "v":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C7;</tex:fsym>'),
+    ".":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D9;</tex:fsym>'),
+    '"':mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00A8;</tex:fsym>'),
+    "`":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02CB;</tex:fsym>'),
+    "^":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C6;</tex:fsym>'),
+    "~":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02DC;</tex:fsym>'),
+    "H":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02DD;</tex:fsym>'),
+    "t":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-syma-mincho">&#x2040;</tex:fsym>'), // combining = &#x0361;
+    "c":mod_math.CreateAccentCommand('low','<tex:fsym class="aghtex-symb-mincho">&#x00B8;</tex:fsym>'), // combining = &#x0327;
+    "b":mod_math.CreateAccentCommand('low','<tex:fsym class="aghtex-symb-mincho">&#x02D7;</tex:fsym>'), // combining = &#x0320;
+    "d":mod_math.CreateAccentCommand('low','<tex:fsym class="aghtex-syma-mincho">&#x002E;</tex:fsym>')  // combining = &#x0323;
+  });
+
   if(ns.compatMode=="IE-qks"||agh.browser.vIE<8){
     _Ctx.DefineCommand({
-      "'":mod_math.CreateAccentCommandQksT( 0.7,"<tex:fgt>&#xB4;</tex:fgt>"),
-      "`":mod_math.CreateAccentCommandQksT( 0.7,"<tex:fgt>`</tex:fgt>"),
-      "^":mod_math.CreateAccentCommandQksT( 0.9,"<tex:fgt>&#x2C6;</tex:fgt>"),
-      '"':mod_math.CreateAccentCommandQksT( 1.8,'<tex:fsym class="mc"><tex:small2>..</tex:small2></tex:fsym>'),
-      "~":mod_math.CreateAccentCommandQksT( 0.7,'<tex:fsym class="mc">~</tex:fsym>'),
-      "=":mod_math.CreateAccentCommandQksT( 1.2,"<tex:small3>－</tex:small3>"),
-      ".":mod_math.CreateAccentCommandQksT( 1.3,"<tex:small3>・</tex:small3>"),
-      "u":mod_math.CreateAccentCommandQksT( 0.6,"&#x2D8;"),
-      "v":mod_math.CreateAccentCommandQksT( 0.8,"&#x2C7;"),
-      "H":mod_math.CreateAccentCommandQksT( 0.6,"&#x2DD;"),
-      "t":mod_math.CreateAccentCommandQksT( 0.6,"<tex:fgt>&nbsp;&#x361;&nbsp;</tex:fgt>"),
       "c":mod_math.CreateAccentCommandQksB( 0.2,"<tex:fgt>&#x327;</tex:fgt>"),
       "b":mod_math.CreateAccentCommandQksB( 0.2,"_"),
       "d":mod_math.CreateAccentCommandQksB(-1.0,"・")
-    });
-  }else{
-    _Ctx.DefineCommand({
-      "'":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00B4;</tex:fsym>'), // alt = &#x02CA;
-      "=":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00AF;</tex:fsym>'), // alt = &#x02C9;
-      "u":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D8;</tex:fsym>'),
-      "v":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C7;</tex:fsym>'),
-      ".":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D9;</tex:fsym>'),
-      '"':mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00A8;</tex:fsym>'),
-      "`":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02CB;</tex:fsym>'),
-      "^":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C6;</tex:fsym>'),
-      "~":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02DC;</tex:fsym>'),
-      "H":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02DD;</tex:fsym>'),
-      "t":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-syma-mincho">&#x2040;</tex:fsym>'), // combining = &#x0361;
-      "c":mod_math.CreateAccentCommand('low','<tex:fsym class="aghtex-symb-mincho">&#x00B8;</tex:fsym>'), // combining = &#x0327;
-      "b":mod_math.CreateAccentCommand('low','<tex:fsym class="aghtex-symb-mincho">&#x02D7;</tex:fsym>'), // combining = &#x0320;
-      "d":mod_math.CreateAccentCommand('low','<tex:fsym class="aghtex-syma-mincho">&#x002E;</tex:fsym>')  // combining = &#x0323;
     });
   }
   
