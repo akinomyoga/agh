@@ -654,7 +654,7 @@ context "mode.math" new("global"){
           if(className)
             return '<td class="aghtex-stretch aghtex-stretch-'+className+'" rowspan="2"></td>';
           else
-            return '<td class="aghtex-stretch" rowspan="2" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');-webkit-background-size:100%;"></td>';
+            return '<td class="aghtex-stretch aghtex-stretch-default" rowspan="2" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');"></td>';
         };
       case "Op-qks":
       case "Op-std":
