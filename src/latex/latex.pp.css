@@ -592,6 +592,30 @@ td.aghtex-stretch{padding:0px!important;border-width:0px!important;}
   td.aghtex-stretch-langle{width:0.80ex;background-image:url(stretch_langle.svg);}
   td.aghtex-stretch-rangle{width:0.80ex;background-image:url(stretch_rangle.svg);}
   td.aghtex-stretch-sqrt  {width:1.60ex;background-image:url(stretch_sqrt.svg);}
+/*%%elif mode=="Gecko"*/
+  td.aghtex-stretch-lparen,
+  td.aghtex-stretch-rparen,
+  td.aghtex-stretch-lbrace,
+  td.aghtex-stretch-rbrace,
+  td.aghtex-stretch-langle,
+  td.aghtex-stretch-rangle,
+  td.aghtex-stretch-sqrt{height:100%;position:relative;}
+
+  td.aghtex-stretch-lparen>svg,
+  td.aghtex-stretch-rparen>svg,
+  td.aghtex-stretch-lbrace>svg,
+  td.aghtex-stretch-rbrace>svg,
+  td.aghtex-stretch-langle>svg,
+  td.aghtex-stretch-rangle>svg{height:100%;position:absolute;left:0;top:0;}
+  td.aghtex-stretch-sqrt>svg{height:100%;position:absolute;left:0.2px;top:-1.0px;}
+
+  td.aghtex-stretch-lparen,td.aghtex-stretch-lparen>svg{width:1.0ex;}
+  td.aghtex-stretch-rparen,td.aghtex-stretch-rparen>svg{width:1.0ex;}
+  td.aghtex-stretch-lbrace,td.aghtex-stretch-lbrace>svg{width:1.2ex;}
+  td.aghtex-stretch-rbrace,td.aghtex-stretch-rbrace>svg{width:1.2ex;}
+  td.aghtex-stretch-langle,td.aghtex-stretch-langle>svg{width:1.0ex;}
+  td.aghtex-stretch-rangle,td.aghtex-stretch-rangle>svg{width:1.0ex;}
+  td.aghtex-stretch-sqrt  ,td.aghtex-stretch-sqrt>svg  {width:2.0ex;}
 /*%%)*/
 
 /*%%if mode=="Trident"(*/
