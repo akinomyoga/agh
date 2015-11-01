@@ -1,4 +1,7 @@
-/*%m content (*/
+/*%m content*/
+/*%%if mode=="Trident"*/
+/*%%[borderColor=(mode=="Trident"||mode=="Opera")?"":"currentColor"]*/
+/*%%end*/
 @charset "utf-8"; /* 日本語 */
 
 /* @font-face Local Fonts, Synthesize の問題について
@@ -104,8 +107,8 @@ blockquote.tex-quota{text-indent:1em;}
 tex\:verse{display:block;margin-left:2em;margin-right:2em;}
 
 tex\:mbox{display:inline-block;vertical-align:baseline;white-space:nowrap;}
-tex\:mbox.aghtex-latex-fbox{border:1px solid black;padding:.3em;}
-tex\:mbox.aghtex-latex-frame{border:1px solid black;padding:0em;}
+tex\:mbox.aghtex-latex-fbox{border:1px solid $"borderColor";padding:.3em;}
+tex\:mbox.aghtex-latex-frame{border:1px solid $"borderColor";padding:0em;}
 
 /* \begin{enumerate}, \begin{itemize} */
 ul.aghtex-ie,
@@ -545,8 +548,8 @@ tex\:i.aghtex-minipage{display:inline-block;vertical-align:middle;}
 tex\:i.aghtex-hfill,
 tex\:i.aghtex-hfill-dot,
 tex\:i.aghtex-hfill-rule{padding-right:4em;font-size:1px;}
-tex\:i.aghtex-hfill-dot{position:relative;top:-4px;left:0;border-bottom:2px dotted black;}
-tex\:i.aghtex-hfill-rule{position:relative;top:-2px;left:0;border-bottom:1px solid black;}
+tex\:i.aghtex-hfill-dot{position:relative;top:-4px;left:0;border-bottom:2px dotted $"borderColor";}
+tex\:i.aghtex-hfill-rule{position:relative;top:-2px;left:0;border-bottom:1px solid $"borderColor";}
 
 /*--------------------------------------------------------------------
 		数式表現
@@ -584,10 +587,10 @@ td.aghtex-vstretch{position:relative;height:0px;}
 img.aghtex-stretch{position:absolute;left:0;top:0;width:100%;height:100%;}
 /*%%)*/
 
-tex\:lceil{width:.5ex;border-top:1px solid black;border-left:1px solid black;margin-left:.5ex;}
-tex\:lflor{width:.5ex;border-bottom:1px solid black;border-left:1px solid black;margin-left:.5ex;}
-tex\:rceil{width:.5ex;border-top:1px solid black;border-right:1px solid black;margin-right:.5ex;}
-tex\:rflor{width:.5ex;border-bottom:1px solid black;border-right:1px solid black;margin-right:.5ex;}
+tex\:lceil{width:.5ex;border-top:1px solid $"borderColor";border-left:1px solid $"borderColor";margin-left:.5ex;}
+tex\:lflor{width:.5ex;border-bottom:1px solid $"borderColor";border-left:1px solid $"borderColor";margin-left:.5ex;}
+tex\:rceil{width:.5ex;border-top:1px solid $"borderColor";border-right:1px solid $"borderColor";margin-right:.5ex;}
+tex\:rflor{width:.5ex;border-bottom:1px solid $"borderColor";border-right:1px solid $"borderColor";margin-right:.5ex;}
 
 /*------------------------------------------------------------------*/
 /* inline-table */
@@ -694,7 +697,6 @@ td.tex-left-flor, td.tex-right-flor,
 td.tex-left-vert,
 td.tex-left-pipe, td.tex-right-pipe{
   border-style:solid!important;
-  border-color:black;
 	width:.5ex;padding:0px!important;
 }
 td.tex-left-kaku {border-width:1px 0px 1px 1px!important;}
@@ -725,7 +727,7 @@ span.aghtex-cmdleft-sub{position:relative;top:0.5em;margin-top:-0.5em;display:bl
 /* 分数表記 */
 tex\:frac{display:inline-block;vertical-align:middle;text-align:center;padding-left:1px;padding-right:1px;}
 tex\:frac tex\:num{display:block;margin-bottom:0;margin-top:0px;padding-top:0px;}
-tex\:frac tex\:den{display:block;margin-top:0;border-top:1px solid black;padding-top:1px;margin-bottom:0px;margin-top:0px;}
+tex\:frac tex\:den{display:block;margin-top:0;border-top:1px solid $"borderColor";padding-top:1px;margin-bottom:0px;margin-top:0px;}
 table.aghtex-int tex\:num,
 table.aghtex-int tex\:den,
 tex\:sup tex\:num,
@@ -737,7 +739,7 @@ td.aghtex-center{text-align:center;}
   table.aghtex-frac{display:inline;vertical-align:middle;margin:0px 0.2ex;border-collapse:collapse;}
   table.aghtex-frac tr td.tex-num,
   table.aghtex-frac tr td.tex-den{padding:0px!important;border-width:0px!important;text-align:center!important;}
-  table.aghtex-frac tr td.tex-den{border-width:1px 0px 0px 0px!important;border-style:solid!important;border-color:black;}
+  table.aghtex-frac tr td.tex-den{border-width:1px 0px 0px 0px!important;border-style:solid!important;}
   table.aghtex-int table.aghtex-frac tr td,
   tex\:sup table.aghtex-frac tr td,
   tex\:sub table.aghtex-frac tr td{padding:0px;font-size:80%;}
@@ -748,7 +750,7 @@ tex\:frac2{display:inline-block;vertical-align:-.75em;text-align:center;padding:
 /*%%else*/
 tex\:frac2{display:inline-block;vertical-align:-.65em;text-align:center;padding:0px 1px;}
 /*%%)*/
-tex\:frac2>tex\:num{display:block;border-bottom:1px solid black;padding:0px 1px;}
+tex\:frac2>tex\:num{display:block;border-bottom:1px solid $"borderColor";padding:0px 1px;}
 tex\:frac2>tex\:den{display:inline-block;vertical-align:text-top;margin:0px 1px;padding-top:1px;}
 
 tex\:frac2.aghtex-tag-script{margin-top:-0.2em;margin-bottom:-0.4em}
@@ -842,7 +844,9 @@ td.aghtex-sqrt-index span{position:relative;top:-3px;left:6px;}
 td.aghtex-sqrt-body{
 	border-width:1px 0px 0px 0px!important;
   border-style:solid!important;
-  border-color:black;
+/*%%if borderColor!=""*/
+  border-color:$"borderColor";
+/*%%end*/
 	padding:1px 2px 0px 0px!important;
   vertical-align:baseline;
 }
@@ -937,21 +941,19 @@ tex\:math tex\:fmbb tex\:abc.aghtex-upper,
 tex\:math tex\:fmbb tex\:abc{
   font-family:aghtex_roman;font-style:normal;font-weight:normal;
 }
-/*%%(*/
-  tex\:fmbb{display:inline-block;position:relative;padding:1px;}
-  tex\:fmbb>tex\:a,
-  tex\:fmbb>tex\:b,
-  tex\:fmbb>tex\:c,
-  tex\:fmbb>tex\:d,
-  tex\:fmbb>tex\:e{position:absolute;background-color:transparent;}
-  tex\:fmbb>tex\:a{left:1px;top:0px;}
-  tex\:fmbb>tex\:b{left:-1px;top:0px;}
-  tex\:fmbb>tex\:c{left:0px;top:1px;}
-  tex\:fmbb>tex\:d{left:0px;top:-1px;}
-  tex\:fmbb>tex\:e{left:0px;top:0px;color:white;}
-/*%%)*/
+tex\:i.aghtex-mathbb-old{display:inline-block;position:relative;padding:1px;}
+tex\:i.aghtex-mathbb-a,
+tex\:i.aghtex-mathbb-b,
+tex\:i.aghtex-mathbb-c,
+tex\:i.aghtex-mathbb-d,
+tex\:i.aghtex-mathbb-e{position:absolute;background-color:transparent;}
+tex\:i.aghtex-mathbb-a{left:1px;top:0px;}
+tex\:i.aghtex-mathbb-b{left:-1px;top:0px;}
+tex\:i.aghtex-mathbb-c{left:0px;top:1px;}
+tex\:i.aghtex-mathbb-d{left:0px;top:-1px;}
+tex\:i.aghtex-mathbb-e{left:0px;top:0px;color:white;}
 /*%%if mode=="Trident" (*/
-  tex\:fmbb.glow{
+  tex\:fmbb.aghtex-mathbb-glow{
     height:0px;
     color:white;font-style:normal;font-weight:bold;
     filter:'Glow(color=black,strength=1)';
@@ -959,27 +961,27 @@ tex\:math tex\:fmbb tex\:abc{
   }
 
   /* IE7-Strict */
-  html:first-child+html tex\:fmbb.glow,
-  html[xmlns] tex\:fmbb.glow{
+  html:first-child+html tex\:fmbb.aghtex-mathbb-glow,
+  html[xmlns] tex\:fmbb.aghtex-mathbb-glow{
     *width:auto;
     *height:auto;
     *display:inline-block;
     *filter:Glow(color=black,strength=1);
   }
 /*%%elif mode=="WebKit"*/
-  tex\:fmbb.stroke{
+  tex\:fmbb.aghtex-mathbb-stroke{
     -webkit-text-fill-color:transparent;
     -webkit-text-stroke-color:inherit;
     -webkit-text-stroke-width:1px;
     font-weight:900;
   }
 /*%%)*/
-tex\:fmbb.shadow{
+tex\:fmbb.aghtex-mathbb-shadow{
   color:white;
   font-weight:900;
   text-shadow:black -1px -1px 0px, black 1px -1px 0px, black -1px 1px 0px, black 1px 1px 0px;
 }
-tex\:math tex\:fmbb.shadow tex\:abc.aghtex-upper{
+tex\:math tex\:fmbb.aghtex-mathbb-shadow tex\:abc.aghtex-upper{
   font-family:aghtex_mathbb;
   color:black;
   font-weight:normal;
@@ -998,8 +1000,8 @@ tex\:error.aghtex-core-msgbox{text-decoration:underline;cursor:pointer;}
 /*----------------------------------------------------------
 		mod_counter
 ----------------------------------------------------------*/
-tex\:i.aghtex-counter-ov{border-top:1px solid black;}
-tex\:i.aghtex-counter-ovv{border-top:3px double black;}
+tex\:i.aghtex-counter-ov{border-top:1px solid $"borderColor";}
+tex\:i.aghtex-counter-ovv{border-top:3px double $"borderColor";}
 
 /*----------------------------------------------------------
     mod_array (array 環境 1)
@@ -1030,25 +1032,24 @@ table.aghtex-array-lrpad{
   margin-left:0.15em;margin-right:0.15em;}
 
 /* 罫線 */ /* char */
-table.tex-bd-l{border-left:1px solid black;}
-table.tex-bd-t{border-top:1px solid black;}
+table.tex-bd-l{border-left:1px solid $"borderColor";}
+table.tex-bd-t{border-top:1px solid $"borderColor";}
 
-td.tex-bd-l{border-left:1px solid black;}
-td.tex-bd-r{border-right:1px solid black;}
-td.tex-bd-t{border-top:1px solid black;}
+td.tex-bd-l{border-left:1px solid $"borderColor";}
+td.tex-bd-r{border-right:1px solid $"borderColor";}
+td.tex-bd-t{border-top:1px solid $"borderColor";}
 /* ↓ for IE 6: 各要素にも tex-bd-b を追加している */ /* char */
-td.tex-bd-b{border-bottom:1px solid black;}
-/* tr.tex-bd-b>td{border-bottom:1px solid black;} ← × IE 6 */
+td.tex-bd-b{border-bottom:1px solid $"borderColor";}
+/* tr.tex-bd-b>td{border-bottom:1px solid $"borderColor";} ← × IE 6 */
 
-td.tex-vline{border-right:1px solid black;padding:0px;}
-tr.tex-hline td{border-bottom:1px solid black;padding:0px;height:2px;}
+td.tex-vline{border-right:1px solid $"borderColor";padding:0px;}
+tr.tex-hline td{border-bottom:1px solid $"borderColor";padding:0px;height:2px;}
 /*----------------------------------------------------------
 		mod_array (array 環境 2)
 ----------------------------------------------------------*/
 td.aghtex-array-border-txt,
 td.aghtex-array-border-zw{
-  border-style:solid;
-  border-color:black;
+  border:solid $"borderColor";
   padding:0px;vertical-align:baseline;
 }
 td.aghtex-array-border-zw{
@@ -1061,8 +1062,8 @@ td.aghtex-array-cell{
 tr.aghtex-array-first-row>td.aghtex-array-cell{padding-top:0;}
 tr.aghtex-array-last-row>td.aghtex-array-cell{padding-bottom:0;}
 
-td.tex-arr2hlineT{height:1px;border-top:1px solid black;font-size:1px;padding:0px;}
-td.tex-arr2hlineB{height:1px;border-bottom:1px solid black;font-size:1px;padding:0px;}
+td.tex-arr2hlineT{height:1px;border-top:1px solid $"borderColor";font-size:1px;padding:0px;}
+td.tex-arr2hlineB{height:1px;border-bottom:1px solid $"borderColor";font-size:1px;padding:0px;}
 /*%%if mode=="Opera"||mode=="Gecko" (*/
 td.tex-arr2hlineT{height:0;padding-top:1px;}
 td.tex-arr2hlineB{height:0;padding-bottom:1px;}
@@ -1133,7 +1134,7 @@ a.aghtex-footnotemark:hover{color:gray;}
 tex\:i.aghtex-footnotetext-inline{font-size:80%;color:green;}
 tex\:i.aghtex-footnote{
   display:block;padding:1em;margin:1em;
-  border-bottom:1px solid black;border-top:1px solid black;
+  border-bottom:1px solid $"borderColor";border-top:1px solid $"borderColor";
   font-size:90%;}
 ul.aghtex-footnote{}
 li.aghtex-footnotetext{}
@@ -1275,7 +1276,7 @@ table.aghtex-int,
 table.aghtex-inline,
 table.aghtex-cmdleft,
 table.aghtex-underbrace,
-table.aghtex-sum{font:inherit;color:inherit;}
+table.aghtex-sum{font:inherit;color:inherit;border-color:$"borderColor:-inherit";}
 
 /*----------------------------------------------------------
 		agh.fly.js:tex で使用する物
@@ -1286,26 +1287,30 @@ div.aghfly-embedded-node{
 tex\:container{
   display:inline;vertical-align:baseline;
   font-size:120%;}
-
-/*%)*/
+/*%end*/
+/*%m expand_content*/
+/*%%x*/
+/*%%x content*/
+/*%%end.i*/
+/*%end*/
 /* writing to latex.ie.css ... */
 /*%[mode="Trident"]*/
 /*%$>latex.ie.css*/
-/*%x content*/
+/*%x expand_content*/
 /*%$>*/
 /* writing to latex.sf.css ... */
 /*%[mode="WebKit"]*/
 /*%$>latex.sf.css*/
-/*%x content*/
+/*%x expand_content*/
 /*%$>*/
 /* writing to latex.op.css ... */
 /*%[mode="Opera"]*/
 /*%$>latex.op.css*/
-/*%x content*/
+/*%x expand_content*/
 /*%$>*/
 /* writing to latex.fx.css ... */
 /*%[mode="Gecko"]*/
 /*%$>latex.fx.css*/
-/*%x content*/
+/*%x expand_content*/
 /*%$>*/
 /* (completed) */

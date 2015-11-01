@@ -8,6 +8,11 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 実装上の留意点・意識すると良い事、または便利な情報をここに記述する。
 
+  * css versions
+
+    currentColor: Fx38 Cr31 IE9 Sf8 Op32
+
+
 
 ------------------------------------------------------------------------------
   ToDo
@@ -15,13 +20,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 問題点・改善点・新機能の計画などについての議論をここに記述する。
 
-2015-10-31
-
-  * \overline: math mode でしか使えない筈だが mod_common.ctx でグローバルに定義されている。
-
-  * IE8 で上付アクセントの位置が変である。
-
-  * Old memo.txt (このファイルの後半にある) の整理を行う
+2015-11-01
 
   * CreateAccentCommandQksB (IE6, IE7) の廃止。CreateAccentCommand と同様の実装に切り替え。
 
@@ -36,17 +35,20 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
   * \stackrel 実装見直し。
 
     現在の実装だと CreateAccentCommandQksT と同様に
-    sqrt/frac の中に於いた時に高さが変になるなどの問題が起こると予想される。
+    sqrt/frac の中に於いた時に高さが変になる(特に IE6 で)などの問題が起こると予想される。
     CreateAccentCommand と同じ実装方法に変更する必要がある。
 
     0. 問題が生じるかどうか確認する。
 
-  * 実は border-color の指定を省略した時はその要素の color (文字色) を用いて描画される筈だとか。
+2015-10-31
 
-    →Fx Cr IE8 IE6 で確認。何れに於いても期待通りに文字色が採用される様だ。
+  * \overline: math mode でしか使えない筈だが mod_common.ctx でグローバルに定義されている。
 
-    更にいうならば文字色と同じ色を使用するという意味の色指定 currentColor という物もある様だ。
-    但し IE6 などの古いブラウザで対応しているかどうかについては怪しい。
+  * IE8 で上付アクセントの位置が変である。
+
+  * Old memo.txt (このファイルの後半にある) の整理を行う
+
+  * [保留] Chrome で動的に color (CSS) を変更した時に \sqrt の棒の色が更新されない。
 
   * 根号などの伸縮記号についても color を反映させる方法について。
 
@@ -82,6 +84,34 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 終了した ToDo 及び関連する議論はここに残す。
 
 2015-11-01
+
+  * 実は border-color の指定を省略した時はその要素の color (文字色) を用いて描画される筈だとか。
+
+    →Fx Cr IE8 IE6 で確認。何れに於いても期待通りに文字色が採用される様だ。
+
+    更にいうならば文字色と同じ色を使用するという意味の色指定 currentColor という物もある様だ。
+    但し IE6 などの古いブラウザで対応しているかどうかについては怪しい。
+    調べた所 IE9 以降でしか currentColor は対応していない様である。
+    currentColor: Fx38 Cr31 IE9 Sf8 Op32
+
+    取り敢えず既存の border の指定から black (border-color) の指定を消してみた。
+    普通に動いている様に見える。
+    但し、Chrome に関しては既定で table{border-color:grey} という指定がある様で指定なしだとうまく行かない。
+    table.aghtex-inline, etc{border-color:inherit;border-color:currentColor;} 等と指定しても変わらない。
+    謎である。Chrome では明示的に solid currentColor 等と指定する必要があるのかもしれない。
+
+    可成り面倒であるが…一応明示的に currentColor と書く様に変更を行った。
+    しかしそれでも思うように動作しない。border-color の値を弄ったりすると反映される。
+    その後で color を弄ったりしても即座には反映されず、次に border-color の値を弄った時に初めて反映される。
+    どうやら Chrome は currentColor を指定しても、color の値が変更されるたびに更新がされる訳ではなく、
+    最後にその currentColor を評価したタイミングの時の color の値が使用される様である?
+    (ただこれが起こるのは table td の時だけのようでもある。
+    他の要素の場合には color が変更されると同時に border-color の値も更新されて見える。)
+
+    逆に初めからページの色がその様になっている場合には問題ないのだろうか…?
+    →問題なかった。つまり、Chrome では途中で勝手に文字色が変わった時に
+      sqrt の棒の色がそれに追随しない事があるという事になる。
+      これは Chrome の問題であるし、また、この様な状況は余りないと思われるので保留でよい。
 
   * latex/latex.pp.css (accents): IE7 workaround, IE7 以下では display:inline-block を用いた空白付加を行わない。
 
