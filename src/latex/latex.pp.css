@@ -568,59 +568,51 @@ tex\:math.aghtex-displaymath{
 tex\:math.aghtex-flalign{text-align:left;}
 
 td.aghtex-stretch{padding:0px!important;border-width:0px!important;}
-/*%%if mode=="Opera" (*/
+/*%%if mode=="Opera"*/
   td.aghtex-stretch{-o-background-size:100% 100%;background-size:100% 100%;background-repeat:no-repeat;}
 /*%%elif mode=="WebKit"*/
-  td.aghtex-stretch-lparen,
-  td.aghtex-stretch-rparen,
-  td.aghtex-stretch-lbrace,
-  td.aghtex-stretch-rbrace,
-  td.aghtex-stretch-langle,
-  td.aghtex-stretch-rangle,
-  td.aghtex-stretch-sqrt,
-  td.aghtex-stretch-default{
+  /* stretching image with background-image:url(...) */
+  td.aghtex-stretch-bg{
+    padding:0px!important;border-width:0px!important;
     background-repeat:no-repeat;
     -webkit-background-size:100%; /* Cr1+<3, Sf3+<4.1 */
     background-size:100% 100%;
     /* background-size:cover; Cr3+, Sf4.1+ これは等比拡大なので× */
     -webkit-print-color-adjust:exact;}
 
-  td.aghtex-stretch-lparen{width:0.80ex;background-image:url(stretch_lparen.svg);}
-  td.aghtex-stretch-rparen{width:0.80ex;background-image:url(stretch_rparen.svg);}
-  td.aghtex-stretch-lbrace{width:0.96ex;background-image:url(stretch_lbrace.svg);}
-  td.aghtex-stretch-rbrace{width:0.96ex;background-image:url(stretch_rbrace.svg);}
-  td.aghtex-stretch-langle{width:0.80ex;background-image:url(stretch_langle.svg);}
-  td.aghtex-stretch-rangle{width:0.80ex;background-image:url(stretch_rangle.svg);}
-  td.aghtex-stretch-sqrt  {width:1.60ex;background-image:url(stretch_sqrt.svg);}
-/*%%elif mode=="Gecko"*/
-  td.aghtex-stretch-lparen,
-  td.aghtex-stretch-rparen,
-  td.aghtex-stretch-lbrace,
-  td.aghtex-stretch-rbrace,
-  td.aghtex-stretch-langle,
-  td.aghtex-stretch-rangle,
-  td.aghtex-stretch-sqrt{height:100%;position:relative;}
+  td.aghtex-stretch-bg-lparen{width:0.80ex;background-image:url(stretch_lparen.svg);}
+  td.aghtex-stretch-bg-rparen{width:0.80ex;background-image:url(stretch_rparen.svg);}
+  td.aghtex-stretch-bg-lbrace{width:0.96ex;background-image:url(stretch_lbrace.svg);}
+  td.aghtex-stretch-bg-rbrace{width:0.96ex;background-image:url(stretch_rbrace.svg);}
+  td.aghtex-stretch-bg-langle{width:0.80ex;background-image:url(stretch_langle.svg);}
+  td.aghtex-stretch-bg-rangle{width:0.80ex;background-image:url(stretch_rangle.svg);}
+  td.aghtex-stretch-bg-sqrt  {width:1.60ex;background-image:url(stretch_sqrt.svg);}
 
-  td.aghtex-stretch-lparen>svg,
-  td.aghtex-stretch-rparen>svg,
-  td.aghtex-stretch-lbrace>svg,
-  td.aghtex-stretch-rbrace>svg,
-  td.aghtex-stretch-langle>svg,
-  td.aghtex-stretch-rangle>svg{height:100%;position:absolute;left:0;top:0;}
-  td.aghtex-stretch-sqrt>svg{height:100%;position:absolute;left:0.2px;top:-1.0px;}
+/*%%end*/
+/*%%if mode=="Gecko"||mode=="WebKit"*/
+  /* stretching image with <svg> */
+  td.aghtex-stretch-svg{
+    padding:0px!important;border-width:0px!important;
+    width:1.0ex;height:100%;position:relative;}
+  td.aghtex-stretch-svg>svg{
+    width:1.0ex;height:100%;position:absolute;left:0;top:0;}
 
-  td.aghtex-stretch-lparen,td.aghtex-stretch-lparen>svg{width:1.0ex;}
-  td.aghtex-stretch-rparen,td.aghtex-stretch-rparen>svg{width:1.0ex;}
-  td.aghtex-stretch-lbrace,td.aghtex-stretch-lbrace>svg{width:1.2ex;}
-  td.aghtex-stretch-rbrace,td.aghtex-stretch-rbrace>svg{width:1.2ex;}
-  td.aghtex-stretch-langle,td.aghtex-stretch-langle>svg{width:1.0ex;}
-  td.aghtex-stretch-rangle,td.aghtex-stretch-rangle>svg{width:1.0ex;}
-  td.aghtex-stretch-sqrt  ,td.aghtex-stretch-sqrt>svg  {width:2.0ex;}
-/*%%)*/
+  td.aghtex-stretch-svg-lparen,td.aghtex-stretch-svg-lparen>svg,
+  td.aghtex-stretch-svg-rparen,td.aghtex-stretch-svg-rparen>svg{width:${.eval|mode=="Gecko"?"1.0":"0.8"}ex;}
+  td.aghtex-stretch-svg-lbrace,td.aghtex-stretch-svg-lbrace>svg,
+  td.aghtex-stretch-svg-rbrace,td.aghtex-stretch-svg-rbrace>svg{width:${.eval|mode=="Gecko"?"1.2":"0.96"}ex;}
+  td.aghtex-stretch-svg-langle,td.aghtex-stretch-svg-langle>svg,
+  td.aghtex-stretch-svg-rangle,td.aghtex-stretch-svg-rangle>svg{width:${.eval|mode=="Gecko"?"1.0":"0.8"}ex;}
+/*%%if mode=="Gecko"*/
+  td.aghtex-stretch-svg-sqrt>svg{left:0.2px;top:-1.0px;}
+/*%%end*/
+  td.aghtex-stretch-svg-sqrt,td.aghtex-stretch-svg-sqrt>svg{width:${.eval|mode=="Gecko"?"2.0":"1.6"}ex;}
 
+/*%%end*/
 /*%%if mode=="Trident"(*/
 td.aghtex-vstretch{position:relative;height:0px;}
 img.aghtex-stretch{position:absolute;left:0;top:0;width:100%;height:100%;}
+
 /*%%)*/
 
 tex\:lceil{width:.5ex;border-top:1px solid $"borderColor";border-left:1px solid $"borderColor";margin-left:.5ex;}

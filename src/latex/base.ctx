@@ -660,33 +660,38 @@ context "mode.math" new("global"){
           if(className in stretchSvgPath){
             // .svg を用いた表示
             var svg=stretchSvgHead+stretchSvgPath[className]+stretchSvgTail;
-            return '<td class="aghtex-stretch aghtex-stretch-'+className+'" rowspan="2">'+svg+'</td>';
+            return '<td rowspan="2" class="aghtex-stretch-svg aghtex-stretch-svg-'+className+'">'+svg+'</td>';
           }else{
             // 旧来の .png を用いた表示
             width=width.toString()+"ex";
             //return '<td rowspan="2" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');-moz-background-size:100%;"></td>';
-            return '<td class="aghtex-stretch" rowspan="2" style="height:100%;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="width:'+width+';height:100%;"/></td>';
+            return '<td rowspan="2" class="aghtex-stretch" style="height:100%;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="width:'+width+';height:100%;"/></td>';
           }
         };
       case "Sf-qks":
       case "Sf-std":
         return function(imgsrc,width,alt,className){
-          width=(width*0.8).toString()+"ex";
-          if(className)
-            return '<td class="aghtex-stretch aghtex-stretch-'+className+'" rowspan="2"></td>';
-          else
-            return '<td class="aghtex-stretch aghtex-stretch-default" rowspan="2" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');"></td>';
+          if(className in stretchSvgPath){
+            var svg=stretchSvgHead+stretchSvgPath[className]+stretchSvgTail;
+            return '<td rowspan="2" class="aghtex-stretch-svg aghtex-stretch-svg-'+className+'">'+svg+'</td>';
+          }else{
+            width=(width*0.8).toString()+"ex";
+            if(className)
+              return '<td rowspan="2" class="aghtex-stretch-bg aghtex-stretch-bg-'+className+'"></td>';
+            else
+              return '<td rowspan="2" class="aghtex-stretch-bg" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');"></td>';
+          }
         };
       case "Op-qks":
       case "Op-std":
         return function(imgsrc,width,alt){
           width=(width*0.8).toString()+"ex";
-          return '<td class="aghtex-stretch" rowspan="2" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');"></td>';
+          return '<td rowspan="2" class="aghtex-stretch" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');"></td>';
         };
       default:
         return function(imgsrc,width,alt){
           width=(width*0.8).toString()+"ex";
-          return '<td class="aghtex-stretch" rowspan="2" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');background-size:100% 100%;"></td>';
+          return '<td rowspan="2" class="aghtex-stretch" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');background-size:100% 100%;"></td>';
         };
     }
   })();
