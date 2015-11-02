@@ -11,6 +11,8 @@
  *    @fn mod_math.CreateCommandSummation(content);
  *    @fn mod_math.CreateAccentCommandQksB(height,htSymbol);
  *    @fn mod_math.CreateAccentCommand(type,htsymb,ismath);
+ *    @fn mod_math.OutputOverbrace(buff,content,image,undertxt)
+ *    @fn mod_math.OutputUnderbrace(buff,content,image,undertxt)
  */
 
 var mod_base=ns.Modules["mod:base"];
@@ -297,9 +299,7 @@ context "mode.math"{
     }
   })();
 
-  function output_underbrace(doc,content,image,undertxt){
-    var buff=doc.currentCtx.output.buff;
-
+  function output_underbrace(buff,content,image,undertxt){
     if(agh.browser.vIE||agh.browser.vSf){
       if(agh.browser.vIE){
         if(undertxt)
@@ -310,24 +310,31 @@ context "mode.math"{
         buff.push('<tex:i class="aghtex-underbrace" style="padding-bottom:',undertxt?2.6:1,'ex">');
       }
       buff.push(content);
-      buff.push('<tex:i class="aghtex-underbrace-i">',image,'</tex:i>');
+      if(image)
+        buff.push('<tex:i class="aghtex-underbrace-i">',image,'</tex:i>');
       if(undertxt)
         buff.push('<tex:i class="aghtex-underbrace-i"><tex:ud>',undertxt,'</tex:ud></tex:i>');
       buff.push('</tex:i>');
     }else{
-      buff.push('<table class="aghtex-underbrace"><tr><td class="aghtex-underbrace-b">',content,'</td></tr><tr>',image,'</tr>');
+      // image ~ <td>
+      buff.push('<table class="aghtex-underbrace"><tr><td class="aghtex-underbrace-b">',content,'</td></tr>');
+      if(image)
+        buff.push('<tr>',image,'</tr>');
       if(undertxt)
         buff.push('<tr><td class="aghtex-underbrace-t">',undertxt,'</td></tr>');
       buff.push('</table>');
     }
   }
-  function output_overbrace(doc,content,image,overtext){
-    var buff=doc.currentCtx.output.buff;
+  function output_overbrace(buff,content,image,overtext){
     buff.push('<tex:i class="aghtex-overbrace">');
     if(overtext)
       buff.push('<tex:i class="aghtex-overbrace-t"><tex:i class="aghtex-overbrace-u">',overtext,'</tex:i></tex:i>');
-    buff.push('<tex:i class="aghtex-overbrace-i">',image,'</tex:i><tex:i class="aghtex-overbrace-b">',content,'</tex:i></tex:i>');
+    if(image)
+      buff.push('<tex:i class="aghtex-overbrace-i">',image,'</tex:i>');
+    buff.push('<tex:i class="aghtex-overbrace-b">',content,'</tex:i></tex:i>');
   }
+  _Mod.OutputUnderbrace=output_underbrace;
+  _Mod.OutputOverbrace=output_overbrace;
 
   var ht_img_overbrace='<img alt="\\overbrace" class="aghtex-overbrace" src="'+ns.BaseUrl+'paren2ov.png" />';
   var ht_img_underbrace;
@@ -344,7 +351,8 @@ context "mode.math"{
       undertxt=doc.GetArgumentHtml();
     }
 
-    output_underbrace(doc,argv[1],ht_img_underbrace,undertxt);
+    var buff=doc.currentCtx.output.buff;
+    output_underbrace(buff,argv[1],ht_img_underbrace,undertxt);
   };
   command f\overbrace(#>1){
     var overtxt=null;
@@ -354,13 +362,15 @@ context "mode.math"{
       overtxt=doc.GetArgumentHtml();
     }
 
-    output_overbrace(doc,argv[1],ht_img_overbrace,overtxt);
+    var buff=doc.currentCtx.output.buff;
+    output_overbrace(buff,argv[1],ht_img_overbrace,overtxt);
   };
 
   _Mod.CreateCommandOverStretch=function(imgsrc,alttxt){
     var image='<img alt="\\'+alttxt+'" class="aghtex-overbrace" src="'+ns.BaseUrl+imgsrc+'" />';
     return new ns.Command2("f","#>1",function(doc,argv){
-      output_overbrace(doc,argv[1],image);
+      var buff=doc.currentCtx.output.buff;
+      output_overbrace(buff,argv[1],image);
     });
   }
   _Mod.CreateCommandUnderStretch=function(imgsrc,alttxt){
@@ -371,7 +381,8 @@ context "mode.math"{
       image=GenerateHtmlUndertextImage(imgsrc,1,'\\'+alttxt);
 
     return new ns.Command2("f","#>1",function(doc,argv){
-      output_underbrace(doc,argv[1],image);
+      var buff=doc.currentCtx.output.buff;
+      output_underbrace(buff,argv[1],image);
     });
   }
 

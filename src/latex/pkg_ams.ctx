@@ -541,6 +541,14 @@ context "pkg:amsmath/mode.math" new(){
   //---------------------------------------------------------------------------
   // TODO: command \overset
   // TODO: command \underset
+  command f\overset("#>1#>2"){
+    var buff=doc.currentCtx.output.buff;
+    mod_math.OutputOverbrace(buff,argv[2],false,argv[1]);
+  };
+  command f\underset("#>1#>2"){
+    var buff=doc.currentCtx.output.buff;
+    mod_math.OutputUnderbrace(buff,argv[2],false,argv[1]);
+  };
 
   // \overleftrightarrow
   // \underrightarrow

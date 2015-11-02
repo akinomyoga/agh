@@ -705,7 +705,7 @@ table.aghtex-cmdleft{
 /*%%else*/
   vertical-align:baseline;
 /*%%)*/
-  margin:0px;
+  margin:0 0.15em;
 /*%%if mode=="Opera" (*/
   white-space:nowrap;
 /*%%elif mode=="Trident"*/
