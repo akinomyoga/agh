@@ -56,67 +56,70 @@ context "mode.math"{
   //---------------------------------------------------------------
   //    字体
   //---------------------------------------------------------------
-  command f\bf()  {mod_common.TagCurrentContext(doc,"tex:fmbf");};
-  command f\it()  {mod_common.TagCurrentContext(doc,"tex:fmit");};
-  command f\rm()  {mod_common.TagCurrentContext(doc,"tex:fmrm");};
-  command f\sf()  {mod_common.TagCurrentContext(doc,"tex:fmsf");};
-  command f\tt()  {mod_common.TagCurrentContext(doc,"tex:fmtt");};
-  command f\cal() {mod_common.TagCurrentContext(doc,"tex:fmcal");};
 
-  // - 以下は数式モードでは効果無し。
-  command f\mc          (){};
-  command f\gt          (){};
-  command f\normalfont  (){};
-  command f\tiny        (){};
-  command f\scriptsize  (){};
-  command f\footnotesize(){};
-  command f\small       (){};
-  command f\normalsize  (){};
-  command f\large       (){};
-  command f\Large       (){};
-  command f\LARGE       (){};
-  command f\huge        (){};
-  command f\Huge        (){};
+  _Ctx.DefineCommand({
+    bf : mod_common.CreateCommandTagFollowing('<tex:i class="aghtex-mathbf">' ,'<tex:i>'),
+    it : mod_common.CreateCommandTagFollowing('<tex:i class="aghtex-mathit">' ,'<tex:i>'),
+    rm : mod_common.CreateCommandTagFollowing('<tex:i class="aghtex-mathrm">' ,'<tex:i>'),
+    sf : mod_common.CreateCommandTagFollowing('<tex:i class="aghtex-mathsf">' ,'<tex:i>'),
+    tt : mod_common.CreateCommandTagFollowing('<tex:i class="aghtex-mathtt">' ,'<tex:i>'),
+    cal: mod_common.CreateCommandTagFollowing('<tex:i class="aghtex-mathcal">','<tex:i>'),
 
-  // - 以下は文章モードに移行して評価
-  command s@\text("#mode.para>1")    '<tex:frm>#1</tex:frm>'; // 文章モードはデフォルトで roman で良いか?
-  command s@\textrm("#mode.para>1")  '<tex:frm>#1</tex:frm>';
-  command s@\textsf("#mode.para>1")  '<tex:fsf>#1</tex:fsf>';
-  command s@\texttt("#mode.para>1")  '<tex:ftt>#1</tex:ftt>';
-  command s@\textmc("#mode.para>1")  '<tex:fmc>#1</tex:fmc>';
-  command s@\textgt("#mode.para>1")  '<tex:fgt>#1</tex:fgt>';
-  command s@\textmd("#mode.para>1")  '<tex:fmd>#1</tex:fmd>';
-  command s@\textbf("#mode.para>1")  '<tex:fbf>#1</tex:fbf>';
-  command s@\textup("#mode.para>1")  '<tex:fup>#1</tex:fup>';
-  command s@\textit("#mode.para>1")  '<tex:fit>#1</tex:fit>';
-  command s@\textsc("#mode.para>1")  '<tex:fsc>#1</tex:fsc>';
-  command s@\textsl("#mode.para>1")  '<tex:fsl>#1</tex:fsl>';
+    // - 以下は数式モードでは効果無し。
+    mc          : mod_base.CHRelax,
+    gt          : mod_base.CHRelax,
+    normalfont  : mod_base.CHRelax,
+    tiny        : mod_base.CHRelax,
+    scriptsize  : mod_base.CHRelax,
+    footnotesize: mod_base.CHRelax,
+    small       : mod_base.CHRelax,
+    normalsize  : mod_base.CHRelax,
+    large       : mod_base.CHRelax,
+    Large       : mod_base.CHRelax,
+    LARGE       : mod_base.CHRelax,
+    huge        : mod_base.CHRelax,
+    Huge        : mod_base.CHRelax,
 
-  command s@\mathbf(#>1)     '<tex:fmbf>#1</tex:fmbf>';
-  command s@\mathit(#>1)     '<tex:fmit>#1</tex:fmit>';
-  command s@\mathrm(#>1)     '<tex:fmrm>#1</tex:fmrm>';
-  command s@\mathsf(#>1)     '<tex:fmsf>#1</tex:fmsf>';
-  command s@\mathtt(#>1)     '<tex:fmtt>#1</tex:fmtt>';
-  command s@\mathnormal(#>1) '<tex:fmit>#1</tex:fmit>';
-  command s@\mathcal(#>1)    '<tex:fmcal>#1</tex:fmcal>';
+    // - 以下は文章モードに移行して評価
+    text  : ['s@;#mode.para>1','<tex:frm>#1</tex:frm>'], // 文章モードはデフォルトで roman で良いか?
+    textrm: ['s@;#mode.para>1','<tex:frm>#1</tex:frm>'],
+    textsf: ['s@;#mode.para>1','<tex:fsf>#1</tex:fsf>'],
+    texttt: ['s@;#mode.para>1','<tex:ftt>#1</tex:ftt>'],
+    textmc: ['s@;#mode.para>1','<tex:fmc>#1</tex:fmc>'],
+    textgt: ['s@;#mode.para>1','<tex:fgt>#1</tex:fgt>'],
+    textmd: ['s@;#mode.para>1','<tex:fmd>#1</tex:fmd>'],
+    textbf: ['s@;#mode.para>1','<tex:fbf>#1</tex:fbf>'],
+    textup: ['s@;#mode.para>1','<tex:fup>#1</tex:fup>'],
+    textit: ['s@;#mode.para>1','<tex:fit>#1</tex:fit>'],
+    textsc: ['s@;#mode.para>1','<tex:fsc>#1</tex:fsc>'],
+    textsl: ['s@;#mode.para>1','<tex:fsl>#1</tex:fsl>'],
 
-  // 括弧の大きさ
-  command s@\big  (#>1)  '<tex:big class="aghtex-big1">#1</tex:big>';
-  command s@\Big  (#>1)  '<tex:big class="aghtex-big2">#1</tex:big>';
-  command s@\bigg (#>1)  '<tex:big class="aghtex-big3">#1</tex:big>';
-  command s@\Bigg (#>1)  '<tex:big class="aghtex-big4">#1</tex:big>';
-  command s@\bigl (#>1)  '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big1">#1</tex:big></tex:big>';
-  command s@\Bigl (#>1)  '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big2">#1</tex:big></tex:big>';
-  command s@\biggl(#>1)  '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big3">#1</tex:big></tex:big>';
-  command s@\Biggl(#>1)  '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big4">#1</tex:big></tex:big>';
-  command s@\bigr (#>1)  '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big1">#1</tex:big></tex:big>';
-  command s@\Bigr (#>1)  '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big2">#1</tex:big></tex:big>';
-  command s@\biggr(#>1)  '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big3">#1</tex:big></tex:big>';
-  command s@\Biggr(#>1)  '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big4">#1</tex:big></tex:big>';
-  command s@\bigm (#>1)  '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big1">#1</tex:big></tex:big>';
-  command s@\Bigm (#>1)  '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big2">#1</tex:big></tex:big>';
-  command s@\biggm(#>1)  '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big3">#1</tex:big></tex:big>';
-  command s@\Biggm(#>1)  '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big4">#1</tex:big></tex:big>';
+    mathbf    : ['s@;#>1','<tex:f class="aghtex-mathbf">#1</tex:f>'],
+    mathit    : ['s@;#>1','<tex:f class="aghtex-mathit">#1</tex:f>'],
+    mathrm    : ['s@;#>1','<tex:f class="aghtex-mathrm">#1</tex:f>'],
+    mathsf    : ['s@;#>1','<tex:f class="aghtex-mathsf">#1</tex:f>'],
+    mathtt    : ['s@;#>1','<tex:f class="aghtex-mathtt">#1</tex:f>'],
+    mathnormal: ['s@;#>1','<tex:f class="aghtex-mathit">#1</tex:f>'],
+    mathcal   : ['s@;#>1','<tex:f class="aghtex-mathcal">#1</tex:f>'],
+
+    // 括弧の大きさ
+    big       : ['s@;#>1','<tex:big class="aghtex-big1">#1</tex:big>'],
+    Big       : ['s@;#>1','<tex:big class="aghtex-big2">#1</tex:big>'],
+    bigg      : ['s@;#>1','<tex:big class="aghtex-big3">#1</tex:big>'],
+    Bigg      : ['s@;#>1','<tex:big class="aghtex-big4">#1</tex:big>'],
+    bigl      : ['s@;#>1','<tex:big class="aghtex-bigl"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
+    Bigl      : ['s@;#>1','<tex:big class="aghtex-bigl"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
+    biggl     : ['s@;#>1','<tex:big class="aghtex-bigl"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
+    Biggl     : ['s@;#>1','<tex:big class="aghtex-bigl"><tex:big class="aghtex-big4">#1</tex:big></tex:big>'],
+    bigr      : ['s@;#>1','<tex:big class="aghtex-bigr"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
+    Bigr      : ['s@;#>1','<tex:big class="aghtex-bigr"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
+    biggr     : ['s@;#>1','<tex:big class="aghtex-bigr"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
+    Biggr     : ['s@;#>1','<tex:big class="aghtex-bigr"><tex:big class="aghtex-big4">#1</tex:big></tex:big>'],
+    bigm      : ['s@;#>1','<tex:big class="aghtex-bigm"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
+    Bigm      : ['s@;#>1','<tex:big class="aghtex-bigm"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
+    biggm     : ['s@;#>1','<tex:big class="aghtex-bigm"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
+    Biggm     : ['s@;#>1','<tex:big class="aghtex-bigm"><tex:big class="aghtex-big4">#1</tex:big></tex:big>']
+  });
 
   //---------------------------------------------------------------
   //    特殊文字
@@ -628,7 +631,7 @@ context "mode.math"{
     }
     function is_slanted_fullheight(html){
       // \mathrm
-      if(/^<tex:fmrm>.+<\/tex:fmrm>$/.test(html))return false;
+      if(/^<tex:f class="aghtex-math(?:rm|sf|tt|bf|frak)">/.test(html))return false;
 
       // 中身が複数文字ある場合
       var text=agh.Text.Unescape(html,"html");
@@ -669,7 +672,7 @@ context "mode.math"{
       var ht3='">'+htsymb+'</tex:i></tex:i></tex:i>';
 
       if(type=='low'){
-        return new ns.Command2("f","#>1",function(doc,argv){
+        return ns.Command2("f","#>1",function(doc,argv){
           var content=argv[1];
           var t=type;
           if(content.length==0)
@@ -681,7 +684,7 @@ context "mode.math"{
           buff.push(ht1,content,ht2,t,ht3);
         });
       }else{
-        return new ns.Command2("f","#>1",function(doc,argv){
+        return ns.Command2("f","#>1",function(doc,argv){
           var content=argv[1].trim();
           var t=type;
           if(content.length==0)
@@ -697,16 +700,18 @@ context "mode.math"{
       }
     };
 
-    _Ctx.AddCommandHandler("acute",_Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00B4;</tex:fsym>',true)); // &#x02CA;
-    _Ctx.AddCommandHandler("bar",  _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00AF;</tex:fsym>',true)); // &#x02C9;
-    _Ctx.AddCommandHandler("breve",_Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D8;</tex:fsym>',true));
-    _Ctx.AddCommandHandler("check",_Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C7;</tex:fsym>',true));
-    _Ctx.AddCommandHandler("dot",  _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D9;</tex:fsym>',true));
-    _Ctx.AddCommandHandler("ddot", _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00A8;</tex:fsym>',true));
-    _Ctx.AddCommandHandler("grave",_Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02CB;</tex:fsym>',true));
-    _Ctx.AddCommandHandler("hat",  _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C6;</tex:fsym>',true));
-    _Ctx.AddCommandHandler("tilde",_Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02DC;</tex:fsym>',true));
-    _Ctx.AddCommandHandler("vec",  _Mod.CreateAccentCommand('vec','<tex:fsym class="aghtex-syma-mincho">&#x2192;</tex:fsym>',true));
+    _Ctx.DefineCommand({
+      acute: _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00B4;</tex:fsym>',true), // &#x02CA;
+      bar  : _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00AF;</tex:fsym>',true), // &#x02C9;
+      breve: _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D8;</tex:fsym>',true),
+      check: _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C7;</tex:fsym>',true),
+      dot  : _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D9;</tex:fsym>',true),
+      ddot : _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00A8;</tex:fsym>',true),
+      grave: _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02CB;</tex:fsym>',true),
+      hat  : _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C6;</tex:fsym>',true),
+      tilde: _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02DC;</tex:fsym>',true),
+      vec  : _Mod.CreateAccentCommand('vec','<tex:fsym class="aghtex-syma-mincho">&#x2192;</tex:fsym>',true)
+    });
 
     if(ns.compatMode=="IE-qks"||agh.browser.vIE<8){
       _Mod.CreateAccentCommandQksB=function(height,htSymbol){

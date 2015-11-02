@@ -33,6 +33,13 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     個別に実装を行って個別にテストを行うのは非効率である。
     これらの実装を統一する事を考えたい。
 
+  * 根号・伸縮括弧の表示方法について
+
+    他の記号についても svg 化を行う。
+    1 stretch_{u,d,ud}arr{,2}.svg, stretch_{slash,bslash}.svg を作成する。
+      stretch_symbols.sfd 上で作成してそれを svg として出力すればよい。
+    2 className を決めて登録する。
+
 2015-11-01
 
   * CreateAccentCommandQksB (IE6, IE7) の廃止。CreateAccentCommand と同様の実装に切り替え。
@@ -64,18 +71,21 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
   * 根号・伸縮括弧の表示方法について
 
-    現在 svg を用いる方法を Fx/Cr で試験的に利用している。
+    現在 svg を用いる方法を Fx/Cr/Sf で試験的に利用している。
+
+    ToDo: Cr/Sf で旧来のコード (aghtex-stretch-bg 関連) を削除する。
 
     各伸縮括弧の表示方式の利点と欠点
 
-    - <img src=".png"/> を用いる方法 (現在: IE/Fx-qks)
+    - <img src=".png"/> を用いる方法 (現在: IE/Fx-qks, (png) Fx-std)
+    - background-image:url(.png) を用いる方法 (現在: Op, (png) Cr/Sf)
       x 印刷でぎざぎざが見える。
       x 文字色が反映されない
 
     - <img src=".svg"/> を用いる方法
       x 文字色が反映されない
 
-    - background-image:url(.svg) を用いる方法 (現在: Cr/Sf/Op)
+    - background-image:url(.svg) を用いる方法
       x 文字色が反映されない
       x コピー時の文字情報を埋め込めない
 
@@ -84,7 +94,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
       x Cr/Sf でしか使えない。
       x コピー時の文字情報を埋め込めない
 
-    - <svg> を用いる方法 (現在: Fx-std)
+    - <svg> を用いる方法 (現在: Fx-std/Cr/Sf)
       x 出力する html が長くなる。
       x コピー時の文字情報を埋め込めない
 

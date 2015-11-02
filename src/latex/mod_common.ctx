@@ -29,10 +29,12 @@
  *    
  *  @section 公開オブジェクト
  *    ※以下 mod_common = ns.Modules["mod:common"] とする。
- *    @fn mod_common.TagCurrentContext.TagCurrentContext(doc,tagName,endTag)
+ *    @fn mod_common.TagCurrentContext(doc,tagName,endTag)
+ *    @fn mod_common.CreateCommandTagFollowing(doc,tagName[,endTag])
  */
 
 var mod_core=ns.Modules["core"];
+var mod_base=ns.Modules["mod:base"];
 
 agh.memcpy(mod_core.ErrorMessages,{
   'mod:common.cmd:newcommand.InvalidCommandName':[
@@ -74,11 +76,17 @@ agh.memcpy(mod_core.ErrorMessages,{
 
 
 var _Mod=ns.Modules["mod:common"]={};
-
-_Mod.TagCurrentContext=function TagCurrentContext(doc,tagName,endTag){
+_Mod.TagCurrentContext=function(doc,tagName,endTag){
   var output=doc.currentCtx.output;
   output.buff.push("<",tagName,">");
   output.appendPost("</"+(endTag||tagName)+">");
+};
+_Mod.CreateCommandTagFollowing=function(htBegin,htEnd){
+  return ns.Command2('f',null,function(doc,argv){
+    var output=doc.currentCtx.output;
+    output.buff.push(htBegin);
+    output.appendPost(htEnd);
+  });
 };
 
 context "global"{
@@ -332,7 +340,14 @@ context "global"{
   _Ctx.AddCommandHandler("renewenvironment",_Ctx.handlerC["newenvironment"]);
 
   //---------------------------------------------------------------------------
+
+  _Ctx.DefineCommand({
+    relax:mod_base.CHRelax
+  });
+
+  //---------------------------------------------------------------------------
   // 空白・改行
+
   command s@\hspace(#1)  '<span style="padding-right:#1;"></span>';
   command s@\hspace*(#1) '<span style="padding-right:#1;"></span>';
   command s@\vspace(#1)  '<p class="tex-vspace" style="font-size:#1">&nbsp;</p>';

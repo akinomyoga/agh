@@ -89,7 +89,7 @@ context "mode.para"{
   command f\gt()      {mod_common.TagCurrentContext(doc,"tex:fgt");};
   command f\dm()      {mod_common.TagCurrentContext(doc,"tex:fmc");};
   command f\dg()      {mod_common.TagCurrentContext(doc,"tex:fgt");};
-  command s@\boldmath(#>1) '<tex:fmbm>#1</tex:fmbm>';
+  command s@\boldmath(#>1) '<tex:f class="aghtex-mathbm">#1</tex:f>';
 
   _Ctx.DefineCommand({
     "'":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00B4;</tex:fsym>'), // alt = &#x02CA;
