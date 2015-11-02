@@ -22,6 +22,10 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2015-11-02
 
+  * \underset, \overset
+
+    位置調整・左右余白の調整。
+
   * \mathop, \stackrel, \overbrace, \underset 統一。
 
     \underset, \overset を \overbrace, \underbrace の仕組みで実装した。

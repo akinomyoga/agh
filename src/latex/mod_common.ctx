@@ -64,7 +64,7 @@ agh.memcpy(mod_core.ErrorMessages,{
     "\\special","\\special{{{arg}}} is used, but not yet supported."],
   'mod:common.cmd:documentclass.UnknownClass':["cls:{cls}","The document class named '{cls}' is not registered. Instead, the document class 'article' will be used."],
   'mod:common.cmd:documentclass.MultipleDocumentClasses':["\\documentclass","\\documentclass cannot be specified twice.\n  @ \\documentclass"],
-  'mod:common.cmd:usepackage.UnknownPackage':["pkg:{pkg} unknown","{pkg} という名前の package は登録されていません。"],
+  'mod:common.cmd:usepackage.UnknownPackage':["pkg:{pkg}","{pkg} という名前の package は登録されていません。"],
   'mod:common.cmd:usepackage.PackageException':[
     "pkg:{pkg} error","package '{pkg}' の初期化中に例外が発生しました。\r\n例外説明: {message}\r\n詳細に関しては aghtex 版 package の作成者に問い合わせて下さい。"],
   'mod:common.cmd:let.InvalidCommandName':["\\let#1 invalid","'{cmd}' is not a valid command name."],

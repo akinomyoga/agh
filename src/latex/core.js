@@ -804,7 +804,7 @@ agh.memcpy(ns.Writer,{
          "* if the end of the current context is missing",
          "* if the token {0} is mistakenlly inserted here"].join("\n")],
       "UnknownCommand":[
-        "unknown command '\\{cmd}'",
+        "\\{cmd}",
         ["the command '\\{cmd}' is not available in this context.",
          "the current context is [{contexts}].",
          "check the following points:",
@@ -813,7 +813,7 @@ agh.memcpy(ns.Writer,{
          "* if the command is supported in the current context."
         ].join("\n")],
       "UnknownEnvironment":[
-        "unknown environment '{env}'",
+        "env:{env}",
         ["the environment '{env}' is not available in this context.",
          "the current context is [{contexts}].",
          "check the following points:",
