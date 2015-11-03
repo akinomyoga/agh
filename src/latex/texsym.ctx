@@ -154,7 +154,7 @@ context "mode.math"{
     mathsterling : ['s@','<tex:f class="aghtex-symb-roman">&#x00a3;</tex:f>'],
 
     // 点
-    cdot              : ['s@','<tex:f class="aghtex-binop">・</tex:f>'],
+    cdot              : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">・</tex:f>'],
     ldots             : ['s@','<tex:f class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:f>'],
     cdots             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22EF;</tex:f>'],
     vdots             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22EE;</tex:f>'],

@@ -22,11 +22,14 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2015-11-03
 
-  * 数字のフォント、\cdot のフォント
+  * 数字のフォント
 
   * pkg_ams.ctx (pkg:latexsym): symb フォントを使用する。
 
     恐らく多くの記号は既に aghfont に含まれている。確認をしてただフォントの指定を切り替えるだけのはずである。
+    →確認をした全て基本的な図形は含まれていた。aghfonts を多少弄った。
+
+    同時に \cdot のフォントについても対応した。
 
 2015-11-02
 
