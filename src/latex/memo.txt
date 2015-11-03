@@ -12,6 +12,11 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
     currentColor: Fx38 Cr31 IE9 Sf8 Op32
 
+  * フォント出所
+
+    mathbb (Diamond, Join, Box): type1/bluesky/lasy10.pfb
+    mathit (数字の斜体): type1/bluesky/cmti10.pfb (mathit-1.1.5)
+
 
 
 ------------------------------------------------------------------------------
@@ -22,14 +27,11 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2015-11-03
 
-  * 数字のフォント
+  * accent t,f だけ特別扱いする?
 
-  * pkg_ams.ctx (pkg:latexsym): symb フォントを使用する。
-
-    恐らく多くの記号は既に aghfont に含まれている。確認をしてただフォントの指定を切り替えるだけのはずである。
-    →確認をした全て基本的な図形は含まれていた。aghfonts を多少弄った。
-
-    同時に \cdot のフォントについても対応した。
+    t はアクセントの位置が微妙に高すぎる。
+    f はアクセントの位置をもう少し右に移動したい
+    (尾が左に出ている為、アクセントが左に引きずられているのだろう)。
 
 2015-11-02
 
@@ -125,6 +127,18 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 終了した ToDo 及び関連する議論はここに残す。
 
 2015-11-03
+
+  * 数字のフォント
+
+    数字の斜体は cmti10 に入っている様だ。
+    数字及び記号の類を cmti10 から mathit に移植した。
+
+  * pkg_ams.ctx (pkg:latexsym): symb フォントを使用する。
+
+    恐らく多くの記号は既に aghfont に含まれている。確認をしてただフォントの指定を切り替えるだけのはずである。
+    →確認をした全て基本的な図形は含まれていた。aghfonts を多少弄った。
+
+    同時に \cdot のフォントについても対応した。
 
   * aghfonts (pkg:latexsym): Box Join の文字を mathbb に入れる事にした。
 

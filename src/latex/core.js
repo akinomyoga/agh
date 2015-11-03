@@ -141,6 +141,7 @@ ns.Scanner4=function(text){
 agh.memcpy(ns.Scanner4.prototype,{
   //======================================================================
   // Source
+  InsertSource:function(instext){
 //%m Scanner::pushSource (
     if(this.source!=null) //&&this.source.index<this.source.length) // ■■
       this.sourceStack.push(this.source);
@@ -150,7 +151,6 @@ agh.memcpy(ns.Scanner4.prototype,{
       this.source=this.sourceStack.pop();
     }
 //%)
-  InsertSource:function(instext){
     /// <summary>
     /// 現在の単語開始位置に文字列を挿入します。
     /// </summary>

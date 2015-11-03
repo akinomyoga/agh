@@ -280,7 +280,7 @@ tex\:i.aghtex-accent-container-vec{top:-0.05em;}
   /*%%)*/
 	/*local('eufm10'),*/
 }
-/* font:\mathbb */
+/* font:\mathbb, aghtex-syma */
 @font-face{
   font-family:aghtex_mathbb;
   /*%%if mode=="Trident" (*/
@@ -292,9 +292,9 @@ tex\:i.aghtex-accent-container-vec{top:-0.05em;}
   /*%%)*/
 	/*local('msbm10'),*/
 }
-/* font:aghtex_mathsymb */
+/* font:aghtex_mathrm, aghtex-symb */
 @font-face{
-  font-family:aghtex_mathsymb;
+  font-family:aghtex_mathrm;
   /*%%if mode=="Trident" (*/
   src:url(aghtex_mathrm.eot);
   /*%%elif mode=="Opera"||mode=="WebKit"*/
@@ -303,17 +303,15 @@ tex\:i.aghtex-accent-container-vec{top:-0.05em;}
   src:url('aghtex_mathrm.woff') format("woff");
   /*%%)*/
 }
-/* font:aghtex_mathsyma */
+/*%%if mode=="WebKit"*/
 @font-face{
-  font-family:aghtex_mathsyma;
-  /*%%if mode=="Trident" (*/
-  src:url(aghtex_mathbb.eot);
-  /*%%elif mode=="Opera"||mode=="WebKit"*/
-  src:url('aghtex_mathbb.ttf') format("truetype");
-  /*%%elif mode=="Gecko"*/
-  src:url('aghtex_mathbb.woff') format("woff");
-  /*%%)*/
+  font-family:aghtex_mathrm;
+  font-style:normal;
+  font-weight:bold;
+  src:url('aghtex_mathbf.ttf') format("truetype");
 }
+/*%%end*/
+
 /* ------------------------------------------------------ */
 
 /* --- フォント --- */
@@ -365,12 +363,12 @@ tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.a
 {font-weight:bold;font-style:normal;font-family:aghtex_roman;}
 
 /* 記号類 */
-tex\:f.aghtex-symb-mincho{font-style:normal;font-family:aghtex_mathsymb,aghtex_mincho,aghtex_roman,serif;}
-tex\:f.aghtex-symb-gothic{font-style:normal;font-family:aghtex_mathsymb,aghtex_gothic,sans-serif;}
-tex\:f.aghtex-symb-roman{font-style:normal;font-family:aghtex_mathsymb,aghtex_roman,serif;}
-tex\:f.aghtex-symb-meiryo{font-style:normal;font-family:aghtex_mathsymb,aghtex_meiryo,sans-serif;}
-tex\:f.aghtex-symb-cent{font-family:aghtex_mathsymb,Century,aghtex_gothic,sans-serif;}
-tex\:f.aghtex-syma-mincho{font-style:normal;font-family:aghtex_mathsyma,aghtex_mathsymb,aghtex_mincho,aghtex_roman,serif;}
+tex\:f.aghtex-symb-mincho{font-style:normal;font-family:aghtex_mathrm,aghtex_mincho,aghtex_roman,serif;}
+tex\:f.aghtex-symb-gothic{font-style:normal;font-family:aghtex_mathrm,aghtex_gothic,sans-serif;}
+tex\:f.aghtex-symb-roman{font-style:normal;font-family:aghtex_mathrm,aghtex_roman,serif;}
+tex\:f.aghtex-symb-meiryo{font-style:normal;font-family:aghtex_mathrm,aghtex_meiryo,sans-serif;}
+tex\:f.aghtex-symb-cent{font-family:aghtex_mathrm,Century,aghtex_gothic,sans-serif;}
+tex\:f.aghtex-syma-mincho{font-style:normal;font-family:aghtex_mathbb,aghtex_mathrm,aghtex_mincho,aghtex_roman,serif;}
 tex\:f.aghtex-binop{margin-left:0.2em;margin-right:0.2em;}
 tex\:f.aghtex-comma{margin-right:0.3ex;}
 tex\:f.aghtex-lbrace{margin-left:0.2ex;margin-right:0;}
@@ -385,6 +383,8 @@ tex\:f.aghtex-mbrace{margin-left:0.2ex;margin-right:0.2ex;}
   tex\:f.aghtex-symb-cent,
   tex\:f.aghtex-syma-mincho,
   tex\:f.aghtex-int,tex\:f.aghtex-dotsi,
+  tex\:f.aghtex-digit,
+  tex\:f.aghtex-alpha,
   tex\:f.aghtex-greek{
     line-height:1.2em!important;display:inline-block;
     height:1.2em;overflow-y:hidden;overflow-x:visible;
@@ -396,12 +396,14 @@ tex\:f.aghtex-mbrace{margin-left:0.2ex;margin-right:0.2ex;}
 tex\:f.aghtex-mathit{
   font-family:aghtex_roman,serif;font-style:italic;font-weight:normal;
 }
+tex\:math tex\:f.aghtex-digit{ /* 数字は直立 (= mathrm) */
+  font-family:aghtex_mathrm,aghtex_roman,serif;font-style:normal;font-weight:normal;}
 tex\:math tex\:f.aghtex-greek,
 tex\:math tex\:f.aghtex-alpha,
+tex\:math tex\:f.aghtex-mathit tex\:f.aghtex-digit,
 tex\:math tex\:f.aghtex-mathit tex\:f.aghtex-greek,
 tex\:math tex\:f.aghtex-mathit tex\:f.aghtex-alpha{
-  font-family:aghtex_mathit,aghtex_roman,serif;font-style:normal;font-weight:normal;
-}
+  font-family:aghtex_mathit,aghtex_roman,serif;font-style:normal;font-weight:normal;}
 /* \bm */
 tex\:f.aghtex-mathbm{
   font-family:aghtex_roman,serif;font-style:italic;font-weight:bold;
@@ -410,6 +412,8 @@ tex\:math tex\:f.aghtex-mathbm tex\:f.aghtex-greek,
 tex\:math tex\:f.aghtex-mathbm tex\:f.aghtex-alpha{
   font-family:aghtex_mathit,aghtex_roman,serif;font-style:normal;font-weight:bold;
 }
+tex\:math tex\:f.aghtex-mathbm tex\:f.aghtex-digit{ /* 数字は直立太字 (= mathbf) */
+  font-family:aghtex_mathrm,aghtex_roman,serif;font-style:normal;font-weight:bold;}
 /* \hm */
 tex\:f.aghtex-mathhm{
   font-family:aghtex_roman,serif;font-style:italic;font-weight:900;
@@ -418,10 +422,12 @@ tex\:math tex\:f.aghtex-mathhm tex\:f.aghtex-alpha{
   font-family:aghtex_mathit,aghtex_roman,serif;font-style:normal;font-weight:900;
 }
 /* \mathrm */
-tex\:f.aghtex-mathrm,
+tex\:f.aghtex-mathrm{
+  font-family:aghtex_roman,serif;font-style:normal;font-weight:normal;}
+tex\:math tex\:f.aghtex-mathrm tex\:f.aghtex-greek,
+tex\:math tex\:f.aghtex-mathrm tex\:f.aghtex-digit,
 tex\:math tex\:f.aghtex-mathrm tex\:f.aghtex-alpha{
-  font-family:aghtex_roman,serif;font-style:normal;font-weight:normal;
-}
+  font-family:aghtex_mathrm,aghtex_roman,serif;font-style:normal;font-weight:normal;}
 /* \mathsf */
 tex\:f.aghtex-mathsf,
 tex\:math tex\:f.aghtex-mathsf tex\:f.aghtex-alpha{
@@ -433,10 +439,11 @@ tex\:math tex\:f.aghtex-mathtt tex\:f.aghtex-alpha{
   font-family:"Courier New",monospace;font-style:normal;font-weight:normal;
 }
 /* \mathbf */
-tex\:f.aghtex-mathbf,
-tex\:math tex\:f.aghtex-mathbf tex\:f.aghtex-alpha{
-  font-family:aghtex_roman,roman;font-weight:bold;font-style:normal;
-}
+tex\:f.aghtex-mathbf{
+  font-family:aghtex_roman,serif;font-style:normal;font-weight:bold;}
+tex\:math tex\:f.aghtex-mathbf tex\:f.aghtex-alpha,
+tex\:math tex\:f.aghtex-mathbf tex\:f.aghtex-digit{
+  font-family:aghtex_mathrm,aghtex_roman,serif;font-style:normal;font-weight:bold;}
 /* \mathcal */
 tex\:f.aghtex-mathcal,
 tex\:math tex\:f.aghtex-mathcal tex\:f.aghtex-alpha-lower{
@@ -449,14 +456,14 @@ tex\:math tex\:f.aghtex-mathcal tex\:f.aghtex-alpha-upper{
 }
 /* \mathfrak */
 tex\:f.aghtex-mathfrak{
-  font-family:'Script','Monotype Corsiva','HGP行書体','HG行書体',cursive;
-}
-tex\:math tex\:f.aghtex-mathfrak tex\:f.aghtex-alpha{
+  font-family:'Script','Monotype Corsiva','HGP行書体','HG行書体',cursive;}
+tex\:math tex\:f.aghtex-mathfrak tex\:f.aghtex-alpha,
+tex\:math tex\:f.aghtex-mathfrak tex\:f.aghtex-digit{
   font-family:aghtex_mathfrak,'Script','Monotype Corsiva',cursive;
   font-style:normal;letter-spacing:-.1ex;
-  /*%%if mode=="Trident" (*/
+/*%%if mode=="Trident" (*/
   padding-right:.1ex;
-  /*%%)*/
+/*%%)*/
 }
 
 /* --- 文字の大きさ --- */
@@ -878,7 +885,7 @@ td.aghtex-sqrt-body{
 /*------------------------------------------------------------------*/
 /* 積分記号 */
 tex\:f.aghtex-int{
-  font-family:aghtex_mathsyma,aghtex_mincho,aghtex_roman,serif;
+  font-family:aghtex_mathbb,aghtex_mincho,aghtex_roman,serif;
   font-size:250%;line-height:1.05;display:inline-block;
 /*%%if mode=="Opera" (*/
   /* [Opera] font-size と vertical-align が同時に指定されている時、
@@ -894,7 +901,7 @@ tex\:f.aghtex-int{
 }
 /* \idotsint, \dotsi */
 tex\:f.aghtex-dotsi{
-  font-family:aghtex_mathsymb,aghtex_mincho,aghtex_roman,serif;
+  font-family:aghtex_mathrm,aghtex_mincho,aghtex_roman,serif;
   font-size:150%;margin:0 -0.3ex;}
 tex\:f.aghtex-int>tex\:f.aghtex-dotsi{
   vertical-align:0.7ex;margin:0 -0.3ex;
@@ -940,11 +947,11 @@ table.aghtex-sum{
 }
 td.aghtex-sum-m{
   font-size:125%;vertical-align:baseline;
-  font-family:aghtex_mathsymb,aghtex_roman,aghtex_mincho,serif;}
+  font-family:aghtex_mathrm,aghtex_roman,aghtex_mincho,serif;}
 tex\:i.aghtex-sum-m{display:block;line-height:1;vertical-align:-0.02em;}
 tex\:i.aghtex-sum-m1{
   display:block;font-size:125%;vertical-align:baseline;
-  font-family:aghtex_mathsymb,aghtex_roman,aghtex_mincho,serif;}
+  font-family:aghtex_mathrm,aghtex_roman,aghtex_mincho,serif;}
 tex\:i.aghtex-sum-m2{line-height:1;vertical-align:-0.02em;}
 td.aghtex-sum-d{font-size:80%;}
 tex\:i.aghtex-sum-d{position:relative;top:-0.1em;}

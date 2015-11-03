@@ -100,6 +100,7 @@ $(MWGTEX4CR_OUTDIR):
 #%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_mathit.ttf|
 #%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_mathbm.ttf|
 #%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_mathrm.ttf|
+#%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_mathbf.ttf|
 #%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_mathbb.ttf|
 #%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_mathcal.ttf|
 #%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_mathfrak.ttf|
@@ -384,6 +385,7 @@ $(MWGTEX4SH_EXTDIR)/agh.addon.aghtex4seahorse.user.js: aghtex4seahorse/aghtex4se
 #%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_mathit.eot|
 #%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_mathbm.eot|
 #%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_mathrm.eot|
+#%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_mathbf.eot|
 #%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_mathcal.eot|
 #%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_mathbb.eot|
 #%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_mathfrak.eot|
@@ -481,6 +483,7 @@ agh latex/stretch_udarr2.png;
 fon latex/aghtex_mathit;
 fon latex/aghtex_mathbm;
 fon latex/aghtex_mathrm;
+fon latex/aghtex_mathbf;
 fon latex/aghtex_mathcal;
 fon latex/aghtex_mathbb;
 fon latex/aghtex_mathfrak;

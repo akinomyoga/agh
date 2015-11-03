@@ -73,6 +73,21 @@ var CH_ESCAPE_HTML=function(doc,letter){
 };
 //*/
 
+// 数式環境では roman alphabets, digits をタグ付けする。
+// 以下はタグ付けに使う為の正規表現および置換子。
+var reg_math_text_modifier=/([a-z]+)|([A-Z]+)|[0-9]+/g;
+var rep_math_text_modifier=function($0,$1,$2){
+  if($1){
+    return '<tex:f class="aghtex-alpha aghtex-alpha-lower">'+$0+'</tex:f>';
+  }else if($2){
+    return '<tex:f class="aghtex-alpha aghtex-alpha-upper">'+$0+'</tex:f>';
+  }else{
+    return '<tex:f class="aghtex-digit">'+$0+'</tex:f>';
+  }
+};
+
+//================================================================
+
 ns.ContextFactory.prototype.rawctx_CreateContext=function(doc){
   // 処理せずにソースを読み取る context の為
   var ctx=new ns.Context(
@@ -232,9 +247,7 @@ function LHR_MISARG_BRACE(doc,letter){
       if(mainctx["initialized:mode.math"]){
         mainctx.text_modifier=function(doc,text){
           var word=doc.scanner.ClipFirstFromTxt();
-          return word.replace(/([a-z]+)|[A-Z]+/g,function($0,$1,$2){
-            return '<tex:f class="aghtex-alpha '+($1?'aghtex-alpha-lower':'aghtex-alpha-upper')+'">'+$0+'</tex:f>'
-          });
+          return word.replace(reg_math_text_modifier,rep_math_text_modifier);
         };
       }else{
         mainctx.text_modifier=function(doc,text){
@@ -605,9 +618,7 @@ context "mode.math" new("global"){
     
     mainctx.text_modifier=function(doc,text){
       doc.scanner.Next();
-      return text.replace(/([a-z]+)|[A-Z]+/g,function($0,$1,$2){
-        return '<tex:f class="aghtex-alpha '+($1?'aghtex-alpha-lower':'aghtex-alpha-upper')+'">'+$0+'</tex:f>'
-      });
+      return text.replace(reg_math_text_modifier,rep_math_text_modifier);
     };
   };
   
