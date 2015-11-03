@@ -163,20 +163,32 @@ tex\:i.aghtex-accent-symbol-over,
 tex\:i.aghtex-accent-symbol-low ,
 tex\:i.aghtex-accent-symbol-lowT,
 tex\:i.aghtex-accent-symbol-acc ,
+tex\:i.aghtex-accent-symbol-accS,
 tex\:i.aghtex-accent-symbol-accL,
 tex\:i.aghtex-accent-symbol-accU,
 tex\:i.aghtex-accent-symbol-vec ,
+tex\:i.aghtex-accent-symbol-vecS,
 tex\:i.aghtex-accent-symbol-vecL,
 tex\:i.aghtex-accent-symbol-vecU{position:relative;margin-left:-0.5ex;margin-right:-0.5ex;}
 
-tex\:i.aghtex-accent-symbol-accL{top:-0.10em;}
-tex\:i.aghtex-accent-symbol-acc {top:-0.35em;}
-tex\:i.aghtex-accent-symbol-accU{top:-0.35em;left:0.15em;}
-tex\:i.aghtex-accent-symbol-vec {top:-0.70em;}
-tex\:i.aghtex-accent-symbol-vecL{top:-0.48em;}
-tex\:i.aghtex-accent-symbol-vecU{top:-0.70em;left:0.15em;}
 tex\:i.aghtex-accent-symbol-low {top:0.00em;}
 tex\:i.aghtex-accent-symbol-lowT{top:0.20em;}
+
+tex\:i.aghtex-accent-symbol-accS,
+tex\:i.aghtex-accent-symbol-accL{top:-0.10em;}
+tex\:i.aghtex-accent-symbol-acc,
+tex\:i.aghtex-accent-symbol-accU{top:-0.35em}
+tex\:i.aghtex-accent-symbol-vecS,
+tex\:i.aghtex-accent-symbol-vecL{top:-0.48em;}
+tex\:i.aghtex-accent-symbol-vec,
+tex\:i.aghtex-accent-symbol-vecU{top:-0.70em;}
+
+/* italic corrections */
+tex\:i.aghtex-accent-symbol-accL,
+tex\:i.aghtex-accent-symbol-vecL{left:0.08em;}
+tex\:i.aghtex-accent-symbol-accU,
+tex\:i.aghtex-accent-symbol-vecU{left:0.15em;}
+
 
 /*%%if mode=="Opera" (*/
 tex\:i.aghtex-accent-container{top:0.05em;}

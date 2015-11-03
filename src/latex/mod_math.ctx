@@ -629,9 +629,15 @@ context "mode.math"{
       if(text.length!=1)return false;
       return "acegijmnopqrsuvwxyzαγεηικμνοπρστυφχψω\u0131".indexOf(text)>=0;
     }
-    function is_slanted_fullheight(html){
+    function is_slanted(html,ismath){
+      if(ismath)
+        return !(/^<tex:f class="aghtex-math(?:rm|sf|tt|bf|frak)">/.test(html));
+      else
+        return false;
+    }
+    function is_slanted_fullheight(html,ismath){
       // \mathrm
-      if(/^<tex:f class="aghtex-math(?:rm|sf|tt|bf|frak)">/.test(html))return false;
+      if(!is_slanted(html,ismath))return false;
 
       // 中身が複数文字ある場合
       var text=agh.Text.Unescape(html,"html");
@@ -687,12 +693,15 @@ context "mode.math"{
         return ns.Command2("f","#>1",function(doc,argv){
           var content=argv[1].trim();
           var t=type;
-          if(content.length==0)
+          if(content.length===0)
             content='&nbsp;';
-          else if(is_single_lower(content))
-            t+="L";
-          else if(ismath&&is_slanted_fullheight(content))
-            t+="U";
+          else if(is_single_lower(content)){
+            if(is_slanted(content,ismath))
+              t+="L"; // 数式小文字
+            else
+              t+="S"; // 直立体小文字
+          }else if(is_slanted_fullheight(content,ismath))
+            t+="U"; // 数式大文字
 
           var buff=doc.currentCtx.output.buff;
           buff.push(ht1,content,ht2,t,ht3);

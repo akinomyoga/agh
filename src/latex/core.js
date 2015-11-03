@@ -1446,7 +1446,8 @@ agh.memcpy(ns.Command.prototype,{
   //======================================================================
   writeTextDef:function(doc,args){
     var result=this.text;
-    if(args)result=result.replace(/#(0?)([1-9]\d*)/g,function($0,$1,$2){
+    if(args)result=result.replace(/#(0?)([1-9]\d*)|##/g,function($0,$1,$2){
+      if($0==="##")return "#";
       //TODO: <参照:予定4>
       // ※ || を使うと引数が空白 "" の時にも、
       // 引数が見つからなかったかの様な動作をしてしまう。
@@ -1460,7 +1461,8 @@ agh.memcpy(ns.Command.prototype,{
   },
   insertTextDef:function(doc,args){
     var result=this.text;
-    if(args)result=result.replace(/#(0?)([1-9]\d*)/g,function($0,$1,$2){
+    if(args)result=result.replace(/#(0?)([1-9]\d*)|##/g,function($0,$1,$2){
+      if($0==="##")return "#";
       //TODO: <参照:予定4>
       var ret=args[$2];
       if(ret==null)ret=$0;
@@ -1828,41 +1830,37 @@ agh.memcpy(ns.Command2,{
   /// 全引数の読み取りを実行します。
   /// </summary>
   readers_read:function(doc,cmdName){
+#%m ns::Command2::readers_read::body
     var args=[cmdName];
     for(var i=0;i<this.length;i++){
       args.push(this[i](doc,cmdName));
     }
+#%end
+#%x ns::Command2::readers_read::body
     return args;
   },
   /// *** CreateArgReaders 戻り値に設定されるメソッドです ***
   readers_apply_args:function(text,args,isHtml){
-    return text.replace(/#(0?)([1-9])/g,function($0,$1,$2){
+#%m ns::Command2::readers_apply_args::body
+    return text.replace(/#(0?)([1-9])|##/g,function($0,$1,$2){
+      if($0==="##")return "#";
       var ret=args[$2];
       if(ret==null)ret=$0;
       if($1=="0")ret=agh.Text.Unescape(ret,"html");
-      if(!isHtml)ret="\x1F"+ret+"\x1F";
+      if(!isHtml)ret="\x1F"+ret+"\x1F"; // トークン強制区切 (see ns.Scanner)
       return ret;
     });
+#%end
+#%x ns::Command2::readers_apply_args::body
   },
   /// *** CreateArgReaders 戻り値に設定されるメソッドです ***
   /// <summary>
   /// 全引数の読み取りを実行し、指定された text の置換を行います。
   /// </summary>
   readers_apply_read_args:function(text,doc,cmdName,isHtml){
-    // return this.apply_args(text,this.read(doc,cmdName)); に等価
-
-    var args=[cmdName];
-    for(var i=0;i<this.length;i++){
-      args.push(this[i](doc,cmdName));
-    }
-
-    return text.replace(/#(0?)([1-9])/g,function($0,$1,$2){
-      var ret=args[$2];
-      if(ret==null)ret=$0;
-      if($1=="0")ret=agh.Text.Unescape(ret,"html");
-      if(!isHtml)ret="\x1F"+ret+"\x1F";
-      return ret;
-    });
+    // return this.readers_apply_args(text,this.read(doc,cmdName)); に等価
+#%x ns::Command2::readers_read::body
+#%x ns::Command2::readers_apply_args::body
   }
   //************************************************************************
 });
