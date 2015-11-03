@@ -128,6 +128,8 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2015-11-03
 
+  * aghfonts (mathbb-1.1.26): u25b3 (bigtriangleup), u25bd (bigtriangledown), u25cb (bigcirc) (3x3 glyphs).
+
   * 数字のフォント
 
     数字の斜体は cmti10 に入っている様だ。
