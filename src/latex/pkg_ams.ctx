@@ -39,11 +39,11 @@ context "pkg:latexsym/mode.math" new(){
     unrhd   : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22B5;</tex:f>'],
     mho     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2127;</tex:f>'],
     leadsto : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21DD;</tex:f>'],
-    Join    : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22c8;</tex:f>'],
+    Join    : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x22c8;</tex:f>'],
     Box     : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">□</tex:f>'],
     sqsubset: ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x228f;</tex:f>'],
     sqsupset: ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2290;</tex:f>'],
-    Diamond : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">◇</tex:f>'],
+    Diamond : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">◇</tex:f>'],
 
     // \iint \iiint \iiiint \idotsint
     iint    : ['f',function(doc,cmdName){mod_math['cmd:int'](doc,'&#x222C;');}],
@@ -267,7 +267,7 @@ context "pkg:amssymb/mode.math" new(){
     lrcorner           : ['s@','<tex:f class="aghtex-symb-mincho">&#x2518;</tex:f>'],
 
     Box                : ['s@','<tex:f class="aghtex-syma-mincho">□</tex:f>'],
-    Diamond            : ['s@','<tex:f class="aghtex-symb-mincho">&#x25c7;</tex:f>'],
+    Diamond            : ['s@','<tex:f class="aghtex-syma-mincho">&#x25c7;</tex:f>'],
     hbar               : ['s@','<tex:f class="aghtex-symb-roman">ħ</tex:f>'],
     hslash             : ['s@','<tex:f class="aghtex-symb-mincho">ℏ</tex:f>'],
     Bbbk               : ['s@','<tex:f class="aghtex-symb-mincho">k</tex:f>'],

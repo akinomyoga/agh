@@ -124,6 +124,30 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 終了した ToDo 及び関連する議論はここに残す。
 
+2015-11-03
+
+  * aghfonts (pkg:latexsym): Box Join の文字を mathbb に入れる事にした。
+
+    Box Join 等の文字は type1/bluesky/lasy10.pfb に含まれていた。
+    これらのフォントのライセンスは SIL Open Font License (OFL) である。曰く:
+    Effective with the AMSFonts 3.0 distribution, all Type 1 fonts are released under
+    the SIL Open Font License [http://scripts.sil.org/OFL].
+
+  * aghfonts: mathrm hinting 修正。mathbb-1.1.25: Modify u25a1 (Box). Add u22c8 (Join) u25c7 (Diamond)
+
+    mathrm, mathbb: hinting 修正について
+
+      fontforge-2013v を使用したらヒンティング関係が壊れた。
+      fontforge-2012 を使用して再度ヒンティングを実行すれば直る様なのでそうする。
+
+    mathbb: Box は lasy10.pfb に入っている物を使うべきであったので修正する。
+
+      Join (lasy10) は mathrm/u22c8 と同じだろうか?
+      →確認したらやはり大きさが違う。lasy10/Join は mathbb/u22c8 に入れる事にした。
+        もっと見ると Diamond についても大きさが違う様である。
+
+      この修正で mathbb-1.1.25 とする。
+
 2015-11-02
 
   * 根号・伸縮括弧の表示方法について[<svg> による方法を Cr にも適用]
