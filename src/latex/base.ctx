@@ -233,7 +233,7 @@ function LHR_MISARG_BRACE(doc,letter){
         mainctx.text_modifier=function(doc,text){
           var word=doc.scanner.ClipFirstFromTxt();
           return word.replace(/([a-z]+)|[A-Z]+/g,function($0,$1,$2){
-            return '<tex:abc class="'+($1?'aghtex-lower':'aghtex-upper')+'">'+$0+'</tex:abc>'
+            return '<tex:f class="aghtex-alpha '+($1?'aghtex-alpha-lower':'aghtex-alpha-upper')+'">'+$0+'</tex:f>'
           });
         };
       }else{
@@ -606,7 +606,7 @@ context "mode.math" new("global"){
     mainctx.text_modifier=function(doc,text){
       doc.scanner.Next();
       return text.replace(/([a-z]+)|[A-Z]+/g,function($0,$1,$2){
-        return '<tex:abc class="'+($1?'aghtex-lower':'aghtex-upper')+'">'+$0+'</tex:abc>'
+        return '<tex:f class="aghtex-alpha '+($1?'aghtex-alpha-lower':'aghtex-alpha-upper')+'">'+$0+'</tex:f>'
       });
     };
   };
@@ -738,14 +738,14 @@ context "mode.math" new("global"){
       "\u230B":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>', // 
       "\uF0FB":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>', // Symbol Font
       "\u00FB":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>', // Symbol Font
-      //"<tex:fsym>&#xF0E9;</tex:fsym>":'<td rowspan="2" class="tex-left-ceil">&nbsp;</td>',
-      //"<tex:fsym>&#xE9;</tex:fsym>":'<td rowspan="2" class="tex-left-ceil">&nbsp;</td>',
-      //"<tex:fsym>&#xF0EB;</tex:fsym>":'<td rowspan="2" class="tex-left-flor">&nbsp;</td>',
-      //"<tex:fsym>&#xEB;</tex:fsym>":'<td rowspan="2" class="tex-left-flor">&nbsp;</td>',
-      //"<tex:fsym>&#xF0F9;</tex:fsym>":'<td rowspan="2" class="tex-right-ceil">&nbsp;</td>',
-      //"<tex:fsym>&#xF9;</tex:fsym>":'<td rowspan="2" class="tex-right-ceil">&nbsp;</td>',
-      //"<tex:fsym>&#xF0FB;</tex:fsym>":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>',
-      //"<tex:fsym>&#xFB;</tex:fsym>":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>',
+      //"<tex:f>&#xF0E9;</tex:f>":'<td rowspan="2" class="tex-left-ceil">&nbsp;</td>',
+      //"<tex:f>&#xE9;</tex:f>":'<td rowspan="2" class="tex-left-ceil">&nbsp;</td>',
+      //"<tex:f>&#xF0EB;</tex:f>":'<td rowspan="2" class="tex-left-flor">&nbsp;</td>',
+      //"<tex:f>&#xEB;</tex:f>":'<td rowspan="2" class="tex-left-flor">&nbsp;</td>',
+      //"<tex:f>&#xF0F9;</tex:f>":'<td rowspan="2" class="tex-right-ceil">&nbsp;</td>',
+      //"<tex:f>&#xF9;</tex:f>":'<td rowspan="2" class="tex-right-ceil">&nbsp;</td>',
+      //"<tex:f>&#xF0FB;</tex:f>":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>',
+      //"<tex:f>&#xFB;</tex:f>":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>',
       
       // arrows
       "↑"    :stretchImg("stretch_uarr.png",  1.2,"↑"),
@@ -885,7 +885,7 @@ context "mode.para" new("global"){
   _Ctx.AddCommandHandler("verb",function(doc){
     var output=doc.currentCtx.output;
     var ret=doc.scanner.NextVerbArgument();
-    output.buff.push('<tex:ftt>',agh.Text.Escape(doc.scanner.word,"html"),'</tex:ftt>');
+    output.buff.push('<tex:f class="aghtex-texttt">',agh.Text.Escape(doc.scanner.word,"html"),'</tex:f>');
     if(ret==doc.scanner.NEXT_EOF){
       output.error('UnexpectedEOR','EOF','mod:base.cmd:verb');
     }else if(ret==doc.scanner.NEXT_NEWLINE){
@@ -896,7 +896,7 @@ context "mode.para" new("global"){
   _Ctx.AddCommandHandler("verb*",function(doc){
     var output=doc.currentCtx.output;
     var ret=doc.scanner.NextVerbArgument();
-    output.buff.push('<tex:ftt>',agh.Text.Escape(doc.scanner.word.replace(/ /g,'\u2423'),"html"),'</tex:ftt>');
+    output.buff.push('<tex:f class="aghtex-texttt">',agh.Text.Escape(doc.scanner.word.replace(/ /g,'\u2423'),"html"),'</tex:f>');
     if(ret==doc.scanner.NEXT_EOF){
       output.error('UnexpectedEOR','EOF','mod:base.cmd:verb');
     }else if(ret==doc.scanner.NEXT_NEWLINE){

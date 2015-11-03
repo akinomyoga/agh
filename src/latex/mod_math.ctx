@@ -81,18 +81,18 @@ context "mode.math"{
     Huge        : mod_base.CHRelax,
 
     // - 以下は文章モードに移行して評価
-    text  : ['s@;#mode.para>1','<tex:frm>#1</tex:frm>'], // 文章モードはデフォルトで roman で良いか?
-    textrm: ['s@;#mode.para>1','<tex:frm>#1</tex:frm>'],
-    textsf: ['s@;#mode.para>1','<tex:fsf>#1</tex:fsf>'],
-    texttt: ['s@;#mode.para>1','<tex:ftt>#1</tex:ftt>'],
-    textmc: ['s@;#mode.para>1','<tex:fmc>#1</tex:fmc>'],
-    textgt: ['s@;#mode.para>1','<tex:fgt>#1</tex:fgt>'],
-    textmd: ['s@;#mode.para>1','<tex:fmd>#1</tex:fmd>'],
-    textbf: ['s@;#mode.para>1','<tex:fbf>#1</tex:fbf>'],
-    textup: ['s@;#mode.para>1','<tex:fup>#1</tex:fup>'],
-    textit: ['s@;#mode.para>1','<tex:fit>#1</tex:fit>'],
-    textsc: ['s@;#mode.para>1','<tex:fsc>#1</tex:fsc>'],
-    textsl: ['s@;#mode.para>1','<tex:fsl>#1</tex:fsl>'],
+    text  : ['s@;#mode.para>1','<tex:f class="aghtex-textrm">#1</tex:f>'], // 文章モードはデフォルトで roman で良いか?
+    textrm: ['s@;#mode.para>1','<tex:f class="aghtex-textrm">#1</tex:f>'],
+    textsf: ['s@;#mode.para>1','<tex:f class="aghtex-textsf">#1</tex:f>'],
+    texttt: ['s@;#mode.para>1','<tex:f class="aghtex-texttt">#1</tex:f>'],
+    textmc: ['s@;#mode.para>1','<tex:f class="aghtex-textrm">#1</tex:f>'],
+    textgt: ['s@;#mode.para>1','<tex:f class="aghtex-textgt">#1</tex:f>'],
+    textmd: ['s@;#mode.para>1','<tex:f class="aghtex-textmd">#1</tex:f>'],
+    textbf: ['s@;#mode.para>1','<tex:f class="aghtex-textbf">#1</tex:f>'],
+    textup: ['s@;#mode.para>1','<tex:f class="aghtex-textup">#1</tex:f>'],
+    textit: ['s@;#mode.para>1','<tex:f class="aghtex-textit">#1</tex:f>'],
+    textsc: ['s@;#mode.para>1','<tex:f class="aghtex-textsc">#1</tex:f>'],
+    textsl: ['s@;#mode.para>1','<tex:f class="aghtex-textsl">#1</tex:f>'],
 
     mathbf    : ['s@;#>1','<tex:f class="aghtex-mathbf">#1</tex:f>'],
     mathit    : ['s@;#>1','<tex:f class="aghtex-mathit">#1</tex:f>'],
@@ -129,47 +129,47 @@ context "mode.math"{
   letter s@#' \b\t\v\r\n\f'() @"";
 
   // 調整付の通常文字
-  letter s@\+() '<tex:fsym class="aghtex-symb-gothic aghtex-binop">＋</tex:fsym>';
-  letter s@\-() '<tex:fsym class="aghtex-symb-gothic aghtex-binop">－</tex:fsym>';
-  letter s@\=() '<tex:fsym class="aghtex-symb-gothic aghtex-binop">＝</tex:fsym>';
-  letter s@\/() '<tex:fsym class="aghtex-symb-gothic aghtex-binop">/</tex:fsym>';
+  letter s@\+() '<tex:f class="aghtex-binop aghtex-symb-gothic">＋</tex:f>';
+  letter s@\-() '<tex:f class="aghtex-binop aghtex-symb-gothic">－</tex:f>';
+  letter s@\=() '<tex:f class="aghtex-binop aghtex-symb-gothic">＝</tex:f>';
+  letter s@\/() '<tex:f class="aghtex-binop aghtex-symb-gothic">/</tex:f>';
 
   // 数式フォントで再定義
-  letter s@#'['  () '<tex:fsym class="aghtex-symb-gothic aghtex-lbrace">[</tex:fsym>';
-  letter s@#']'  () '<tex:fsym class="aghtex-symb-gothic aghtex-rbrace">]</tex:fsym>';
-  letter s@#'('  () '<tex:fsym class="aghtex-symb-gothic aghtex-lbrace">(</tex:fsym>';
-  letter s@#')'  () '<tex:fsym class="aghtex-symb-gothic aghtex-rbrace">)</tex:fsym>';
-  command s@\{   () '<tex:fsym class="aghtex-symb-gothic aghtex-lbrace">{</tex:fsym>';
-  command s@\}   () '<tex:fsym class="aghtex-symb-gothic aghtex-rbrace">}</tex:fsym>';
-  command s@\&   () '<tex:fsym class="aghtex-symb-gothic">&amp;</tex:fsym>';
-  command s@\%   () '<tex:fsym class="aghtex-symb-gothic">%</tex:fsym>';
-  command s@\_   () '<tex:fsym class="aghtex-symb-gothic">_</tex:fsym>';
-  command s@\$   () '<tex:fsym class="aghtex-symb-gothic">$</tex:fsym>';
-  command s@\#   () '<tex:fsym class="aghtex-symb-gothic">#</tex:fsym>';
-  command s@\P   () '<tex:fsym class="aghtex-symb-gothic">¶</tex:fsym>'; // paragraph
-  command s@\S   () '<tex:fsym class="aghtex-symb-gothic">§</tex:fsym>'; // section
-  command s@\dag () '<tex:fsym class="aghtex-symb-cent">†</tex:fsym>'; // dagger
-  command s@\ddag() '<tex:fsym class="aghtex-symb-cent">‡</tex:fsym>'; // ddagger
+  letter s@#'['  () '<tex:f class="aghtex-lbrace aghtex-symb-gothic">[</tex:f>';
+  letter s@#']'  () '<tex:f class="aghtex-rbrace aghtex-symb-gothic">]</tex:f>';
+  letter s@#'('  () '<tex:f class="aghtex-lbrace aghtex-symb-gothic">(</tex:f>';
+  letter s@#')'  () '<tex:f class="aghtex-rbrace aghtex-symb-gothic">)</tex:f>';
+  command s@\{   () '<tex:f class="aghtex-lbrace aghtex-symb-gothic">{</tex:f>';
+  command s@\}   () '<tex:f class="aghtex-rbrace aghtex-symb-gothic">}</tex:f>';
+  command s@\&   () '<tex:f class="aghtex-symb-gothic">&amp;</tex:f>';
+  command s@\%   () '<tex:f class="aghtex-symb-gothic">%</tex:f>';
+  command s@\_   () '<tex:f class="aghtex-symb-gothic">_</tex:f>';
+  command s@\$   () '<tex:f class="aghtex-symb-gothic">$</tex:f>';
+  command s@\#   () '<tex:f class="aghtex-symb-gothic">#</tex:f>';
+  command s@\P   () '<tex:f class="aghtex-symb-gothic">¶</tex:f>'; // paragraph
+  command s@\S   () '<tex:f class="aghtex-symb-gothic">§</tex:f>'; // section
+  command s@\dag () '<tex:f class="aghtex-symb-cent">†</tex:f>'; // dagger
+  command s@\ddag() '<tex:f class="aghtex-symb-cent">‡</tex:f>'; // ddagger
 
-  letter s@\>() '<tex:fsym class="aghtex-symb-roman aghtex-binop">&gt;</tex:fsym>';
-  letter s@\<() '<tex:fsym class="aghtex-symb-roman aghtex-binop">&lt;</tex:fsym>';
-  letter s@\|() '<tex:fsym class="aghtex-symb-gothic">|</tex:fsym>';
+  letter s@\>() '<tex:f class="aghtex-binop aghtex-symb-roman">&gt;</tex:f>';
+  letter s@\<() '<tex:f class="aghtex-binop aghtex-symb-roman">&lt;</tex:f>';
+  letter s@\|() '<tex:f class="aghtex-symb-gothic">|</tex:f>';
   letter f@\:(){
     doc.scanner.Next();
     if(doc.scanner.is("ltr","=")){
-      //doc.currentCtx.output.buff.push('<tex:fsym class="aghtex-binop aghtex-symb-gothic">:＝</tex:fsym>');
-      doc.currentCtx.output.buff.push('<tex:fsym class="aghtex-binop aghtex-symb-gothic">&#x2254;</tex:fsym>');
+      //doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-gothic">:＝</tex:f>');
+      doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-gothic">&#x2254;</tex:f>');
       doc.scanner.Next();
     }else{
       doc.currentCtx.output.buff.push(":");
     }
   };
-  letter s@\,() '<tex:fsym class="aghtex-symb-roman aghtex-comma">,</tex:fsym>';
+  letter s@\,() '<tex:f class="aghtex-symb-roman aghtex-comma">,</tex:f>';
   letter f@\.(){
     var html=cmdName;
     doc.scanner.Next();
     if(doc.scanner.wordtype=="ltr"&&" \b\t\v\r\n\f".indexOf(doc.scanner.word)>=0){
-      html='<tex:fsym class="aghtex-comma">'+html+'</tex:fsym>';
+      html='<tex:f class="aghtex-comma">'+html+'</tex:f>';
       doc.scanner.Next();
     }
     doc.currentCtx.output.buff.push(html);
@@ -227,22 +227,22 @@ context "mode.math"{
   }
 
   // プライム
-  // letter s@#"'"() @'<tex:fsym class="rm">''</tex:fsym>';
+  // letter s@#"'"() @'<tex:f class="aghtex-textrm">''</tex:f>';
   var prime_handler=function(doc){
     doc.scanner.Next();
     if(!doc.scanner.is("ltr","'")&&!doc.scanner.is("cmd","rq")){
-      doc.currentCtx.output.buff.push('<tex:fsym class="rm">′</tex:fsym>');
+      doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">′</tex:f>');
       return;
     }
 
     doc.scanner.Next();
     if(!doc.scanner.is("ltr","'")&&!doc.scanner.is("cmd","rq")){
-      doc.currentCtx.output.buff.push('<tex:fsym class="rm">″</tex:fsym>');
+      doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">″</tex:f>');
       return;
     }
 
     doc.scanner.Next();
-    doc.currentCtx.output.buff.push('<tex:fsym class="rm">‴</tex:fsym>');
+    doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">‴</tex:f>');
   };
   _Ctx.AddLetterHandler("'",prime_handler);
   _Ctx.AddCommandHandler("rq",prime_handler);
@@ -557,7 +557,7 @@ context "mode.math"{
           if(fI)
             buff.push('</tex:i>');
         }else{
-          buff.push('<tex:fsym class="aghtex-symb-mincho">',content,'</tex:fsym>');
+          buff.push('<tex:f class="aghtex-symb-mincho">',content,'</tex:f>');
         }
       });
     };
@@ -584,7 +584,7 @@ context "mode.math"{
     // content
     if(!_Mod.GetMathStyle(doc)){
       // 普通の (大きな) 積分記号
-      buff.push('<tex:fsym class="aghtex-int">',ch,'</tex:fsym>');
+      buff.push('<tex:f class="aghtex-int">',ch,'</tex:f>');
 
       var sbsp=doc.GetSubSup();
       switch((sbsp.sub?1:0)+(sbsp.sup?2:0)){
@@ -603,7 +603,7 @@ context "mode.math"{
       }
     }else{
       // 小さな積分記号
-      buff.push('<tex:fsym class="aghtex-symb-mincho">',ch,'</tex:fsym>');
+      buff.push('<tex:f class="aghtex-symb-mincho">',ch,'</tex:f>');
     }
   }
   command f\int() {cmd_int(doc,'∫');};
@@ -643,7 +643,7 @@ context "mode.math"{
       var text=agh.Text.Unescape(html,"html");
       if(text.length!=1)return false;
 
-      if(/<tex:fsym class="aghtex-greek">[βδζθλξΑ-Ω]<\/tex:fsym>/.test(html)){
+      if(/<tex:f class="aghtex-greek">[βδζθλξΑ-Ω]<\/tex:f>/.test(html)){
         // \beta, \varGamma, etc.
         return true;
       }
@@ -710,16 +710,16 @@ context "mode.math"{
     };
 
     _Ctx.DefineCommand({
-      acute: _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00B4;</tex:fsym>',true), // &#x02CA;
-      bar  : _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00AF;</tex:fsym>',true), // &#x02C9;
-      breve: _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D8;</tex:fsym>',true),
-      check: _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C7;</tex:fsym>',true),
-      dot  : _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D9;</tex:fsym>',true),
-      ddot : _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00A8;</tex:fsym>',true),
-      grave: _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02CB;</tex:fsym>',true),
-      hat  : _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C6;</tex:fsym>',true),
-      tilde: _Mod.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02DC;</tex:fsym>',true),
-      vec  : _Mod.CreateAccentCommand('vec','<tex:fsym class="aghtex-syma-mincho">&#x2192;</tex:fsym>',true)
+      acute: _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x00B4;</tex:f>',true), // &#x02CA;
+      bar  : _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x00AF;</tex:f>',true), // &#x02C9;
+      breve: _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02D8;</tex:f>',true),
+      check: _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02C7;</tex:f>',true),
+      dot  : _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02D9;</tex:f>',true),
+      ddot : _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x00A8;</tex:f>',true),
+      grave: _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02CB;</tex:f>',true),
+      hat  : _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02C6;</tex:f>',true),
+      tilde: _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02DC;</tex:f>',true),
+      vec  : _Mod.CreateAccentCommand('vec','<tex:f class="aghtex-syma-mincho">&#x2192;</tex:f>',true)
     });
 
     if(ns.compatMode=="IE-qks"||agh.browser.vIE<8){

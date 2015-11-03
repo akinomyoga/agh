@@ -317,59 +317,44 @@ tex\:i.aghtex-accent-container-vec{top:-0.05em;}
 /* ------------------------------------------------------ */
 
 /* --- フォント --- */
-/*%%if mode=="Opera" (*/
-  /* Opera 謎の記号空白対処 */
-  tex\:fsym{
-    line-height:1.2em!important;display:inline-block;
-    height:1.2em;overflow-y:hidden;overflow-x:visible;
-    vertical-align:middle;}
-/*%%)*/
-tex\:fsym.sy{font-family:Symbol;}
-tex\:fsym.mc{font-family:aghtex_mincho,serif;}
-tex\:fsym.gt{font-family:aghtex_gothic,sans-serif;}
-tex\:fsym.mr{font-family:aghtex_meiryo,sans-serif;}
-tex\:fsym.ui{font-family:'MS UI Gothic',aghtex_gothic,sans-serif;}
-tex\:fsym.rm{font-family:aghtex_roman,aghtex_mincho,serif;}
-tex\:fsym.aghtex-symb-mincho{font-style:normal;font-family:aghtex_mathsymb,aghtex_mincho,aghtex_roman,serif;}
-tex\:fsym.aghtex-symb-gothic{font-style:normal;font-family:aghtex_mathsymb,aghtex_gothic,sans-serif;}
-tex\:fsym.aghtex-symb-roman{font-style:normal;font-family:aghtex_mathsymb,aghtex_roman,serif;}
-tex\:fsym.aghtex-symb-meiryo{font-style:normal;font-family:aghtex_mathsymb,aghtex_meiryo,sans-serif;}
-tex\:fsym.aghtex-symb-cent{font-family:aghtex_mathsymb,Century,aghtex_gothic,sans-serif;}
-tex\:fsym.aghtex-syma-mincho{font-style:normal;font-family:aghtex_mathsyma,aghtex_mathsymb,aghtex_mincho,aghtex_roman,serif;}
+
+/* サイズ */
+tex\:f.aghtex-size-normal{font-size:100%;}
+tex\:f.aghtex-size-small1{font-size:90%;} /* \small */
+tex\:f.aghtex-size-small2{font-size:80%;} /* \footnotesize */
+tex\:f.aghtex-size-small3{font-size:75%;} /* \scriptsize */
+tex\:f.aghtex-size-small4{font-size:65%;} /* \tiny */
+tex\:f.aghtex-size-large1{font-size:120%;} /* \large */
+tex\:f.aghtex-size-large2{font-size:140%;} /* \Large */
+tex\:f.aghtex-size-large3{font-size:170%;} /* \LARGE */
+tex\:f.aghtex-size-large4{font-size:200%;} /* \huge */
+tex\:f.aghtex-size-large5{font-size:250%;} /* \Huge */
+
+/* 字体 (text mode) */
+tex\:f.aghtex-textsy{font-family:Symbol;}
+tex\:f.aghtex-textmc{font-family:aghtex_mincho,serif;}
+tex\:f.aghtex-textgt{font-family:aghtex_gothic,sans-serif;}
+tex\:f.aghtex-textmr{font-family:aghtex_meiryo,sans-serif;}
+tex\:f.aghtex-textrm{font-family:aghtex_roman,aghtex_mincho,serif;}
+
 tex\:fcent{font-family:Century,aghtex_gothic,sans-serif;}
-tex\:ftimes{font-family:aghtex_roman,aghtex_mincho,serif;}
-tex\:fmr{font-family:aghtex_meiryo,sans-serif;}
-
-tex\:fsym.phi{
-	font-family:aghtex_mincho;
-	display:inline-block;width:1.2ex;
-	position:relative;left:-0.2ex;top:0.3ex;
-}
-
-tex\:fsym.aghtex-binop{margin-left:0.2ex;margin-right:0.2ex;}
-tex\:fsym.aghtex-comma{margin-right:0.3ex;}
-tex\:fsym.aghtex-lbrace{margin-left:0.2ex;margin-right:0;}
-tex\:fsym.aghtex-rbrace{margin-left:0;margin-right:0.2ex;}
-tex\:fsym.aghtex-mbrace{margin-left:0.2ex;margin-right:0.2ex;}
-
 tex\:fnorm{
   font-family:aghtex_roman,aghtex_mincho,serif;
   font-weight:normal;font-style:normal;}
-tex\:frm{font-family:aghtex_roman,aghtex_mincho,serif;}
-tex\:fsf{font-family:sans-serif;}
-tex\:ftt{font-family:"Courier New",monospace;}
-tex\:fmc{font-family:aghtex_roman,aghtex_mincho,serif;}
-tex\:fgt{font-family:aghtex_gothic,sans-serif;}
-/* - Font Series */
-tex\:fmd{font-weight:normal;}
-tex\:fbf{font-weight:bold;}
-/* -- Font Shape */
-tex\:fup{font-style:normal;}
-tex\:fsl{font-style:oblique;font-family:sans-serif;}
-tex\:fsc{font-style:normal;font-variant:small-caps;} /* text-transform:uppercase; */
-tex\:fit{font-style:italic;font-family:"Times New Roman";}
 
-tex\:fu{text-decoration:underline;}
+/* unused */
+tex\:f.aghtex-textui{font-family:'MS UI Gothic',aghtex_gothic,sans-serif;}
+
+tex\:f.aghtex-textsf{font-family:sans-serif;}
+tex\:f.aghtex-texttt{font-family:"Courier New",monospace;}
+/* - Font Series */
+tex\:f.aghtex-textmd{font-weight:normal;}
+tex\:f.aghtex-textbf{font-weight:bold;}
+/* - Font Shape */
+tex\:f.aghtex-textup{font-style:normal;}
+tex\:f.aghtex-textsl{font-style:oblique;font-family:sans-serif;}
+tex\:f.aghtex-textsc{font-style:normal;font-variant:small-caps;} /* text-transform:uppercase; */
+tex\:f.aghtex-textit{font-style:italic;font-family:"Times New Roman";}
 
 tex\:i.aghtex-emphasize,
 tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize,
@@ -379,98 +364,99 @@ tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize,
 tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize
 {font-weight:bold;font-style:normal;font-family:aghtex_roman;}
 
+/* 記号類 */
+tex\:f.aghtex-symb-mincho{font-style:normal;font-family:aghtex_mathsymb,aghtex_mincho,aghtex_roman,serif;}
+tex\:f.aghtex-symb-gothic{font-style:normal;font-family:aghtex_mathsymb,aghtex_gothic,sans-serif;}
+tex\:f.aghtex-symb-roman{font-style:normal;font-family:aghtex_mathsymb,aghtex_roman,serif;}
+tex\:f.aghtex-symb-meiryo{font-style:normal;font-family:aghtex_mathsymb,aghtex_meiryo,sans-serif;}
+tex\:f.aghtex-symb-cent{font-family:aghtex_mathsymb,Century,aghtex_gothic,sans-serif;}
+tex\:f.aghtex-syma-mincho{font-style:normal;font-family:aghtex_mathsyma,aghtex_mathsymb,aghtex_mincho,aghtex_roman,serif;}
+tex\:f.aghtex-binop{margin-left:0.2ex;margin-right:0.2ex;}
+tex\:f.aghtex-comma{margin-right:0.3ex;}
+tex\:f.aghtex-lbrace{margin-left:0.2ex;margin-right:0;}
+tex\:f.aghtex-rbrace{margin-left:0;margin-right:0.2ex;}
+tex\:f.aghtex-mbrace{margin-left:0.2ex;margin-right:0.2ex;}
+/*%%if mode=="Opera"*/
+  /* Opera 謎の記号空白対処 */
+  tex\:f.aghtex-symb-mincho,
+  tex\:f.aghtex-symb-gothic,
+  tex\:f.aghtex-symb-roman,
+  tex\:f.aghtex-symb-meiryo,
+  tex\:f.aghtex-symb-cent,
+  tex\:f.aghtex-syma-mincho,
+  tex\:f.aghtex-int,tex\:f.aghtex-dotsi,
+  tex\:f.aghtex-greek{
+    line-height:1.2em!important;display:inline-block;
+    height:1.2em;overflow-y:hidden;overflow-x:visible;
+    vertical-align:middle;}
+/*%%end*/
+
 /* --- 数式フォント適用 --- */
 /* \mathit */
-tex\:f.aghtex-mathit,
-tex\:math tex\:abc,
-tex\:math tex\:f.aghtex-mathit tex\:abc{
+tex\:f.aghtex-mathit{
   font-family:aghtex_roman,serif;font-style:italic;font-weight:normal;
 }
-tex\:math tex\:fsym.aghtex-greek,
-tex\:math tex\:abc.aghtex-lower,
-tex\:math tex\:abc.aghtex-upper,
-tex\:math tex\:f.aghtex-mathit tex\:fsym.aghtex-greek,
-tex\:math tex\:f.aghtex-mathit tex\:abc.aghtex-lower,
-tex\:math tex\:f.aghtex-mathit tex\:abc.aghtex-upper{
+tex\:math tex\:f.aghtex-greek,
+tex\:math tex\:f.aghtex-alpha,
+tex\:math tex\:f.aghtex-mathit tex\:f.aghtex-greek,
+tex\:math tex\:f.aghtex-mathit tex\:f.aghtex-alpha{
   font-family:aghtex_mathit,aghtex_roman,serif;font-style:normal;font-weight:normal;
 }
 /* \bm */
-tex\:f.aghtex-mathbm,
-tex\:math tex\:f.aghtex-mathbm tex\:abc{
+tex\:f.aghtex-mathbm{
   font-family:aghtex_roman,serif;font-style:italic;font-weight:bold;
 }
-tex\:math tex\:f.aghtex-mathbm tex\:fsym.aghtex-greek,
-tex\:math tex\:f.aghtex-mathbm tex\:abc.aghtex-lower,
-tex\:math tex\:f.aghtex-mathbm tex\:abc.aghtex-upper{
+tex\:math tex\:f.aghtex-mathbm tex\:f.aghtex-greek,
+tex\:math tex\:f.aghtex-mathbm tex\:f.aghtex-alpha{
   font-family:aghtex_mathit,aghtex_roman,serif;font-style:normal;font-weight:bold;
 }
 /* \hm */
-tex\:f.aghtex-mathhm,
-tex\:math tex\:f.aghtex-mathhm tex\:abc{
+tex\:f.aghtex-mathhm{
   font-family:aghtex_roman,serif;font-style:italic;font-weight:900;
 }
-tex\:math tex\:f.aghtex-mathhm tex\:abc.aghtex-lower,
-tex\:math tex\:f.aghtex-mathhm tex\:abc.aghtex-upper{
+tex\:math tex\:f.aghtex-mathhm tex\:f.aghtex-alpha{
   font-family:aghtex_mathit,aghtex_roman,serif;font-style:normal;font-weight:900;
 }
 /* \mathrm */
 tex\:f.aghtex-mathrm,
-tex\:math tex\:f.aghtex-mathrm tex\:abc.aghtex-lower,
-tex\:math tex\:f.aghtex-mathrm tex\:abc.aghtex-upper,
-tex\:math tex\:f.aghtex-mathrm tex\:abc{
+tex\:math tex\:f.aghtex-mathrm tex\:f.aghtex-alpha{
   font-family:aghtex_roman,serif;font-style:normal;font-weight:normal;
 }
 /* \mathsf */
 tex\:f.aghtex-mathsf,
-tex\:math tex\:f.aghtex-mathsf tex\:abc.aghtex-lower,
-tex\:math tex\:f.aghtex-mathsf tex\:abc.aghtex-upper,
-tex\:math tex\:f.aghtex-mathsf tex\:abc{
+tex\:math tex\:f.aghtex-mathsf tex\:f.aghtex-alpha{
   font-family:sans-serif;font-style:normal;font-weight:normal;
 }
 /* \mathtt */
 tex\:f.aghtex-mathtt,
-tex\:math tex\:f.aghtex-mathtt tex\:abc.aghtex-lower,
-tex\:math tex\:f.aghtex-mathtt tex\:abc.aghtex-upper,
-tex\:math tex\:f.aghtex-mathtt tex\:abc{
+tex\:math tex\:f.aghtex-mathtt tex\:f.aghtex-alpha{
   font-family:"Courier New",monospace;font-style:normal;font-weight:normal;
 }
 /* \mathbf */
 tex\:f.aghtex-mathbf,
-tex\:math tex\:f.aghtex-mathbf tex\:abc.aghtex-lower,
-tex\:math tex\:f.aghtex-mathbf tex\:abc.aghtex-upper,
-tex\:math tex\:f.aghtex-mathbf tex\:abc{
+tex\:math tex\:f.aghtex-mathbf tex\:f.aghtex-alpha{
   font-family:aghtex_roman,roman;font-weight:bold;font-style:normal;
 }
 /* \mathcal */
 tex\:f.aghtex-mathcal,
-tex\:math tex\:f.aghtex-mathcal tex\:abc.aghtex-lower
-tex\:math tex\:f.aghtex-mathcal tex\:abc{
+tex\:math tex\:f.aghtex-mathcal tex\:f.aghtex-alpha-lower{
   font-family:'Monotype Corsiva','Script','HG正楷書体-PRO','HGP教科書体',cursive;
   font-style:normal;
 }
-tex\:math tex\:f.aghtex-mathcal tex\:abc.aghtex-upper{
+tex\:math tex\:f.aghtex-mathcal tex\:f.aghtex-alpha-upper{
   font-family:aghtex_mathcal,'Monotype Corsiva','Script',cursive;
   font-style:normal;
 }
 /* \mathfrak */
-tex\:f.aghtex-mathfrak,
-tex\:math tex\:f.aghtex-mathfrak tex\:abc{
+tex\:f.aghtex-mathfrak{
   font-family:'Script','Monotype Corsiva','HGP行書体','HG行書体',cursive;
 }
-tex\:math tex\:f.aghtex-mathfrak tex\:abc.aghtex-lower,
-tex\:math tex\:f.aghtex-mathfrak tex\:abc.aghtex-upper{
+tex\:math tex\:f.aghtex-mathfrak tex\:f.aghtex-alpha{
   font-family:aghtex_mathfrak,'Script','Monotype Corsiva',cursive;
   font-style:normal;letter-spacing:-.1ex;
   /*%%if mode=="Trident" (*/
   padding-right:.1ex;
   /*%%)*/
-}
-/* \mathbb */
-tex\:f.aghtex-mathbb tex\:abc,
-tex\:math tex\:f.aghtex-mathbb tex\:abc.aghtex-lower,
-tex\:math tex\:f.aghtex-mathbb tex\:abc.aghtex-upper,
-tex\:math tex\:f.aghtex-mathbb tex\:abc{
-  font-family:aghtex_roman;font-style:normal;font-weight:normal;
 }
 
 /* --- 文字の大きさ --- */
@@ -483,9 +469,9 @@ tex\:small4{font-size:65%;}
 tex\:big.aghtex-bigl{margin-left:0.12em;margin-right:0;}
 tex\:big.aghtex-bigr{margin-left:0;margin-right:0.12em;}
 tex\:big.aghtex-bigm{margin-left:0.12em;margin-right:0.12em;}
-tex\:big.aghtex-bigl tex\:fsym,
-tex\:big.aghtex-bigr tex\:fsym,
-tex\:big.aghtex-bigm tex\:fsym{margin-left:0;margin-right:0;}
+tex\:big.aghtex-bigl tex\:f,
+tex\:big.aghtex-bigr tex\:f,
+tex\:big.aghtex-bigm tex\:f{margin-left:0;margin-right:0;}
 tex\:big.aghtex-big1{font-size:120%;vertical-align:-0.044em;}
 tex\:big.aghtex-big2{font-size:180%;vertical-align:-0.126em;}
 tex\:big.aghtex-big3{font-size:240%;vertical-align:-0.153em;}
@@ -494,17 +480,6 @@ tex\:big.aghtex-big4{font-size:300%;vertical-align:-0.174em;}
 tex\:big5{font-size:320%;}
 tex\:small5{font-size:50%;}
 tex\:small6{font-size:25%;}
-
-tex\:fsize-n{font-size:100%;}
-tex\:fsize-s1{font-size:90%;} /* \small */
-tex\:fsize-s2{font-size:80%;} /* \footnotesize */
-tex\:fsize-s3{font-size:75%;} /* \scriptsize */
-tex\:fsize-s4{font-size:65%;} /* \tiny */
-tex\:fsize-b1{font-size:120%;} /* \large */
-tex\:fsize-b2{font-size:140%;} /* \Large */
-tex\:fsize-b3{font-size:170%;} /* \LARGE */
-tex\:fsize-b4{font-size:200%;} /* \huge */
-tex\:fsize-b5{font-size:250%;} /* \Huge */
 
 tex\:fsize.aghtex-default{font-size:medium;}
 tex\:fsize.aghtex-script{font-size:75%;}
@@ -546,9 +521,9 @@ tex\:hphantom{
 tex\:vphantom{width:1px;}  /*  0 を指定すると何も指定していないのと同じ? */
 tex\:hphantom{height:1px;}
 tex\:vphantom2{display:block;width:100em;}
-tex\:vphantom.m{vertical-align:middle;}
-tex\:vphantom.t{vertical-align:top;}
-tex\:vphantom.b{vertical-align:bottom;}
+tex\:vphantom.aghtex-vphantom-align-m{vertical-align:middle;}
+tex\:vphantom.aghtex-vphantom-align-t{vertical-align:top;}
+tex\:vphantom.aghtex-vphantom-align-b{vertical-align:bottom;}
 
 tex\:i.aghtex-latex-allowbreak{whit-espace:normal;}
 
@@ -902,7 +877,7 @@ td.aghtex-sqrt-body{
 
 /*------------------------------------------------------------------*/
 /* 積分記号 */
-tex\:fsym.aghtex-int{
+tex\:f.aghtex-int{
   font-family:aghtex_mathsyma,aghtex_mincho,aghtex_roman,serif;
   font-size:250%;line-height:1.05;display:inline-block;
 /*%%if mode=="Opera" (*/
@@ -918,10 +893,10 @@ tex\:fsym.aghtex-int{
 /*%%)*/
 }
 /* \idotsint, \dotsi */
-tex\:fsym.aghtex-dotsi{
+tex\:f.aghtex-dotsi{
   font-family:aghtex_mathsymb,aghtex_mincho,aghtex_roman,serif;
   font-size:150%;margin:0 -0.3ex;}
-tex\:fsym.aghtex-int>tex\:fsym.aghtex-dotsi{
+tex\:f.aghtex-int>tex\:f.aghtex-dotsi{
   vertical-align:0.7ex;margin:0 -0.3ex;
   font-size:60%;margin:0 -0.3ex 0 -0.2ex;}
 
@@ -1025,7 +1000,11 @@ tex\:i.aghtex-mathbb-shadow{
   font-weight:900;
   text-shadow:black -1px -1px 0px, black 1px -1px 0px, black -1px 1px 0px, black 1px 1px 0px;
 }
-tex\:math tex\:i.aghtex-mathbb-shadow tex\:abc.aghtex-upper{
+
+/*%%if mode=="WebKit"*/
+tex\:math tex\:i.aghtex-mathbb-stroke tex\:f.aghtex-alpha-upper,
+/*%%end*/
+tex\:math tex\:i.aghtex-mathbb-shadow tex\:f.aghtex-alpha-upper{
   font-family:aghtex_mathbb;
   color:black;
   font-weight:normal;

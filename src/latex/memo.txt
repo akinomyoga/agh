@@ -20,6 +20,14 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 問題点・改善点・新機能の計画などについての議論をここに記述する。
 
+2015-11-03
+
+  * 数字のフォント、\cdot のフォント
+
+  * pkg_ams.ctx (pkg:latexsym): symb フォントを使用する。
+
+    恐らく多くの記号は既に aghfont に含まれている。確認をしてただフォントの指定を切り替えるだけのはずである。
+
 2015-11-02
 
   * \underset, \overset
