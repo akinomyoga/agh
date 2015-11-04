@@ -4,8 +4,8 @@
   "name": "agh.addon.aghtex4chrome",
   "version":"%VERSION%",
   "manifest_version":2,
-  "update_url":"http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/addon/agh.addon.aghtex4chrome.xml",
-  "key":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCYaFHl7+XFkrRbx/Gi/iWyoHRyJmLs61fSOG7+HF1ToKLhofmsMUw4b/ftguf21tqb/dqXbPIMdacLMEdBn71eelL5zbI0kq9NnskcD0uxaAk+Qd3kgF0XmwHUlyHtgjAXYa/P53r9gs4/KKb5A9QTSYDmYe2q04wg+guHKNTdfQIDAQAB",
+  //"update_url":"http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/addon/agh.addon.aghtex4chrome.xml",
+  //"key":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCYaFHl7+XFkrRbx/Gi/iWyoHRyJmLs61fSOG7+HF1ToKLhofmsMUw4b/ftguf21tqb/dqXbPIMdacLMEdBn71eelL5zbI0kq9NnskcD0uxaAk+Qd3kgF0XmwHUlyHtgjAXYa/P53r9gs4/KKb5A9QTSYDmYe2q04wg+guHKNTdfQIDAQAB",
   "icons":{
     "16":"agh.icon.agh_16x16.png",
     "48":"agh.icon.agh_48x48.png",

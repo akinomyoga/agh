@@ -29,10 +29,11 @@
  *    
  *  @section 公開オブジェクト
  *    ※以下 mod_common = ns.Modules["mod:common"] とする。
- *    @fn mod_common.TagCurrentContext.TagCurrentContext(doc,tagName,endTag)
+ *    @fn mod_common.CreateCommandTagFollowing(doc,tagName[,endTag])
  */
 
 var mod_core=ns.Modules["core"];
+var mod_base=ns.Modules["mod:base"];
 
 agh.memcpy(mod_core.ErrorMessages,{
   'mod:common.cmd:newcommand.InvalidCommandName':[
@@ -64,7 +65,7 @@ agh.memcpy(mod_core.ErrorMessages,{
     "\\special","\\special{{{arg}}} is used, but not yet supported."],
   'mod:common.cmd:documentclass.UnknownClass':["cls:{cls}","The document class named '{cls}' is not registered. Instead, the document class 'article' will be used."],
   'mod:common.cmd:documentclass.MultipleDocumentClasses':["\\documentclass","\\documentclass cannot be specified twice.\n  @ \\documentclass"],
-  'mod:common.cmd:usepackage.UnknownPackage':["pkg:{pkg} unknown","{pkg} という名前の package は登録されていません。"],
+  'mod:common.cmd:usepackage.UnknownPackage':["pkg:{pkg}","{pkg} という名前の package は登録されていません。"],
   'mod:common.cmd:usepackage.PackageException':[
     "pkg:{pkg} error","package '{pkg}' の初期化中に例外が発生しました。\r\n例外説明: {message}\r\n詳細に関しては aghtex 版 package の作成者に問い合わせて下さい。"],
   'mod:common.cmd:let.InvalidCommandName':["\\let#1 invalid","'{cmd}' is not a valid command name."],
@@ -72,13 +73,13 @@ agh.memcpy(mod_core.ErrorMessages,{
   'mod:common.cmd:def.InvalidCommandName':["\\{defcmd} InvalidCommandName","{cmdname} は不適切なコマンド名です。\r\n新しいコマンドの名前は \\commandname の形式で指定して下さい。"]
 });
 
-
 var _Mod=ns.Modules["mod:common"]={};
-
-_Mod.TagCurrentContext=function TagCurrentContext(doc,tagName,endTag){
-  var output=doc.currentCtx.output;
-  output.buff.push("<",tagName,">");
-  output.appendPost("</"+(endTag||tagName)+">");
+_Mod.CreateCommandTagFollowing=function(htBegin,htEnd){
+  return ns.Command2('f',null,function(doc,argv){
+    var output=doc.currentCtx.output;
+    output.buff.push(htBegin);
+    output.appendPost(htEnd);
+  });
 };
 
 context "global"{
@@ -332,7 +333,14 @@ context "global"{
   _Ctx.AddCommandHandler("renewenvironment",_Ctx.handlerC["newenvironment"]);
 
   //---------------------------------------------------------------------------
+
+  _Ctx.DefineCommand({
+    relax:mod_base.CHRelax
+  });
+
+  //---------------------------------------------------------------------------
   // 空白・改行
+
   command s@\hspace(#1)  '<span style="padding-right:#1;"></span>';
   command s@\hspace*(#1) '<span style="padding-right:#1;"></span>';
   command s@\vspace(#1)  '<p class="tex-vspace" style="font-size:#1">&nbsp;</p>';
@@ -347,7 +355,7 @@ context "global"{
   command s>\qquad()                @"\hspace{4.8ex}";
   command s@\phantom("#>1")         "<tex:phantom>#1</tex:phantom>";
   command s@\hphantom("#>1")        "<tex:hphantom>#1</tex:hphantom>";
-  command s@\vphantom("#[_]!1#>2")  "<tex:vphantom class='#1'><tex:vphantom2>#2</tex:vphantom2></tex:vphantom>";
+  command s@\vphantom("#[_]!1#>2")  '<tex:vphantom class="aghtex-vphantom-align-#1"><tex:vphantom2>#2</tex:vphantom2></tex:vphantom>';
   
   command s@\hfill()     '<tex:i class="aghtex-hfill"></tex:i>';
   command s@\dotfill()   '<tex:i class="aghtex-hfill-dot"></tex:i>';
@@ -387,30 +395,30 @@ context "global"{
   command s@\LaTeX () '<tex:La>L<span>A</span></tex:La><tex:TeX>T<span>E</span>X</tex:TeX>';
   command s@\LaTeXe() '<tex:La>L<span>A</span></tex:La><tex:TeX>T<span>E</span>X</tex:TeX>2<span style=\'vertical-align:-10%;\'>ε</span>';
   
-  // 書式
-  command s@\overline (#>1)  '<span style="text-decoration:overline;">#1</span>';
-  command s@\underline(#>1)  '<u>#1</u>';
-  
   // 特別な文字 
-  command s@\copyright()          '<tex:fsym class="rm">©</tex:fsym>'; // u00A9
+  command s@\copyright()          '<tex:f class="aghtex-textrm">©</tex:f>'; // u00A9
 
   // \text/math... 記号
   //   元々 text-mode 用だが、期せずして math-mode でも表示できる物。
   //   正しく表示できない \text... 記号は mod_para.ctx で定義。
-  command s@\textregistered()   '<tex:fsym class="rm">®</tex:fsym>'; // u00AE
-  command s@\texttrademark()    '<tex:fsym class="rm">™</tex:fsym>'; // u2122
-  command s@\textvisiblespace() '<tex:fmr>␣</tex:fmr>'; // u2423 (■ XP IE6 では表示できない)
+  command s@\textregistered()   '<tex:f class="aghtex-textrm">®</tex:f>'; // u00AE
+  command s@\texttrademark()    '<tex:f class="aghtex-textrm">™</tex:f>'; // u2122
+  command s@\textvisiblespace() '<tex:f class="aghtex-textmr">␣</tex:f>'; // u2423 (■ XP IE6 では表示できない)
   command s@\textcopyright   () '&copy;';
-  command s@\textellipsis    () '<tex:fsym lang="en">…</tex:fsym>';
+  command s@\textellipsis    () '<tex:f lang="en">…</tex:f>';
   command s@\textless        () '&lt;';
   command s@\textgreater     () '&gt;';
   command s@\textunderscore  () '_';
   command s@\textordfeminine () '&#x00aa;';
   command s@\textordmasculine() '&#x00ba;';
-  command s@\mathunderscore  () '<tex:fsym class="aghtex-symb-mincho">_</tex:fsym>';
+  command s@\mathunderscore  () '<tex:f class="aghtex-symb-mincho">_</tex:f>';
 
   command s@\lq()               "`";
   command s@\rq()               "'";
+
+  // 書式
+  command s@\overline (#>1)  '<tex:i class="aghtex-overline">#1</tex:i>';
+  command s@\underline(#>1)  '<tex:i class="aghtex-underline">#1</tex:i>';
 
   //---------------------------------------------------------------------------
   // \mbox

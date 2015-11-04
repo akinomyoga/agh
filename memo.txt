@@ -82,6 +82,7 @@ agh/js - Ageha JavaScript Library v3.2
     最近では内部で使用する場合でも a や b や c 等の短い変数名ではなくて、
     polarAngle, impactParameter, cosine などの内容を説明する名詞節にする方が良いとされる。
 
+
 -------------------------------------------------------------------------------
   ToDo
 -------------------------------------------------------------------------------
@@ -520,6 +521,7 @@ latex
     - latex:env: letter, quote, quotation, picture, tabbing, theorem, titlepage, verse
     - latex: \listoffigures, \listoftables, \abstractname, \bibname, \contentsname, \listfigurename, \listtablename
 
+
 -------------------------------------------------------------------------------
   実装メモ - log
 -------------------------------------------------------------------------------

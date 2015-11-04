@@ -8,6 +8,8 @@
  *    
  *    @fn mod_base.OutputStretchBracketTd(output,text,rowspan)
  *    @fn mod_base.GetStretchImageTd(imageUrl,rowspan,alternativeText);
+ *
+ *    @fn mod_base.CHRelax
  */
 
 var _Mod=ns.Modules["mod:base"]={};
@@ -63,12 +65,28 @@ var CH_RAW=function(doc,letter){
   doc.currentCtx.output.buff.push('\\',letter);
   doc.scanner.Next();
 };
+_Mod.CHRelax=function(doc,cmdName){doc.scanner.Next();};
 /*
 var CH_ESCAPE_HTML=function(doc,letter){
   doc.currentCtx.output.appendText("\\"+letter);
   doc.scanner.Next();
 };
 //*/
+
+// 数式環境では roman alphabets, digits をタグ付けする。
+// 以下はタグ付けに使う為の正規表現および置換子。
+var reg_math_text_modifier=/([a-z]+)|([A-Z]+)|[0-9]+/g;
+var rep_math_text_modifier=function($0,$1,$2){
+  if($1){
+    return '<tex:f class="aghtex-alpha aghtex-alpha-lower">'+$0+'</tex:f>';
+  }else if($2){
+    return '<tex:f class="aghtex-alpha aghtex-alpha-upper">'+$0+'</tex:f>';
+  }else{
+    return '<tex:f class="aghtex-digit">'+$0+'</tex:f>';
+  }
+};
+
+//================================================================
 
 ns.ContextFactory.prototype.rawctx_CreateContext=function(doc){
   // 処理せずにソースを読み取る context の為
@@ -229,9 +247,7 @@ function LHR_MISARG_BRACE(doc,letter){
       if(mainctx["initialized:mode.math"]){
         mainctx.text_modifier=function(doc,text){
           var word=doc.scanner.ClipFirstFromTxt();
-          return word.replace(/([a-z]+)|[A-Z]+/g,function($0,$1,$2){
-            return '<tex:abc class="'+($1?'aghtex-lower':'aghtex-upper')+'">'+$0+'</tex:abc>'
-          });
+          return word.replace(reg_math_text_modifier,rep_math_text_modifier);
         };
       }else{
         mainctx.text_modifier=function(doc,text){
@@ -602,9 +618,7 @@ context "mode.math" new("global"){
     
     mainctx.text_modifier=function(doc,text){
       doc.scanner.Next();
-      return text.replace(/([a-z]+)|[A-Z]+/g,function($0,$1,$2){
-        return '<tex:abc class="'+($1?'aghtex-lower':'aghtex-upper')+'">'+$0+'</tex:abc>'
-      });
+      return text.replace(reg_math_text_modifier,rep_math_text_modifier);
     };
   };
   
@@ -614,6 +628,20 @@ context "mode.math" new("global"){
   //    \left ～ \right
   //============================================================
   var stretchImg=(function(){
+    var stretchSvgHead='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 1024" preserveAspectRatio="none"><g transform="matrix(1 0 0 -1 0 768)"><path fill="currentColor" d="';
+    var stretchSvgTail='" /></g></svg>';
+    var stretchSvgPath={
+      lparen:'M124 256c0 -242 204 -387 388 -492l-43 -20c-142 77 -469 234 -469 512s327 435 469 512l43 -20c-184 -105 -388 -250 -388 -492z',
+      rparen:'M388 256c0 242 -204 387 -388 492l43 20c142 -77 469 -234 469 -512s-327 -435 -469 -512l-43 20c184 105 388 250 388 492z',
+      lbrace:'M0 256c0 4 3 7 5 8c107 21 185 59 207 108v281c39 92 254 115 291 115c5 0 9 -2 9 -9s-4 -9 -9 -9c-34 0 -171 -28 -208 -97v-281c-35 -74 -154 -100 -248 -116'
+        +'c94 -16 213 -42 248 -116v-281c37 -69 174 -97 208 -97c5 0 9 -2 9 -9s-4 -9 -9 -9c-37 0 -252 23 -291 115v281c-22 49 -100 87 -207 108c-2 1 -5 4 -5 8z',
+      rbrace:'M512 256c0 -4 -3 -7 -5 -8c-107 -21 -185 -59 -207 -108v-281c-39 -92 -254 -115 -291 -115c-5 0 -9 2 -9 9s4 9 9 9c34 0 171 28 208 97v281c35 74 154 100 248 116'
+        +'c-94 16 -213 42 -248 116v281c-37 69 -174 97 -208 97c-5 0 -9 2 -9 9s4 9 9 9c37 0 252 -23 291 -115v-281c22 -49 100 -87 207 -108c2 -1 5 -4 5 -8z',
+      langle:'M0 256c169 195 434 500 434 500c8 11 30 12 41 12c21 0 37 -9 37 -19c0 -2 0 -5 -2 -8l-416 -485l416 -485c2 -3 2 -6 2 -8c0 -10 -16 -19 -37 -19c-11 0 -33 1 -41 12c0 0 -265 305 -434 500z',
+      rangle:'M512 256c-169 -195 -434 -500 -434 -500c-8 -11 -30 -12 -41 -12c-21 0 -37 9 -37 19c0 2 0 5 2 8l416 485l-416 485c-2 3 -2 6 -2 8c0 10 16 19 37 19c11 0 33 -1 41 -12c0 0 265 -305 434 -500z',
+      sqrt:'M0 27l130 112l120 -239l237 868h25v-40l-266 -981l-164 327l-75 -66z'
+    };
+
     switch(ns.compatMode){
       case "IE-qks":
       case "Fx-qks":
@@ -642,30 +670,42 @@ context "mode.math" new("global"){
           };
         }
       case "Fx-std":
-        return function(imgsrc,width,alt){
-          width=width.toString()+"ex";
-          //return '<td rowspan="2" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');-moz-background-size:100%;"></td>';
-          return '<td class="aghtex-stretch" rowspan="2" style="height:100%;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="width:'+width+';height:100%;"/></td>';
+        return function(imgsrc,width,alt,className){
+          if(className in stretchSvgPath){
+            // .svg を用いた表示
+            var svg=stretchSvgHead+stretchSvgPath[className]+stretchSvgTail;
+            return '<td rowspan="2" class="aghtex-stretch-svg aghtex-stretch-svg-'+className+'">'+svg+'</td>';
+          }else{
+            // 旧来の .png を用いた表示
+            width=width.toString()+"ex";
+            //return '<td rowspan="2" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');-moz-background-size:100%;"></td>';
+            return '<td rowspan="2" class="aghtex-stretch" style="height:100%;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="width:'+width+';height:100%;"/></td>';
+          }
         };
       case "Sf-qks":
       case "Sf-std":
         return function(imgsrc,width,alt,className){
-          width=(width*0.8).toString()+"ex";
-          if(className)
-            return '<td class="aghtex-stretch aghtex-stretch-'+className+'" rowspan="2"></td>';
-          else
-            return '<td class="aghtex-stretch" rowspan="2" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');-webkit-background-size:100%;"></td>';
+          if(className in stretchSvgPath){
+            var svg=stretchSvgHead+stretchSvgPath[className]+stretchSvgTail;
+            return '<td rowspan="2" class="aghtex-stretch-svg aghtex-stretch-svg-'+className+'">'+svg+'</td>';
+          }else{
+            width=(width*0.8).toString()+"ex";
+            if(className)
+              return '<td rowspan="2" class="aghtex-stretch-bg aghtex-stretch-bg-'+className+'"></td>';
+            else
+              return '<td rowspan="2" class="aghtex-stretch-bg" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');"></td>';
+          }
         };
       case "Op-qks":
       case "Op-std":
         return function(imgsrc,width,alt){
           width=(width*0.8).toString()+"ex";
-          return '<td class="aghtex-stretch" rowspan="2" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');"></td>';
+          return '<td rowspan="2" class="aghtex-stretch" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');"></td>';
         };
       default:
         return function(imgsrc,width,alt){
           width=(width*0.8).toString()+"ex";
-          return '<td class="aghtex-stretch" rowspan="2" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');background-size:100% 100%;"></td>';
+          return '<td rowspan="2" class="aghtex-stretch" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');background-size:100% 100%;"></td>';
         };
     }
   })();
@@ -709,14 +749,14 @@ context "mode.math" new("global"){
       "\u230B":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>', // 
       "\uF0FB":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>', // Symbol Font
       "\u00FB":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>', // Symbol Font
-      //"<tex:fsym>&#xF0E9;</tex:fsym>":'<td rowspan="2" class="tex-left-ceil">&nbsp;</td>',
-      //"<tex:fsym>&#xE9;</tex:fsym>":'<td rowspan="2" class="tex-left-ceil">&nbsp;</td>',
-      //"<tex:fsym>&#xF0EB;</tex:fsym>":'<td rowspan="2" class="tex-left-flor">&nbsp;</td>',
-      //"<tex:fsym>&#xEB;</tex:fsym>":'<td rowspan="2" class="tex-left-flor">&nbsp;</td>',
-      //"<tex:fsym>&#xF0F9;</tex:fsym>":'<td rowspan="2" class="tex-right-ceil">&nbsp;</td>',
-      //"<tex:fsym>&#xF9;</tex:fsym>":'<td rowspan="2" class="tex-right-ceil">&nbsp;</td>',
-      //"<tex:fsym>&#xF0FB;</tex:fsym>":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>',
-      //"<tex:fsym>&#xFB;</tex:fsym>":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>',
+      //"<tex:f>&#xF0E9;</tex:f>":'<td rowspan="2" class="tex-left-ceil">&nbsp;</td>',
+      //"<tex:f>&#xE9;</tex:f>":'<td rowspan="2" class="tex-left-ceil">&nbsp;</td>',
+      //"<tex:f>&#xF0EB;</tex:f>":'<td rowspan="2" class="tex-left-flor">&nbsp;</td>',
+      //"<tex:f>&#xEB;</tex:f>":'<td rowspan="2" class="tex-left-flor">&nbsp;</td>',
+      //"<tex:f>&#xF0F9;</tex:f>":'<td rowspan="2" class="tex-right-ceil">&nbsp;</td>',
+      //"<tex:f>&#xF9;</tex:f>":'<td rowspan="2" class="tex-right-ceil">&nbsp;</td>',
+      //"<tex:f>&#xF0FB;</tex:f>":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>',
+      //"<tex:f>&#xFB;</tex:f>":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>',
       
       // arrows
       "↑"    :stretchImg("stretch_uarr.png",  1.2,"↑"),
@@ -856,7 +896,7 @@ context "mode.para" new("global"){
   _Ctx.AddCommandHandler("verb",function(doc){
     var output=doc.currentCtx.output;
     var ret=doc.scanner.NextVerbArgument();
-    output.buff.push('<tex:ftt>',agh.Text.Escape(doc.scanner.word,"html"),'</tex:ftt>');
+    output.buff.push('<tex:f class="aghtex-texttt">',agh.Text.Escape(doc.scanner.word,"html"),'</tex:f>');
     if(ret==doc.scanner.NEXT_EOF){
       output.error('UnexpectedEOR','EOF','mod:base.cmd:verb');
     }else if(ret==doc.scanner.NEXT_NEWLINE){
@@ -867,7 +907,7 @@ context "mode.para" new("global"){
   _Ctx.AddCommandHandler("verb*",function(doc){
     var output=doc.currentCtx.output;
     var ret=doc.scanner.NextVerbArgument();
-    output.buff.push('<tex:ftt>',agh.Text.Escape(doc.scanner.word.replace(/ /g,'\u2423'),"html"),'</tex:ftt>');
+    output.buff.push('<tex:f class="aghtex-texttt">',agh.Text.Escape(doc.scanner.word.replace(/ /g,'\u2423'),"html"),'</tex:f>');
     if(ret==doc.scanner.NEXT_EOF){
       output.error('UnexpectedEOR','EOF','mod:base.cmd:verb');
     }else if(ret==doc.scanner.NEXT_NEWLINE){

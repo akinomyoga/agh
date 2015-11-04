@@ -158,6 +158,7 @@ F latex/aghtex_mathrm;
 F latex/aghtex_mathcal;
 F latex/aghtex_mathbb;
 F latex/aghtex_mathfrak;
+F latex/aghtex_mathbf;
 f latex/latex.fx.css;
 f latex/latex.ie.css;
 f latex/latex.op.css;

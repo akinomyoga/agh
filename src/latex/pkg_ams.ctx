@@ -15,7 +15,7 @@
  *
  *  @section 公開オブジェクト
  *    ※以下 pkg_ams = ns.Modules["pkg:ams"] とする。
- *    
+ *
  *    @fn pkg_ams.DefineDotsForCommand(cmdName,dotsType)
  *    @fn pkg_ams.DefineDotsForCommand({cmdName:dotsType})
  *    @fn pkg_ams.DefineDotsForLetter(letter,dotsType)
@@ -33,23 +33,23 @@ var _Mod=ns.Modules["pkg:ams"]={};
 //==============================================================================
 context "pkg:latexsym/mode.math" new(){
   _Ctx.DefineCommand({
-    lhd     : ['s@','<tex:fsym class="aghtex-binop mc">&#x22B2;</tex:fsym>'],
-    rhd     : ['s@','<tex:fsym class="aghtex-binop mc">&#x22B3;</tex:fsym>'],
-    unlhd   : ['s@','<tex:fsym class="aghtex-binop mc">&#x22B4;</tex:fsym>'],
-    unrhd   : ['s@','<tex:fsym class="aghtex-binop mc">&#x22B5;</tex:fsym>'],
-    mho     : ['s@','<tex:fsym class="aghtex-binop mc">℧</tex:fsym>'],
-    leadsto : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21DD;</tex:fsym>'],
-    Join    : ['s@','<tex:fsym class="aghtex-binop mc">⋈</tex:fsym>'],
-    Box     : ['s@','<tex:small1>□</tex:small1>'],
-    sqsubset: ['s@','<tex:fsym class="aghtex-binop mc">⊏</tex:fsym>'],
-    sqsupset: ['s@','<tex:fsym class="aghtex-binop mc">⊐</tex:fsym>'],
-    Diamond : ['s@','<tex:fsym class="aghtex-binop">◇</tex:fsym>'],
+    lhd     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22B2;</tex:f>'],
+    rhd     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22B3;</tex:f>'],
+    unlhd   : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22B4;</tex:f>'],
+    unrhd   : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22B5;</tex:f>'],
+    mho     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2127;</tex:f>'],
+    leadsto : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21DD;</tex:f>'],
+    Join    : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x22c8;</tex:f>'],
+    Box     : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">□</tex:f>'],
+    sqsubset: ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x228f;</tex:f>'],
+    sqsupset: ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2290;</tex:f>'],
+    Diamond : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">◇</tex:f>'],
 
     // \iint \iiint \iiiint \idotsint
     iint    : ['f',function(doc,cmdName){mod_math['cmd:int'](doc,'&#x222C;');}],
     iiint   : ['f',function(doc,cmdName){mod_math['cmd:int'](doc,'&#x222D;');}],
     iiiint  : ['f',function(doc,cmdName){mod_math['cmd:int'](doc,'&#x2A0C;');}],
-    idotsint: ['f',function(doc,cmdName){mod_math['cmd:int'](doc,'&#x222B;<tex:fsym class="aghtex-dotsi">&#x22EF;</tex:fsym>&#x222B;');}],
+    idotsint: ['f',function(doc,cmdName){mod_math['cmd:int'](doc,'&#x222B;<tex:f class="aghtex-dotsi">&#x22EF;</tex:f>&#x222B;');}],
 
     varlimsup : ['s',@'\mathop\overline\mathrm{lim}'],
     varliminf : ['s',@'\mathop\underline\mathrm{lim}'],
@@ -67,239 +67,238 @@ context "pkg:amssymb/mode.math" new(){
   _Ctx.DefineCommand({
     mathbb             : ['s@;#>1',(
       // Sf/Cr: text-stroke
-      agh.browser.vSf?'<tex:fmbb class="stroke">#1</tex:fmbb>':
+      agh.browser.vSf?'<tex:i class="aghtex-mathbb-stroke">#1</tex:i>':
       // Cr/Op/Fx: text-shadow
-      agh.browser.vCr||agh.browser.vOp||agh.browser.vFx>=3.5?'<tex:fmbb class="shadow">#1</tex:fmbb>':
+      agh.browser.vCr||agh.browser.vOp||agh.browser.vFx>=3.5?'<tex:i class="aghtex-mathbb-shadow">#1</tex:i>':
       // IE: filter:glow
-      agh.browser.vIE?'<tex:fmbb class="glow">#1</tex:fmbb>':
+      agh.browser.vIE?'<tex:i class="aghtex-mathbb-glow">#1</tex:i>':
       // Old versions: multiple overlays
-      '<tex:fmbb><tex:a>#1</tex:a><tex:b>#1</tex:b><tex:c>#1</tex:c><tex:d>#1</tex:d><tex:e>#1</tex:e>#1</tex:fmbb>'
+      '<tex:i class="aghtex-mathbb-old"><tex:i class="aghtex-mathbb-a">#1</tex:i><tex:i class="aghtex-mathbb-b">#1</tex:i><tex:i class="aghtex-mathbb-c">#1</tex:i><tex:i class="aghtex-mathbb-d">#1</tex:i><tex:i class="aghtex-mathbb-e">#1</tex:i>#1</tex:i>'
     )],
-    
-    mathfrak           : ['s@;#>1','<tex:fmfrk>#1</tex:fmfrk>'],
+    mathfrak           : ['s@;#>1','<tex:f class="aghtex-mathfrak">#1</tex:f>'],
 
-    lessdot            : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⋖</tex:fsym>'],
-    gtrdot             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⋗</tex:fsym>'],
-    doteqdot           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≑</tex:fsym>'],
-    leqslant           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2a7d;</tex:fsym>'],
-    geqslant           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2a7e;</tex:fsym>'],
-    risingdotseq       : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≓</tex:fsym>'],
-    eqslantless        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2a95;</tex:fsym>'],
-    eqslantgtr         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2a96;</tex:fsym>'],
-    fallingdotseq      : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≒</tex:fsym>'],
-    leqq               : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≦</tex:fsym>'],
-    geqq               : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≧</tex:fsym>'],
-    eqcirc             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≖</tex:fsym>'],
-    lll                : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⋘</tex:fsym>'],
-    ggg                : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⋙</tex:fsym>'],
-    circeq             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≗</tex:fsym>'],
-    lesssim            : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≲</tex:fsym>'],
-    gtrsim             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≳</tex:fsym>'],
-    triangleq          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≜</tex:fsym>'],
-    lessapprox         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2a85;</tex:fsym>'],
-    gtrapprox          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2a86;</tex:fsym>'],
-    bumpeq             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≏</tex:fsym>'],
-    lessgtr            : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≶</tex:fsym>'],
-    gtrless            : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≷</tex:fsym>'],
-    Bumpeq             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≎</tex:fsym>'],
-    lesseqgtr          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⋚</tex:fsym>'],
-    gtreqless          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⋛</tex:fsym>'],
-    thicksim           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">∼</tex:fsym>'],
-    lesseqqgtr         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2a8b;</tex:fsym>'],
-    gtreqqless         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2a8c;</tex:fsym>'],
-    thickapprox        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≈</tex:fsym>'],
-    preccurlyeq        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≼</tex:fsym>'],
-    succcurlyeq        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≽</tex:fsym>'],
-    approxeq           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≊</tex:fsym>'],
-    curlyeqprec        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⋞</tex:fsym>'],
-    curlyeqsucc        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⋟</tex:fsym>'],
-    backsim            : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">∽</tex:fsym>'],
-    precsim            : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≾</tex:fsym>'],
-    succsim            : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≿</tex:fsym>'],
-    backsimeq          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⋍</tex:fsym>'],
-    precapprox         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2ab7;</tex:fsym>'],
-    succapprox         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2ab8;</tex:fsym>'],
-    vDash              : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊨</tex:fsym>'],
-    subseteqq          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2ac5;</tex:fsym>'],
-    supseteqq          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2ac6;</tex:fsym>'],
-    Vdash              : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊩</tex:fsym>'],
-    Subset             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⋐</tex:fsym>'],
-    Supset             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⋑</tex:fsym>'],
-    Vvdash             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊪</tex:fsym>'],
-    sqsubset           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊏</tex:fsym>'],
-    sqsupset           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊐</tex:fsym>'],
-    backepsilon        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x03f6;</tex:fsym>'],
-    therefore          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">∴</tex:fsym>'],
-    because            : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">∵</tex:fsym>'],
-    varpropto          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">∝</tex:fsym>'],
-    shortmid           : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2223;</tex:fsym>'],
-    shortparallel      : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2225;</tex:fsym>'],
-    between            : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">≬</tex:fsym>'],
-    smallsmile         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⌣</tex:fsym>'], // ■TODO:small version
-    smallfrown         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⌢</tex:fsym>'], // ■TODO:small version
-    pitchfork          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⋔</tex:fsym>'],
-    vartriangleleft    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊲</tex:fsym>'],
-    vartriangleright   : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊳</tex:fsym>'],
-    blacktriangleleft  : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">◄</tex:fsym>'],
-    blacktriangleright : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">►</tex:fsym>'],
-    trianglelefteq     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊴</tex:fsym>'],
-    trianglerighteq    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">⊵</tex:fsym>'],
-    
-    nless              : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x226e;</tex:fsym>'],
-    ngtr               : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x226f;</tex:fsym>'],
-    varsubsetneqq      : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2ac8;</tex:fsym>'],
-    varsupsetneqq      : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2ac9;</tex:fsym>'],
-    lneq               : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2a87;</tex:fsym>'],
-    gneq               : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2a88;</tex:fsym>'],
-    nleq               : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2270;</tex:fsym>'],
-    ngeq               : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2271;</tex:fsym>'],
-    nsubseteqq         : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2288;</tex:fsym>'],
-    nsupseteqq         : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2289;</tex:fsym>'],
-    nleqslant          : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2274;</tex:fsym>'],
-    ngeqslant          : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2275;</tex:fsym>'],
-    lneqq              : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2268;</tex:fsym>'],
-    gneqq              : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2269;</tex:fsym>'],
-    nmid               : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2224;</tex:fsym>'],
-    nparallel          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2226;</tex:fsym>'],
-    lvertneqq          : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2268;</tex:fsym>'],
-    gvertneqq          : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2269;</tex:fsym>'],
-    nleqq              : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2270;</tex:fsym>'],
-    ngeqq              : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2271;</tex:fsym>'],
-    nshortmid          : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2224;</tex:fsym>'],
-    nshortparallel     : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x2226;</tex:fsym>'],
-    lnsim              : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22e6;</tex:fsym>'],
-    gnsim              : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22e7;</tex:fsym>'],
-    lnapprox           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2a89;</tex:fsym>'],
-    gnapprox           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2a8a;</tex:fsym>'],
-    nsim               : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2241;</tex:fsym>'],
-    ncong              : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2247;</tex:fsym>'],
-    nprec              : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2280;</tex:fsym>'],
-    nsucc              : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2281;</tex:fsym>'],
-    npreceq            : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x22e0;</tex:fsym>'],
-    nsucceq            : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x22e1;</tex:fsym>'],
-    nvdash             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22ac;</tex:fsym>'],
-    nvDash             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22ad;</tex:fsym>'],
-    precneqq           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2ab5;</tex:fsym>'],
-    succneqq           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2ab6;</tex:fsym>'],
-    precnsim           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22e8;</tex:fsym>'],
-    succnsim           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22e9;</tex:fsym>'],
-    nVdash             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22ae;</tex:fsym>'],
-    nVDash             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22af;</tex:fsym>'],
-    precnapprox        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2ab9;</tex:fsym>'],
-    succnapprox        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2aba;</tex:fsym>'],
-    subsetneq          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x228a;</tex:fsym>'],
-    supsetneq          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x228b;</tex:fsym>'],
-    ntriangleleft      : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22ea;</tex:fsym>'],
-    ntriangleright     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22eb;</tex:fsym>'],
-    varsubsetneq       : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x228a;</tex:fsym>'],
-    varsupsetneq       : ['s@','<tex:fsym class="aghtex-binop aghtex-syma-mincho">&#x228b;</tex:fsym>'],
-    nsubseteq          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2288;</tex:fsym>'],
-    nsupseteq          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2289;</tex:fsym>'],
-    ntrianglelefteq    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22ec;</tex:fsym>'],
-    ntrianglerighteq   : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22ed;</tex:fsym>'],
-    subsetneqq         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2acb;</tex:fsym>'],
-    supsetneqq         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2acc;</tex:fsym>'],
-    nleftarrow         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x219a;</tex:fsym>'],
-    nrightarrow        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x219b;</tex:fsym>'],
-    nleftrightarrow    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21ae;</tex:fsym>'],
-    nLeftrightarrow    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21ce;</tex:fsym>'],
-    nLeftarrow         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21cd;</tex:fsym>'],
-    nRightarrow        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21cf;</tex:fsym>'],
-    
-    dotplus            : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2214;</tex:fsym>'],
-    centerdot          : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22c5;</tex:fsym>'],
-    intercal           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22ba;</tex:fsym>'],
-    divideontimes      : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22c7;</tex:fsym>'],
-    ltimes             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22c9;</tex:fsym>'],
-    rtimes             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22ca;</tex:fsym>'],
-    Cup                : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22d3;</tex:fsym>'],
-    Cap                : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22d2;</tex:fsym>'],
-    smallsetminus      : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2216;</tex:fsym>'],
-    doublebarwedge     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x2306;</tex:fsym>'],
-    veebar             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22bb;</tex:fsym>'],
-    barwedge           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22bc;</tex:fsym>'],
-    boxplus            : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x229e;</tex:fsym>'],
-    boxminus           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x229f;</tex:fsym>'],
-    circleddash        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x229d;</tex:fsym>'],
-    circledcirc        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x229a;</tex:fsym>'],
-    boxtimes           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22a0;</tex:fsym>'],
-    boxdot             : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22a1;</tex:fsym>'],
-    leftthreetimes     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22cb;</tex:fsym>'],
-    rightthreetimes    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22cc;</tex:fsym>'],
-    curlyvee           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22ce;</tex:fsym>'],
-    curlywedge         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22cf;</tex:fsym>'],
-    circledast         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x229b;</tex:fsym>'],
-    
-    dashleftarrow      : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21e0;</tex:fsym>'], // ■mwg_mathsymb:TODO
-    dashrightarrow     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21e2;</tex:fsym>'], // ■mwg_mathsymb:TODO
-    leftleftarrows     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21c7;</tex:fsym>'],
-    rightrightarrows   : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21c9;</tex:fsym>'],
-    upuparrows         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21c8;</tex:fsym>'],
-    downdownarrows     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21ca;</tex:fsym>'],
-    leftrightarrows    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21c6;</tex:fsym>'],
-    rightleftarrows    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21c4;</tex:fsym>'],
-    Lleftarrow         : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21da;</tex:fsym>'],
-    Rrightarrow        : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21db;</tex:fsym>'],
-    upharpoonleft      : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21bf;</tex:fsym>'],
-    upharpoonright     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21be;</tex:fsym>'],
-    twoheadleftarrow   : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x219e;</tex:fsym>'],
-    twoheadrightarrow  : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21a0;</tex:fsym>'],
-    leftarrowtail      : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21a2;</tex:fsym>'],
-    rightarrowtail     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21a3;</tex:fsym>'],
-    downharpoonleft    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21c3;</tex:fsym>'],
-    downharpoonright   : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21c2;</tex:fsym>'],
-    leftrightharpoons  : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21cb;</tex:fsym>'],
-    rightleftharpoons  : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21cc;</tex:fsym>'],
-    Lsh                : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21b0;</tex:fsym>'],
-    Rsh                : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21b1;</tex:fsym>'],
-    looparrowleft      : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21ab;</tex:fsym>'],
-    looparrowright     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21ac;</tex:fsym>'],
-    curvearrowleft     : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21b6;</tex:fsym>'],
-    curvearrowright    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21b7;</tex:fsym>'],
-    circlearrowleft    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21ba;</tex:fsym>'],
-    circlearrowright   : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21bb;</tex:fsym>'],
-    leftrightsquigarrow: ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21ad;</tex:fsym>'],
-    multimap           : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22b8;</tex:fsym>'],
-    rightsquigarrow    : ['s@','<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x21dd;</tex:fsym>'],
-    
-    ulcorner           : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x250c;</tex:fsym>'],
-    urcorner           : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x2510;</tex:fsym>'],
-    llcorner           : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x2514;</tex:fsym>'],
-    lrcorner           : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x2518;</tex:fsym>'],
-    
-    Box                : ['s@','<tex:small1>□</tex:small1>'],
-    Diamond            : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x25c7;</tex:fsym>'],
-    hbar               : ['s@','<tex:fsym class="aghtex-symb-roman">ħ</tex:fsym>'],
-    hslash             : ['s@','<tex:fsym class="aghtex-symb-mincho">ℏ</tex:fsym>'],
-    Bbbk               : ['s@','<tex:fsym class="aghtex-symb-mincho">k</tex:fsym>'],
-    square             : ['s@','<tex:fsym class="aghtex-symb-mincho">□</tex:fsym>'],
-    blacksquare        : ['s@','<tex:fsym class="aghtex-symb-mincho">■</tex:fsym>'],
-    circledS           : ['s@','<tex:fsym class="aghtex-symb-mincho">Ⓢ</tex:fsym>'],
-    vartriangle        : ['s@','<tex:fsym class="aghtex-symb-mincho">△</tex:fsym>'],
-    blacktriangle      : ['s@','<tex:fsym class="aghtex-symb-mincho">▲</tex:fsym>'],
-    complement         : ['s@','<tex:fsym class="aghtex-symb-mincho">∁</tex:fsym>'],
-    triangledown       : ['s@','<tex:fsym class="aghtex-symb-mincho">▽</tex:fsym>'],
-    blacktriangledown  : ['s@','<tex:fsym class="aghtex-symb-mincho">▼</tex:fsym>'],
-    Game               : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x2141;</tex:fsym>'],
-    lozenge            : ['s@','<tex:fsym class="aghtex-symb-mincho">◊</tex:fsym>'],
-    blacklozenge       : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x29eb;</tex:fsym>'],
-    bigstar            : ['s@','<tex:fsym class="aghtex-symb-mincho">★</tex:fsym>'],
-    angle              : ['s@','<tex:fsym class="aghtex-symb-mincho">∠</tex:fsym>'],
-    measuredangle      : ['s@','<tex:fsym class="aghtex-symb-mincho">∡</tex:fsym>'],
-    sphericalangle     : ['s@','<tex:fsym class="aghtex-symb-mincho">∢</tex:fsym>'],
-    diagup             : ['s@','<tex:fsym class="aghtex-symb-mincho">╱</tex:fsym>'],
-    diagdown           : ['s@','<tex:fsym class="aghtex-symb-mincho">╲</tex:fsym>'],
-    backprime          : ['s@','<tex:fsym class="aghtex-symb-mincho">‵</tex:fsym>'],
-    nexists            : ['s@','<tex:fsym class="aghtex-symb-mincho">∄</tex:fsym>'],
-    Finv               : ['s@','<tex:fsym class="aghtex-symb-mincho">Ⅎ</tex:fsym>'],
-    varnothing         : ['s@','<tex:fsym class="aghtex-symb-mincho">∅</tex:fsym>'],
-    eth                : ['s@','<tex:fsym class="aghtex-symb-mincho">ð</tex:fsym>'],
-    mho                : ['s@','<tex:fsym class="aghtex-symb-mincho">℧</tex:fsym>'],
-    
-    digamma            : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x03dc;</tex:fsym>'],
-    beth               : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x2136;</tex:fsym>'],
-    daleth             : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x2138;</tex:fsym>'],
-    gimel              : ['s@','<tex:fsym class="aghtex-symb-mincho">&#x2137;</tex:fsym>'],
+    lessdot            : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⋖</tex:f>'],
+    gtrdot             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⋗</tex:f>'],
+    doteqdot           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≑</tex:f>'],
+    leqslant           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2a7d;</tex:f>'],
+    geqslant           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2a7e;</tex:f>'],
+    risingdotseq       : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≓</tex:f>'],
+    eqslantless        : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2a95;</tex:f>'],
+    eqslantgtr         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2a96;</tex:f>'],
+    fallingdotseq      : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≒</tex:f>'],
+    leqq               : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≦</tex:f>'],
+    geqq               : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≧</tex:f>'],
+    eqcirc             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≖</tex:f>'],
+    lll                : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⋘</tex:f>'],
+    ggg                : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⋙</tex:f>'],
+    circeq             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≗</tex:f>'],
+    lesssim            : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≲</tex:f>'],
+    gtrsim             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≳</tex:f>'],
+    triangleq          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≜</tex:f>'],
+    lessapprox         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2a85;</tex:f>'],
+    gtrapprox          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2a86;</tex:f>'],
+    bumpeq             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≏</tex:f>'],
+    lessgtr            : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≶</tex:f>'],
+    gtrless            : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≷</tex:f>'],
+    Bumpeq             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≎</tex:f>'],
+    lesseqgtr          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⋚</tex:f>'],
+    gtreqless          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⋛</tex:f>'],
+    thicksim           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">∼</tex:f>'],
+    lesseqqgtr         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2a8b;</tex:f>'],
+    gtreqqless         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2a8c;</tex:f>'],
+    thickapprox        : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≈</tex:f>'],
+    preccurlyeq        : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≼</tex:f>'],
+    succcurlyeq        : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≽</tex:f>'],
+    approxeq           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≊</tex:f>'],
+    curlyeqprec        : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⋞</tex:f>'],
+    curlyeqsucc        : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⋟</tex:f>'],
+    backsim            : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">∽</tex:f>'],
+    precsim            : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≾</tex:f>'],
+    succsim            : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≿</tex:f>'],
+    backsimeq          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⋍</tex:f>'],
+    precapprox         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2ab7;</tex:f>'],
+    succapprox         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2ab8;</tex:f>'],
+    vDash              : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⊨</tex:f>'],
+    subseteqq          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2ac5;</tex:f>'],
+    supseteqq          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2ac6;</tex:f>'],
+    Vdash              : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⊩</tex:f>'],
+    Subset             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⋐</tex:f>'],
+    Supset             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⋑</tex:f>'],
+    Vvdash             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⊪</tex:f>'],
+    sqsubset           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⊏</tex:f>'],
+    sqsupset           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⊐</tex:f>'],
+    backepsilon        : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x03f6;</tex:f>'],
+    therefore          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">∴</tex:f>'],
+    because            : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">∵</tex:f>'],
+    varpropto          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">∝</tex:f>'],
+    shortmid           : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x2223;</tex:f>'],
+    shortparallel      : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x2225;</tex:f>'],
+    between            : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≬</tex:f>'],
+    smallsmile         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⌣</tex:f>'], // ■TODO:small version
+    smallfrown         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⌢</tex:f>'], // ■TODO:small version
+    pitchfork          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⋔</tex:f>'],
+    vartriangleleft    : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⊲</tex:f>'],
+    vartriangleright   : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⊳</tex:f>'],
+    blacktriangleleft  : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">◄</tex:f>'],
+    blacktriangleright : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">►</tex:f>'],
+    trianglelefteq     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⊴</tex:f>'],
+    trianglerighteq    : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">⊵</tex:f>'],
+
+    nless              : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x226e;</tex:f>'],
+    ngtr               : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x226f;</tex:f>'],
+    varsubsetneqq      : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x2ac8;</tex:f>'],
+    varsupsetneqq      : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x2ac9;</tex:f>'],
+    lneq               : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2a87;</tex:f>'],
+    gneq               : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2a88;</tex:f>'],
+    nleq               : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2270;</tex:f>'],
+    ngeq               : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2271;</tex:f>'],
+    nsubseteqq         : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x2288;</tex:f>'],
+    nsupseteqq         : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x2289;</tex:f>'],
+    nleqslant          : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x2274;</tex:f>'],
+    ngeqslant          : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x2275;</tex:f>'],
+    lneqq              : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2268;</tex:f>'],
+    gneqq              : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2269;</tex:f>'],
+    nmid               : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2224;</tex:f>'],
+    nparallel          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2226;</tex:f>'],
+    lvertneqq          : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x2268;</tex:f>'],
+    gvertneqq          : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x2269;</tex:f>'],
+    nleqq              : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x2270;</tex:f>'],
+    ngeqq              : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x2271;</tex:f>'],
+    nshortmid          : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x2224;</tex:f>'],
+    nshortparallel     : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x2226;</tex:f>'],
+    lnsim              : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22e6;</tex:f>'],
+    gnsim              : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22e7;</tex:f>'],
+    lnapprox           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2a89;</tex:f>'],
+    gnapprox           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2a8a;</tex:f>'],
+    nsim               : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2241;</tex:f>'],
+    ncong              : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2247;</tex:f>'],
+    nprec              : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2280;</tex:f>'],
+    nsucc              : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2281;</tex:f>'],
+    npreceq            : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x22e0;</tex:f>'],
+    nsucceq            : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x22e1;</tex:f>'],
+    nvdash             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22ac;</tex:f>'],
+    nvDash             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22ad;</tex:f>'],
+    precneqq           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2ab5;</tex:f>'],
+    succneqq           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2ab6;</tex:f>'],
+    precnsim           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22e8;</tex:f>'],
+    succnsim           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22e9;</tex:f>'],
+    nVdash             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22ae;</tex:f>'],
+    nVDash             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22af;</tex:f>'],
+    precnapprox        : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2ab9;</tex:f>'],
+    succnapprox        : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2aba;</tex:f>'],
+    subsetneq          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x228a;</tex:f>'],
+    supsetneq          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x228b;</tex:f>'],
+    ntriangleleft      : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22ea;</tex:f>'],
+    ntriangleright     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22eb;</tex:f>'],
+    varsubsetneq       : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x228a;</tex:f>'],
+    varsupsetneq       : ['s@','<tex:f class="aghtex-binop aghtex-syma-mincho">&#x228b;</tex:f>'],
+    nsubseteq          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2288;</tex:f>'],
+    nsupseteq          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2289;</tex:f>'],
+    ntrianglelefteq    : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22ec;</tex:f>'],
+    ntrianglerighteq   : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22ed;</tex:f>'],
+    subsetneqq         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2acb;</tex:f>'],
+    supsetneqq         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2acc;</tex:f>'],
+    nleftarrow         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x219a;</tex:f>'],
+    nrightarrow        : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x219b;</tex:f>'],
+    nleftrightarrow    : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21ae;</tex:f>'],
+    nLeftrightarrow    : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21ce;</tex:f>'],
+    nLeftarrow         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21cd;</tex:f>'],
+    nRightarrow        : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21cf;</tex:f>'],
+
+    dotplus            : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2214;</tex:f>'],
+    centerdot          : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22c5;</tex:f>'],
+    intercal           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22ba;</tex:f>'],
+    divideontimes      : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22c7;</tex:f>'],
+    ltimes             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22c9;</tex:f>'],
+    rtimes             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22ca;</tex:f>'],
+    Cup                : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22d3;</tex:f>'],
+    Cap                : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22d2;</tex:f>'],
+    smallsetminus      : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2216;</tex:f>'],
+    doublebarwedge     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2306;</tex:f>'],
+    veebar             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22bb;</tex:f>'],
+    barwedge           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22bc;</tex:f>'],
+    boxplus            : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x229e;</tex:f>'],
+    boxminus           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x229f;</tex:f>'],
+    circleddash        : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x229d;</tex:f>'],
+    circledcirc        : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x229a;</tex:f>'],
+    boxtimes           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22a0;</tex:f>'],
+    boxdot             : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22a1;</tex:f>'],
+    leftthreetimes     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22cb;</tex:f>'],
+    rightthreetimes    : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22cc;</tex:f>'],
+    curlyvee           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22ce;</tex:f>'],
+    curlywedge         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22cf;</tex:f>'],
+    circledast         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x229b;</tex:f>'],
+
+    dashleftarrow      : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21e0;</tex:f>'], // ■mwg_mathsymb:TODO
+    dashrightarrow     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21e2;</tex:f>'], // ■mwg_mathsymb:TODO
+    leftleftarrows     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21c7;</tex:f>'],
+    rightrightarrows   : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21c9;</tex:f>'],
+    upuparrows         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21c8;</tex:f>'],
+    downdownarrows     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21ca;</tex:f>'],
+    leftrightarrows    : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21c6;</tex:f>'],
+    rightleftarrows    : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21c4;</tex:f>'],
+    Lleftarrow         : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21da;</tex:f>'],
+    Rrightarrow        : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21db;</tex:f>'],
+    upharpoonleft      : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21bf;</tex:f>'],
+    upharpoonright     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21be;</tex:f>'],
+    twoheadleftarrow   : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x219e;</tex:f>'],
+    twoheadrightarrow  : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21a0;</tex:f>'],
+    leftarrowtail      : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21a2;</tex:f>'],
+    rightarrowtail     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21a3;</tex:f>'],
+    downharpoonleft    : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21c3;</tex:f>'],
+    downharpoonright   : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21c2;</tex:f>'],
+    leftrightharpoons  : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21cb;</tex:f>'],
+    rightleftharpoons  : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21cc;</tex:f>'],
+    Lsh                : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21b0;</tex:f>'],
+    Rsh                : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21b1;</tex:f>'],
+    looparrowleft      : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21ab;</tex:f>'],
+    looparrowright     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21ac;</tex:f>'],
+    curvearrowleft     : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21b6;</tex:f>'],
+    curvearrowright    : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21b7;</tex:f>'],
+    circlearrowleft    : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21ba;</tex:f>'],
+    circlearrowright   : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21bb;</tex:f>'],
+    leftrightsquigarrow: ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21ad;</tex:f>'],
+    multimap           : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22b8;</tex:f>'],
+    rightsquigarrow    : ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x21dd;</tex:f>'],
+
+    ulcorner           : ['s@','<tex:f class="aghtex-symb-mincho">&#x250c;</tex:f>'],
+    urcorner           : ['s@','<tex:f class="aghtex-symb-mincho">&#x2510;</tex:f>'],
+    llcorner           : ['s@','<tex:f class="aghtex-symb-mincho">&#x2514;</tex:f>'],
+    lrcorner           : ['s@','<tex:f class="aghtex-symb-mincho">&#x2518;</tex:f>'],
+
+    Box                : ['s@','<tex:f class="aghtex-syma-mincho">□</tex:f>'],
+    Diamond            : ['s@','<tex:f class="aghtex-syma-mincho">&#x25c7;</tex:f>'],
+    hbar               : ['s@','<tex:f class="aghtex-symb-roman">ħ</tex:f>'],
+    hslash             : ['s@','<tex:f class="aghtex-symb-mincho">ℏ</tex:f>'],
+    Bbbk               : ['s@','<tex:f class="aghtex-symb-mincho">k</tex:f>'],
+    square             : ['s@','<tex:f class="aghtex-symb-mincho">□</tex:f>'],
+    blacksquare        : ['s@','<tex:f class="aghtex-symb-mincho">■</tex:f>'],
+    circledS           : ['s@','<tex:f class="aghtex-symb-mincho">Ⓢ</tex:f>'],
+    vartriangle        : ['s@','<tex:f class="aghtex-symb-mincho">△</tex:f>'],
+    blacktriangle      : ['s@','<tex:f class="aghtex-symb-mincho">▲</tex:f>'],
+    complement         : ['s@','<tex:f class="aghtex-symb-mincho">∁</tex:f>'],
+    triangledown       : ['s@','<tex:f class="aghtex-symb-mincho">▽</tex:f>'],
+    blacktriangledown  : ['s@','<tex:f class="aghtex-symb-mincho">▼</tex:f>'],
+    Game               : ['s@','<tex:f class="aghtex-symb-mincho">&#x2141;</tex:f>'],
+    lozenge            : ['s@','<tex:f class="aghtex-symb-mincho">◊</tex:f>'],
+    blacklozenge       : ['s@','<tex:f class="aghtex-symb-mincho">&#x29eb;</tex:f>'],
+    bigstar            : ['s@','<tex:f class="aghtex-symb-mincho">★</tex:f>'],
+    angle              : ['s@','<tex:f class="aghtex-symb-mincho">∠</tex:f>'],
+    measuredangle      : ['s@','<tex:f class="aghtex-symb-mincho">∡</tex:f>'],
+    sphericalangle     : ['s@','<tex:f class="aghtex-symb-mincho">∢</tex:f>'],
+    diagup             : ['s@','<tex:f class="aghtex-symb-mincho">╱</tex:f>'],
+    diagdown           : ['s@','<tex:f class="aghtex-symb-mincho">╲</tex:f>'],
+    backprime          : ['s@','<tex:f class="aghtex-symb-mincho">‵</tex:f>'],
+    nexists            : ['s@','<tex:f class="aghtex-symb-mincho">∄</tex:f>'],
+    Finv               : ['s@','<tex:f class="aghtex-symb-mincho">Ⅎ</tex:f>'],
+    varnothing         : ['s@','<tex:f class="aghtex-symb-mincho">∅</tex:f>'],
+    eth                : ['s@','<tex:f class="aghtex-symb-mincho">ð</tex:f>'],
+    mho                : ['s@','<tex:f class="aghtex-symb-mincho">℧</tex:f>'],
+
+    digamma            : ['s@','<tex:f class="aghtex-symb-mincho">&#x03dc;</tex:f>'],
+    beth               : ['s@','<tex:f class="aghtex-symb-mincho">&#x2136;</tex:f>'],
+    daleth             : ['s@','<tex:f class="aghtex-symb-mincho">&#x2138;</tex:f>'],
+    gimel              : ['s@','<tex:f class="aghtex-symb-mincho">&#x2137;</tex:f>'],
 
     // integrals
     iint               : ['f',function(doc,cmdName){mod_math['cmd:int'](doc,'&#x222C;');}],
@@ -317,31 +316,38 @@ ns.Document.Packages["amssymb"]=function(doc,opt,pkgName){
 context "pkg:amsmath/mode.para" new(){
   environment s@:mode.math\equation*()  '<tex:math class="aghtex-displaymath">#0</tex:math>';
 
-  // \AmS
-  command s@\AmS() '<tex:AmS>A<span>M</span>S</tex:AmS>';
+  _Ctx.DefineCommand({
+    // \AmS
+    "AmS": ['s@','<tex:AmS>A<span>M</span>S</tex:AmS>'],
 
-  //@@本当に使えるのか?@@
-  command s@\dots()  '<tex:fsym class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:fsym>';
-  command s@\ldots() '<tex:fsym class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:fsym>';
+    // CHK: 以下は paragraph mode でも使えるのか?
+    dots : ['s@','<tex:f class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:f>'],
+    ldots: ['s@','<tex:f class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:f>']
+  });
 
-  _Ctx.AddEnvironment("align*",mod_array["envdef:align*"]);
-  _Ctx.AddEnvironment("align",mod_array["envdef:align"]);
-  _Ctx.AddEnvironment("alignat*",mod_array["envdef:alignat*"]);
-  _Ctx.AddEnvironment("alignat",mod_array["envdef:alignat"]);
-  _Ctx.AddEnvironment("flalign*",mod_array["envdef:flalign*"]);
-  _Ctx.AddEnvironment("flalign",mod_array["envdef:flalign"]);
-  _Ctx.AddEnvironment("gather*",mod_array["envdef:gather*"]);
-  _Ctx.AddEnvironment("gather",mod_array["envdef:gather"]);
-  _Ctx.AddEnvironment("multline*",mod_array["envdef:multline*"]);
-  _Ctx.AddEnvironment("multline",mod_array["envdef:multline"]);
+  _Ctx.DefineEnvironment({
+    "align*"   : mod_array["envdef:align*"],
+    "align"    : mod_array["envdef:align"],
+    "alignat*" : mod_array["envdef:alignat*"],
+    "alignat"  : mod_array["envdef:alignat"],
+    "flalign*" : mod_array["envdef:flalign*"],
+    "flalign"  : mod_array["envdef:flalign"],
+    "gather*"  : mod_array["envdef:gather*"],
+    "gather"   : mod_array["envdef:gather"],
+    "multline*": mod_array["envdef:multline*"],
+    "multline" : mod_array["envdef:multline"]
+  });
 }
 context "pkg:amsmath/mode.math" new(){
-  command s@\boldsymbol("#>1")  @"<tex:fmbm>#1</tex:fmbm>";
-  command s\substack("#1")    @"\begin{array}{c}#1\end{array}";
-  
-  // 色々なスタイルの分数
-  command f\dfrac(#>1#>2){mod_math.CH_FRAC(doc,argv);};
-  command f\tfrac(#>1#>2){mod_math.CH_FRAC(doc,argv);};
+
+  _Ctx.DefineCommand({
+    boldsymbol: ['s@;#>1','<tex:f class="aghtex-mathbm">#1</tex:f>'],
+    substack  : ['s;#1',@"\begin{array}{c}#1\end{array}"],
+
+    // 色々なスタイルの分数
+    dfrac     : ['f;#>1#>2',mod_math.CH_FRAC],
+    tfrac     : ['f;#>1#>2',mod_math.CH_FRAC]
+  });
 
   //--------------------------------------------------------------------------
   //  \cfrac
@@ -359,20 +365,20 @@ context "pkg:amsmath/mode.math" new(){
       +'<tex:den style="text-align:$!important;">$</tex:den></tex:frac>'
     ).split(/\$/g);
   }
-  command f\cfrac("#[c]!1#>2#>3"){
+  _Ctx.DefineCommand({cfrac:['f;#[c]!1#>2#>3',function(doc,argv){
     var output=doc.currentCtx.output;
     var align=
-      argv[1]=="r"?"right":
-      argv[1]=="l"?"left":
-      argv[1]=="c"?"center":
-      "";
+        argv[1]=="r"?"right":
+        argv[1]=="l"?"left":
+        argv[1]=="c"?"center":
+        "";
     if(align==""){
       output.error(
         "\\cfrac[alignment]..",
         "alignment の指定が誤っています。\n"
-        +"'"+argv[1]+"' は認識出来ない alignment です。\n"
-        +"lcr の何れかを指定して下さい。"
-        );
+          +"'"+argv[1]+"' は認識出来ない alignment です。\n"
+          +"lcr の何れかを指定して下さい。"
+      );
       align="center";
     }
     output.buff.push(
@@ -381,14 +387,14 @@ context "pkg:amsmath/mode.math" new(){
       cfrac_html[2],align,
       cfrac_html[3],argv[3],
       cfrac_html[4]);
-  };
+  }]});
 
   environment s:mode.math\cases() @"\left\{\begin{array}{lc}#0\end{array}\right.";
   environment s:mode.math\split() @"\begin{array}{r@{}l}#0\end{array}";
 
   // \AmS
-  command s@\AmS() '<tex:AmS>A<span>M</span>S</tex:AmS>';
-  
+  _Ctx.DefineCommand({AmS:['s@','<tex:AmS>A<span>M</span>S</tex:AmS>']});
+
   // \binom, \tbinom, \dbinom, \genfrac
   function cmd_genfrac(doc,left,right,barWidth,style,htNumerator,htDenominator){
     // TODO: style=0: displaystyle, 1: textstyle, 2: scriptstyle, 3: scriptscriptstyle, other: normal
@@ -408,11 +414,13 @@ context "pkg:amsmath/mode.math" new(){
       mod_base.OutputStretchBracketTd(output,right,2);
     buff.push('</tr><tr><td align="center" class="aghtex-center">',htDenominator,'</td></tr></table>');
   }
-  command f\binom (#>1#>2){cmd_genfrac(doc,'(',')',null,null,argv[1],argv[2])};
-  command f\tbinom(#>1#>2){cmd_genfrac(doc,'(',')',null,1,argv[1],argv[2])};
-  command f\dbinom(#>1#>2){cmd_genfrac(doc,'(',')',null,0,argv[1],argv[2])};
-  command f\genfrac(#>1#>2#>3#>4#>5#>6){cmd_genfrac(doc,argv[1],argv[2],argv[3],argv[4],argv[5],argv[6])};
 
+  _Ctx.DefineCommand({
+    binom  : ['f;#>1#>2',function(doc,argv){cmd_genfrac(doc,'(',')',null,null,argv[1],argv[2]);}],
+    tbinom : ['f;#>1#>2',function(doc,argv){cmd_genfrac(doc,'(',')',null,1,argv[1],argv[2]);}],
+    dbinom : ['f;#>1#>2',function(doc,argv){cmd_genfrac(doc,'(',')',null,0,argv[1],argv[2]);}],
+    genfrac: ['f;#>1#>2#>3#>4#>5#>6',function(doc,argv){cmd_genfrac(doc,argv[1],argv[2],argv[3],argv[4],argv[5],argv[6]);}]
+  });
 
   // TODO: command s:mode.math\uproot
   // TODO: command s:mode.math\leftroot
@@ -420,56 +428,62 @@ context "pkg:amsmath/mode.math" new(){
   //---------------------------------------------------------------------------
   // dots
 
-  // TODO: \dots 次に来る非空白 word に応じて出力内容を変更。
-  command s@\dotsc() '<tex:fsym class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:fsym>';          // dots comma,    下付三点
-  command s@\dotsb() '<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22EF;</tex:fsym>';          // dots binary,   中央三点
-  command s@\dotsm() '<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22EF;</tex:fsym>';          // dots multiply, 中央三点
-  command s@\dotso() '<tex:fsym class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:fsym>';          // dots other,    下付三点
-  command f\dotsi(){
-    // dots integral, 中央三点
-    if(!mod_math.GetMathStyle(doc))
-      doc.currentCtx.output.buff.push('<tex:fsym class="aghtex-dotsi">&#x22EF;</tex:fsym>');
-    else
-      doc.currentCtx.output.buff.push('<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22EF;</tex:fsym>');
-  };
-
   var DOTSO=0; // comma
   var DOTSC=1; // comma
   var DOTSB=2; // binary
   var DOTSM=3; // multiply
   var DOTSI=4; // int
   var cmd_dots_table={};
-  command f\dots(){
-    doc.skipSpaceAndComment();
 
-    switch(doc.scanner.wordtype){
-    case mod_core.SCAN_WT_LTR:
-    case mod_core.SCAN_WT_CMD:
-      var type=cmd_dots_table[doc.scanner.wordtype+':'+doc.scanner.word];
-      break;
-    case mod_core.SCAN_WT_TXT:
-      var type=DOTSM;
-      break;
-    default:
-      var type=DOTSO;
-      break;
-    }
+  _Ctx.DefineCommand({
+    dotsc: ['s@','<tex:f class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:f>' ], // dots comma,    下付三点
+    dotsb: ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22EF;</tex:f>'], // dots binary,   中央三点
+    dotsm: ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22EF;</tex:f>'], // dots multiply, 中央三点
+    dotso: ['s@','<tex:f class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:f>' ], // dots other,    下付三点
+    dotsi: ['f',function(doc,argv){
+      // dots integral, 中央三点
+      if(!mod_math.GetMathStyle(doc))
+        doc.currentCtx.output.buff.push('<tex:f class="aghtex-dotsi">&#x22EF;</tex:f>');
+      else
+        doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22EF;</tex:f>');
+    }],
+    dots : ['f',function(doc,argv){
+      doc.skipSpaceAndComment();
 
-    switch(type){
-    case DOTSB:case DOTSM:
-      var ht='<tex:fsym class="aghtex-binop aghtex-symb-mincho">&#x22EF;</tex:fsym>';
-      break;
-    case DOTSI:
-      var ht='<tex:fsym class="aghtex-dotsi aghtex-symb-mincho">&#x22EF;</tex:fsym>';
-      break;
-    case DOTSC:
-    default:
-      var ht='<tex:fsym class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:fsym>';
-      break;
-    }
+      switch(doc.scanner.wordtype){
+      case mod_core.SCAN_WT_LTR:
+      case mod_core.SCAN_WT_CMD:
+        var type=cmd_dots_table[doc.scanner.wordtype+':'+doc.scanner.word];
+        break;
+      case mod_core.SCAN_WT_TXT:
+        var type=DOTSM;
+        break;
+      default:
+        var type=DOTSO;
+        break;
+      }
 
-    doc.currentCtx.output.buff.push(ht);
-  };
+      switch(type){
+      case DOTSB:case DOTSM:
+        var ht='<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22EF;</tex:f>';
+        break;
+      case DOTSI:
+        var ht='<tex:f class="aghtex-dotsi aghtex-symb-mincho">&#x22EF;</tex:f>';
+        break;
+      case DOTSC:
+      default:
+        var ht='<tex:f class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:f>';
+        break;
+      }
+
+      doc.currentCtx.output.buff.push(ht);
+    }],
+
+    // marker commands for \dots
+    DOTSB: mod_base.CHRelax,
+    DOTSI: mod_base.CHRelax,
+    DOTSX: mod_base.CHRelax
+  });
 
   function DefineDotsForCommand(cmdName,dotstype){
     if(arguments.length===1){
@@ -496,9 +510,6 @@ context "pkg:amsmath/mode.math" new(){
   _Mod.DefineDotsForLetter=DefineDotsForLetter;
   _Mod.DefineDotsForCommand=DefineDotsForCommand;
 
-  command f\DOTSB(){};
-  command f\DOTSI(){};
-  command f\DOTSX(){};
   DefineDotsForCommand({DOTSB:DOTSB,DOTSI:DOTSI,DOTSX:DOTSO});
 
   DefineDotsForCommand({
@@ -527,77 +538,87 @@ context "pkg:amsmath/mode.math" new(){
   DefineDotsForLetter({
     '+':DOTSB,'-':DOTSB,'/':DOTSB,'*':DOTSB,
     '=':DOTSB,'>':DOTSB,'<':DOTSB,
-    
+
     '.':DOTSC,',':DOTSC,':':DOTSC,';':DOTSC,
-    
+
     '[':DOTSM,'(':DOTSM
   });
 
-  command s>mode.math\iff()       @'\;\Longleftrightarrow\;';
-  command s>mode.math\implies()   @'\;\Longrightarrow\;';
-  command s>mode.math\impliedby() @'\;\Longleftarrow\;';
-  command s@\And() '<tex:fsym class="aghtex-symb-roman">&amp;</tex:fsym>';
-
   //---------------------------------------------------------------------------
-  // TODO: command \overset
-  // TODO: command \underset
 
-  // \overleftrightarrow
-  // \underrightarrow
-  // \underleftarrow
-  // \underleftrightarrow
-  _Ctx.AddCommandHandler("overleftrightarrow",mod_math.CreateCommandOverStretch("stretch_lrarr.png","overleftrightarrow"));
-  _Ctx.AddCommandHandler("underrightarrow",mod_math.CreateCommandUnderStretch("stretch_rarr.png","underrightarrow"));
-  _Ctx.AddCommandHandler("underleftarrow",mod_math.CreateCommandUnderStretch("stretch_larr.png","underleftarrow"));
-  _Ctx.AddCommandHandler("underleftrightarrow",mod_math.CreateCommandUnderStretch("stretch_lrarr.png","underleftrightarrow"));
-  
-  // \dddot, \dddot
-  if(ns.compatMode=="IE-qks"||agh.browser.vIE<8){
-    _Ctx.AddCommandHandler("dddot", mod_math.CreateAccentCommandQksT(1.5,"<tex:small3>…</tex:small3>"));
-    _Ctx.AddCommandHandler("ddddot",mod_math.CreateAccentCommandQksT(1.8,"<tex:small3>....</tex:small3>"));
-  }else{
-    _Ctx.AddCommandHandler("dddot", mod_math.CreateAccentCommand('vec','<tex:fsym class="aghtex-syma-mincho">&#x22EF;</tex:fsym>',true)); // combining = &#x20DB;
-    _Ctx.AddCommandHandler("ddddot",mod_math.CreateAccentCommand('vec','<tex:fsym class="aghtex-syma-mincho">&#x2509;</tex:fsym>',true)); // combining = &#x20DC;
-  }
+  _Ctx.DefineCommand({
+    iff      : ['s>mode.math', @'\;\Longleftrightarrow\;'],
+    implies  : ['s>mode.math', @'\;\Longrightarrow\;'],
+    impliedby: ['s>mode.math', @'\;\Longleftarrow\;'],
+    And      : ['s@'         , '<tex:f class="aghtex-symb-roman">&amp;</tex:f>'],
+
+    overset  : ["f;#>1#>2",function(doc,argv){
+      var buff=doc.currentCtx.output.buff;
+      mod_math.OutputOverbrace(buff,argv[2],false,argv[1]);
+    }],
+    underset : ["f;#>1#>2",function(doc,argv){
+      var buff=doc.currentCtx.output.buff;
+      mod_math.OutputUnderbrace(buff,argv[2],false,argv[1]);
+    }],
+
+    // \overleftrightarrow
+    // \underrightarrow
+    // \underleftarrow
+    // \underleftrightarrow
+    overleftrightarrow : mod_math.CreateCommandOverStretch("stretch_lrarr.png","overleftrightarrow"),
+    underrightarrow    : mod_math.CreateCommandUnderStretch("stretch_rarr.png","underrightarrow"),
+    underleftarrow     : mod_math.CreateCommandUnderStretch("stretch_larr.png","underleftarrow"),
+    underleftrightarrow: mod_math.CreateCommandUnderStretch("stretch_lrarr.png","underleftrightarrow"),
+
+    // \dddot, \dddot
+    dddot : mod_math.CreateAccentCommand('vec','<tex:f class="aghtex-syma-mincho">&#x22EF;</tex:f>',true), // combining = &#x20DB;
+    ddddot: mod_math.CreateAccentCommand('vec','<tex:f class="aghtex-syma-mincho">&#x2509;</tex:f>',true)  // combining = &#x20DC;
+  });
 
   // TODO: command s:mode.math\align
+  _Ctx.DefineEnvironment({
+    // TODO: environment s:mode.math\split (上で簡単な実装があるが…)
 
-  // TODO: environment s:mode.math\split
-  _Ctx.AddEnvironment("aligned",mod_array["envdef:aligned"]);
-  _Ctx.AddEnvironment("alignedat",mod_array["envdef:alignedat"]);
-  _Ctx.AddEnvironment("gathered",mod_array["envdef:gathered"]);
+    aligned  : mod_array["envdef:aligned"],
+    alignedat: mod_array["envdef:alignedat"],
+    gathered : mod_array["envdef:gathered"],
 
-  // matrix, pmatrix については、
-  // 元々存在したコマンド \matrix \pmatrix の動作を上書きする。
-  _Ctx.AddEnvironment("matrix",mod_array["envdef:matrix"]);
-  _Ctx.AddEnvironment("pmatrix",mod_array["envdef:pmatrix"]);
-  _Ctx.AddEnvironment("bmatrix",mod_array["envdef:bmatrix"]);
-  _Ctx.AddEnvironment("Bmatrix",mod_array["envdef:Bmatrix"]);
-  _Ctx.AddEnvironment("vmatrix",mod_array["envdef:vmatrix"]);
-  _Ctx.AddEnvironment("Vmatrix",mod_array["envdef:Vmatrix"]);
+    // matrix, pmatrix については、
+    //   元々存在したコマンド \matrix \pmatrix の動作を上書きする。
+    matrix : mod_array["envdef:matrix"],
+    pmatrix: mod_array["envdef:pmatrix"],
+    bmatrix: mod_array["envdef:bmatrix"],
+    Bmatrix: mod_array["envdef:Bmatrix"],
+    vmatrix: mod_array["envdef:vmatrix"],
+    Vmatrix: mod_array["envdef:Vmatrix"]
+  });
 
   // TODO: command s:mode.math\bordermatrix (cmd 上書き)
-  
+
   // TODO: command s:mode.math\tag
   // TODO: command s:mode.math\tag*
   // TODO: command s:mode.math\notag
   // TODO: command f\raisetag(#1)
 
-  command s@\lvert()  '<tex:fsym class="aghtex-symb-mincho">&#x007c;</tex:fsym>'; // u007c "|",  u2223
-  command s@\lVert()  '<tex:fsym class="aghtex-symb-mincho">&#x2225;</tex:fsym>'; // u2225 "∥", u???? (‖) 
-  command s@\rvert()  '<tex:fsym class="aghtex-symb-mincho">&#x007c;</tex:fsym>';
-  command s@\rVert()  '<tex:fsym class="aghtex-symb-mincho">&#x2225;</tex:fsym>';
+  _Ctx.DefineCommand({
+    lvert: ['s@','<tex:f class="aghtex-symb-mincho">&#x007c;</tex:f>'], // u007c "|",  u2223
+    lVert: ['s@','<tex:f class="aghtex-symb-mincho">&#x2225;</tex:f>'], // u2225 "∥", u???? (‖)
+    rvert: ['s@','<tex:f class="aghtex-symb-mincho">&#x007c;</tex:f>'],
+    rVert: ['s@','<tex:f class="aghtex-symb-mincho">&#x2225;</tex:f>'],
 
-  // \DeclareMathOperator 2014-03-05
-  command s\operatornamewithlimits(#1) @'{\mathrm{#1}}';
+    // \DeclareMathOperator 2014-03-05
+    operatornamewithlimits:['s;#1',@'{\mathrm{#1}}']
+  });
 }
 context "pkg:amsmath/global" new(){
-  // command s:mode.math\eqref 2014-03-05
-  command s\eqref(#1) @'\textup{(\ref{#1})}';
+  _Ctx.DefineCommand({
+    // command s:mode.math\eqref 2014-03-05
+    eqref: ['s;#1','\textup{(\ref{#1})}'],
 
-  // command \DeclareMathOperator 2014-03-05
-  command s\DeclareMathOperator*(#1#2) @'\def#1{\mathop{\mathrm{#2}}}';
-  command s\DeclareMathOperator(#1#2)  @'\def#1{{\mathrm{#2}}}';
+    // command \DeclareMathOperator 2014-03-05
+    "DeclareMathOperator*": ['s;#1#2',@'\def#1{\mathop{\mathrm{#2}}}'],
+    "DeclareMathOperator" : ['s;#1#2',@'\def#1{{\mathrm{#2}}}']
+  });
 }
 ns.Document.Packages["amsmath"]=function(doc,opt,pkgName){
   doc.context_cast("mode.para").OverwriteContext(doc.context_cast("pkg:amsmath/mode.para"));

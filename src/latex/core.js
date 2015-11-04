@@ -1,5 +1,5 @@
 // -*- mode:js;coding:utf-8 -*- (日本語)
-// 
+//
 // ChangeLog
 //
 // 2013-09-02, KM,
@@ -8,7 +8,7 @@
 //   * latex.cor.js: 更新
 // 2008/04/03, K. Murase,
 //   * latex.doc.js (class Document): 作成
-//   
+//
 
 ns.BaseUrl=agh.scripts.AGH_URLBASE+"latex/";
 
@@ -28,7 +28,7 @@ ns.InitializeView=function(_window){
   case "Sf":csspath="latex/latex.sf.css";break;
   case "Op":csspath="latex/latex.op.css";break;
   }
-  
+
   var head=_window.document.getElementsByTagName("head")[0];
   if(head){
     var link=_window.document.createElement("link");
@@ -133,7 +133,7 @@ ns.Scanner4=function(text){
 
   this.mode=0;
   this.m_makeatletter=false;
-  
+
   this.word=null;
   this.wordtype=SCAN_WT_INV;
 };
@@ -141,6 +141,7 @@ ns.Scanner4=function(text){
 agh.memcpy(ns.Scanner4.prototype,{
   //======================================================================
   // Source
+  InsertSource:function(instext){
 //%m Scanner::pushSource (
     if(this.source!=null) //&&this.source.index<this.source.length) // ■■
       this.sourceStack.push(this.source);
@@ -150,7 +151,6 @@ agh.memcpy(ns.Scanner4.prototype,{
       this.source=this.sourceStack.pop();
     }
 //%)
-  InsertSource:function(instext){
     /// <summary>
     /// 現在の単語開始位置に文字列を挿入します。
     /// </summary>
@@ -423,7 +423,7 @@ ns.ContextFactory=function(factory){
   this.handlerL={};  // 制御文字 handler
   this.handlerC={};  // コマンド handler
   this.handlerE={};  // 環境開始 handler
-  
+
   if(factory!=null)
     this.AddBaseContext(factory);
 };
@@ -466,19 +466,38 @@ agh.memcpy(ns.ContextFactory.prototype,{
     }
 #%)
   },
-  AddLetterHandler:function(letter,handlerFunction){
-    if(letter instanceof Array){
-      for(var i=0;i<letter.length;i++){
-        this.handlerL[letter[i]]=handlerFunction;
+  _instantiateHandler:function(definition){
+    if(typeof definition==="function"){
+      return definition;
+    }else if(definition instanceof Array){
+      var cmdtype=definition[0];
+      var argdef=null;
+      var cmddef=definition[1];
+
+      var index;
+      if((index=cmdtype.indexOf(";"))>=0){
+        argdef=cmdtype.slice(index+1);
+        cmdtype=cmdtype.slice(0,index);
       }
+
+      return new ns.Command2(cmdtype,argdef,cmddef);
+    }else{
+      throw new Error("FATAL: Unexptected type of command handler!");
+    }
+  },
+  AddLetterHandler:function(letter,definition){
+    definition=this._instantiateHandler(definition);
+
+    if(letter instanceof Array){
+      for(var i=0;i<letter.length;i++)
+        this.handlerL[letter[i]]=definition;
     }else if(typeof letter=="string"||letter instanceof String){
       if(letter=="EOF"){
-        this.handlerL[letter]=handlerFunction;
+        this.handlerL[letter]=definition;
         return;
       }
-      for(var i=0;i<letter.length;i++){
-        this.handlerL[letter.substr(i,1)]=handlerFunction;
-      }
+      for(var i=0;i<letter.length;i++)
+        this.handlerL[letter.substr(i,1)]=definition;
     }
 #%if DEBUG (
     else{
@@ -486,8 +505,8 @@ agh.memcpy(ns.ContextFactory.prototype,{
     }
 #%)
   },
-  AddCommandHandler:function(letter,commandHandler){
-    this.handlerC[letter]=commandHandler;
+  AddCommandHandler:function(letter,definition){
+    this.handlerC[letter]=this._instantiateHandler(definition);
   },
   AddEnvironment:function(name,arg){
     if(arg==null){
@@ -503,25 +522,9 @@ agh.memcpy(ns.ContextFactory.prototype,{
     if(args.length===2){
       var cmdName=args[0];
       var definition=args[1];
-      if(typeof definition==="function"){
-        /// @fn Context#DefineCommand(cmdName,func);
-        ///   コマンド関数を登録します。
-        addMethod.call(this,cmdName,definition);
-      }else{
-        /// @fn Context#DefineCommand(cmdName,["cmdtype;argdef","def"]);
-        ///   Command2 を用いてコマンド関数を生成し登録します。
-        var cmdtype=definition[0];
-        var argdef=null;
-        var cmddef=definition[1];
-
-        var index;
-        if((index=cmdtype.indexOf(";"))>=0){
-          argdef=cmdtype.slice(index+1);
-          cmdtype=cmdtype.slice(0,index);
-        }
-
-        addMethod.call(this,cmdName,new ns.Command2(cmdtype,argdef,cmddef));
-      }
+      /// @fn Context#DefineCommand(cmdName,func);
+      /// @fn Context#DefineCommand(cmdName,[argdef,body]);
+      addMethod.call(this,cmdName,definition);
     }else if(args.length===1){
       /// @fn Context#DefineCommand({cmdName:definition,...});
       ///   複数のコマンド定義を行います。
@@ -538,6 +541,9 @@ agh.memcpy(ns.ContextFactory.prototype,{
   },
   DefineLetter:function(){
     this._DefineCommand(this.AddLetterHandler,arguments);
+  },
+  DefineEnvironment:function(){
+    this._DefineCommand(this.AddEnvironment,arguments);
   },
   //======================================================================
   //    Create Context Instance
@@ -566,14 +572,14 @@ ns.Context=function(base_ctxs,handler_l,handler_c,handler_e,initializer){
   this.handlerE=handler_e||{};  // 環境開始 handler
   if(initializer!=null)
     this.initializer=initializer;  // 初期化子
-    
+
   this.userC={};     // マクロ handler (ユーザ定義コマンド)
   this.dataL={};     // Length 情報を保持します。
   this.dataV={};     // コンテキスト変数を保持します。
-    
+
   // this.text_modifier // 文字列修飾子
   // this.BREAK         // 読み取り終了フラグ
-  
+
   // Document#Read 関数内で追加されるメンバ
   // this.output
 };
@@ -581,7 +587,7 @@ ns.Context.toString=function(){
   return "[class "+nsName+".Context]";
 };
 agh.memcpy(ns.Context.prototype,ns.ContextFactory.prototype,[
-  "AddLetterHandler","AddCommandHandler","AddEnvironment"
+  "AddLetterHandler","AddCommandHandler","AddEnvironment","_instantiateHandler"
 ]);
 agh.memcpy(ns.Context.prototype,{
   //======================================================================
@@ -643,7 +649,7 @@ agh.memcpy(ns.Context.prototype,{
     for(var i=0,iN=this.baseCtxs.length;i<iN;i++){
       this.baseCtxs[i].Initialize(mainctx);
     }
-    
+
     if(this.initializer instanceof Function)
       this.initializer(mainctx);
   },
@@ -798,7 +804,7 @@ agh.memcpy(ns.Writer,{
          "* if the end of the current context is missing",
          "* if the token {0} is mistakenlly inserted here"].join("\n")],
       "UnknownCommand":[
-        "unknown command '\\{cmd}'",
+        "\\{cmd}",
         ["the command '\\{cmd}' is not available in this context.",
          "the current context is [{contexts}].",
          "check the following points:",
@@ -807,7 +813,7 @@ agh.memcpy(ns.Writer,{
          "* if the command is supported in the current context."
         ].join("\n")],
       "UnknownEnvironment":[
-        "unknown environment '{env}'",
+        "env:{env}",
         ["the environment '{env}' is not available in this context.",
          "the current context is [{contexts}].",
          "check the following points:",
@@ -891,7 +897,7 @@ agh.memcpy(ns.Writer,{
 //◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 ns.Document=function(text,context){
   this.scanner=new ns.Scanner(text);
-  
+
   this.contexts={
     "global":ns.ContextFactory["global"].CreateContext(this)
   };
@@ -941,12 +947,12 @@ ns.Document=function(text,context){
     label_id_map:{},
     label_page_map:{}
   };
-  // refs.displayedText[sec:attention]="1.2.4"; 
-  // refs.displayedText[eq:firstEquation]="1"; 
+  // refs.displayedText[sec:attention]="1.2.4";
+  // refs.displayedText[eq:firstEquation]="1";
 
   // document variables
   this.flags={};
-  
+
   // 解析時に使用
   this.currentCtx=null;
   this.ctxStack=[];
@@ -974,14 +980,14 @@ agh.memcpy(ns.Document.prototype,{
     }else if(typeof val=="string"||val instanceof String){
       //[single instance]
       if(val in this.contexts)return this.contexts[val];
-      
+
       if(val=="."){
         return this.currentCtx;
       }else if(val==".."){
         var i=this.ctxStack.length-1;
         return i>=0?this.ctxStack[i]:null;
       }
-      
+
       var ret=ns.ContextFactory[val].CreateContext(this);
       this.contexts[val]=ret;
       ret.contextName=val;
@@ -1033,7 +1039,7 @@ agh.memcpy(ns.Document.prototype,{
       this.scanner.Next();
   },
   //======================================================================
-  //  Flags: 
+  //  Flags:
   //    context に属するのではなく document に直接属する変数。
   //    pushFlags, popFlags を手動で呼び出して階層を作る。
   //----------------------------------------------------------------------
@@ -1161,7 +1167,7 @@ agh.memcpy(ns.Document.prototype,{
       }
     }
     this.popContext();
-    
+
     return output.toHtml();
   },
   /// <summary>
@@ -1333,7 +1339,7 @@ agh.memcpy(ns.Document.prototype,{
       // 　二重改行を飛ばしても問題ない
       // ・改行の数を数える?
       this.skipSpaceAndComment();
-      
+
       if(this.scanner.wordtype=="ltr"){
         if(this.scanner.word=="^"){
           if(ret.sup==null){
@@ -1377,7 +1383,7 @@ ns.Command=function(numOfArg,defaultArg,definition,dynamic){
   // 読み取り部 初期化
   if(numOfArg>0){
     this.argNum=numOfArg;
-    
+
     if(defaultArg==null){
       this.defArg=[];
     }else if(defaultArg instanceof Array){
@@ -1388,7 +1394,7 @@ ns.Command=function(numOfArg,defaultArg,definition,dynamic){
   }else{
     this.readArgument=function(){};
   }
-  
+
   // 書き出し部 選択
   if(definition instanceof Function){
     this.text=null;
@@ -1440,7 +1446,8 @@ agh.memcpy(ns.Command.prototype,{
   //======================================================================
   writeTextDef:function(doc,args){
     var result=this.text;
-    if(args)result=result.replace(/#(0?)([1-9]\d*)/g,function($0,$1,$2){
+    if(args)result=result.replace(/#(0?)([1-9]\d*)|##/g,function($0,$1,$2){
+      if($0==="##")return "#";
       //TODO: <参照:予定4>
       // ※ || を使うと引数が空白 "" の時にも、
       // 引数が見つからなかったかの様な動作をしてしまう。
@@ -1449,19 +1456,20 @@ agh.memcpy(ns.Command.prototype,{
       if($1=="0")ret=agh.Text.Unescape(ret,"html");
       return ret;
     });
-    
+
     doc.currentCtx.output.buff.push(result);
   },
   insertTextDef:function(doc,args){
     var result=this.text;
-    if(args)result=result.replace(/#(0?)([1-9]\d*)/g,function($0,$1,$2){
+    if(args)result=result.replace(/#(0?)([1-9]\d*)|##/g,function($0,$1,$2){
+      if($0==="##")return "#";
       //TODO: <参照:予定4>
       var ret=args[$2];
       if(ret==null)ret=$0;
       if($1=="0")ret=agh.Text.Unescape(ret,"html");
       return ret;
     });
-    
+
     // この時点で scanner は次の語に移っているので復元 (再び後で解釈)
     doc.scanner.InsertSource(result);
   },
@@ -1679,7 +1687,7 @@ agh.memcpy(ns.Command2,{
   /// </returns>
   CreateArgReaders:function(argdef,type){
     if(argdef==null||argdef=="")return null;
-    
+
     var readers=[];
     argdef=argdef.replace(COMMAND2_REG_ARGDEF,function($A,$H,$1,$2,$3,$4,$Tc,$Tt,$Tl){
       // データの整理
@@ -1694,7 +1702,7 @@ agh.memcpy(ns.Command2,{
       // \edef の場合は raw 読み取り (#1) は禁止。
       // 代わりに htm 読み取り (#>1) を強制する。
       if(type=="m@"&&readtype=="raw")readtype="htm";
-      
+
       var until_type=null;
       var until_word=null;
       if($Tc!=null&&$Tc!=""){
@@ -1711,7 +1719,7 @@ agh.memcpy(ns.Command2,{
       var prefix_checker=null;
       if($H!=null&&$H!="")
         prefix_checker=ns.Command2.CreatePrefixChecker($H);
-      
+
       if(until_type==null){
         // 一引数読み取り関数の定義
         var ar=function Command2ArgRead(doc,cmdName){
@@ -1738,16 +1746,16 @@ agh.memcpy(ns.Command2,{
           }
         };
       }
-      
+
       readers.push(ar);
       return "";
     });
 //      if(argdef.length!=0)読み取られなかった物が存在。エラー。■
 //      if(argdef.length!=0)
 //        alert("argdef_not_processed_part = "+argdef);
-    
+
     if(readers.length==0)return null;
-    
+
     // 全引数読み取り関数を設定
     readers.read=this.readers_read;
     readers.apply_read_args=this.readers_apply_read_args;
@@ -1801,7 +1809,7 @@ agh.memcpy(ns.Command2,{
     }
 
     if(precedingTokens.length==0)return null;
-    
+
     return function(doc,cmdName){
       for(var i=0,iN=precedingTokens.length;i<iN;i++){
         var tok=precedingTokens[i];
@@ -1822,41 +1830,37 @@ agh.memcpy(ns.Command2,{
   /// 全引数の読み取りを実行します。
   /// </summary>
   readers_read:function(doc,cmdName){
+#%m ns::Command2::readers_read::body
     var args=[cmdName];
     for(var i=0;i<this.length;i++){
       args.push(this[i](doc,cmdName));
     }
+#%end
+#%x ns::Command2::readers_read::body
     return args;
   },
   /// *** CreateArgReaders 戻り値に設定されるメソッドです ***
   readers_apply_args:function(text,args,isHtml){
-    return text.replace(/#(0?)([1-9])/g,function($0,$1,$2){
+#%m ns::Command2::readers_apply_args::body
+    return text.replace(/#(0?)([1-9])|##/g,function($0,$1,$2){
+      if($0==="##")return "#";
       var ret=args[$2];
       if(ret==null)ret=$0;
       if($1=="0")ret=agh.Text.Unescape(ret,"html");
-      if(!isHtml)ret="\x1F"+ret+"\x1F";
+      if(!isHtml)ret="\x1F"+ret+"\x1F"; // トークン強制区切 (see ns.Scanner)
       return ret;
     });
+#%end
+#%x ns::Command2::readers_apply_args::body
   },
   /// *** CreateArgReaders 戻り値に設定されるメソッドです ***
   /// <summary>
   /// 全引数の読み取りを実行し、指定された text の置換を行います。
   /// </summary>
   readers_apply_read_args:function(text,doc,cmdName,isHtml){
-    // return this.apply_args(text,this.read(doc,cmdName)); に等価
-    
-    var args=[cmdName];
-    for(var i=0;i<this.length;i++){
-      args.push(this[i](doc,cmdName));
-    }
-    
-    return text.replace(/#(0?)([1-9])/g,function($0,$1,$2){
-      var ret=args[$2];
-      if(ret==null)ret=$0;
-      if($1=="0")ret=agh.Text.Unescape(ret,"html");
-      if(!isHtml)ret="\x1F"+ret+"\x1F";
-      return ret;
-    });
+    // return this.readers_apply_args(text,this.read(doc,cmdName)); に等価
+#%x ns::Command2::readers_read::body
+#%x ns::Command2::readers_apply_args::body
   }
   //************************************************************************
 });
@@ -1908,7 +1912,7 @@ agh.memcpy(ns.Environment.prototype,{
   /// </summary>
   Process:function(doc,ENVNAME){
     var ctx=doc.context_cast(["global","sub.env",this.context]);
-    
+
     // setup context and read under the context
     var loc_err=false;
     ctx.AddCommandHandler("end",function(doc){
@@ -1921,20 +1925,20 @@ agh.memcpy(ns.Environment.prototype,{
         doc.currentCtx.output.error("UnexpectedEOR",env);
         doc.scanner.InsertSource(env);
         doc.currentCtx.BREAK=true;
-        
+
         // 外のローカル変数
         loc_err=true;
       }
     });
-    
+
     // process preparing
     this.prologue(doc,ctx);
-    
+
     // process main
     var result=doc.Read(ctx);
     if(!this.suppressOutput)
       doc.currentCtx.output.buff.push(result);
-    
+
     // process terminating
     if(loc_err){
       this.catcher(doc,ctx);
@@ -2017,10 +2021,10 @@ agh.memcpy(ns.Environment,{
       var ctx=doc.context_cast(ns.ContextFactory["sub.env.raw"]); // 新規作成
       ctx.ENVNAME=ENVNAME;
       ctx.ERRORED=false;
-      
+
       // process preparing
       this.prologue(doc,ctx);
-      
+
       // process main
       if(!ctx.ERRORED){
         ctx.rawctx_ebuff=[];
@@ -2028,7 +2032,7 @@ agh.memcpy(ns.Environment,{
         if(ctx.rawctx_ebuff.length)
           doc.currentCtx.output.buff.push(ctx.rawctx_ebuff.join(''));
       }
-      
+
       // process termination
       if(ctx.ERRORED){
         this.catcher(doc,ctx);

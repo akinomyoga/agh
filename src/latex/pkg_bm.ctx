@@ -21,9 +21,9 @@ agh.memcpy(ns.Modules["core"].ErrorMessages,{
 context "pkg:bm/global" new(){
   function DefineBoldSymbol(doc,weight,name,content){
     if(weight=='bold'){
-      content='<tex:fmbm>'+content+'</tex:fmbm>';
+      content='<tex:f class="aghtex-mathbm">'+content+'</tex:i>';
     }else if(weight=='heavy'){
-      content='<tex:fmhm>'+content+'</tex:fmhm>';
+      content='<tex:f class="aghtex-mathhm">'+content+'</tex:i>';
     }else{
       doc.currentCtx.output.error(
         "pkg:bm.DefineBoldSymbol.InvalidMathVersion",
@@ -51,10 +51,10 @@ context "pkg:bm/global" new(){
   };
 }
 context "pkg:bm/mode.math" new(){
-  command s@\bm("#>1")          '<tex:fmbm>#1</tex:fmbm>';
-  command s@\hm("#>1")          '<tex:fmhm>#1</tex:fmhm>';
-  command s@\boldsymbol("#>1")  '<tex:fmbm>#1</tex:fmbm>';
-  command s@\heavysymbol("#>1") '<tex:fmhm>#1</tex:fmhm>';
+  command s@\bm("#>1")          '<tex:f class="aghtex-mathbm">#1</tex:i>';
+  command s@\hm("#>1")          '<tex:f class="aghtex-mathhm">#1</tex:i>';
+  command s@\boldsymbol("#>1")  '<tex:f class="aghtex-mathbm">#1</tex:i>';
+  command s@\heavysymbol("#>1") '<tex:f class="aghtex-mathhm">#1</tex:i>';
 
   // \bmmax, \hmmax
   //   これはユーザが指定する変数で、

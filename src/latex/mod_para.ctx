@@ -38,110 +38,103 @@ context "mode.para"{
   };
   
   //@A 字体
-  // - 文字の大きさ
-  command f\tiny()         {mod_common.TagCurrentContext(doc,"tex:fsize-s4");};
-  command f\scriptsize()   {mod_common.TagCurrentContext(doc,"tex:fsize-s3");};
-  command f\footnotesize() {mod_common.TagCurrentContext(doc,"tex:fsize-s2");};
-  command f\small()        {mod_common.TagCurrentContext(doc,"tex:fsize-s1");};
-  command f\normalsize()   {mod_common.TagCurrentContext(doc,"tex:fsize-n");};
-  command f\large()        {mod_common.TagCurrentContext(doc,"tex:fsize-b1");};
-  command f\Large()        {mod_common.TagCurrentContext(doc,"tex:fsize-b2");};
-  command f\LARGE()        {mod_common.TagCurrentContext(doc,"tex:fsize-b3");};
-  command f\huge()         {mod_common.TagCurrentContext(doc,"tex:fsize-b4");};
-  command f\Huge()         {mod_common.TagCurrentContext(doc,"tex:fsize-b5");};
-  // - フォント
-  command s@\textrm(#>1) '<tex:frm>#1</tex:frm>';
-  command s@\textsf(#>1) '<tex:fsf>#1</tex:fsf>';
-  command s@\texttt(#>1) '<tex:ftt>#1</tex:ftt>';
-  command s@\textmc(#>1) '<tex:fmc>#1</tex:fmc>';
-  command s@\textgt(#>1) '<tex:fgt>#1</tex:fgt>';
-  command s@\textmd(#>1) '<tex:fmd>#1</tex:fmd>';
-  command s@\textbf(#>1) '<tex:fbf>#1</tex:fbf>';
-  command s@\textup(#>1) '<tex:fup>#1</tex:fup>';
-  command s@\textit(#>1) '<tex:fit>#1</tex:fit>';
-  command s@\textsc(#>1) '<tex:fsc>#1</tex:fsc>';
-  command s@\textsl(#>1) '<tex:fsl>#1</tex:fsl>';
-  command s@\emph  (#>1) '<tex:i class="aghtex-emphasize">#1</tex:i>';
-  command f\rmfamily() {mod_common.TagCurrentContext(doc,"tex:frm");};
-  command f\sffamily() {mod_common.TagCurrentContext(doc,"tex:fsf");};
-  command f\ttfamily() {mod_common.TagCurrentContext(doc,"tex:ftt");};
-  command f\mcfamily() {mod_common.TagCurrentContext(doc,"tex:fmc");};
-  command f\gtfamily() {mod_common.TagCurrentContext(doc,"tex:fgt");};
-  command f\mdseries() {mod_common.TagCurrentContext(doc,"tex:fmd");};
-  command f\bfseries() {mod_common.TagCurrentContext(doc,"tex:fbf");};
-  command f\upshape()  {mod_common.TagCurrentContext(doc,"tex:fup");};
-  command f\itshape()  {mod_common.TagCurrentContext(doc,"tex:fit");};
-  command f\scshape()  {mod_common.TagCurrentContext(doc,"tex:fsc");};
-  command f\slshape()  {mod_common.TagCurrentContext(doc,"tex:fsl");};
-  //
-  command s@\textnormal(#>1) '<tex:fnorm>#1</tex:fnorm>';
-  command f\normalfont (){mod_common.TagCurrentContext(doc,"tex:fnorm");};
-  //
-  command f\em()      {mod_common.TagCurrentContext(doc,'tex:i class="aghtex-emphasize"','tex:i');};
-  command f\rm()      {mod_common.TagCurrentContext(doc,"tex:frm");};
-  command f\sl()      {mod_common.TagCurrentContext(doc,"tex:fsl");};
-  command f\it()      {mod_common.TagCurrentContext(doc,"tex:fit");};
-  command f\tt()      {mod_common.TagCurrentContext(doc,"tex:ftt");};
-  command f\bf()      {mod_common.TagCurrentContext(doc,"tex:fbf");};
-  command f\sf()      {mod_common.TagCurrentContext(doc,"tex:fsf");};
-  command f\sc()      {mod_common.TagCurrentContext(doc,"tex:fsc");};
-  command f\mc()      {mod_common.TagCurrentContext(doc,"tex:fmc");};
-  command f\gt()      {mod_common.TagCurrentContext(doc,"tex:fgt");};
-  command f\dm()      {mod_common.TagCurrentContext(doc,"tex:fmc");};
-  command f\dg()      {mod_common.TagCurrentContext(doc,"tex:fgt");};
-  command s@\boldmath(#>1) '<tex:fmbm>#1</tex:fmbm>';
+  _Ctx.DefineCommand({
+    // - 文字の大きさ
+    normalsize  : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-normal">','</tex:f>'),
+    tiny        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-small4">','</tex:f>'),
+    scriptsize  : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-small3">','</tex:f>'),
+    footnotesize: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-small2">','</tex:f>'),
+    small       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-small1">','</tex:f>'),
+    large       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-large1">','</tex:f>'),
+    Large       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-large2">','</tex:f>'),
+    LARGE       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-large3">','</tex:f>'),
+    huge        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-large4">','</tex:f>'),
+    Huge        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-large5">','</tex:f>'),
+
+    // - フォント
+    textrm: ['s@;#>1','<tex:f class="aghtex-textrm">#1</tex:f>'],
+    textsf: ['s@;#>1','<tex:f class="aghtex-textsf">#1</tex:f>'],
+    texttt: ['s@;#>1','<tex:f class="aghtex-texttt">#1</tex:f>'],
+    textmc: ['s@;#>1','<tex:f class="aghtex-textrm">#1</tex:f>'],
+    textgt: ['s@;#>1','<tex:f class="aghtex-textgt">#1</tex:f>'],
+    textmd: ['s@;#>1','<tex:f class="aghtex-textmd">#1</tex:f>'],
+    textbf: ['s@;#>1','<tex:f class="aghtex-textbf">#1</tex:f>'],
+    textup: ['s@;#>1','<tex:f class="aghtex-textup">#1</tex:f>'],
+    textit: ['s@;#>1','<tex:f class="aghtex-textit">#1</tex:f>'],
+    textsc: ['s@;#>1','<tex:f class="aghtex-textsc">#1</tex:f>'],
+    textsl: ['s@;#>1','<tex:f class="aghtex-textsl">#1</tex:f>'],
+    emph  : ['s@;#>1','<tex:i class="aghtex-emphasize">#1</tex:i>'],
+    rmfamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textrm">','</tex:f>'),
+    sffamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsf">','</tex:f>'),
+    ttfamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-texttt">','</tex:f>'),
+    mcfamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textmc">','</tex:f>'),
+    gtfamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textgt">','</tex:f>'),
+    mdseries: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textmd">','</tex:f>'),
+    bfseries: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textbf">','</tex:f>'),
+    upshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textup">','</tex:f>'),
+    itshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textit">','</tex:f>'),
+    scshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsc">','</tex:f>'),
+    slshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsl">','</tex:f>'),
+    em: mod_common.CreateCommandTagFollowing('<tex:i class="aghtex-emphasize">','<tex:i>'),
+    rm: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textrm">','</tex:f>'),
+    sl: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsl">','</tex:f>'),
+    it: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textit">','</tex:f>'),
+    tt: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-texttt">','</tex:f>'),
+    bf: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textbf">','</tex:f>'),
+    sf: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsf">','</tex:f>'),
+    sc: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsc">','</tex:f>'),
+    mc: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textmc">','</tex:f>'),
+    gt: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textgt">','</tex:f>'),
+    dm: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textmc">','</tex:f>'),
+    dg: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textgt">','</tex:f>'),
+
+    // 標準字体
+    textnormal: ['s@;#>1','<tex:fnorm>#1</tex:fnorm>'],
+    normalfont: mod_common.CreateCommandTagFollowing('<tex:fnorm>','</tex:fnorm>'),
+
+    // 太字斜体
+    boldmath: ['s@#>1','<tex:f class="aghtex-mathbm">#1</tex:f>'],
+
+    // アクセント
+    "'":mod_math.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x00B4;</tex:f>'), // alt = &#x02CA;
+    "=":mod_math.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x00AF;</tex:f>'), // alt = &#x02C9;
+    "u":mod_math.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02D8;</tex:f>'),
+    "v":mod_math.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02C7;</tex:f>'),
+    ".":mod_math.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02D9;</tex:f>'),
+    '"':mod_math.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x00A8;</tex:f>'),
+    "`":mod_math.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02CB;</tex:f>'),
+    "^":mod_math.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02C6;</tex:f>'),
+    "~":mod_math.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02DC;</tex:f>'),
+    "H":mod_math.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02DD;</tex:f>'),
+    "t":mod_math.CreateAccentCommand('acc','<tex:f class="aghtex-syma-mincho">&#x2040;</tex:f>'), // combining = &#x0361;
+    "c":mod_math.CreateAccentCommand('low','<tex:f class="aghtex-symb-mincho">&#x00B8;</tex:f>'), // combining = &#x0327;
+    "b":mod_math.CreateAccentCommand('low','<tex:f class="aghtex-symb-mincho">&#x02D7;</tex:f>'), // combining = &#x0320;
+    "d":mod_math.CreateAccentCommand('low','<tex:f class="aghtex-syma-mincho">&#x002E;</tex:f>')  // combining = &#x0323;
+  });
 
   if(ns.compatMode=="IE-qks"||agh.browser.vIE<8){
     _Ctx.DefineCommand({
-      "'":mod_math.CreateAccentCommandQksT( 0.7,"<tex:fgt>&#xB4;</tex:fgt>"),
-      "`":mod_math.CreateAccentCommandQksT( 0.7,"<tex:fgt>`</tex:fgt>"),
-      "^":mod_math.CreateAccentCommandQksT( 0.9,"<tex:fgt>&#x2C6;</tex:fgt>"),
-      '"':mod_math.CreateAccentCommandQksT( 1.8,'<tex:fsym class="mc"><tex:small2>..</tex:small2></tex:fsym>'),
-      "~":mod_math.CreateAccentCommandQksT( 0.7,'<tex:fsym class="mc">~</tex:fsym>'),
-      "=":mod_math.CreateAccentCommandQksT( 1.2,"<tex:small3>－</tex:small3>"),
-      ".":mod_math.CreateAccentCommandQksT( 1.3,"<tex:small3>・</tex:small3>"),
-      "u":mod_math.CreateAccentCommandQksT( 0.6,"&#x2D8;"),
-      "v":mod_math.CreateAccentCommandQksT( 0.8,"&#x2C7;"),
-      "H":mod_math.CreateAccentCommandQksT( 0.6,"&#x2DD;"),
-      "t":mod_math.CreateAccentCommandQksT( 0.6,"<tex:fgt>&nbsp;&#x361;&nbsp;</tex:fgt>"),
-      "c":mod_math.CreateAccentCommandQksB( 0.2,"<tex:fgt>&#x327;</tex:fgt>"),
+      "c":mod_math.CreateAccentCommandQksB( 0.2,'<tex:f class="aghtex-textgt">&#x327;</tex:f>'),
       "b":mod_math.CreateAccentCommandQksB( 0.2,"_"),
       "d":mod_math.CreateAccentCommandQksB(-1.0,"・")
-    });
-  }else{
-    _Ctx.DefineCommand({
-      "'":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00B4;</tex:fsym>'), // alt = &#x02CA;
-      "=":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00AF;</tex:fsym>'), // alt = &#x02C9;
-      "u":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D8;</tex:fsym>'),
-      "v":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C7;</tex:fsym>'),
-      ".":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02D9;</tex:fsym>'),
-      '"':mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x00A8;</tex:fsym>'),
-      "`":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02CB;</tex:fsym>'),
-      "^":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02C6;</tex:fsym>'),
-      "~":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02DC;</tex:fsym>'),
-      "H":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-symb-mincho">&#x02DD;</tex:fsym>'),
-      "t":mod_math.CreateAccentCommand('acc','<tex:fsym class="aghtex-syma-mincho">&#x2040;</tex:fsym>'), // combining = &#x0361;
-      "c":mod_math.CreateAccentCommand('low','<tex:fsym class="aghtex-symb-mincho">&#x00B8;</tex:fsym>'), // combining = &#x0327;
-      "b":mod_math.CreateAccentCommand('low','<tex:fsym class="aghtex-symb-mincho">&#x02D7;</tex:fsym>'), // combining = &#x0320;
-      "d":mod_math.CreateAccentCommand('low','<tex:fsym class="aghtex-syma-mincho">&#x002E;</tex:fsym>')  // combining = &#x0323;
     });
   }
   
   // \text... 記号 (math-mode で文字化けする系統の物) 
   command s@\textasciicircum     () "^";
   command s@\textasciitilde      () "~";
-  command s@\textbackslash       () '<tex:fsym class="rm">\\</tex:fsym>';
-  command s@\textbullet          () "<tex:fmr>•</tex:fmr>"; // u2022
+  command s@\textbackslash       () '<tex:f class="aghtex-textrm">\\</tex:f>';
+  command s@\textbullet          () '<tex:f class="aghtex-textmr">•</tex:f>'; // u2022
   command s@\textperiodcentered  () "·";  // u00B7
   command s@\textbar             () "|";  // platex: j に文字化け in math-mode
   command s@\textemdash          () "―"; // platex: | に文字化け in math-mode
   command s@\textendash          () "—";
   command s@\textexclamdown      () "¡";  // platex: < に文字化け in math-mode
   command s@\textquestiondown    () "¿";  // platex: > に文字化け in math-mode
-  command s@\textquotedblleft    () '<tex:fsym class="rm">“</tex:fsym>';
-  command s@\textquotedblright   () '<tex:fsym class="rm">”</tex:fsym>'; // platex: double prime に文字化け in math-mode
-  command s@\textquoteleft       () '<tex:fsym class="rm">‘</tex:fsym>';
-  command s@\textquoteright      () '<tex:fsym class="rm">’</tex:fsym>'; // platex: prime に文字化け in math-mode
+  command s@\textquotedblleft    () '<tex:f class="aghtex-textrm">“</tex:f>';
+  command s@\textquotedblright   () '<tex:f class="aghtex-textrm">”</tex:f>'; // platex: double prime に文字化け in math-mode
+  command s@\textquoteleft       () '<tex:f class="aghtex-textrm">‘</tex:f>';
+  command s@\textquoteright      () '<tex:f class="aghtex-textrm">’</tex:f>'; // platex: prime に文字化け in math-mode
   command s@\textasteriskcentered() "&#x2217;";
   command s@\textparagraph       () "&#x00b6;";
   command s@\textbraceleft       () "{";
@@ -152,8 +145,8 @@ context "mode.para"{
   command s@\textsection         () "&#x00a7;";
   command s@\textsterling        () "&#x00a3;";
 
-  letter s@\>()  '&#x00BF;'; // u00bf "¿", '<tex:fsym class="aghtex-symb-roman">&#x00BF;</tex:fsym>'
-  letter s@\<()  '&#x00A1;'; // u00a1 "¡", '<tex:fsym class="aghtex-symb-roman">&#x00A1;</tex:fsym>'
+  letter s@\>()  '&#x00BF;'; // u00bf "¿", '<tex:f class="aghtex-symb-roman">&#x00BF;</tex:f>'
+  letter s@\<()  '&#x00A1;'; // u00a1 "¡", '<tex:f class="aghtex-symb-roman">&#x00A1;</tex:f>'
   letter s@\|()  "―";
   letter f@\?(){
     doc.scanner.Next();
@@ -195,28 +188,28 @@ context "mode.para"{
   function quoteleft(doc){
     doc.scanner.Next();
     if(!doc.scanner.is("ltr","`")&&!doc.scanner.is("cmd","lq")){
-      doc.currentCtx.output.buff.push('<tex:fsym class="rm">‘</tex:fsym>');
+      doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">‘</tex:f>');
       return;
     }
     
     doc.scanner.Next();
-    doc.currentCtx.output.buff.push('<tex:fsym class="rm">“</tex:fsym>');
+    doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">“</tex:f>');
   }
   _Ctx.AddLetterHandler("`",quoteleft);
   _Ctx.AddCommandHandler("lq",quoteleft);
   function quoteright(doc){
     doc.scanner.Next();
     if(!doc.scanner.is("ltr","'")&&!doc.scanner.is("cmd","rq")){
-      doc.currentCtx.output.buff.push('<tex:fsym class="rm">’</tex:fsym>');
+      doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">’</tex:f>');
       return;
     }
     
     doc.scanner.Next();
-    doc.currentCtx.output.buff.push('<tex:fsym class="rm">”</tex:fsym>');
+    doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">”</tex:f>');
   }
   _Ctx.AddLetterHandler("'",quoteright);
   _Ctx.AddCommandHandler("rq",quoteright);
-  letter s@\'"'()  '<tex:fsym class="rm">”</tex:fsym>'; // "
+  letter s@\'"'()  '<tex:f class="aghtex-textrm">”</tex:f>'; // "
   
   environment s@\center()     '<div class="tex-center">#0</div>';
   environment s@\flushright() '<div class="tex-right">#0</div>';
