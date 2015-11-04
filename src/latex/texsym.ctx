@@ -29,13 +29,11 @@ context "mode.math"{
     ominus  : ['s@','<tex:f class="aghtex-binop aghtex-symb-meiryo">&#x2296;</tex:f>'],
     otimes  : ['s@','<tex:f class="aghtex-binop aghtex-symb-meiryo">&#x2297;</tex:f>'],
     oslash  : ['s@','<tex:f class="aghtex-binop aghtex-symb-meiryo">&#x2298;</tex:f>'],
-    // ■TODO \triangleleft \triangleright \bigtriangleup \bigtriagngledown:
-    //   mathsymb による表示と platex による表示を比較して適用
-    triangleleft   : ['s@','<tex:small><tex:f class="aghtex-textmc">&#x22B2;</tex:f></tex:small>'], // ■
-    triangleright  : ['s@','<tex:small><tex:f class="aghtex-textmc">&#x22B3;</tex:f></tex:small>'], // ■
-    bigtriangleup  : ['s@','<tex:big2>△</tex:big2>'], // ■
-    bigtriangledown: ['s@','<tex:big2>▽</tex:big2>'], // ■
-    bigcirc        : ['s@','○'], // ■
+    triangleleft   : ['s@','<tex:f class="aghtex-symb-mincho aghtex-size-small1">&#x22B2;</tex:f>'],
+    triangleright  : ['s@','<tex:f class="aghtex-symb-mincho aghtex-size-small1">&#x22B3;</tex:f>'],
+    bigtriangleup  : ['s@','<tex:f class="aghtex-syma-mincho">△</tex:f>'], // u25b3
+    bigtriangledown: ['s@','<tex:f class="aghtex-syma-mincho">▽</tex:f>'], // u25bd
+    bigcirc        : ['s@','<tex:f class="aghtex-syma-mincho">○</tex:f>'], // u25cb
 
     // 二項関係
     le:        ['s@','<tex:f class="aghtex-binop aghtex-symb-mincho">≤</tex:f>'],
@@ -244,12 +242,12 @@ context "mode.math"{
     infty       : ['s@','<tex:f class="aghtex-symb-mincho">∞</tex:f>'],
     smallint    : ['s@','<tex:f class="aghtex-symb-mincho">∫</tex:f>'],
     prime       : ['s@','<tex:f class="aghtex-symb-roman">&#x2032;</tex:f>'], // 大きな prime (⇔ <tex:f class="aghtex-textrm">&#x0027;</tex:f> は上付の小さい物)
-    emptyset    : ['s@','<tex:f class="aghtex-symb-mincho">&#x2205;</tex:f>'], // ■platex では 0 slash を出力する。
+    emptyset    : ['s@','<tex:f class="aghtex-symb-mincho">&#x2205;</tex:f>'], // ■platex では 0 slash (cmsy9 にある) を出力する。
     surd        : ['s@','<tex:f class="aghtex-symb-mincho">&#x221A;</tex:f>'], // '<tex:f class="aghtex-mathrm" lang="en">√</tex:f>';
     top         : ['s@','<tex:f class="aghtex-symb-mincho">&#x22A4;</tex:f>'],
     bot         : ['s@','<tex:f class="aghtex-symb-gothic">⊥</tex:f>'], // u22a5
     angle       : ['s@','<tex:f class="aghtex-symb-gothic">∠</tex:f>'], // u2220
-    triangle    : ['s@','<tex:small1>△</tex:small1>'], // ■
+    triangle    : ['s@','<tex:f class="aghtex-syma-mincho">△</tex:f>'], // u25b3
     backslash   : ['s@','<tex:f class="aghtex-symb-cent">\\</tex:f>'], // u005c
     forall      : ['s@','<tex:f class="aghtex-symb-gothic">∀</tex:f>'], // u2200
     exists      : ['s@','<tex:f class="aghtex-symb-gothic">∃</tex:f>'], // u2203
