@@ -613,7 +613,7 @@ context "pkg:amsmath/mode.math" new(){
 context "pkg:amsmath/global" new(){
   _Ctx.DefineCommand({
     // command s:mode.math\eqref 2014-03-05
-    eqref: ['s;#1','\textup{(\ref{#1})}'],
+    eqref: ['s;#1',@'\textup{(\ref{#1})}'],
 
     // command \DeclareMathOperator 2014-03-05
     "DeclareMathOperator*": ['s;#1#2',@'\def#1{\mathop{\mathrm{#2}}}'],
