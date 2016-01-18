@@ -4,7 +4,7 @@ function addsetting {
 	local target=$1
 	local key=$2
 	local file=$3
-	
+
 	if [[ -e $target ]] && grep -Fq "$key" "$target"; then
     # 登録済み
     return
