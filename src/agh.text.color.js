@@ -2020,14 +2020,8 @@ nsColor.cpp=function(str,option){
   // test implementation: bash
   var bash=new ns.RegexConverter("gm",[
     [
-      /(^|\s+)#.*?(?:\r\n?|\n|$)/g,
-      function(G,C){return _h(G[1])+'<span class="agh-syntax-comment">'+_h(G[0].slice(G[1].length))+'</span>';}
-    ],[
-      /\$?"(?:[^\\"]|\\[\s\S])*"|`(?:[^\\"]|\\[\s\S])*`|\$'(?:[^\\]|\\[\s\S])*'|'[^']*'/,
-      function(G,C){return '<span class="agh-syntax-string">'+_h(G[0])+'</span>';}
-    ],[
-      /^.*?\$ /,
-      function(G,C){return '<span class="agh-syntax-comment">'+_h(G[0].slice(0,-1))+'</span> ';}
+      /^(.*?\$) (.*)$/,
+      function(G,C){return '<span class="agh-syntax-bash-prompt">'+_h(G[1])+'</span> '+agh.Text.Color.bash(G[2]);}
     ],ruleHtmlEscape
   ]);
   registerSyntaxHighlighter("bash-interactive",createSyntaxHighligher(bash));

@@ -127,6 +127,7 @@ span.agh-syntax-variable{color:darkorange;}
 span.agh-syntax-variable-delimiter{color:purple;}
 
 span.agh-syntax-sed-address{color:green;}
+span.agh-syntax-bash-prompt{font-weight:bold;}
 
 /* PHP */
 span.agh-syntax-lang-php span.agh-syntax-string>span.agh-syntax-expression,

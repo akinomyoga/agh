@@ -3,6 +3,10 @@
 OUTDIR=../out
 
 all: directory jsfiles jgzfiles copy_file
+.PHONY: all upload
+
+upload:
+	make -C ../out upload
 
 MWGPP:=PPC_CPP=1 mwg_pp.awk
 Makefile: Makefile.pp
