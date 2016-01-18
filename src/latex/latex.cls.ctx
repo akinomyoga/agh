@@ -1,0 +1,9 @@
+/* -*- mode:js -*- */
+#mwgwait "latex/latex.ctx.js"
+#output "latex.cls.js"
+
+#include "cls_article.ctx"
+#include "pkg_ams.ctx"
+#include "pkg_bm.ctx"
+#include "pkg_color.ctx"
+#include "pkg_url.ctx"
