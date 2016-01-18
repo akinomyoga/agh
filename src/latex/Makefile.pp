@@ -1,4 +1,4 @@
-# Makefile -*- Makefile -*-
+# Makefile -*- mode:makefile-gmake -*-
 
 all:
 .PHONY: all
@@ -13,7 +13,7 @@ MWGPP:=mwg_pp.awk
 all: $(OUTDIR) $(OUTDIR)/.htaccess
 $(OUTDIR):
 	mkdir -p $@
-$(OUTDIR)/.htaccess: .htaccess
+$(OUTDIR)/.htaccess: htaccess
 	cp -p $< $@
 
 all: css jsfiles resources
@@ -43,23 +43,6 @@ $(OUTDIR)/%name%.js.gz: $(OUTDIR)/%name%.js
 $(OUTDIR)/%name%.jgz: $(OUTDIR)/%name%.js.gz
 	cp $< $@
 #%define end
-#-------------------------------------------------------------------------------
-# 統合前の latex.*.js
-
-# #%x add_js.r#%name%#latex.cor#
-# $(OUTDIR)/latex.cor.js: latex.cor.js core.js
-# 	$(MWGPP) $< > $@
-
-# #%x add_js.r#%name%#latex.ctx#
-# $(OUTDIR)/latex.ctx.js: main.ctx base.ctx mod_counter.ctx mod_length.ctx mod_common.ctx mod_math.ctx texsym.ctx mod_para.ctx mod_list.ctx mod_array.ctx .gen/mod_ref.ctx
-# 	$(CTXC) $<
-# 	mv latex.ctx.js $(OUTDIR)/
-
-# #%x add_js.r#%name%#latex.cls#
-# $(OUTDIR)/latex.cls.js: latex.cls.ctx cls_article.ctx pkg_ams.ctx pkg_bm.ctx pkg_color.ctx pkg_url.ctx
-# 	$(CTXC) $<
-# 	mv latex.cls.js $@
-
 #-------------------------------------------------------------------------------
 
 #%m aghtex::Module (
