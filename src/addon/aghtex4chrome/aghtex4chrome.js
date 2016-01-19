@@ -35,7 +35,7 @@
     var aghtexBaseUrl=chrome.extension.getURL("agh/agh.js").slice(0,-6)+"latex/";
     var eHTML=_document.documentElement;
     if(eHTML.getAttribute("xmlns:tex")==null)
-	    eHTML.setAttribute("xmlns:tex",aghtexBaseUrl);
+      eHTML.setAttribute("xmlns:tex",aghtexBaseUrl);
   }
 
   var escape_html_dict={'&':'&amp;','<':'&lt;','>':'&gt;'};

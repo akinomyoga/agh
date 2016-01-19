@@ -1199,20 +1199,20 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
         });
 
         var shift=isChild?-1:0;
-	      f.setRectangle=function(l,t,w,h){
+        f.setRectangle=function(l,t,w,h){
           agh.dom.setStyle(this,{
-			      left:(l+shift)+'px',
-			      top:(t+shift)+'px',
-			      '-agh-offset-width':w,
-			      '-agh-offset-height':h
-		      });
-		      if(this.e_tips){
-			      this.e_tips.style.left=l+'px';
-			      this.e_tips.style.top=(t+h+2)+'px';
-		      }
-	      };
-	      f.clear=function(){this.setRectangle(0,0,20,20);};
-	      f[ElementHighlighter.NOT_TARGET]=true;
+            left:(l+shift)+'px',
+            top:(t+shift)+'px',
+            '-agh-offset-width':w,
+            '-agh-offset-height':h
+          });
+          if(this.e_tips){
+            this.e_tips.style.left=l+'px';
+            this.e_tips.style.top=(t+h+2)+'px';
+          }
+        };
+        f.clear=function(){this.setRectangle(0,0,20,20);};
+        f[ElementHighlighter.NOT_TARGET]=true;
         f.clear();
         return f;
       },
@@ -1254,72 +1254,72 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
         this.panel1.style.display='none';
 
         // clear state
-		    // agh.dom.setStyle(this.frame5,{borderWidth:'1px'});
+        // agh.dom.setStyle(this.frame5,{borderWidth:'1px'});
         // agh.dom.setInnerText(this.panel1,"");
-		    // this.frame1.clear();
-		    // this.frame2.clear();
-		    // this.frame3.clear();
-		    // this.frame4.clear();
-		    // this.frame5.clear();
+        // this.frame1.clear();
+        // this.frame2.clear();
+        // this.frame3.clear();
+        // this.frame4.clear();
+        // this.frame5.clear();
       },
       
       setHighlightTarget:function(elem){
         if(this.target==elem)return;
 
-	      if(elem[ElementHighlighter.NOT_TARGET]){
+        if(elem[ElementHighlighter.NOT_TARGET]){
           this.clearHighlightTarget();
-		      return;
-	      }else{
+          return;
+        }else{
           this.target=elem;
           this.frame1.style.display='block';
           this.frame5.style.display='block';
           this.panel1.style.display='block';
         }
-	      
-	      var m=new ElementMetric(elem);
-	      this.frame1.setRectangle(m.mx,m.my,m.mw,m.mh);
-	      this.frame2.setRectangle(m.ox,m.oy,m.ow,m.oh);
-	      this.frame3.setRectangle(m.vl,m.vt,m.vw,m.vh);
-	      this.frame4.setRectangle(m.cl,m.ct,m.cw,m.ch);
-	      agh.dom.setStyle(this.frame5,{
-		      borderTop:m.pt>0?m.pt+"px solid green":'1px solid #0f0',
-		      borderLeft:m.pl>0?m.pl+"px solid green":'1px solid #0f0',
-		      borderRight:m.pr>0?m.pr+"px solid green":'1px solid #0f0',
-		      borderBottom:m.pb>0?m.pb+"px solid green":'1px solid #0f0'
-	      });
+        
+        var m=new ElementMetric(elem);
+        this.frame1.setRectangle(m.mx,m.my,m.mw,m.mh);
+        this.frame2.setRectangle(m.ox,m.oy,m.ow,m.oh);
+        this.frame3.setRectangle(m.vl,m.vt,m.vw,m.vh);
+        this.frame4.setRectangle(m.cl,m.ct,m.cw,m.ch);
+        agh.dom.setStyle(this.frame5,{
+          borderTop:m.pt>0?m.pt+"px solid green":'1px solid #0f0',
+          borderLeft:m.pl>0?m.pl+"px solid green":'1px solid #0f0',
+          borderRight:m.pr>0?m.pr+"px solid green":'1px solid #0f0',
+          borderBottom:m.pb>0?m.pb+"px solid green":'1px solid #0f0'
+        });
         this.frame5.setRectangle(m.px,m.py,m.pw,m.ph);
         this.panel1.innerHTML=[
-		      // "wh({w}, {h})".format(m),
-		      "margin-box: xywh({mx}, {my}, {mw}, {mh})".format(m),
-		      "- border-box: xywh({ox}, {oy}, {ow}, {oh})".format(m),
-		      "--- view-box: xywh({vl}, {vt}, {vw}, {vh})".format(m),
-		      "--- client-box: xywh({cl}, {ct}, {cw}, {ch})".format(m),
-		      "padding-box: xywh({px}, {py}, {pw}, {ph})".format(m),
-		      "- content-box: xywh({Cx}, {Cy}, {Cw}, {Ch})".format({Cx:m.px+m.pl,Cy:m.py+m.pt,Cw:m.pw-m.pl-m.pr,Ch:m.ph-m.pt-m.pb}),
-		      "margin: {mt}px {mr}px {mb}px {ml}px".format(m),
-		      "padding: {pt}px {pr}px {pb}px {pl}px".format(m),
-		      "border-width: {bt}px {bb}px {br}px {bl}px".format(m),
-		      "nest = "+get_chain(elem),
-		      // "calc_path = ({path_x}, {path_y})".format(m)
+          // "wh({w}, {h})".format(m),
+          "margin-box: xywh({mx}, {my}, {mw}, {mh})".format(m),
+          "- border-box: xywh({ox}, {oy}, {ow}, {oh})".format(m),
+          "--- view-box: xywh({vl}, {vt}, {vw}, {vh})".format(m),
+          "--- client-box: xywh({cl}, {ct}, {cw}, {ch})".format(m),
+          "padding-box: xywh({px}, {py}, {pw}, {ph})".format(m),
+          "- content-box: xywh({Cx}, {Cy}, {Cw}, {Ch})".format({Cx:m.px+m.pl,Cy:m.py+m.pt,Cw:m.pw-m.pl-m.pr,Ch:m.ph-m.pt-m.pb}),
+          "margin: {mt}px {mr}px {mb}px {ml}px".format(m),
+          "padding: {pt}px {pr}px {pb}px {pl}px".format(m),
+          "border-width: {bt}px {bb}px {br}px {bl}px".format(m),
+          "nest = "+get_chain(elem),
+          // "calc_path = ({path_x}, {path_y})".format(m)
           ""
-	      ].join("<br />");
+        ].join("<br />");
 
-	      function get_chain(elem){
-		      if(elem==null)return null;
-		      var r='<b>'+elem.tagName+'</b>';
-		      var o=getOffsetParent(elem);
-		      elem=elem.parentNode;
-		      while(elem!=null&&elem.tagName){
-			      if(elem==o){
-				      r="<b>"+elem.tagName+"</b> &gt; "+r
-				      o=getOffsetParent(elem);
-			      }else{
-				      r=elem.tagName+" &gt; "+r
-			      }
-			      elem=elem.parentNode;
-		      }
-		      return r;
-	      }
+        function get_chain(elem){
+          if(elem==null)return null;
+          var r='<b>'+elem.tagName+'</b>';
+          var o=getOffsetParent(elem);
+          elem=elem.parentNode;
+          while(elem!=null&&elem.tagName){
+            if(elem==o){
+              r="<b>"+elem.tagName+"</b> &gt; "+r
+              o=getOffsetParent(elem);
+            }else{
+              r=elem.tagName+" &gt; "+r
+            }
+            elem=elem.parentNode;
+          }
+          return r;
+        }
       }
     });
     
@@ -1329,7 +1329,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
   agh.dom.debug1=function debug1(){
     var h=new agh.dom.ElementHighlighter();
     agh.addEventListener(document,'click',function(e){
-	    var elem=e.srcElement||e.target;
+      var elem=e.srcElement||e.target;
       if(elem!=null)
         h.setHighlightTarget(elem);
     });
@@ -1350,7 +1350,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
 
     var h=new agh.dom.ElementHighlighter();
     agh.addEventListener(document,'mousemove',function(e){
-	    var elem=e.srcElement||e.target;
+      var elem=e.srcElement||e.target;
       if(elem==null)return;
       
       if(elem[agh.dom.ElementHighlighter.NOT_TARGET]){

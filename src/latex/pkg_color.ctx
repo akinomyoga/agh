@@ -120,7 +120,7 @@ context "pkg:color/global" new(){
     if(color==null)return;
 
     doc.currentCtx.output.buff.push('<tex:i class="aghtex-color-textcolor" style="color:',color,'">');
-		doc.currentCtx.output.appendPost("</tex:i>");
+    doc.currentCtx.output.appendPost("</tex:i>");
   };
   command f\textcolor("#[]!1#!2#>3"){
     var color=get_color(doc,argv[1].trim(),argv[2].trim());
@@ -170,5 +170,5 @@ context "pkg:color/global" new(){
   };
 }
 ns.Document.Packages["color"]=function(doc,opt,pkgName){
-	doc.context_cast("global").OverwriteContext(doc.context_cast("pkg:color/global"));
+  doc.context_cast("global").OverwriteContext(doc.context_cast("pkg:color/global"));
 };

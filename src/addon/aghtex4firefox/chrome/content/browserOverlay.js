@@ -33,19 +33,19 @@
 
   function browser_onload(){
     var	frame=window.document.getElementById("appcontent");
-	  if(frame&&!frame.aghtex4firefox_initialized){
-		  frame.aghtex4firefox_initialized=true;
-		  frame.addEventListener("DOMContentLoaded",mainview_onload,false);
-	  }
+    if(frame&&!frame.aghtex4firefox_initialized){
+      frame.aghtex4firefox_initialized=true;
+      frame.addEventListener("DOMContentLoaded",mainview_onload,false);
+    }
   }
   function browser_onunload(){
     window.removeEventListener("load",browser_load,false);
     window.removeEventListener("unload",browser_onload,false);
     var	frame=window.document.getElementById("appcontent");
-	  if(frame&&frame.aghtex4firefox_initialized){
-		  frame.aghtex4firefox_initialized=false;
-		  frame.removeEventListener("DOMContentLoaded",mainview_onload,false);
-	  }
+    if(frame&&frame.aghtex4firefox_initialized){
+      frame.aghtex4firefox_initialized=false;
+      frame.removeEventListener("DOMContentLoaded",mainview_onload,false);
+    }
   }
 
   window.addEventListener("load",browser_onload,false);

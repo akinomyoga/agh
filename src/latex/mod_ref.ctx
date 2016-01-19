@@ -327,18 +327,18 @@ ns.ContextFactory["mode.para"].AddEnvironment("%figure%",environment_params_%fig
 #%x mod_ref::defineFigureEnvironment.r/%figure%/table/ .r/%Title%/Table/ .r/%FIG%/TB/ .r/%fig%/tb/
 
 context "env.thebibliography" new("mode.para"){
-	command f\bibitem("#!1"){
+  command f\bibitem("#!1"){
     var buff=doc.currentCtx.output.buff;
-		var envdata=doc.currentCtx["env:thebibliography"];
-		if(envdata!=null){
-			if(envdata.hasItem){
+    var envdata=doc.currentCtx["env:thebibliography"];
+    if(envdata!=null){
+      if(envdata.hasItem){
         buff.push('</li>\r\n');
-			}else{
-				envdata.hasItem=true;
-			}
+      }else{
+        envdata.hasItem=true;
+      }
 
       var name=agh.Text.Escape(argv[1].trim(),"html-attr");
-			buff.push(' <li id="aghtex.bib.',name,'">');
+      buff.push(' <li id="aghtex.bib.',name,'">');
 
       var counter=doc.GetCounter('enumiv');
       if(counter!=null){
@@ -347,39 +347,39 @@ context "env.thebibliography" new("mode.para"){
         buff.push("[",c,"] ");
         doc.references.displayedText['bib@'+name]=c;
       }
-		}else{
-			doc.currentCtx.output.error(
+    }else{
+      doc.currentCtx.output.error(
         "mod:ref.env:thebibliography.cmd:bibitem.MissingEnvData",null,
         "\\bibitem");
-		}
-	};
+    }
+  };
 }
 
 //------------------------------------------------------------------------------
 //  \begin{thebibliography}
 
 ns.ContextFactory["mode.para"].AddEnvironment("thebibliography",{
-	prologue:function(doc,ctx){
+  prologue:function(doc,ctx){
     var maxItems=doc.GetArgumentRaw();
 
-		ctx["env:thebibliography"]={hasItem:false,maxItems:maxItems};
-		doc.currentCtx.output.buff.push('<h2 class="aghtex-article-thebibliography">References</h2>');
+    ctx["env:thebibliography"]={hasItem:false,maxItems:maxItems};
+    doc.currentCtx.output.buff.push('<h2 class="aghtex-article-thebibliography">References</h2>');
     doc.currentCtx.output.buff.push('<ul class="aghtex-thebibliography">');
 
     var counter=doc.GetCounter('enumiv');
     if(counter!=null)counter.Clear();
-	},
-	epilogue:function(doc,ctx){
-		var envdata=ctx["env:thebibliography"];
-		if(envdata!=null){
-			if(envdata.hasItem)doc.currentCtx.output.buff.push('</li>\r\n');
-		}else{
-			throw STR_REPLACED_CTX;
-		}
-		doc.currentCtx.output.buff.push('</ul>\r\n');
-	},
-	catcher:function(doc,ctx){this.epilogue(doc,ctx);},
-	context:"env.thebibliography"
+  },
+  epilogue:function(doc,ctx){
+    var envdata=ctx["env:thebibliography"];
+    if(envdata!=null){
+      if(envdata.hasItem)doc.currentCtx.output.buff.push('</li>\r\n');
+    }else{
+      throw STR_REPLACED_CTX;
+    }
+    doc.currentCtx.output.buff.push('</ul>\r\n');
+  },
+  catcher:function(doc,ctx){this.epilogue(doc,ctx);},
+  context:"env.thebibliography"
 });
 
 agh.memcpy(ns.Document.prototype,{

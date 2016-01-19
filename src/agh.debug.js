@@ -8,7 +8,7 @@
 /// <reference path="agh.class.js"/>
 /// <reference path="agh.forms.js"/>
 agh.scripts.register("agh.debug.js",[	
-	"agh.js","agh.dom.js",
+  "agh.js","agh.dom.js",
   "agh.text.color.js","prog.std.css",
   "agh.debug.css",
   "agh.class.js","agh.forms.js"
@@ -658,106 +658,106 @@ agh.scripts.register("agh.debug.js",[
 
   function old_codes(){
     Debug.Tree.prototype._createStringNode=function(key,str){
-			elem.lastChild.ondblclick=function(){
-				var elem=prompt("変更後の値を入力して下さい",obj0[key0]);
-				if(elem!=null){
-					elem=elem.toString();
-					try{obj0[key0]=elem;this.innerHTML='"'+String.Escape.HTML(elem)+'"';}
-					catch(e){alert("書き込み出来ませんでした");}
-				}
-			}
-	    return elem;
+      elem.lastChild.ondblclick=function(){
+        var elem=prompt("変更後の値を入力して下さい",obj0[key0]);
+        if(elem!=null){
+          elem=elem.toString();
+          try{obj0[key0]=elem;this.innerHTML='"'+String.Escape.HTML(elem)+'"';}
+          catch(e){alert("書き込み出来ませんでした");}
+        }
+      }
+      return elem;
     }
 
     Debug.Tree.prototype.Some2Node=function(key,obj,parent){
-	    if(typeof(obj)=="object"){
-		    if(obj==null){
-			    return new Array(this._createEndNode(this._html_keyeq()+this.tObj+"null".fontcolor("blue")));
-		      //}else if(obj instanceof Array){
-		    }else if(!(obj instanceof Object)){
-			    //Detect HTMLElement
-			    try{
-				    if(obj.nodeType!=null&&obj.tagName!=null&&typeof(obj.tagName)=="string"){
-					    return this.Element2Node(key,obj);
-				    }
-			    }catch(e){}
-		    }
-		    return this.Object2Node(key,obj);
-	    }else return new Array(this._createEndNode(this._html_keyeq()+"type:"+typeof(obj)));
+      if(typeof(obj)=="object"){
+        if(obj==null){
+          return new Array(this._createEndNode(this._html_keyeq()+this.tObj+"null".fontcolor("blue")));
+          //}else if(obj instanceof Array){
+        }else if(!(obj instanceof Object)){
+          //Detect HTMLElement
+          try{
+            if(obj.nodeType!=null&&obj.tagName!=null&&typeof(obj.tagName)=="string"){
+              return this.Element2Node(key,obj);
+            }
+          }catch(e){}
+        }
+        return this.Object2Node(key,obj);
+      }else return new Array(this._createEndNode(this._html_keyeq()+"type:"+typeof(obj)));
     };
 
     Debug.Tree.prototype.Element2Node=function(key,elem){
-	    var desc="";
-	    switch(elem.nodeName){
-		  case "#comment":
-			  if(elem.text!=null&&elem.text.substr(0,5)=="<?xml"){
-				  desc="&lt;?".fontcolor("blue")+"xml ".fontcolor("brown")+"?&gt;".fontcolor("blue");
-			  }else{
-				  desc="&lt;!-- --&gt;".fontcolor("green");
-			  }
-			  break;
-		  case "#data":
-		  case "#text"://今の状態では #text ノードはここには来ない
-			  //TODO:
-		  default:
-			  desc=this.lt+elem.tagName.fontcolor("brown");
-			  if(elem.id!=null&&elem.id!="")desc+=' id'.fontcolor("red")+('="'+elem.id+'"').fontcolor("blue");
-			  desc+=this.gt;
-			  break;
-	    }
-	    return new Array(x,x.holder);
+      var desc="";
+      switch(elem.nodeName){
+      case "#comment":
+        if(elem.text!=null&&elem.text.substr(0,5)=="<?xml"){
+          desc="&lt;?".fontcolor("blue")+"xml ".fontcolor("brown")+"?&gt;".fontcolor("blue");
+        }else{
+          desc="&lt;!-- --&gt;".fontcolor("green");
+        }
+        break;
+      case "#data":
+      case "#text"://今の状態では #text ノードはここには来ない
+        //TODO:
+      default:
+        desc=this.lt+elem.tagName.fontcolor("brown");
+        if(elem.id!=null&&elem.id!="")desc+=' id'.fontcolor("red")+('="'+elem.id+'"').fontcolor("blue");
+        desc+=this.gt;
+        break;
+      }
+      return new Array(x,x.holder);
     };
     Debug.Tree.prototype.Function2Node=function(key,func){
-	    var r=this.Function2NodeBase(key,func);
-	    r[0].makeContent();
-	    r[0].makeMember();
-	    r[0].onclick=function(){this.swch();};
-	    return r;
+      var r=this.Function2NodeBase(key,func);
+      r[0].makeContent();
+      r[0].makeMember();
+      r[0].onclick=function(){this.swch();};
+      return r;
     };
     Debug.Tree.prototype.Function2NodeBase=function(key,func){
-	    var text=key+"()"+HTML_EQ+"[function]".fontcolor("gray");
-	    var x=this.newNode(key+"()"+HTML_EQ+"[function]".fontcolor("gray"));
-	    var this0=this;
-	    var this_tree=this;
-	    x.makeMember=function(){
-		    try{
-			    this_tree.Object2Node("prototype",func.prototype).$each(this.holder.appendChild);
-		    }catch(e){}
-		    
-		    if(func.caller instanceof Function)
-			    this_tree.Function2Node("caller",func.caller).$each(holderAppender);
-		    if(func.arguments!=null){
-			    try{
-				    var a=this_tree.Arguments2Node("arguments",func.arguments,func.getArgumentList());
-				    a.$each(holderAppender);
-			    }catch(e){alert("err");}
-		    }
-		    for(var key2 in func){
-			    if(Function.IsInstance(func[key2])){
-				    this_tree.Function2NodeBase(key2,func[key2]).$each(holderAppender);
-			    }else{
-				    this_tree.Some2Node(key2,func[key2],func).$each(holderAppender);
-			    }
-		    }
-	    };
+      var text=key+"()"+HTML_EQ+"[function]".fontcolor("gray");
+      var x=this.newNode(key+"()"+HTML_EQ+"[function]".fontcolor("gray"));
+      var this0=this;
+      var this_tree=this;
+      x.makeMember=function(){
+        try{
+          this_tree.Object2Node("prototype",func.prototype).$each(this.holder.appendChild);
+        }catch(e){}
+        
+        if(func.caller instanceof Function)
+          this_tree.Function2Node("caller",func.caller).$each(holderAppender);
+        if(func.arguments!=null){
+          try{
+            var a=this_tree.Arguments2Node("arguments",func.arguments,func.getArgumentList());
+            a.$each(holderAppender);
+          }catch(e){alert("err");}
+        }
+        for(var key2 in func){
+          if(Function.IsInstance(func[key2])){
+            this_tree.Function2NodeBase(key2,func[key2]).$each(holderAppender);
+          }else{
+            this_tree.Some2Node(key2,func[key2],func).$each(holderAppender);
+          }
+        }
+      };
     };
     Debug.Tree.prototype.Arguments2Node=function(key,args,arglist){
-	    var r=this.Object2Node(key,args);
-	    var i=0;
-	    while(typeof(args[i])!="undefined"&&args[i]!=null){
-		    var f_key=(Function.IsInstance(args[i]))?"Function2NodeBase":"Some2Node";
-		    try{
-			    var key1=i<arglist.length?arglist[i]:i.toString();
-			    this[f_key](key1,args[i]).$each(r[1].appendChild);
-		    }catch(e){}
-		    i++;
-	    }
-	    while(i<arglist.length){
-		    this.Some2Node(arglist[i],null).$each(r[i].appendChild);
-		    i++;
-	    }
-	    if(i>0)r[0].opened=true;
-	    return r;
+      var r=this.Object2Node(key,args);
+      var i=0;
+      while(typeof(args[i])!="undefined"&&args[i]!=null){
+        var f_key=(Function.IsInstance(args[i]))?"Function2NodeBase":"Some2Node";
+        try{
+          var key1=i<arglist.length?arglist[i]:i.toString();
+          this[f_key](key1,args[i]).$each(r[1].appendChild);
+        }catch(e){}
+        i++;
+      }
+      while(i<arglist.length){
+        this.Some2Node(arglist[i],null).$each(r[i].appendChild);
+        i++;
+      }
+      if(i>0)r[0].opened=true;
+      return r;
     };
   }
 
