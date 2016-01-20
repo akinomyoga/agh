@@ -6,6 +6,7 @@
 # materials
 /mat
 /src/agh.lang.ps/mat
+/src/agh.dom/mat
 
 # generated files
 /config.mk

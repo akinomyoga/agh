@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <title>agh.dom2.js - check</title>
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="../../out/mwg.std.css" />
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="../../out/prog.std.css" />
+  <meta name="agh-fly-type" content="color" />
+  <script type="text/javascript" charset="utf-8" src="../../out/agh.js"></script>
+  <script type="text/javascript" charset="utf-8" src="../../out/agh.fly.js"></script>
+  <script type="text/javascript" charset="utf-8" src="../../out/agh.text.js"></script>
+  <script type="text/javascript" charset="utf-8" src="agh.dom2.js"></script>
+  <style type="text/css">
+  dfn *{color:black!important;}
+  
+  dt.agh-dom-xprop,
+  dt.agh-dom-meth{padding-left:20px;font-size:100%}
+  dt.agh-dom-xprop:before,
+  dt.agh-dom-meth:before{
+    display:inline-block;vertical-align:middle;
+    padding:0;margin:0;margin-right:-20px;
+    position:relative;width:20px;left:-20px;
+  }
+  dt.agh-dom-meth:before{content:url("../../out/icons/prog-meth.png");}
+  dt.agh-dom-xprop:before{content:url("../../out/icons/file-css.png");}
+  </style>
+  <script type="text/javascript">
+//<![CDATA[
+  agh.addEventListener(window,'load',function(){
+    //agh.scripts.wait(["agh.dom2.js"],function(){
+    //  alert("agh.dom2.js is loaded");
+    //});
+  },false);
+//]]>
+  </script>
+</head>
+<body>
+<h1>agh.dom2.js - API Reference</h1>
+<h2>拡張 CSS プロパティ</h2>
+<dl>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>defineCustomCssProperty</dfn>(propertyName,{get:getter,set:setter})</code></dt>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>defineCustomCssProperty</dfn>({propertyName:{get:getter,set:setter},...})</code></dt>
+<dd>
+  <p>拡張 CSS プロパティを定義します。</p>
+</dd>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>getStyle</dfn>(elem,propertyName,{get:getter,set:setter})</code></dt>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>setStyle</dfn>(elem,propertyName,value)</code></dt>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>setStyle</dfn>(elem,{propertyName:value,...})</code></dt>
+<dd>
+  <p>要素の CSS プロパティの値を取得または設定します。</p>
+</dd>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-user-select</dfn></dt>
+<dd>要素が選択可能かどうかを取得または設定します。</dd>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-opacity</dfn></dt>
+<dd>不透明度を取得または設定します。</dd>
+</dl>
+
+<h3>DOM 操作</h3>
+<dl>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>insert</dfn>(elem,node,position)</code></dt>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>insert</dfn>(elem,html,position)</code></dt>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>insert</dfn>(elem,[node,html,...],position)</code></dt>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>insertText</dfn>(elem,text,position)</code></dt>
+<dd>
+  <p>指定した位置に指定した DOM ノード・HTML を挿入します。</p>
+  <dl>
+  <dt class="prog-decl-param"><code class="agh-prog-js">elem</code></dt>
+  <dt class="prog-decl-param"><code class="agh-prog-js">position</code></dt>
+  <dd>
+    挿入位置を指定します。
+    <ul>
+    <li><code class="agh-prog-js">'beforebegin'</code>, <code class="agh-prog-js">'before'</code>: 要素 elem の直前に挿入します。</li>
+    <li><code class="agh-prog-js">'afterbegin'</code>, <code class="agh-prog-js">'begin'</code>: 要素 elem 内の先頭に追加します。</li>
+    <li><code class="agh-prog-js">'beforeend'</code>, <code class="agh-prog-js">'end'</code>, 省略: 要素 elem 内の末尾に追加します。</li>
+    <li><code class="agh-prog-js">'afterend'</code>, <code class="agh-prog-js">'after'</code>: 要素 elem の後に挿入します。</li>
+    </ul>
+  </dd>
+  <dt class="prog-decl-param"><code class="agh-prog-js">node</code></dt>
+  <dt class="prog-decl-param"><code class="agh-prog-js">html</code></dt>
+  <dt class="prog-decl-param"><code class="agh-prog-js">text</code></dt>
+  </dl>
+</dd>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>remove</dfn>(node)</code></dt>
+<dd>
+  <p>指定した DOM ノードを DOM ツリーから削除します。</p>
+</dd>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>isDescendantOf</dfn>(descendant,ancestor)</code></dt>
+<dd>
+  <p>descendant が ancestor の子孫ノードであるかどうかを判定します。</p>
+</dd>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>getInnerText</dfn>(elem)</code></dt>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>setInnerText</dfn>(elem,text)</code></dt>
+<dd>
+  <p>指定した要素のテキストを取得または設定します。</p>
+</dd>
+</dl>
+
+<h3>幾何情報</h3>
+<p><img alt="box-model" src="agh.dom2.boxmodel.png" /></p>
+<dl>
+<dt class="prog-decl-struct"><code class="agh-prog-js">agh.dom.<dfn>Rectangle</dfn></code></dt>
+<dd>
+  <dl>
+  <dt class="prog-decl-op"><code class="agh-prog-js">new agh.dom.Rectangle(x,y,w,h)</code></dt>
+  <dt class="prog-decl-var"><code class="agh-prog-js">Number <var>rect</var>.<dfn>x</dfn></code></dt>
+  <dt class="prog-decl-var"><code class="agh-prog-js">Number <var>rect</var>.<dfn>y</dfn></code></dt>
+  <dt class="prog-decl-var"><code class="agh-prog-js">Number <var>rect</var>.<dfn>width</dfn></code></dt>
+  <dt class="prog-decl-var"><code class="agh-prog-js">Number <var>rect</var>.<dfn>height</dfn></code></dt>
+  <dt class="prog-decl-var"><code class="agh-prog-js">Number <var>rect</var>.<dfn>left</dfn></code></dt>
+  <dt class="prog-decl-var"><code class="agh-prog-js">Number <var>rect</var>.<dfn>right</dfn></code></dt>
+  <dt class="prog-decl-var"><code class="agh-prog-js">Number <var>rect</var>.<dfn>top</dfn></code></dt>
+  <dt class="prog-decl-var"><code class="agh-prog-js">Number <var>rect</var>.<dfn>bottom</dfn></code></dt>
+  </dl>
+</dd>
+<dt class="agh-dom-meth"><code class="agh-prog-js">int <dfn>agh.dom.parseLength</dfn>(String lengthSpec,Element referenceElement)</code></dt>
+<dd>
+  <p>長さの表現からピクセル数を計算します。</p>
+</dd>
+<dt class="agh-dom-meth"><code class="agh-prog-js">Rectangle <dfn>agh.dom.getRectangle</dfn>(Element elem,String type,String origin)</code></dt>
+<dd>
+  <dl>
+  <dt class="prog-decl-param"><code class="agh-prog-js">elem</code></dt>
+  <dd>要素を指定します。</dd>
+  <dt class="prog-decl-param"><code class="agh-prog-js">type</code></dt>
+  <dd>
+    <ul>
+    <li><code class="agh-prog-js">'margin-box'</code>: </li>
+    <li><code class="agh-prog-js">'border-box'</code>: </li>
+    <li><code class="agh-prog-js">'view-box'</code>: </li>
+    <li><code class="agh-prog-js">'client-box'</code>: </li>
+    <li><code class="agh-prog-js">'padding-box'</code>: </li>
+    <li><code class="agh-prog-js">'content-box'</code>: </li>
+    </ul>
+  </dd>
+  <dt class="prog-decl-param"><code class="agh-prog-js">origin</code></dt>
+  <dd>
+    <ul>
+    <li><code class="agh-prog-js">'frame'</code>: ブラウザの表示領域の左上の点を原点にします。</li>
+    <li><code class="agh-prog-js">'page'</code>: ページ内の最も左上の点を原点にします。</li>
+    <li><code class="agh-prog-js">'offset'</code>: container-block 要素の content-box の左上の点を原点にします。</li>
+    <li><code class="agh-prog-js">'margin'</code>: margin-box の左上の点を原点にします。</li>
+    <li><code class="agh-prog-js">'border'</code>: border-box の左上の点を原点にします。</li>
+    <li><code class="agh-prog-js">'view'</code>: ViewRect の左上の点を原点にします。</li>
+    <li><code class="agh-prog-js">'client'</code>: ClientRect の左上の点を原点にします。</li>
+    <li><code class="agh-prog-js">'padding'</code>: padding-box の左上の点を原点にします。</li>
+    <li><code class="agh-prog-js">'content'</code>: content-box の左上の点を原点にします。</li>
+    </ul>
+  </dd>
+  </dl>
+  
+</dd>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-margin-left</dfn></dt>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-margin-right</dfn></dt>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-margin-top</dfn></dt>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-margin-bottom</dfn></dt>
+<dd>
+  <p>実際の margin の大きさを取得または設定します。取得時の単位は px です。</p>
+  <p>margin-left 等を用いて値を取得すると
+  単位が px, em, cm, in, % など様々になり実際の大きさが分かりませんが、
+  このプロパティは全てを px に換算して返します。
+  </p>
+  <p>設定時は任意の単位を使用できます。
+  単位を指定しない場合は px の単位と解釈します。
+  </p>
+</dd>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-border-left-width</dfn></dt>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-border-right-width</dfn></dt>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-border-top-width</dfn></dt>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-border-bottom-width</dfn></dt>
+<dd>
+  <p>実際の border の幅を取得または設定します。取得時の単位は px です。</p>
+</dd>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-padding-left</dfn></dt>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-padding-right</dfn></dt>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-padding-top</dfn></dt>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-padding-bottom</dfn></dt>
+<dd>
+  <p>実際の padding の大きさを取得または設定します。取得時の単位は px です。</p>
+</dd>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-container-width</dfn></dt>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-container-height</dfn></dt>
+<dd>
+  <p>内部の計算に使用される幅・高さを取得します。単位は px です。</p>
+  <ul>
+  <li>AghContainerWidth = offsetWidth - borderLeft - borderRight - paddingLeft - paddingRight</li>
+  <li>AghContainerHeight = offsetHeight - borderTop - borderBottom - paddingTop - paddingBottom</li>
+  <li>box-sizing: content-box (既定値) の時、style.width, style.height に指定した長さになります。</li>
+  <li>-agh-container-width は子孫要素の % 指定の基準長さとなります。</li>
+  </ul>
+</dd>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-offset-width</dfn></dt>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-offset-height</dfn></dt>
+<dd>
+  <p>border-box の幅・高さを取得または設定します。取得時の単位は px です。</p>
+  <ul>
+  <li>値は elem.offsetWidth, elem.offsetHeight に等価です。異なる点は値の設定が可能な事です。</li>
+  </ul>
+</dd>
+<dt class="agh-dom-xprop">xprop: <dfn>-agh-box-sizing</dfn></dt>
+<dd>
+  <p>style.width, style.height をどの部分の幅と解釈するかを取得します。
+  'content-box' は style.width, style.height で -agh-container-width, -agh-container-width の値を指定する事を示します。
+  'border-box' は style.width, style.height で offsetWidth, offsetHeight の値を指定する事を示します。
+  </p>
+</dd>
+</dl>
+
+<h3>拡張 DOM イベント</h3>
+<dl>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>attach</dfn>(<var>target</var>,<var>eventName</var>,<var>listener</var>,<var>useCapture</var>)</code></dt>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>detach</dfn>(<var>target</var>,<var>eventName</var>,<var>listener</var>,<var>useCapture</var>)</code></dt>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>fire</dfn>(<var>target</var>,<var>eventName</var>,<var>params</var>)</code></dt>
+<dd>
+  <p>イベントを登録・解除・発火させます。</p>
+</dd>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>defineCustomEvent</dfn>(<var>eventName</var>,<var>definition</var>)</code></dt>
+<dt class="prog-decl-meth"><code class="agh-prog-js">agh.dom.<dfn>defineCustomEvent</dfn>({<var>eventName</var>:<var>definition</var>,...})</code></dt>
+<dd>
+  <p>新しいイベントを定義します。</p>
+</dd>
+<dt class="prog-decl-event"><code>event: <dfn>-agh-click</dfn></code></dt>
+<dt class="prog-decl-event"><code>event: <dfn>-agh-mouseup</dfn></code></dt>
+<dt class="prog-decl-event"><code>event: <dfn>-agh-mousedown</dfn></code></dt>
+<dt class="prog-decl-event"><code>event: <dfn>-agh-mousemove</dfn></code></dt>
+<dt class="prog-decl-event"><code>event: <dfn>-agh-mouseenter</dfn></code></dt>
+<dt class="prog-decl-event"><code>event: <dfn>-agh-mouseleave</dfn></code></dt>
+</dl>
+
+<h2>agh.dom1.js 機能対応表</h2>
+<p>agh.dom1.js から agh.dom2.js に移行するに当たって、
+様々な機能の提供方法を一から設計し直した。
+以下に挙げるのは agh.dom1.js での記述と agh.dom2.js での記述の対応である。
+</p>
+
+<table class="normal center">
+<tr>
+  <th>agh.dom1.js</th>
+  <th>agh.dom2.js</th>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh.document.<dfn>parseLength</dfn>(<var>text</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>parseLength</dfn>(<var>text</var>)</code></td>
+</tr>
+</table>
+
+<h3>prototype 拡張の廃止</h3>
+<p>agh.dom1.js では prototype を積極的に拡張して、
+特定の関数を保持していないブラウザに対する補完を行っていた。然し、
+</p>
+<ul>
+<li>IE6 が prototype 拡張に対応していない為、
+  API を統一するとすれば、
+  他の prototype 拡張が可能なブラウザの API を IE6 の旧式の物に合わせるしかない
+</li>
+<li>agh.dom1.js の前提で書かれたコードを見た時に、
+  それが IE6 など一部のブラウザでしか動作しない欠陥コードなのか、
+  agh.dom1.js の下で正しく動作する物なのか判断しづらい
+</li>
+<li>agh.dom1.js に依存して書いていると、
+  どの関数が普遍的にどのブラウザでも使える関数で、
+  どの関数が agh.dom1.js による拡張なのか分からなくなってくる
+</li>
+</ul>
+<p class="resume">などの問題点があった。
+その為 agh.dom2.js では prototype を拡張する事は止めて、
+agh.dom 名前空間上に全てを実装する事にした。
+</p>
+<table class="normal center">
+<tr>
+  <th>agh.dom1.js</th>
+  <th>agh.dom2.js</th>
+</tr>
+<tr>
+  <td><code class="agh-prog-js"><var>elem</var>.<dfn>attachEvent</dfn>(<var>type</var>,<var>handler</var>)</code></td>
+  <td><code class="agh-prog-js">agh.<dfn>addEventListener</dfn>(<var>elem</var>,<var>type</var>,<var>handler</var>,false)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">window.<dfn>attachEvent</dfn>(<var>type</var>,<var>handler</var>)</code></td>
+  <td><code class="agh-prog-js">agh.<dfn>addEventListener</dfn>(window,<var>type</var>,<var>handler</var>,false)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">document.<dfn>attachEvent</dfn>(<var>type</var>,<var>handler</var>)</code></td>
+  <td><code class="agh-prog-js">agh.<dfn>addEventListener</dfn>(document,<var>type</var>,<var>handler</var>,false)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js"><var>elem</var>.<dfn>all</dfn></code></td>
+  <td><code class="agh-prog-js"><var>elem</var>.getElementsByTagName("*")</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">document.<dfn>all</dfn></code></td>
+  <td><code class="agh-prog-js">document.getElementsByTagName("*")</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js"><var>elem</var>.<dfn>innerText</dfn></code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>getInnerText</dfn>(<var>elem</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js"><var>elem</var>.<dfn>innerText</dfn>=<var>value</var></code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>setInnerText</dfn>(<var>elem</var>,<var>value</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js"><var>elem</var>.<dfn>insertAdjacentElement</dfn>(<var>position</var>,<var>child</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>insert</dfn>(<var>elem</var>,<var>child</var>,<var>position</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js"><var>elem</var>.<dfn>insertAdjacentHTML</dfn>(<var>position</var>,<var>html</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>insert</dfn>(<var>elem</var>,<var>html</var>,<var>position</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js"><var>elem</var>.<dfn>insertAdjacentText</dfn>(<var>position</var>,<var>text</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>insertText</dfn>(<var>elem</var>,<var>text</var>,<var>position</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js"><var>elem</var>.<dfn>insertAfter</dfn>(<var>node</var>,<var>ref</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>insert</dfn>(<var>ref</var>,<var>node</var>,'after')</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js"><var>elem</var>.<dfn>getBoundingClientRect</dfn>()</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>getRectangle</dfn>(<var>elem</var>,'border-box','window')</code></td>
+</tr>
+</table>
+
+<h3>ElementExtension 廃止</h3>
+<table class="normal center">
+<tr>
+  <th>agh.dom1.js</th>
+  <th>agh.dom2.js</th>
+</tr>
+<tr>
+  <td><code class="agh-prog-js"><dfn>ElementExtension</dfn></code></td>
+  <td>×</td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')</code></td>
+  <td>×</td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>removeFromParent</dfn>()</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>remove</dfn>(<var>elem</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>isDescendant</dfn>(<var>descendant</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>isDescendantOf</dfn>(<var>descendant</var>,<var>elem</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>getStyle</dfn>(<var>propertyName</var>)</code></td>
+  <td><code class="agh-prog-js"><var>elem</var>.style[<var>propertyName</var>]</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>getComputedStyle</dfn>()</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>getStyle</dfn>(<var>elem</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>setStyle</dfn>(<var>value</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>setStyle</dfn>(<var>elem</var>,<var>value</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>addClass</dfn>(<var>cls</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>addClassName</dfn>(<var>elem</var>,<var>cls</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>removeClass</dfn>(<var>cls</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>removeClassName</dfn>(<var>elem</var>,<var>cls</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>hasClass</dfn>(<var>cls</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>hasClassName</dfn>(<var>elem</var>,<var>cls</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>switchClass</dfn>(<var>base</var>,<var>name</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>switchClassName</dfn>(<var>elem</var>,<var>base</var>,<var>name</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>getBorderRectC</dfn>()</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>getRectangle</dfn>(<var>elem</var>,'border-box','window')</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>getBorderRectP</dfn>()</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>getRectangle</dfn>(<var>elem</var>,'border-box','page')</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>getClientRectB</dfn>()</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>getRectangle</dfn>(<var>elem</var>,'view-box','border')</code>
+    <p class="marked">※ client と view の名称を交換した</p>
+  </td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>getViewRectB</dfn>()</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>getRectangle</dfn>(<var>elem</var>,'client-box','border')</code>
+    <p class="marked">※ client と view の名称を交換した</p>
+  </td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>getMarginRectB</dfn>()</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>getRectangle</dfn>(<var>elem</var>,'margin-box','border')</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>getPaddingRectV</dfn>()</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>getRectangle</dfn>(<var>elem</var>,'padding-box','client')</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>getContentRectV</dfn>()</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>getRectangle</dfn>(<var>elem</var>,'content-box','client')</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>__add</dfn>(<var>eventName</var>,<var>handler</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>attach</dfn>(<var>elem</var>,<var>eventName</var>,<var>handler</var>,false)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>__remove</dfn>(<var>eventName</var>,<var>handler</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>detach</dfn>(<var>elem</var>,<var>eventName</var>,<var>handler</var>,false)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>__fire</dfn>(<var>eventName</var>,<var>e</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>fire</dfn>(<var>elem</var>,<var>eventName</var>,<var>e</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>captureMouse</dfn>(<var>bubble</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>captureMouse</dfn>(<var>elem</var>,<var>bubble</var>)</code></td>
+</tr>
+<tr>
+  <td><code class="agh-prog-js">agh(<var>elem</var>,'E')._.<dfn>releaseMouse</dfn>(<var>bubble</var>)</code></td>
+  <td><code class="agh-prog-js">agh.dom.<dfn>releaseMouse</dfn>(<var>elem</var>,<var>bubble</var>)</code></td>
+</tr>
+</table>
+
+<h3>拡張 CSS プロパティ</h3>
+<table class="normal center">
+<tr>
+  <th>agh.dom1.js</th>
+  <th>agh.dom2.js</th>
+</tr>
+<tr><td colspan="2"><code>xprop: <dfn>-agh-offset-width</dfn></code></td></tr>
+<tr><td colspan="2"><code>xprop: <dfn>-agh-offset-height</dfn></code></td></tr>
+<tr>
+  <td><code>xprop: <dfn>userSelect</dfn></code></td>
+  <td><code>xprop: <dfn>-agh-user-select</dfn></code></td>
+</tr>
+<tr>
+  <td><code>xprop: <dfn>opacity</dfn></code></td>
+  <td><code>xprop: <dfn>-agh-opacity</dfn></code></td>
+</tr>
+</table>
+
+<h3>拡張 DOM イベント</h3>
+<table class="normal center">
+<tr>
+  <th>agh.dom1.js</th>
+  <th>agh.dom2.js</th>
+</tr>
+<tr><td colspan="2"><code>event: <dfn>-agh-capturestart</dfn></code></td></tr>
+<tr><td colspan="2"><code>event: <dfn>-agh-captureend</dfn></code></td></tr>
+<tr><td colspan="2"><code>event: <dfn>-agh-mousemove</dfn></code></td></tr>
+<tr><td colspan="2"><code>event: <dfn>-agh-mouseup</dfn></code></td></tr>
+<tr><td colspan="2"><code>event: <dfn>-agh-mousedown</dfn></code></td></tr>
+<tr><td colspan="2"><code>event: <dfn>-agh-click</dfn></code></td></tr>
+<tr><td colspan="2"><code>event: <dfn>-agh-mouseenter</dfn></code></td></tr>
+<tr><td colspan="2"><code>event: <dfn>-agh-mouseleave</dfn></code></td></tr>
+</table>
+
+<h1>agh.dom2.js - 実装のメモ</h1>
+<h2>実装項目</h2>
+<h3>ToDo</h3>
+<ul>
+<li>agh.dom.parseLength: % 指定が正しく動作しているかを各ブラウザでチェックする。</li>
+<li>agh.dom.parseLength: offsetParent が指定されていない場合の動作について調べて実装する。</li>
+<li>座標系を変換する関数を公開する</li>
+<li>現在の screen (ディスプレイ) 内の座標, window (ブラウザのウィンドウ) 内の座標に対応</li>
+<li>agh.dom.getRectangle: 第一引数に window, document を取るオーバーロードの作成</li>
+</ul>
+<h3>ChangeLog</h3>
+<ul>
+<li>2013-08-27, KM
+  <ul>
+  <li>agh.dom.js として出力</li>
+  </ul>
+</li>
+<li>2013-08-22, KM 作成</li>
+</ul>
+
+<h2>座標変換について 2013-08-23</h2>
+<p>各座標系の間をどの様に行き来するのが良いだろうか。
+現在の所、座標原点として frame, page, offset, margin, border, view, client, padding, content がある。
+そして以下の変換は容易にできる。
+</p>
+<ul>
+<li>frame &lt;-&gt; page</li>
+<li>border &lt;-&gt; frame</li>
+<li>border &lt;-&gt; offset</li>
+<li>border &lt;-&gt; margin</li>
+<li>border &lt;-&gt; view, client</li>
+<li>view &lt;-&gt; padding</li>
+<li>padding &lt;-&gt; content</li>
+</ul>
+<p>要するに以下の図に示す様に繋がっている。</p>
+<pre>
+page   offset margin
+ |       |    |
+frame  - border - client
+           |
+         view
+           |
+         padding - content
+</pre>
+
+
+
+
+</body>
+</html>
