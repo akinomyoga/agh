@@ -36,7 +36,7 @@ context "mode.para"{
     }else
       doc.currentCtx.output.buff.push(" ");
   };
-  
+
   //@A 字体
   _Ctx.DefineCommand({
     // - 文字の大きさ
@@ -119,8 +119,8 @@ context "mode.para"{
       "d":mod_math.CreateAccentCommandQksB(-1.0,"・")
     });
   }
-  
-  // \text... 記号 (math-mode で文字化けする系統の物) 
+
+  // \text... 記号 (math-mode で文字化けする系統の物)
   command s@\textasciicircum     () "^";
   command s@\textasciitilde      () "~";
   command s@\textbackslash       () '<tex:f class="aghtex-textrm">\\</tex:f>';
@@ -172,14 +172,14 @@ context "mode.para"{
       doc.currentCtx.output.buff.push("-");
       return;
     }
-    
+
     doc.scanner.Next();
     if(!doc.scanner.is("ltr","-")){
       doc.currentCtx.output.buff.push("—");
       // ※ 本来は \u2013 であるべき
       return;
     }
-    
+
     doc.scanner.Next();
     doc.currentCtx.output.buff.push("―");
     // ※ 本来は \u2014 であるべき
@@ -191,7 +191,7 @@ context "mode.para"{
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">‘</tex:f>');
       return;
     }
-    
+
     doc.scanner.Next();
     doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">“</tex:f>');
   }
@@ -203,14 +203,14 @@ context "mode.para"{
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">’</tex:f>');
       return;
     }
-    
+
     doc.scanner.Next();
     doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">”</tex:f>');
   }
   _Ctx.AddLetterHandler("'",quoteright);
   _Ctx.AddCommandHandler("rq",quoteright);
   letter s@\'"'()  '<tex:f class="aghtex-textrm">”</tex:f>'; // "
-  
+
   environment s@\center()     '<div class="tex-center">#0</div>';
   environment s@\flushright() '<div class="tex-right">#0</div>';
   environment s@\flushleft()  '<div class="tex-left">#0</div>';
@@ -253,13 +253,13 @@ context "mode.para"{
   // \begin{math}
   // \(\)
   // \begin{equation}
-  
+
   environment s@:mode.math\displaymath()  '<tex:math class="aghtex-displaymath">&nbsp;#0&nbsp;</tex:math>\r\n';
   command s@\[(#mode.math>1\]) '<tex:math class="aghtex-displaymath">#1</tex:math>\r\n';
 
   environment s@:mode.math\math()  '<tex:math>#0</tex:math>';
   command s@#"("("#mode.math>1\\)") '<tex:math>#1</tex:math>';
-  
+
   _Ctx.AddLetterHandler("$",function(doc){
     var buff=doc.currentCtx.output.buff;
     doc.scanner.Next();
@@ -267,7 +267,7 @@ context "mode.para"{
       doc.scanner.Next();
       // $$ - $$
       buff.push('<tex:math class="aghtex-displaymath">');
-      
+
       // setup context and read under the context
       var ctx=doc.context_cast(["mode.math"]);
       ctx.AddLetterHandler("$",function(doc){
@@ -276,7 +276,7 @@ context "mode.para"{
           doc.scanner.Next();
         else
           doc.currentCtx.output.error("UnexpectedEOR","$");
-        
+
         doc.currentCtx.BREAK=true;
       });
 
@@ -295,7 +295,7 @@ context "mode.para"{
 
       buff.push(doc.Read(ctx),'</tex:math>');
     }
-    
+
   });
 
   var CTXV_LABEL_EQ='mod_ref/label:eq';
@@ -317,7 +317,7 @@ context "mode.para"{
       }else{
         buff.push('<tex:eqno class="right">');
       }
-      
+
       // 式番号の形式を指定するコマンドを呼び出す様に変更する■
       //  InsertSource & ReadCommand
       var c=doc.GetCounter("equation");

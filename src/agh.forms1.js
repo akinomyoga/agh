@@ -34,14 +34,14 @@ agh.OldForms.Button=function(){
     b1.unselectable="on";
     b2.unselectable="on";
   }
-  
+
   var set_style=function(name){
     b0.set_style(name);
     b1.set_style(name);
     b2.set_style(name);
   };
   set_style("free");
-  
+
   //	event
   //-------------------------------------
   // IE:
@@ -125,7 +125,7 @@ agh.OldForms.Button=function(){
       b2.style.height=(height+ButtonWidthOffset.b2)+"px";
     }
   };
-  
+
   return b0;
 };
 //==============================================================================
@@ -142,24 +142,24 @@ agh.OldForms.TabPage=function(tabnames){
   var empty=tablineCell();
   empty._.addClass("agh-forms-tabsep-empty");
   empty.innerHTML="&nbsp;";
-  
+
   var field=main.insertRow(-1).insertCell(-1);
   field.className="agh-forms-tabfld";
   var activeIndex=-1;
   var separators=[];
-  
+
   var tabcells=[];
   var pages=[];
   main.pages=pages;
-  
+
   var updateView=function(){
     var LEN=pages.length;
     if(LEN==0)return;
-    
+
     var tb;
     for(var i=0;i<LEN;i++){
       var active=activeIndex==i;
-      
+
       var sep=separators[i];
       if(active)
         sep.set_style("l");
@@ -169,10 +169,10 @@ agh.OldForms.TabPage=function(tabnames){
         sep.set_style("r");
       else
         sep.set_style("m");
-      
+
       var tabcell=tabcells[i];
       tabcell.set_style(active?"active":"inactive");
-        
+
       var page=pages[i];
       if(active)page.show();else page.hide();
     }
@@ -180,9 +180,9 @@ agh.OldForms.TabPage=function(tabnames){
       separators[LEN].set_style("r");
     else
       separators[LEN].set_style("e");
-    
+
     field.colSpan=separators.length*4+pages.length+1;
-    
+
     if(agh.browser.vIE&&main.pageWidth){
       tabline_width=separators.length*4;
       agh.Array.each(pages,function(page){tabline_width+=page.tabElement.clientWidth;});
@@ -209,11 +209,11 @@ agh.OldForms.TabPage=function(tabnames){
       var sep=tablineCell();
       sep._.addClass("agh-forms-tabsep");
       sep._.switchClass("agh-forms-tabsep",type);
-      
+
       var div=document.createElement("div");
       div.innerHTML="&nbsp;";
       sep.appendChild(div);
-      
+
       return sep;
     },
     set_style:function(name){
@@ -228,12 +228,12 @@ agh.OldForms.TabPage=function(tabnames){
   //--------------------------------------------
   var TabCell=function(){
     var i=tabcells.length;
-    
+
     // tabline に追加
     if(i==0)new Separator().set_style("s");
     var td=tablineCell();
     new Separator().set_style("e");
-    
+
     // style の設定
     td._.addClass("agh-forms-tabtag0");
     if(agh.browser.vIE)td.unselectable="on";
@@ -242,11 +242,11 @@ agh.OldForms.TabPage=function(tabnames){
     var div=agh(document.createElement("div"));
     div._.addClass("agh-forms-tabtag1");
     td.appendChild(div);
-    
+
     // member
     this.td=td;
     this.div=div;
-    
+
     tabcells.push(this);
   };
   TabCell.prototype.set_style=function(name){
@@ -262,20 +262,20 @@ agh.OldForms.TabPage=function(tabnames){
     // 新しい Tab 表示場所
     var cell=new TabCell();
     cell.set_style("inactive");
-    
+
     // 新しい TabPage 内容
     var holder=document.createElement("div");
     holder.className="agh-forms-tabpg0";
     var div=document.createElement("div");
     div.className="agh-forms-tabpg1";
     holder.appendChild(div);
-    
+
     this.__holder=holder;
     this.contentElement=div;
     this.tabElement=cell.div;
     field.appendChild(holder);
     pages.push(this);
-    
+
     updateView();
   };
   agh.memcpy(TabPage.prototype,{
@@ -296,7 +296,7 @@ agh.OldForms.TabPage=function(tabnames){
       this.width=width;
       this.__holder.style.width=width+TabPageWidthOffset.holder;
       this.contentElement.style.width=width+TabPageWidthOffset.content;
-      
+
       this.height=height;
       this.__holder.style.height=height+TabPageHeightOffset.holder;
       this.contentElement.style.height=height+TabPageHeightOffset.content;
@@ -311,7 +311,7 @@ agh.OldForms.TabPage=function(tabnames){
       agh.Array.each(tabname,function(name){main.addTab(name);});
       return;
     }
-    
+
     var page=new TabPage();
     page.tabElement.innerText=tabname;
     if(main.pageWidth)
@@ -328,7 +328,7 @@ agh.OldForms.TabPage=function(tabnames){
     main.style.left=left;
     main.style.top=top;
   };
-  
+
   return main;
 };
 

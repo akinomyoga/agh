@@ -52,7 +52,7 @@
     register_frame_list.push(frame);
     return true;
   }
-  
+
   initialize_frame(window);
   window.setInterval(function(){
     var frames=document.frames;

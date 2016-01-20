@@ -10,13 +10,13 @@
     }
     return null;
   })();
-  
+
   if(browser==null)return;
   var isSf=browser=="Cr"||browser=="Sf";
   var isOp=browser=="Op";
   var isFx=browser=="Fx";
   var isIE=browser=="IE";
-  
+
   if(isFx&&!HTMLElement.prototype.innerText){
     HTMLElement.prototype.__defineSetter__("innerText",function(value){
       this.textContent=value;
@@ -25,7 +25,7 @@
       return this.textContent;
     });
   }
-  
+
   //----------------------------------------------------------------------------
   //  Loader
   (function load_agh_js(){
@@ -46,7 +46,7 @@
     else
       target.attachEvent("on"+type,func);
   }
-  
+
   function delayed_wait(delay,waitlist,func){
     var waiter=function(){
       if(delay==0){
@@ -60,7 +60,7 @@
 
     _fly_attach(window,"load",waiter,false);
   }
- 
+
   //----------------------------------------------------------------------------
   //  Utilities
   function for_tag(elem,tagName,proc){
@@ -134,23 +134,23 @@
         var fDIRTY=false;
         var className=pre.className;
         var content=pre.innerHTML;
-        
+
         if(className.match(/\bdiff\b/)){
           content=agh.Text.Color(content,"diff","/html");
           fDIRTY=true;
         }
-        
+
         if(className.match(/\biline\b/)){
           content=agh.Text.Color(content,".iline","/html");
           fDIRTY=true;
         }
-        
+
         var source_lang=determineLanguageFromClassName(className);
         if(source_lang!=null){
           content=agh.Text.Color(content,source_lang,"/html");
           fDIRTY=true;
         }
-        
+
         if(fDIRTY)pre.innerHTML=content;
       });
 
@@ -158,23 +158,23 @@
         var fDIRTY=false;
         var className=pre.className;
         var content=pre.innerHTML;
-        
+
         var source_lang=determineLanguageFromClassName(className);
         if(source_lang!=null){
           content=agh.Text.Color(content,source_lang,"/html");
           fDIRTY=true;
         }
-        
+
         if(fDIRTY)pre.innerHTML=content;
       });
-      
+
       for_tag(target,"dl",function(dl){
         if(!dl.className.match(/\bprog-items\b/))return;
         for_tag(dl,"dt",function(dt){
           dt.innerHTML=agh.Text.Color(dt.innerHTML,"cpp","/html");
         });
       });
-      
+
       for_tag(target,"table",function(table){
         if(!table.className.match(/\btext-macro\b/))return;
         for_tag(table,"td",function(td){
@@ -191,8 +191,8 @@
       agh.fly.defineContentsProcessor(process_color);
     });
   }
-  
-  //
+
+  //
   //****************************************************************************
   //
   //  TeX Transformation Functions
@@ -218,12 +218,12 @@
         /// </param>
         mode=utils.tex_modes[mode];
         if(mode==null)mode=utils.tex_modes["full"];
-        
+
         if(agh.is(target,String)){
           return mode.transform(target,option);
         }else if(agh.is(target,Array)){
           var elems=target;
-          
+
           var texbuff=[];
           for(var i=0;i<elems.length;i++)
             texbuff.push(elems[i].innerText);
@@ -250,7 +250,7 @@
         };
         var paraContext=["global","mode.para","pkg:amsmath/mode.para"];
         var mathContext=["global","mode.math","pkg:amssymb/mode.math","pkg:amsmath/mode.math"];
-        
+
         return {
           full:{
             transform:function(source){
@@ -294,7 +294,7 @@
       //-------------------------------------------------------------------------
       tex_transform_marker:function(parentElem,mode,reg_range){
         var pText=agh.browser.name=="IE"?"data":"textContent";
-        
+
         function getTextNodes(parent){
           /// <summary>
           /// 要素に含まれている #text ノードの集合を取得します。
@@ -322,24 +322,24 @@
             itex++;
             return '<tex:container class="aghfly-tex aghfly-tex-'+mode+'" title="'+$1+'">'+$1+'</tex:container>';
           });
-          
+
           if(itex==0)return;
           var span=document.createElement("span");
           span.innerHTML=html;
           t.parentNode.insertBefore(span,t);
           t[pText]="";
-          
+
           agh.Array.each(span.childNodes,function(e){
             if(e.nodeType!=1)return;
             elems.push(e);
           });
         });
-        
+
         utils.tex_transform(elems,mode);
       }
     };
 
-    //
+    //
     //---------------------------------------------------------------------------
     // 2013-11-05
     /**
@@ -432,14 +432,14 @@
             itex++;
             return '<tex:target class="aghfly-tex-math" title="'+$1+'">'+$1+'</tex:target>';
           });
-          
+
           if(itex==0)return;
-          
+
           var span=document.createElement("span");
           span.innerHTML=html;
           node.parentNode.insertBefore(span,node);
           setTextContent(node,"");
-          
+
           for(var i=0,iN=span.childNodes.length;i<iN;i++){
             var target=span.childNodes[i];
             if(target.nodeType==1)
@@ -517,7 +517,7 @@
               params.regexInlineMath=/\`?\$((?=[^$\s])[^$]*[^$\s])\$/g;// /\$([^\$]+)\$/g;
             else if(/(?:^|\s)aghfly-tex-imathbq(?:\s|$)/.test(elem.className))
               params.regexInlineMath=/\`\$([^\$]+)\$/g;
-              
+
             processNodes(elem.childNodes);
 
             params.regexInlineMath=original_regex;
@@ -566,7 +566,7 @@
         for(var i=0,iN=targets.length;i<iN;i++){
           var ent=targets[i];
           ent.embedded=[];
-          
+
           var aghflyEnvironmentName=ID_AGHFLY_MATH;
           var prefix='';
           var suffix='';

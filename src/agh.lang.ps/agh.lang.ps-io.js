@@ -22,7 +22,7 @@
         this.name='noname';
         var text=name;
       }
-      
+
       this.s=text;
       this.l=text.length;
       this.i=-1;
@@ -34,14 +34,14 @@
         var fbr=this.c=='\n';
         var c=this.s.charAt(this.i);
         if(c=='\r'&&this.s.charAt(this.i+1)!='\n')c='\n';
-        
+
         // 行・列番号
         if(fbr){
           this.iL++;
           this.iC=1;
         }else
           this.iC++;
-          
+
         return this.c=c;
       }else
         return this.c=null;
@@ -88,7 +88,7 @@
 /*
           #%data REG_SPACE    1
           #%data REG_TOKEN    2
-          
+
           #%data REGC_COMMENT   3
           #%data REGC_IMEDIATE  4
           #%data REGC_NAME      5
@@ -108,12 +108,12 @@
         this.file=new ns.PsStringFile(file);
       else
         this.file=file;
-      
+
       if(parent!=null)
         this.errstream=function(text){
           parent.errstream(text);
         };
-        
+
       if(this.file instanceof ns.PsStringFile)
         this.next=this.next4strfile;
     };
@@ -127,11 +127,11 @@
         var c=this.file.c;
         // skip whitespaces
         while(c!=null&&reg_isspace.test(c))c=this.file.next();
-        
+
         this.word='';
         var w_iC=this.file.iC;
         var w_iL=this.file.iL;
-        
+
         if(c==null){
           return null;
         //-------------------------------------------
@@ -150,12 +150,12 @@
           var imediate=c=='/';
           if(imediate)
             c=this.file.next();
-            
+
           while(c!=null&&reg_ispssym.test(c)){
             this.word+=c;
             c=this.file.next();
           }
-          
+
           this.word=new ns.PsName(this.word);
           if(imediate){
             this.word.__xaccess__=true;
@@ -225,7 +225,7 @@
             this.word.__xaccess__=true;
           }
         }
-        
+
         this.word.file =this.file.name;
         this.word.iL=w_iL;
         this.word.iC =w_iC;
@@ -263,7 +263,7 @@
                 return;
               }
             }
-            
+
             this.word+=c;
             c=this.file.next();
           }
@@ -282,7 +282,7 @@
       read_hexstring:function(){
         var lead=null;
         var c=this.file.c;
-        
+
         while(true){
           if(c==null){
             this.onerror("syntaxerror: unexpected EOF in a hexadecimal-string literal.");
@@ -321,7 +321,7 @@
               c='\n';
               if(s.charAt(i+1)=='\n')i++;
             }
-            
+
             if(c=='\n'){
               this.file.iL++;
               this.file.iC=1;
@@ -329,7 +329,7 @@
               this.file.iC++;
             }
           }
-          
+
 #%expand (
           var iC=this.file.iC;
           var iL=this.file.iL;
@@ -460,7 +460,7 @@
       },
       initialize:function(){
         var f=this.src;
-        
+
         // peak head fourcc
         var h=f.c;
         for(var i=1;i<N;i++)h+=f.next();
@@ -470,11 +470,11 @@
         }
         next_ch();
         //window.log('dbg: head='+h);
-        
+
         if(/[\da-fA-F]/.test(h)){
           // hexadecimal
           this.nextc=this.nextc_hex;
-          
+
           // N+1 文字目に移動
           for(var n=0;n<N+1;n++){
             var cL,cR;
@@ -482,7 +482,7 @@
             var cL=c;next_ch();
             while(c!=null&&!/[\da-fA-F]/.test(c))next_ch();
             var cR=c;next_ch();
-            
+
             var b1=parseInt(cL+cR,16);
             var b2=b1^this.r>>8;
             this.r=(b1+this.r)*C1+C2&0xFFFF;
@@ -491,7 +491,7 @@
         }else{
           // binary
           this.nextc=this.nextc_bin;
-          
+
           for(var n=0;n<N+1;n++){
             var b1=c.charCodeAt(0)&0xFF;next_ch();
             var b2=b1^this.r>>8;
@@ -505,7 +505,7 @@
       },
       next:function override(){
         if(this.fCLOSE)return null;
-        
+
         // 改行正規化
         if(this.c=='\n'){
           this.nextc();
@@ -516,7 +516,7 @@
           this.nextc();
           this.iC++;
         }
-        
+
         if(this.fCR=this.c=='\r')this.c='\n';
         return this.c;
       },
@@ -590,7 +590,7 @@
         var t=0;
         for(var j=0;j<4;j++)
           t=t<<8|data.charCodeAt(i+j)&0xFF;
-        
+
         // write
         if(t==0){
           o.push('z');
@@ -604,14 +604,14 @@
           }
         }
       }
-      
+
       // 端
       {
         var r=data.length-i;
         var t=0;
         for(var j=0;j<r;j++)t=t<<8|data.charCodeAt(i+j)&0xFF;
         for(;j<4;j++)t<<=8;
-        
+
         var cc=[];
         for(var j=4;j>=0;cc[j--]=t%85,t=t/85^0);
         for(var j=0;j<=r;j++){
@@ -619,7 +619,7 @@
           if(n++%MAX_COL==0)o.push('\n');
         }
       }
-      
+
       o.push("~>");
       return o.join('');
     };

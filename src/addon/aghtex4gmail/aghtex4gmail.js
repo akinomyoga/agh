@@ -59,7 +59,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
       SetupAutoTransform:function(){
         this.prev.InitAutoTransform();
         this.prev.update_eprev();
-        
+
         aghtex.dom_addEventListener(this.eedit,"change",this.prev.eedit_onchanged,false);
         aghtex.dom_addEventListener(this.eedit,"keypress",this.prev.eedit_onchanged,false);
         aghtex.dom_addEventListener(this.eedit,"keyup",this.prev.eedit_onchanged,false);
@@ -148,7 +148,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
   //---------------------------------------------------------------------------
   aghtex.Sites["gmail"]=function(_document){
     if(_document==null)_document=document;
-    
+
     var reg_tag_div=/^div/i;
     function initialize_mailbody(sender){
       aghtex.SetupMailbody20111203(_document,sender,function(sender){
@@ -248,11 +248,11 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
       // 判定2:
       var parent=sender.parentNode;
       if(!((/^div$/i).test(parent.tagName)&&(/(?:^|\s)aO7(?:$|\s)/).test(parent.className)))return;
-      
+
       sender.tag_aghtex=true;
       aghtex.setupGMailPreview(sender);
     }
-    
+
     //alert("dbg: "+(reg_cls_At.test("At")&&reg_cls_Ak.test("Ak")));
     aghtex.dom_addEventListener(_document.body,"mousemove",document_body_onmousemove,false);
   };
@@ -265,7 +265,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
     function initialize_mailbody(sender){
       aghtex.SetupMailbody20111203(_document,sender,function(sender){
         var dummy_br=_document.createElement('br');
-        
+
         // enum nodes
         var nodes=[];
         for(var i=0,iN=sender.childNodes.length;i<iN;i++){
@@ -330,7 +330,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
         aghtex.setupGMailPreview(sender);
       }
     }
-    
+
     aghtex.dom_addEventListener(_document.body,"mousemove",document_body_onmousemove,false);
   };
   //===========================================================================
@@ -338,7 +338,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
   //---------------------------------------------------------------------------
   aghtex.Sites["gsite"]=function(_document){
     if(_document==null)_document=document;
-    
+
     function initialize_textnodes(elem){
       var emaths=[];
       var eparas=[];
@@ -355,7 +355,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
         for(var j=0,jN=maths.length;j<jN;j++)emaths.push(maths[j]);
         var paras=aghtex.dom_getElementsByClassName(div,"aghtex-para");
         for(var j=0,jN=paras.length;j<jN;j++)eparas.push(paras[j]);
-        
+
         // replace nodes
         var parent=text.parentNode;
         agh.Array.each(agh(div.childNodes,Array),function(node){

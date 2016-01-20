@@ -2,7 +2,7 @@
 
 /**
  *  mod_common
- * 
+ *
  *    \begin{document}
  *    \documentclass, \documentstyle
  *    \usepackage
@@ -12,13 +12,13 @@
  *    \ , \enskip, \/, \quad, \qquad, \phantom, \hphantom, \vphantom
  *    \hfill, \dotfill, \hrulefill
  *    \{, \}, \&, \%, \_, \$
- *    \P, \S, \dag, \ddag, \pounds, \copyright, 
+ *    \P, \S, \dag, \ddag, \pounds, \copyright,
  *    \aa, \AA, \ae, \AE, \l, \L, \oe, \OE, \SS, \ss, \o, \O
  *    \TeX, \LaTeX, \LaTeXe
  *    \overline, \underline
  *    \textbar, \textemdash, \textendash, \textexclamdown, \textbullet,
  *    \textperiodcentered, \textquestiondown,
- *    \textquotedblleft, \textquotedblright, \textquoteleft, \textquoteright, 
+ *    \textquotedblleft, \textquotedblright, \textquoteleft, \textquoteright,
  *    \textregistered, \textvisiblespace, \texttrademark,
  *    \copyright, \lq, \rq,
  *
@@ -26,7 +26,7 @@
  *    \aghtex@htag → \aghtexInternalHTag [改名]
  *
  *    not implemeneted: \special
- *    
+ *
  *  @section 公開オブジェクト
  *    ※以下 mod_common = ns.Modules["mod:common"] とする。
  *    @fn mod_common.CreateCommandTagFollowing(doc,tagName[,endTag])
@@ -105,14 +105,14 @@ context "global"{
       if(ch==null)return;
     }
     ch(doc,cls,opt);
-    
+
     doc.currentCtx.AddCommandHandler("documentclass",function(doc){
       doc.scanner.Next();
       doc.currentCtx.output.error('mod:common.cmd:documentclass.MultipleDocumentClasses',null,'mod:common.cmd:documentclass');
     });
   };
   _Ctx.AddCommandHandler("documentstyle",_Ctx.handlerC["documentclass"]); // For older version of TeX
-  
+
   command f\usepackage("#[]@1#@2"){
     var opt=argv[1];
     var pkgs=argv[2].split(',');
@@ -123,7 +123,7 @@ context "global"{
         doc.currentCtx.output.error('mod:common.cmd:usepackage.UnknownPackage',{pkg:pkg},'mod:common.cmd:usepackage');
         continue;
       }
-      
+
       // package 初期化
       try{
         handler(doc,opt,pkg);
@@ -163,7 +163,7 @@ context "global"{
         '\\newcommand @ mod:common');
       return;
     }
-    
+
     // 既定の引数
     var optional=argv[3];
     var arg_def="";
@@ -173,11 +173,11 @@ context "global"{
       }else{
         arg_def="#1";
       }
-        
+
       for(var i=2;i<=argN;i++)
         arg_def+="#"+i;
     }
-    
+
     // 定義内容
     var def=argv[4];
 
@@ -247,13 +247,13 @@ context "global"{
   function cmd_def(doc,argv,isGlobal){
     var name=getCommandName(doc,argv);
     if(name==null)return;
-    
+
     doc.SetMacroHandler(name,new ns.Command2("m",argv[2],argv[3]),isGlobal);
   }
   function cmd_edef(doc,argv,isGlobal){
     var name=getCommandName(doc,argv);
     if(name==null)return;
-    
+
     doc.SetMacroHandler(name,new ns.Command2("m@",argv[2],argv[3]),isGlobal);
   }
   command f\def (#1#2{#3}) {cmd_def (doc,argv,false);};
@@ -345,7 +345,7 @@ context "global"{
   command s@\hspace*(#1) '<span style="padding-right:#1;"></span>';
   command s@\vspace(#1)  '<p class="tex-vspace" style="font-size:#1">&nbsp;</p>';
   command s@\vspace*(#1) '<p class="tex-vspace" style="font-size:#1">&nbsp;</p>';
-  
+
   command s>\enspace()              @'\hspace{0.5em}'; // from plain-TeX, kerning
 
   command s@#" "()                   '&nbsp;';
@@ -356,7 +356,7 @@ context "global"{
   command s@\phantom("#>1")         "<tex:phantom>#1</tex:phantom>";
   command s@\hphantom("#>1")        "<tex:hphantom>#1</tex:hphantom>";
   command s@\vphantom("#[_]!1#>2")  '<tex:vphantom class="aghtex-vphantom-align-#1"><tex:vphantom2>#2</tex:vphantom2></tex:vphantom>';
-  
+
   command s@\hfill()     '<tex:i class="aghtex-hfill"></tex:i>';
   command s@\dotfill()   '<tex:i class="aghtex-hfill-dot"></tex:i>';
   command s@\hrulefill() '<tex:i class="aghtex-hfill-rule"></tex:i>';
@@ -369,7 +369,7 @@ context "global"{
   command s@\_()    @"_";
   command s@\$()    @"$";
   command s@\#()    @"#";
-  
+
   // その他の記号
   command s@\P        () '¶';
   command s@\S        () '§';
@@ -389,13 +389,13 @@ context "global"{
   command s@\ss       () '&#xDF;';  // ß
   command s@\o        () '&#xF8;';  // ø
   command s@\O        () '&#xD8;';  // Ø
-  
+
   // TeX
   command s@\TeX   () '<tex:TeX>T<span>E</span>X</tex:TeX>';
   command s@\LaTeX () '<tex:La>L<span>A</span></tex:La><tex:TeX>T<span>E</span>X</tex:TeX>';
   command s@\LaTeXe() '<tex:La>L<span>A</span></tex:La><tex:TeX>T<span>E</span>X</tex:TeX>2<span style=\'vertical-align:-10%;\'>ε</span>';
-  
-  // 特別な文字 
+
+  // 特別な文字
   command s@\copyright()          '<tex:f class="aghtex-textrm">©</tex:f>'; // u00A9
 
   // \text/math... 記号
@@ -495,7 +495,7 @@ context "global"{
         cls=$2;
     });
     var content=argv[2];
-    
+
     buff.push('<',tag);
     if(cls!=null&&cls.length>0){
       buff.push(' class="',cls,'">');

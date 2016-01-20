@@ -52,7 +52,7 @@
     }
     if(b1===null)
       return null;
-    
+
     if(1<=t&&t<=94){
       if(k&1){
         b2=t+0x3f;

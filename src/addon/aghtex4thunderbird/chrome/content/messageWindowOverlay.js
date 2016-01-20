@@ -79,7 +79,7 @@
       return nodes;
     });
   }
-  
+
   function initialize_document_with_tex(_window,manifest){
     var _document=_window.document;
 

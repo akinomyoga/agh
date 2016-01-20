@@ -207,7 +207,7 @@
     if(a==null)return b==null?0:NaN;
     if(b==null)return NaN;
     if(a.constructor!=b.constructor)return NaN;
-    
+
     if(!(typeof a=="number"||a instanceof Number||typeof a=="string"||a instanceof String)){
       if(a instanceof ns.PsName){
         a=a.name;
@@ -219,7 +219,7 @@
         return 0;
       }else return a===b?0:NaN;
     }
-    
+
     // compare native
     if(a==b)return 0;
     if(a>b)return 1;
@@ -270,7 +270,7 @@
       var del=s.pop();
       var len=s.pop();
       if(del<0)del+=len;
-      
+
 #%(
       // 遅い (関数呼出)
       function reverse(arr,begin,end){
@@ -314,9 +314,9 @@
         proc.onerror("unmatchedmark");
         return;
       }
-      
+
       proc.stk.push(proc.stk.length-1-i);
-      
+
       //p.Run("1 mark 1 2 counttomark pstack clear");
     },
     cleartomark:function cleartomark(proc){
@@ -325,7 +325,7 @@
         proc.onerror("unmatchedmark");
         return;
       }
-      
+
       proc.stk.length=index;
     }
   });
@@ -340,12 +340,12 @@
       var iM=proc.stk.pop();
       var di=proc.stk.pop();
       var i0=proc.stk.pop();
-      
+
       if(!(exec instanceof ns.PsArray)||!exec.__xaccess__){
         proc.onerror('typecheck',"operand4/4: a procedure is expected");
         return;
       }
-      
+
       // exec.update_function
       if(exec.__funcver__!=exec.data.ver)
         exec.compile_function(proc);
@@ -368,19 +368,19 @@
           exec.__function__(proc,exec.__funcargs__);
         }
       }
-      
+
       if(proc.m_stop=='exit')proc.m_stop=false;
     },
     forall:function forall(proc){
       var e=proc.stk.pop();
       var a=proc.stk.pop();
-      
+
       if(!(e instanceof ns.PsArray)||!e.__xaccess__){
         proc.onerror('typecheck',"operand4/4: a procedure is expected");
         return;
       }else if(e.__funcver__!=e.data.ver)
         e.compile_function(proc);
-        
+
       if(a instanceof ns.PsArray||a instanceof ns.PsString){
         for(var i=0;i<a.length;i++){
           proc.stk.push(a.data[a.offset+i]);
@@ -399,13 +399,13 @@
     },
     loop:function loop(proc){
       var e=proc.stk.pop();
-      
+
       if(!(e instanceof ns.PsArray)||!e.__xaccess__){
         proc.onerror('typecheck',"operand1/1: a procedure is expected");
         return;
       }else if(e.__funcver__!=e.data.ver)
         e.compile_function(proc);
-        
+
       for(;!proc.m_stop;)
         e.__function__(proc,e.__funcargs__);
       if(proc.m_stop=='exit')
@@ -414,13 +414,13 @@
     repeat:function repeat(proc){
       var e=proc.stk.pop();
       var n=proc.stk.pop();
-      
+
       if(!(e instanceof ns.PsArray)||!e.__xaccess__){
         proc.onerror('typecheck',"operand2/2: a procedure is expected");
         return;
       }else if(e.__funcver__!=e.data.ver)
         e.compile_function(proc);
-        
+
       while(n--){
         e.__function__(proc,e.__funcargs__);
         if(proc.m_stop){
@@ -432,27 +432,27 @@
     'if':function ps_if(proc){
       var e=proc.stk.pop();
       if(!proc.stk.pop())return;
-      
+
       if(!(e instanceof ns.PsArray)||!e.__xaccess__){
         proc.onerror('typecheck',"operand2/2: a procedure is expected");
         return;
       }else if(e.__funcver__!=e.data.ver)
         e.compile_function(proc);
-        
+
       e.__function__(proc,e.__funcargs__);
     },
     ifelse:function ifelse(proc){
       var f=proc.stk.pop();
       var t=proc.stk.pop();
       var c=proc.stk.pop();
-      
+
       var e=c?t:f;
       if(!(e instanceof ns.PsArray)||!e.__xaccess__){
         proc.onerror('typecheck',"operand"+(c?2:3)+"/3: a procedure is expected");
         return;
       }else if(e.__funcver__!=e.data.ver)
         e.compile_function(proc);
-        
+
       e.__function__(proc,e.__funcargs__);
     },
     stopped:function stopped(proc){
@@ -485,25 +485,25 @@
         proc.onerror("unmatchedmark");
         return;
       }
-      
+
       var arr=[];
       for(var i=index+1;i<proc.stk.length;i++)
         arr.push(proc.stk[i]);
-      
+
       proc.stk.length=index;
       proc.stk.push(new ns.PsArray(arr));
     },
     packedarray:function packedarray(proc){
       var len=parseInt(proc.stk.pop());
       var index=proc.stk.length-len;
-      
+
       var arr=[];
       for(var i=index;i<proc.stk.length;i++)
         arr.push(proc.stk[i]);
       var obj=new ns.PsArray(arr);
       obj.__packed__=true;
       obj.__waccess__=false;
-      
+
       proc.stk.length=index;
       proc.stk.push(obj);
       //p.Run("1 2 3 4 4 packedarray aload pstack clear");
@@ -524,7 +524,7 @@
     },
     astore:function astore(proc){
       var arr=proc.stk.pop();
-      
+
       if(!(arr instanceof ns.PsArray)){
         proc.onerror('typecheck',"operand: an array is expected.");
         return;
@@ -535,7 +535,7 @@
         for(var i=arr.length-1;i>=0;i--)
           arr.data[i]=proc.stk.pop();
       }
-      
+
       proc.stk.push(arr);
       //p.Run("1 2 3 4 4 array astore pstack clear");
     },
@@ -552,7 +552,7 @@
       var len=proc.stk.pop();
       var ind=proc.stk.pop();
       var obj=proc.stk.pop();
-      
+
       // create clone
       var ret=null;
       if(obj instanceof ns.PsArray){
@@ -564,7 +564,7 @@
         proc.onerror("typecheck","operand 1/3");
         return;
       }
-      
+
       // set range and push
       if(ind<0||len<0||obj.length<ind+len){
         proc.onerror("typecheck","interval "+ind+"-"+(ind+len)+" from 0-"+obj.length);
@@ -581,14 +581,14 @@
       var src=proc.stk.pop();
       var ind=proc.stk.pop();
       var dst=proc.stk.pop();
-      
+
       // typecheck
       if(dst instanceof ns.PsArray){
         if(!dst.__waccess__){
           proc.onerror("invalidaccess","operand1/3: no __waccess__");
           return;
         }
-        
+
         if(!(src instanceof ns.PsArray)){
           proc.onerror("typecheck","operand 1/3 and operand 2/3 is not compatible.");
           return;
@@ -602,7 +602,7 @@
         proc.onerror("typecheck","operand 1/3");
         return;
       }
-      
+
       // rangecheck
       if(ind<0){
         proc.onerror("rangecheck","operand 2/3 should not be a negative integer.");
@@ -611,7 +611,7 @@
         proc.onerror("rangecheck","operand 3/3 is too large.");
         return;
       }
-    
+
       for(var i=0;i<src.length;i++)
         dst.data[dst.offset+ind+i]=src.data[src.offset+i];
     },
@@ -622,7 +622,7 @@
         proc.onerror("typecheck","operand 1/2 must be composite. "+obj);
         return;
       }
-      
+
       proc.stk.push(obj.__psget__(proc,""+key));
     },
     put:function ps_put(proc){
@@ -633,7 +633,7 @@
         proc.onerror("typecheck","operand 1/3 must be composite. "+obj);
         return;
       }
-      
+
       obj.__psput__(proc,""+key.toString(),val);
     },
     /*
@@ -645,10 +645,10 @@
       if(p instanceof ns.PsArray){
         // ※ __xaccess__ でなくても bind する。 (GS 準拠)
         // ※ !__waccess__ でも bind を実行する。 (GS 準拠)
-        
+
         for(var i=0;i<p.length;i++){
           var o=p.data[p.offset+i];
-          
+
           /*/
           // Deep Bind (より速くなりそうだけれど仕様逸脱…)
           //++++++++++++++++++++++++++++++++++++++++++++++++
@@ -683,19 +683,19 @@
         proc.onerror("unmatchedmark");
         return;
       }
-      
+
       var rest=proc.stk.length-index;
       if(rest%2==1){
         proc.onerror("rangecheck","odd number of objects in dictionary definition.");
         return;
       }
-      
+
       var ret=new ns.PsDict();
       for(var i=index;i<proc.stk.length;i+=2){
         ret.data[proc.stk[i]]=proc.stk[i+1];
         ret.length++;
       }
-      
+
       proc.stk.length=index-1;
       proc.stk.push(ret);
     },
@@ -736,7 +736,7 @@
     type:function type(proc){
       var o=proc.stk.pop();
       var r="unknowntype";
-      
+
       if(agh.is(o,Number)){
         r=o==~~o?'integertype':'realtype';
       }else if(agh.is(o,Boolean)){
@@ -762,13 +762,13 @@
       }else if(o instanceof ns.PsFile){
         r='filetype';
       }
-      
+
       /* TODO: ■■
         conditiontype
         fonttype
         locktype
       //*/
-      
+
       proc.stk.push(ns.PsName.CreateExecutable(r));
     },
     cvn:function cvn(proc){
@@ -782,7 +782,7 @@
       var str=proc.stk.pop();
       var radix=parseInt(proc.stk.pop());
       var value=parseFloat(proc.stk.pop());
-      
+
       var ret="";
       if(radix==10)
         ret=value.toString()
@@ -791,19 +791,19 @@
         if(value<0)value=(value+1)+Number.UINT_MAX;
         ret=value.toString(radix).toUpperCase();
       }
-      
+
       if(ret.length>str.length){
         proc.onerror("rangecheck","string buffer is too small.");
         return;
       }
-      
+
       var sub=new ns.PsString(str.data);
       sub.__xaccess__=str.__xaccess__;
       sub.offset=str.offset;
       sub.length=ret.length;
       for(var i=0;i<ret.length;i++)
         sub.data[sub.offset+i]=ret.charCodeAt(i);
-      
+
       proc.stk.push(sub);
       /*
         p.Run("/temp {15 string} def 123 10 temp cvrs -123 10 temp cvrs 123.4 10 temp cvrs pstack clear");
@@ -823,7 +823,7 @@
         top.__xaccess__=true;
         proc.stk[proc.stk.length-1]=top;
       }
-      
+
       /* TODO: filetype.__xaccess__ etc */
     },
     cvlit:function cvlit(proc){
@@ -907,14 +907,14 @@
         proc.onerror("rangecheck","operand 1/1 is to small to store dictionaries.");
         return;
       }
-      
+
       var ret=new ns.PsArray(arr.data);
       ret.offset=arr.offset;
       ret.length=n_dstk;
       ret.data[ret.offset]=proc.scope.systemdict;
       for(var i=1;i<n_dstk;i++)
         ret.data[ret.offset+i]=dstk[i-1];
-      
+
       proc.stk.push(ret);
     },
     begin:function begin(proc){
@@ -923,7 +923,7 @@
         proc.onerror("typecheck","operand 1/1 must be dictionary. operand 1/1 = "+to_ps(dict));
         return;
       }
-      
+
       proc.scope.push_dict(dict);
     },
     end:function end(proc){
@@ -961,7 +961,7 @@
         proc.onerror("undefined","'"+key+"'");
         return;
       }
-      
+
       proc.stk.push(dict.data[key]);
     },
     currentdict:function currentdict(proc){
@@ -987,7 +987,7 @@
         proc.onerror('typeheck',"operand1/1: a file is expected");
         return;
       }
-      
+
       f.close();
     },
     eexec:function eexec(proc){
@@ -998,7 +998,7 @@
         proc.onerror('typeheck',"operand1/1: a file is expected");
         return;
       }
-      
+
       // window.log('dbg: eexec efile.c='+efile.c);
       proc.scope.push_dict(proc.scope.systemdict);
       proc.runfile(efile);
@@ -1013,19 +1013,19 @@
         proc.onerror('invalidaccess',"operand2/2: no __waccess__");
         return;
       }
-      
+
       var f=proc.stk.pop();
       if(!(f instanceof ns.PsFile)){
         proc.onerror('typeheck',"operand1/2: a file is expected");
         return;
       }
-      
+
       while(f.c!=null&&/\s/.test(f.c))f.next();
       for(var i=0;i<s.length&&f.c!=null;i++){
         s.data[s.offset+i]=f.c.charCodeAt(0);
         f.next();
       }
-      
+
       if(i==s.length){
         proc.stk.push(s);
         proc.stk.push(true);

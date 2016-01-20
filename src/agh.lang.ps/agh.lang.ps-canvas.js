@@ -3,7 +3,7 @@
   //----------------------------------------------------------------------------
   var CANVAS_LNCAP=SVG_LNCAP;
   var CANVAS_LNJOIN=VML_LNJOIN;
-  
+
   ns.GraphicsCanvas=agh.Class(nsName+'.GraphicsCanvas',ns.GraphicsBase,{
     constructor:function(elem){
       this.base();
@@ -20,7 +20,7 @@
         this.canvas=this.elem.firstChild;
       }
       this.ctx=this.canvas.getContext('2d');
-      
+
       // 座標空間の設定
       var ww=parseFloat(this.m_width);
       var hh=parseFloat(this.m_height);
@@ -38,12 +38,12 @@
 #%)
       //縦横比調整
       //this.ctx.transform(ww/this.m_bbw,0,0,-hh/this.m_bbh,-this.m_bbl,hh+this.m_bbb);
-      
+
       var scal=Math.min(ww/this.m_bbw,hh/this.m_bbh);
       var x=(ww-scal*this.m_bbw)/2;
       var y=(hh-scal*this.m_bbh)/2;
       this.ctx.transform(scal,0,0,scal,x,y);
-      
+
       this.ctx.transform(1,0,0,-1,-this.m_bbl,this.m_bbh+this.m_bbb);
     },
     //------------------------------------------------------
@@ -65,14 +65,14 @@
         //			s+t=1, s>0, t>0
         //			p=s^3 p1 + 3 s^2 t p2 + 3 s t^2 p3 + t^3 p4
         //			dp/dt= 3ss(p2-p1) +6st(p3-p2) +3tt(p4-p3)
-        
+
         //(s.linedash,scal);
         //(s.linedash.dashoffset*scal);
       }
       // ■ TODO: strokeadjust の指定
       this.output_path();
       this.ctx.stroke();
-      
+
       // PATH_CHAR
       for(var i=0,iN=s.path.length;i<iN;i++){
         var e=s.path[i];
@@ -92,7 +92,7 @@
       this.ctx.fillStyle=s.color.toHtmlColor();
       this.output_path();
       this.ctx.fill();
-      
+
       // PATH_CHAR
       for(var i=0,iN=s.path.length;i<iN;i++){
         var e=s.path[i];
@@ -101,7 +101,7 @@
           this.fill_text(e[4],e[5],null,e[3],e[2]);
         }
       }
-      
+
       s.path.length=0;
       s.position=null;
     },
@@ -139,7 +139,7 @@
     fill_text:function(text,move,pos,font,ctm,fSTROKE){
       if(this.ctx==null)this.init_context();
       if(font==null)font=this.gstate.font;
-    
+
       var matrix=ns.AffineA.mul(font.matrix,ctm||this.gstate.CTM);
       var v2c=font.matrix.slice(4,6);
       if(pos instanceof Array){
@@ -147,10 +147,10 @@
         v2c[1]+=pos[1];
       }
       v2c=this.rtransf_point(this.gstate.position,v2c);
-      
+
       //------------------------------------------
       ns.AffineA.idtransformD(v2c,matrix);
-      
+
       if(fSTROKE){
         var s=this.gstate;
         var scal=this.getMeanScale();
@@ -160,7 +160,7 @@
         this.ctx.lineJoin=(CANVAS_LNJOIN[s.linejoin]||CANVAS_LNJOIN[0]);
         if(s.linejoin==LNJOIN_MITER)
           this.ctx.miterLimit=(s.miterlimit);
-        
+
         if(s.linedash.length!=0){
           // ■ Canvas には点線がない。自力で点線文字輪郭を実装するのは無理では…?
           //(s.linedash,scal);
@@ -169,7 +169,7 @@
       }else{
         this.ctx.fillStyle=this.gstate.color.toHtmlColor();
       }
-      
+
       this.ctx.save();
       {
         //■■未確認■■

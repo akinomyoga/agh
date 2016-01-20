@@ -142,19 +142,19 @@ agh.memcpy(_at.Cell.prototype,{
     // 左 border の取得
     bL=bL||this.get_bL();
     if(!bL)return 0;
-    
+
     var r=0;
     var right=true;
     agh.Array.eachR(bL,function(b){
       if(!right|(right=b!=1))r++; // (右が線) or (今回升) ⇒ ret++
     });
-    
+
     return r;
   },
   cols_bR:function(bR){
     bR=bR||this.get_bR();
     if(!bR)return 0;
-    
+
     var r=0;
     var left=true; // 左が升 (新しい td) か否か
     agh.Array.each(bR,function(b){
@@ -167,14 +167,14 @@ agh.memcpy(_at.Cell.prototype,{
   //****************************************************************
   write:function(output){
     if(this.is_spanpad)return;
-    
+
     // 総 td@colspan 計算 (multicolumn も考慮)
     var x=this.x;
     var y=this.y;
     var totspan=0;
     for(var i=0;i<this.colspan;i++)
       totspan+=this.table.col(y+i).tdc;
-    
+
     // 書き出し (multicolumn の場合は最後の cell が担当)
     var wcell=this.table.cell(x,y+this.colspan-1);
     wcell.write_internal(
@@ -196,7 +196,7 @@ agh.memcpy(_at.Cell.prototype,{
     bR=bR||[];
     var sty=new ns.Writer();
     var sbuff=sty.buff;
-    
+
     // calc main-td colspan
     tdspan-=this.cols_bR(bR)+this.cols_bL(bL);
 
@@ -216,7 +216,7 @@ agh.memcpy(_at.Cell.prototype,{
       if(bbL)bL=bL.slice(0,-1);
       if(bbR)bR=bR.slice(1);
     }
-    
+
     var pL=this.get_pL();
     if(pL!=null){
       sbuff.push('padding-left:',pL,';');
@@ -225,7 +225,7 @@ agh.memcpy(_at.Cell.prototype,{
     if(pR!=null){
       sbuff.push('padding-right:',pR,';');
     }
-    
+
   /*
     if(this.y==8){
       console.log("Now going to write cell.");
@@ -235,7 +235,7 @@ agh.memcpy(_at.Cell.prototype,{
     }
   //*/
     this.write_bL(output,bL,bbT,bbB);
-    
+
     // 本体書き出し
     var buff=output.buff;
     buff.push(' <td class="aghtex-array-cell"');
@@ -243,7 +243,7 @@ agh.memcpy(_at.Cell.prototype,{
     if(tdspan>1){
       buff.push(' colspan="',tdspan,'"');
     }
-    
+
     // - スタイル
     sty=sty.toHtml();
     if(sty.length>0){
@@ -251,7 +251,7 @@ agh.memcpy(_at.Cell.prototype,{
       // ■ padding
     }
     buff.push('>',this.content,'</td>\n');
-    
+
     this.write_bR(output,bR,bbT,bbB);
   },
   write_bL:function(output,bL,bT,bB){
@@ -405,7 +405,7 @@ agh.memcpy(_at.Column.prototype,{
     this.tdc=maxL+1+maxR;
     this.tdcL=maxL;
     this.tdcR=maxR;
-    
+
     return this.tdc;
   },
   _isPaddingLeftText:function(){
@@ -426,13 +426,13 @@ agh.memcpy(_at.Column.prototype,{
   },
   update_padding:function(){
     var table=this.table;
-    
+
     // paddingL
     if(this._isPaddingLeftText())
       this.paddingL="0px";
     else if(this.y==0)
       this.paddingL="0.3ex"; // 最左列既定値
-    
+
     // paddingR
     if(this._isPaddingRightText())
       this.paddingR="0px";
@@ -534,7 +534,7 @@ _at.AlignHandlers={
       if(!(c in this))c=0; // 既定のハンドラ
       this[c](doc,c);
     }
-    
+
     // 最後の文字は文字ハンドラとして動作
     var c=text.substr(iLast,1);
     var lh=doc.currentCtx.GetLetterHandler(c);
@@ -568,19 +568,19 @@ context "env.array.align" new("sub.braced"){
   _Ctx.initializer=function(mainctx){
     if(mainctx[_Ctx.key])return;
     mainctx[_Ctx.key]=true;
-    
+
     // 直接
     if(!mainctx.ContainsBaseContext(this))return;
-    
+
     // (既に text_modifier が登録されていても無視)
     mainctx.text_modifier=function(doc,text){
       if(text.length==0){
         doc.scanner.Next();
         return text;
       }
-      
+
       _at.AlignHandlers.processText(doc,text);
-      
+
       return "";
     };
   };
@@ -620,7 +620,7 @@ context "env.array.align" new("sub.braced"){
         "ltr:* (ctx:env.array.align)");
       return;
     }
-    
+
     // 挿入
     doc.scanner.InsertSource(argv[2].toString().repeat(i));
   };
@@ -644,7 +644,7 @@ _at.Table=function(){
   this.cells=[];
   this.borderV=[];  // 垂直線既定値
   this.borderH=[];  // 水平線データ
-  
+
   this.cols=[];    // 列数情報
 };
 agh.memcpy(_at.Table.prototype,{
@@ -667,7 +667,7 @@ agh.memcpy(_at.Table.prototype,{
     while(x>=this.xM)
       this.cells[this.xM++]=[];
     if(y>=this.yM)this.yM=y+1;
-    
+
     return this.cells[x][y]||(this.cells[x][y]=new _at.Cell(this,x,y));
   },
   col:function(y){
@@ -713,7 +713,7 @@ agh.memcpy(_at.Table.prototype,{
   addHorizontalLines:function(row,count){
     if(this.borderH[row]==null)
       this.borderH[row]=0;
-    
+
     this.borderH[row]+=count||1;
   },
   getHtmlRowCount:function(){
@@ -744,24 +744,24 @@ agh.memcpy(_at.Table.prototype,{
       c.is_spanpad=true;
       c.is_multicol=true;
     }
-    
+
     // 内容の設定
     var lcell=this.cell();
     this.cy+=span-1;
     var rcell=this.cell();
     rcell.content=content;
-    
+
     // align の解釈
     lcell.borderL=[];
     rcell.borderR=[];
-    
+
     var ctx_aln=doc.context_cast(["sub.braced","env.array.align"]);
     ctx_aln.CTXDATA=new _at.MulticolAlignSetter(doc,lcell,rcell);
     doc.scanner.InsertSource("{"+align+"}");
     doc.scanner.Next(); // "{" の次
     var r=doc.Read(ctx_aln);
     if(r)doc.currentCtx.output.buff.push(r);
-    
+
     if(rcell.align==null){
       doc.currentCtx.output.error(
         "mod:array.cmd:multicol.EmptyAlignment",null,
@@ -791,17 +791,17 @@ agh.memcpy(_at.Table.prototype,{
       this.col(y).update_padding();
       tdc_total+=this.col(y).update_tdc();
     }
-    
+
     // header
     var buff=output.buff;
     if(this.param_bracket)
       buff.push('<table class="aghtex-array aghtex-array-valign-',this.valign,' aghtex-array-lrpad">\r\n');
     else
       buff.push('<table class="aghtex-array aghtex-array-valign-',this.valign,'">\r\n');
-    
+
     // thead (colgroups or dummy-row)
     this.write_thead(output);
-    
+
     // enclosing brackets
     if(this.param_bracket){
       var trCount=1+this.getHtmlRowCount();
@@ -827,7 +827,7 @@ agh.memcpy(_at.Table.prototype,{
           this.cells[x][y].write(output);
       }
       buff.push('</tr>\n');
-      
+
       this.write_bB(output,tdc_total,x);
     }
     buff.push('</table>');
@@ -842,7 +842,7 @@ agh.memcpy(_at.Table.prototype,{
   },
   write_thead:function(output){
     var buff=output.buff;
-    
+
     if(agh.browser.vFx){
       buff.push('<tr class="aghtex-array-fxdummy">\n');
       for(var y=0;y<this.yM;y++){
@@ -923,7 +923,7 @@ agh.memcpy(_at.Table,{
       data.next_col();
       return;
     }
-    
+
     data.cell().content=output.toHtml();
     output.clear();
     data.next_col();
@@ -943,7 +943,7 @@ agh.memcpy(_at.Table,{
     var output=doc.currentCtx.output;
     var data=_at.Table.GetTable(doc,cmdName,"HorizontalLine");
     if(data==null)return;
-    
+
     data.set_hline();
   },
   // \cline{1-3}
@@ -951,7 +951,7 @@ agh.memcpy(_at.Table,{
     var output=doc.currentCtx.output;
     var data=_at.Table.GetTable(doc,args[0],"HorizontalLine");
     if(data==null)return;
-    
+
     // chk 引数
     var s=args[1].match(/^\s*(\d)+\s*\-\s*(\d+)/);
     if(s==null){
@@ -961,7 +961,7 @@ agh.memcpy(_at.Table,{
 
       return;
     }
-    
+
     data.set_cline(parseInt(s[1]),parseInt(s[2]));
   }),
   // \multicolumn{2}{|c|}{content}
@@ -969,12 +969,12 @@ agh.memcpy(_at.Table,{
     var output=doc.currentCtx.output;
     var data=_at.Table.GetTable(doc,args[0],"Multicolumn");
     if(data==null)return;
-    
+
     var cnum=parseInt(args[1]);
     if(isNaN(cnum)||cnum<=0)cnum=1;
     var csty=args[2];
     var content=args[3];
-    
+
     // ■ 既に内容があった場合警告
     data.set_multicol(doc,cnum,csty,content);
   })
@@ -997,12 +997,12 @@ _Mod.ArrayEnvironmentDefaultPrologue=function(doc,ctx){
 };
 _Mod.ArrayEnvironmentDefaultEpilogue=function(doc,ctx){
   var table=ctx.ENVDATA;
-  
+
   // 最後の出力を拾う
   var last_cont=ctx.output.toHtml();
   if(last_cont.trim().length>0)
     table.cell().content=last_cont;
-  
+
   table.write(doc.currentCtx.output);
 };
 _Mod.ArrayEnvironmentDefaultCatcher=function(doc,ctx){
@@ -1025,9 +1025,9 @@ var ENV_PARAMS={
   suppressOutput:true,
   prologue:function(doc,ctx){
     var t=_Mod.ArrayEnvironmentDefaultPrologue(doc,ctx);
-    
+
     t.valign=_Mod.ReadVerticalAlign(doc); // 第1引数
-    
+
     // 第二引数 : 水平位置合わせ
     //----------------------------------------------------
     if(doc.scanner.is("ltr","{")){
@@ -1036,7 +1036,7 @@ var ENV_PARAMS={
       ctx_aln.CTXDATA=new _at.TableAlignSetter(t);
       var err=doc.Read(ctx_aln)||"";
       t.clear_pos(); // (cx,cy) = (0,0)
-      
+
       // エラーがある場合
       if(err.trim())
         doc.currentCtx.output.buff.push(err);
@@ -1172,7 +1172,7 @@ _Mod["envdef:eqnarray*"]={
   suppressOutput:true,
   prologue:function(doc,ctx){
     var t=_Mod.ArrayEnvironmentDefaultPrologue(doc,ctx);
-    
+
     // 列の設定
     t.col(0).halign="r";
     t.col(1).halign="c";
@@ -1277,7 +1277,7 @@ _Mod["envdef:alignat*"]={
       t.col(2*i).paddingR="0px";
       t.col(2*i+1).halign="l";
       t.col(2*i+1).paddingL="0px";
-    }    
+    }
 
     t.default_col().add_bR(ns.Writer.get_error(
       "mod:array.env:narray.ExtraColumn",null,

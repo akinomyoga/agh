@@ -5,18 +5,18 @@
   VML_LNCAP[LNCAP_BUTT]="flat";
   VML_LNCAP[LNCAP_ROUND]="round";
   VML_LNCAP[LNCAP_SQUARE]="square"
-  
+
   var VML_LNJOIN={};
   VML_LNJOIN[LNJOIN_MITER]="miter";
   VML_LNJOIN[LNJOIN_ROUND]="round";
   VML_LNJOIN[LNJOIN_BEVEL]="bevel";
-  
+
   // 何故か IE VML では十パターンしか使えない様なので、
   // 与えられた dash 行列から近そうなパターンを選択する。
   // アルゴリズムは適当。
   var VML_DASHARRAY=function(dash,width){
     if(dash.length==0)return 'solid';
-    
+
     var l=dash.length;
     var iN=l%2?2*l:l;
     switch(iN){
@@ -36,7 +36,7 @@
           l=dash[2],u=dash[0];
         else
           l=dash[0],u=dash[2];
-          
+
         if(l/u>0.66)
           return VML_DASHARRAY([(l+u)/2,m],width);
         else if(l/u<0.2)
@@ -59,14 +59,14 @@
         }
         iN/=2;
         s/=iN;
-        
+
         // 分散の小さい物はより単純な破線へ
         x/=iN;xx/=iN;
         xx=(xx-x*x)/(x*x); // 相対分散
         var x_=(iN*x-u)/(iN-1);
         if(xx<0.2)
           return VML_DASHARRAY([u,s,(iN*x-u)/(iN-1),s],width);
-          
+
         if(x_/s<0.66)
           return '8 3 1 3 1 3';
         else
@@ -75,14 +75,14 @@
 
     return ret.join('');
   };
-  
+
   var VML_FIXEDMUL=10000;
   var VML_SHAPE_COORD_WH=100;
   var VML_ATTR_COORD
     ='" style="width:'+VML_SHAPE_COORD_WH+';height:'+VML_SHAPE_COORD_WH
     +';" coordsize="'+(VML_SHAPE_COORD_WH*VML_FIXEDMUL)+' '+(VML_SHAPE_COORD_WH*VML_FIXEDMUL)
     +'" coordorigin="0 0"';
-    
+
   ns.GraphicsVml=agh.Class(nsName+'.GraphicsVml',ns.GraphicsBase,{
     constructor:function(){
       this.base();
@@ -97,7 +97,7 @@
       this.output_path();
       this.buffer.push(VML_ATTR_COORD);
       this.buffer.push('>\n');
-      
+
       this.buffer.push('<vml:stroke color="');
       this.buffer.push(s.color.toHtmlColor());
       this.buffer.push('" weight="');
@@ -118,7 +118,7 @@
       }
       this.buffer.push('" /></vml:shape>\n');
       // ■ TODO: strokeadjust の指定
-      
+
       // PATH_CHAR
       for(var i=0,iN=s.path.length;i<iN;i++){
         var e=s.path[i];
@@ -139,7 +139,7 @@
       this.output_path();
       this.buffer.push(VML_ATTR_COORD);
       this.buffer.push(' />\n');
-      
+
       // PATH_CHAR
       for(var i=0,iN=s.path.length;i<iN;i++){
         var e=s.path[i];
@@ -157,7 +157,7 @@
       var pos=null;
       for(var i=0;i<path.length;i++){
         if(i!=0)this.buffer.push(" ");
-        
+
         var e=path[i];
         switch(e[0]){
           case PATH_LINE:
@@ -197,7 +197,7 @@
     //	文字列表示
     fill_text:function(text,move,pos,font,ctm,fSTROKE){
       if(font==null)font=this.gstate.font;
-    
+
       var matrix=ns.AffineA.mul(font.matrix,ctm||this.gstate.CTM);
       var v2c=font.matrix.slice(4,6);
       if(pos instanceof Array){
@@ -220,7 +220,7 @@
       // 中心線補正
       v2c[1]+=0.3*font.size;
       //------------------------------------------
-      
+
       if(fSTROKE){
         this.buffer.push('<vml:shape stroked="true" filled="false" strokecolor="');
       }else{
@@ -234,7 +234,7 @@
       if(fSTROKE){
         var s=this.gstate;
         var scal=this.getMeanScale();
-        
+
         // <vml:stroke>
         this.buffer.push(
           '<vml:stroke color="',s.color.toHtmlColor(),
@@ -251,7 +251,7 @@
         }
         this.buffer.push('" />\n');
       }
-      
+
       this.buffer.push(
         '<vml:skew matrix="',matrix[0],',',matrix[2],',',matrix[1],',',matrix[3],',0,0" on="true" />\n');
       this.buffer.push(
@@ -261,7 +261,7 @@
         ';font-size:',font.size*this.s_r+this.s_u,
         ';font-style:',font.style,
         ';font-weight:',font.bold?"bold":"normal",';" string="',text,'" />\n');
-      
+
       this.buffer.push('</vml:shape>\n');
     },
     // 現在は誰も使っていない charpath から呼び出す為にある
@@ -284,7 +284,7 @@
         pc:pixels[3]/6,
         '%':0
       };
-      
+
       // 更新
       agh.scripts.wait(["event:onload"],function(){
         var div1=document.createElement('div');
@@ -304,7 +304,7 @@
           return div2.offsetHeight/10;
         });
         document.body.removeChild(div1);
-        
+
         units={
           ex:pixels[0],
           em:pixels[1],
@@ -331,7 +331,7 @@
         var mh=this.m_height.match(reg_valunit)||['200px',200,'px'];
         mw[1]=parseFloat(mw[1]);if(isNaN(mw[1]))mw[1]=200;
         mh[1]=parseFloat(mh[1]);if(isNaN(mh[1]))mh[1]=200;
-        
+
         // 単位換算
         if(mw[2]!=mh[2]){
           if(mw[2] in unit_abs&&mh[2] in unit_abs){
@@ -348,19 +348,19 @@
             return;
           }
         }
-        
+
         var w=mw[1]/this.m_bbw;
         var h=mh[1]/this.m_bbh;
         var r=w<h?w:h;
-        
+
         this.s_w=r/w;
         this.s_h=r/h;
         this.s_l=(1-this.s_w)*0.5;
         this.s_t=(1-this.s_h)*0.5;
-        
+
         this.s_u=mw[2];
         this.s_r=r;
-        
+
         //window.log("dbg: {0:%f} {1}",this.s_r,this.s_u);
         //window.log("dbg: {0:%.2f} {1:%.2f}".format(mw[1],mh[1]));
         //window.log("dbg: BB ({0:%.2f}, {1:%.2f}) - ({2:%.2f}, {3:%.2f})".format(
@@ -382,7 +382,7 @@
     //------------------------------------------------------
     showpage:function(){
       if(this.buffer.length==0)return "";
-      
+
       this.output.push('<div style="position:relative;width:');
       this.output.push(this.m_width);
       this.output.push(';height:');
@@ -407,10 +407,10 @@
       this.output.push('">\n');
       this.output.push(this.buffer.join(''));
       this.output.push('</vml:group></div>');
-      
+
       //window.log("dbg: l:{0:%.2f};t:{1:%.2f}; w:{2:%.2f};h:{3:%.2f};"
       //	.format(this.s_l,this.s_t,this.s_w,this.s_h));
-      
+
       this.buffer.length=0;
       this.ginit();
     },

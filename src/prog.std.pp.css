@@ -138,13 +138,13 @@ li.prog-decl-__type__:before, dt.prog-decl-__type__:before, ul.prog-items li.__t
   /*%)*/
   /*%x agh::prog::itemList*/
   ul.prog-items li{*background-position:left 1px;*background-repeat:no-repeat;}
-  
+
   /*%m agh::prog::item (*/
   dt.prog-decl-__type__,
   /*%)*/
   /*%x agh::prog::itemList*/
   dl.prog-items dt{*background-position:left center;*background-repeat:no-repeat;}
-  
+
   /*%m agh::prog::item (*/
   li.prog-decl-__type__, dt.prog-decl-__type__, ul.prog-items li.__type__, dl.prog-items dt.__type__{*background-image:url('icons/__icon__.png');}
   /*%)*/

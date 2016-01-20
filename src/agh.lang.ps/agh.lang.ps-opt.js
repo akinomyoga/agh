@@ -8,7 +8,7 @@
   var OP_ESTR=4;
   var OP_EARR=5;
   var OP_CODE=6;
-  
+
   var OP_EXPR=7;
   var OP_VPOP=8;
   (function initialize_optimizer(){
@@ -20,7 +20,7 @@
       compile_function:function(procedure){
         this.stk=[];
         var stk=this.stk;
-        
+
         //----------------------------------------------------
         //  Construction
         for(var i=0;i<procedure.length;i++){
@@ -43,12 +43,12 @@
             stk.push([OP_PUSH,w]);
           }
         }
-        
+
         var args=[];
         this.iv=0;
         this.args=args;
         this.optimize();
-        
+
         //----------------------------------------------------
         //  Code Generation
         var stk=this.stk;
@@ -111,24 +111,24 @@
               break;
           }
         }
-        
+
         //----------------------------------------------------
         //  Setup
         procedure.__function__=new Function('proc','_a',buff.join(''));
         procedure.__funcargs__=args;
         procedure.__funcver__=procedure.data.ver;
-        
+
         //window.log("compiled: "+procedure.__function__);
       },
       strong_bind:function(w){
         // assume(w instanceof ns.PsName);
-        
+
         var t=w;
         while(
           w instanceof ns.PsName&&w.__xaccess__
           &&(t=this.proc.scope.TryGetValue(this.proc,w.name))!=null
         )w=t;
-        
+
         if(w.__xaccess__){
           if(w instanceof ns.PsArray){
             this.stk.push([OP_EARR,w]);
@@ -150,9 +150,9 @@
         var s=this.ostk;
         var s_=this.stk;
         var sp=this.stkp;
-        
+
         var args=this.args;
-        
+
         for(var i=0;i<s.length;i++){
           var o=s[i];
           if(o[0]==OP_FUNC&&o[1].__optimize1__!=null){
@@ -165,7 +165,7 @@
             s_.push(o);
           }
         }
-        
+
         // flush
         for(var j=0;j<sp.length;j++)s_.push(sp[j]);
         sp.length=0;
@@ -241,11 +241,11 @@
             opt.opepush([OP_FUNC,this]);
             return;
           }
-          
+
           var del=opt.stkp.pop()[1];
           var len=opt.stkp.pop()[1];
           if(del<0)del+=len;
-          
+
           var ret=[];
           ret.push('var end=_s.length;\n');
           ret.push('var mid=end-',del,';\n');
@@ -255,7 +255,7 @@
           if(del>1)ret.push('b=mid;e=end;for(e--;b<e;b++,e--){t=_s[b];_s[b]=_s[e];_s[e]=t;}\n');
           ret.push('b=beg;e=end;for(e--;b<e;b++,e--){t=_s[b];_s[b]=_s[e];_s[e]=t;}\n');
           opt.opepush([OP_CODE,ret.join('')]);
-          
+
           // □ c==1 の場合
           // □ c>=2+len の場合
         };
@@ -311,7 +311,7 @@
         this.iv=0;
         this.read_array(procedure);
         this.opepush(null);
-        
+
         var stk=this.stk;
         var args=this.args;
         //----------------------------------------------------
@@ -358,7 +358,7 @@
               }else{
                 // OPTIMIZATION PROFILE
                 //window.log("dbg: function call "+to_ps(f));
-                
+
                 buff.push('proc.m_wstack.push(_a[',ia,']);')
                 buff.push('_a[',ia++,'](proc);');args.push(f);
                 buff.push('proc.m_wstack.pop();');
@@ -396,13 +396,13 @@
               break;
           }
         }
-        
+
         //----------------------------------------------------
         //  Setup
         procedure.__function__=new Function('proc','_a',buff.join(''));
         procedure.__funcargs__=args;
         procedure.__funcver__=procedure.data.ver;
-        
+
         //window.log("compiled: "+procedure.__function__);
       },
       //--------------------------------------------------------------
@@ -430,13 +430,13 @@
       },
       strong_bind:function(w){
         // assume(w instanceof ns.PsName);
-        
+
         var t=w;
         while(
           w instanceof ns.PsName&&w.__xaccess__
           &&(t=this.proc.scope.TryGetValue(this.proc,w.name))!=null
         )w=t;
-        
+
         if(w.__xaccess__){
           if(w instanceof ns.PsArray){
             if(this.proc.option.MwgAllowInlining&&w.length<=5)
@@ -471,7 +471,7 @@
         for(var i=0;i<_s.length;i++)
           ops.push([OP_EXPR,this.operation2code(_s[i])]);
         _s.length=0;
-        
+
         if(ope)this.stk.push(ope);
       },
       stkpush:function(w){
@@ -498,7 +498,7 @@
     });
     agh.memcpy(ns.Optimizer2,{
       initialize:function(){
-      
+
         //++++++++++++++++++++++++++++++++++++++++++++++++++
         //  算術 (Number しか引数に来ないという前提)
         //--------------------------------------------------
@@ -577,7 +577,7 @@
               var a='_a['+opt.args.length+']';
               opt.args.push(wa[1]);
             }
-            
+
             // 型判定
             if(wb[0]==OP_EXPR||isnum_b){
               var b=wb[1];
@@ -585,7 +585,7 @@
               var b='_a['+opt.args.length+']';
               opt.args.push(wb[1]);
             }
-            
+
             if(isnum_a||isnum_b)
               opt.stkpush([OP_EXPR,'('+a+'>'+b+')']);
             else
@@ -606,7 +606,7 @@
         ns.systemdict.data.roll.__optimize2__=function(opt){
           var del=opt.stkpop();
           var len=opt.stkpop();
-          
+
           if(del[0]==OP_PUSH&&len[0]==OP_PUSH){
             var l=len[1];
             var d=del[1];
@@ -614,7 +614,7 @@
             var s=l-d;if(s==0)return;
             if(l<=5){
               //window.log("roll: l="+l+" s="+s+" d="+d);
-              
+
               var t=[];
               for(var i=l-1;i>=0;i--)t[i]=opt.stkpop();
               for(var i=0;i<l;i++)opt.stkpush(t[(i+s)%l]);
@@ -635,10 +635,10 @@
               return;
             }
           }
-          
+
           //[ reverse^3 ]
           var ret=[];
-          
+
           // --- 回転領域の確定 ---
           ret.push('var end=_s.length;\n');
           if(del[0]==OP_EXPR){
@@ -660,7 +660,7 @@
             ret.push('var mid=end-(',del[1],'+',len[1],');\n');
           }
           ret.push('var beg=end-',len[1],';\n');
-          
+
           // --- 回転 ---
           ret.push('var b,e,t;\n');
           if(len[0]!=OP_PUSH||del[0]!=OP_PUSH||len[1]-del[1]>1)
@@ -699,7 +699,7 @@
             if(index<opt._s.length){
               var iS=opt._s.length-1-index;
               var w=opt._s[iS];
-              
+
               // 共通部分式固定
               if(w[0]==OP_EXPR&&!/^_v\d+$/.test(w[1])){
                 var vName='_v'+opt.iv++;
@@ -707,7 +707,7 @@
                 var w=[OP_EXPR,vName];
                 opt._s[iS]=w;
               }
-              
+
               opt.stkpush(w);
             }else{
               //opt.opepush([OP_CODE,'var _v'+opt.iv+'=_s[_s.length-'+(1+index)+'];\n']);
@@ -728,7 +728,7 @@
               var _s=opt._s;
               for(var i=_s.length-count,iN=_s.length;i<iN;i++){
                 w=_s[i];
-                
+
                 // 共通部分式固定
                 if(w[0]==OP_EXPR&&!/^_v\d+$/.test(w[1])){
                   var vName='_v'+opt.iv++;
@@ -736,7 +736,7 @@
                   var w=[OP_EXPR,vName];
                   _s[i]=w;
                 }
-                
+
                 _s.push(w);
               }
             }else{
@@ -783,7 +783,7 @@
           var f=opt.stkpop();
           var t=opt.stkpop();
           var c=opt.stkpop();
-          
+
           var ret=[];
           if(c[0]==OP_PUSH){
             // 分岐確定
@@ -800,7 +800,7 @@
         ns.systemdict.data['if'].__optimize2__=function(opt){
           var e=opt.stkpop();
           var c=opt.stkpop();
-          
+
           var ret=[];
           if(c[0]==OP_PUSH){
             if(!c[1])return;

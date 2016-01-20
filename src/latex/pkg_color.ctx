@@ -4,7 +4,7 @@
 //   \usepackage{color}
 // ChangeLog
 //   2012/12/02, KM
-//     Created, 
+//     Created,
 // References
 //   http://texlive.tug.org/texlive/devsrc/Master/texmf-dist/doc/latex/graphics/color.pdf
 //   http://en.wikibooks.org/wiki/LaTeX/Colors
@@ -13,8 +13,8 @@
 function NamedColors(){}
 agh.memcpy(NamedColors.prototype,{
   // predifined colors
-  white         :'#FFFFFF', black         :'#000000', red           :'#FF0000', green         :'#00FF00', 
-  blue          :'#0000FF', cyan          :'#00ADEE', magenta       :'#EC008D', yellow        :'#FFF100', 
+  white         :'#FFFFFF', black         :'#000000', red           :'#FF0000', green         :'#00FF00',
+  blue          :'#0000FF', cyan          :'#00ADEE', magenta       :'#EC008D', yellow        :'#FFF100',
   // dvips colors
   Apricot       :'#FBB982', Aquamarine    :'#00B5BE', Bittersweet   :'#C04F17', Black         :'#221E1F',
   Blue          :'#2D2F92', BlueGreen     :'#00B3B8', BlueViolet    :'#473992', BrickRed      :'#B6321C',

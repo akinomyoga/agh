@@ -36,7 +36,7 @@ agh.scripts.register("agh.dom1.js",["agh.js","event:onload"],function(){
  * @namespace ns.StyleSheet
  * @fn ns.StyleSheet.addRule
  * @fn ns.StyleSheet.getStyleValue
- * 
+ *
  * 他 ElementExtension
  *    agh(obj,'E')
  *    CSSプロパティ拡張
@@ -109,7 +109,7 @@ function complement(name,obj){
     name=name.slice(2);
   }
   var names=name.split(".");
-  
+
   // プロパティの持ち主
   var tgt=window;
   var iM=names.length-1;
@@ -117,7 +117,7 @@ function complement(name,obj){
     if(!(names[i] in tgt))return;
     tgt=tgt[names[i]];
   }
-  
+
   // 補償
   var prop=names[iM];
   if(prop in tgt)return;
@@ -151,7 +151,7 @@ if(agh.browser.vFx){
       if(value===null)value="null";
       else if(value===undefined)value="undefined";
       else value=value.toString();
-      
+
       // 直接 textContent に代入すると、空白や改行が潰れてしまう。
       this.innerHTML=agh.Text.Escape(value,"html");
     }
@@ -214,7 +214,7 @@ complement("HTMLElement.prototype.getBoundingClientRect",function(){
   var e=this;
   var body=e.ownerDocument.body;
   var html=e.ownerDocument.documentElement;
-  
+
   var x=e.offsetLeft;
   var y=e.offsetTop;
   while(e!=body&&e.offsetParent!=null){
@@ -222,7 +222,7 @@ complement("HTMLElement.prototype.getBoundingClientRect",function(){
     x+=e.offsetLeft+e.clientLeft;
     y+=e.offsetTop+e.clientTop;
   }
-  
+
   // 途中のスクロールの引き算
   e=this;
   while(true){
@@ -235,11 +235,11 @@ complement("HTMLElement.prototype.getBoundingClientRect",function(){
     x-=e.scrollLeft;
     y-=e.scrollTop;
   }
-  
+
   // 全体のスクロール
   x-=body.scrollLeft-html.clientLeft;
   y-=body.scrollTop-html.clientTop
-  
+
   var w=this.offsetWidth;
   var h=this.offsetHeight;
   return {
@@ -294,7 +294,7 @@ if(agh.browser.vIE){
   };
   reg("",document.documentElement.tagUrn);
   agh.Array.each(document.namespaces,function(ns){reg(ns.name,ns.urn);});
-  
+
   agh.document.getElementsByTagName=function(tagName){
     var urn;
     var i=tagName.indexOf(':');
@@ -432,7 +432,7 @@ ns.StyleSheet.getStyleValue=function(selector,property){
         dx=doc.body.scrollLeft-html.clientLeft;
         dy=doc.body.scrollTop-html.clientTop;
       }
-      
+
       var r=this.elem.getBoundingClientRect();
       return CreateRect(r.left+dx,r.top+dy,r.right-r.left,r.bottom-r.top);
     },
@@ -460,7 +460,7 @@ ns.StyleSheet.getStyleValue=function(selector,property){
       var h=this.elem.clientHeight;
       if(l==0&&t==0&&w==0&&h==0)
         return this.getClientRectB();
-      
+
       return CreateRect(l,t,w,h);
     },
     getMarginRectB:function(){
@@ -479,7 +479,7 @@ ns.StyleSheet.getStyleValue=function(selector,property){
       var st=this.elem.scrollTop;
       var sw=this.elem.scrollWidth;
       var sh=this.elem.scrollHeight;
-      
+
       // scrollW/H 修正必要性
       var scroll_ok=false;
       if(agh.browser.vIE){
@@ -503,11 +503,11 @@ ns.StyleSheet.getStyleValue=function(selector,property){
         var txt_ovf2=this.getComputedStyle("overflow-x").toLowerCase();
         var txt_ovf3=this.getComputedStyle("overflow-y").toLowerCase();
         scroll_ok=ok2(txt_ovf1)||ok2(txt_ovf2)||ok2(txt_ovf3);
-        
+
         // 負の scrollW/H 値
         if(sh<0||sw<0)scroll_ok=false;
       }
-      
+
       // scrollW/H 修正
       if(!scroll_ok){
         var bl=ns.parseLength(this.getComputedStyle("border-left-width"));
@@ -519,7 +519,7 @@ ns.StyleSheet.getStyleValue=function(selector,property){
         sw=biw;
         sh=bih;
       }
-      
+
       return CreateRect(sl,st,sw,sh);
     },
     getContentRectV:function(){
@@ -549,7 +549,7 @@ ns.StyleSheet.getStyleValue=function(selector,property){
     }else if(agh.is(this,String)){
       r=document.getElementById(this);
     }
-    
+
     return r&&agh(r);
   });
 })();
@@ -570,7 +570,7 @@ ns.StyleSheet.getStyleValue=function(selector,property){
         }
         if(value<0)value=0;
         elem.style.width=value+'px';
-        
+
         // TODO: overflow:visible だと正しく働かない事 (勝手に変更するか?)
       }
     },
@@ -586,7 +586,7 @@ ns.StyleSheet.getStyleValue=function(selector,property){
         }
         if(value<0)value=0;
         elem.style.height=value+'px';
-        
+
         // TODO: overflow:visible だと正しく働かない事 (勝手に変更するか?)
       }
     }
@@ -670,7 +670,7 @@ ns.StyleSheet.getStyleValue=function(selector,property){
         //TODO>:camelize は必要か?
         return this.elem.currentStyle[agh.Text.Escape(propertyName,"camel")];
       }
-      
+
       return this.getStyle(propertyName);
     },
     setStyle:function(prop,value){
@@ -725,7 +725,7 @@ var modify_event=agh.browser.vIE?function(e){
     elem._.__fire('-agh-captureend',{});
     elem=null;
   }
-  
+
   document.attachEvent("onmousemove",function(e){
     if(elem==null)return;
     elem._.__fire('-agh-mousemove',e);
@@ -770,7 +770,7 @@ var modify_event=agh.browser.vIE?function(e){
 (function(){
   var EventHandlerData={};
   ns.ElementExtension.EventHandlerData=EventHandlerData;
-  
+
   agh.memcpy(ns.ElementExtension.prototype,{
     __add:function(name,handler){
       if(name in EventHandlerData){
@@ -837,7 +837,7 @@ var modify_event=agh.browser.vIE?function(e){
       add:function(h){
         if(!this[k_click]){
           this[k_click]=[];
-          
+
           var _=this;
           this.elem.attachEvent("onclick",function(e){
             modify_event(e);
@@ -871,7 +871,7 @@ var modify_event=agh.browser.vIE?function(e){
       add:function(h){
         if(!this[k_mousedown]){
           this[k_mousedown]=[];
-          
+
           var prev_up=false;
           var _=this;
           this.elem.attachEvent("onmouseup",function(){prev_up=true;});
@@ -916,7 +916,7 @@ var modify_event=agh.browser.vIE?function(e){
       add:function(h){
         if(!this[k_mleave]){
           this[k_mleave]=[];
-          
+
           var _=this;
           this.elem.attachEvent("onmouseout",function(e){
             if(!_[k_mhover])return;
@@ -941,7 +941,7 @@ var modify_event=agh.browser.vIE?function(e){
       add:function(h){
         if(!this[k_menter]){
           this[k_menter]=[];
-          
+
           var _=this;
           this.elem.attachEvent("onmouseover",function(e){
             if(_[k_mhover])return;
@@ -987,7 +987,7 @@ var modify_event=agh.browser.vIE?function(e){
       return dummy.offsetHeight/10;
     });
     dummy0._.removeFromParent();
-      
+
     return {
       ex:pixels[0],
       em:pixels[1],
@@ -999,7 +999,7 @@ var modify_event=agh.browser.vIE?function(e){
       '%':0
     };
   })();
-  
+
   agh.document.parseLength=function(value){
     /// <summary>
     /// 長さの表現を読み取って px を単位にした数値に変換します。
@@ -1014,7 +1014,7 @@ var modify_event=agh.browser.vIE?function(e){
     if(value==null)return 0;
     if(agh.is(value,Number))return isNaN(value)?0:value;
     value=value.toString();
-    
+
     var m=value.match(/([\+\-]?[\d\.]+)(\w*\b|\%)/);
     if(m==null){return 0;}
     var u=m[2] in units?units[m[2]]:1;

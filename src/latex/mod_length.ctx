@@ -20,7 +20,7 @@ var UNITDATA={
 
   // points
   pt:{mm:0.3515  ,outunit:"pt"},
-  pc:{mm:4.218   ,outunit:"pc"}, // pc (pica) := 0.166 in, 12 pc = 1 pt, 
+  pc:{mm:4.218   ,outunit:"pc"}, // pc (pica) := 0.166 in, 12 pc = 1 pt,
   sp:{mm:5.363e-6,outunit:"pt"}, // 65536 sp (scaled point) = 1 pt
 
   // didot points
@@ -58,7 +58,7 @@ agh.memcpy(ns.Length,{
     if(isNaN(val))return null;
     var u=text.match(/^(?:[\+\-\d\.]|e[+\-\d.])+\s*(in|cm|mm|pt|pc|sp|em|ex|px|zw)\b/i);
     if(u==null)return null;
-    
+
     var ret=new ns.Length();
     ret.val=val;
     ret.unit=u[1];
@@ -86,7 +86,7 @@ agh.memcpy(ns.Length.prototype,{
   },
   addValue:function(arg){
     if(arg==null)return;
-    
+
     var n=0,u="px";
     if(arg instanceof ns.Length){
       n=arg.val;
@@ -96,12 +96,12 @@ agh.memcpy(ns.Length.prototype,{
       n=this.parseNumber(arg);
       u=this.parseUnit(arg);
     }
-    
+
     this.val+=this.changeUnit(n,u,this.unit);
   },
   setValue:function(arg){
     if(arg==null)return;
-    
+
     if(arg instanceof ns.Length){
       this.val=arg.val;
       this.unit=arg.unit;
@@ -138,7 +138,7 @@ context "global"{
     }
     doc.currentCtx.dataL[name].addValue(value);
   }
-  
+
   var lengthHandler=new ns.Command2("f",null,function(doc,args){
     var name=args[0];
     doc.skipSpaceAndComment();
@@ -152,7 +152,7 @@ context "global"{
       doc.currentCtx.output.buff.push((doc.GetLengthData(name)||"0in").toString());
     }
   });
-  
+
   //=========================================================================
   //    コマンドの定義
   //=========================================================================

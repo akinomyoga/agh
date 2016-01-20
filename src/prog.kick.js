@@ -5,7 +5,7 @@
   var isSf=ua.indexOf("Safari")>=0;
   var isOp=ua.indexOf("Opera")>=0;
   if(!isFx&&!isIE&&!isSf&&!isOp)return;
-  
+
   (function load_agh_js(){
     if(window.agh&&window.agh.scripts)return;
     var mwgjs="http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/agh.js";
@@ -17,21 +17,21 @@
     }
     document.write('<script type="text/javascript" charset="utf-8" src="'+mwgjs+'"></script>\r\n');
   })();
-  
+
   function delayed_wait(delay,waitlist,func){
     var waiter=function(){
       window.setTimeout(function(){
         agh.scripts.wait(waitlist,func);
       },delay);
     };
-    
+
     if(isIE){
       window.attachEvent("onload",waiter);
     }else{
       window.addEventListener("load",waiter,false);
     }
   }
-  
+
   delayed_wait(100,[
     "agh.js",
     "agh.text.js",
@@ -47,7 +47,7 @@
       if(pre.className.match(/\bdiff\b/)){
         pre.innerHTML=agh.Text.Color(pre.innerHTML,"diff","/html").replace(/\<br[ \t\v\f\r\n]*\/?\>/ig,"\n");
       }
-      
+
       if(pre.className.match(/\bcpp\b/)){
         pre.innerHTML=agh.Text.Color(pre.innerHTML,"cpp","/html");
       }else if(pre.className.match(/\bx86\b/)){
@@ -58,14 +58,14 @@
         pre.innerHTML=agh.Text.Color(pre.innerHTML,"js","/html");
       }
     });
-    
+
     for_tag(document,"dl",function(dl){
       if(!dl.className.match(/\bprog-items\b/))return;
       for_tag(dl,"dt",function(dt){
         dt.innerHTML=agh.Text.Color(dt.innerHTML,"cpp","/html");
       });
     });
-    
+
     for_tag(document,"table",function(table){
       if(!table.className.match(/\btext-macro\b/))return;
       for_tag(table,"td",function(td){

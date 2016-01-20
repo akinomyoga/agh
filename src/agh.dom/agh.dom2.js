@@ -45,7 +45,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
   function insertAdjacentHTML(elem,position,html){
     if(elem.insertAdjacentHTML)
       return elem.insertAdjacentHTML(elem,position,html);
-    
+
     var range=elem.ownerDocument.createRange();
     range.setStartBefore(elem);
     var frag=range.createContextualFragment(html);
@@ -205,7 +205,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
   agh.dom.stylesheet=function(target){
     /**
      * 要素を追加する為の新しいドキュメントを指定します。
-     * 
+     *
      * @param target = document
      *   スタイルシートの適用先の HTMLDocument を指定します。
      *   HTMLElement が指定された場合は target.ownerDocument が使用されます。
@@ -218,7 +218,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
 
     var b=agh.dom.bucket(target);
     return b.stylesheet||(b.stylesheet=new AgehaStyleSheet(target));
-    
+
     // agh.dom.stylesheet().insert();
   };
   function AgehaStyleSheet(target){
@@ -311,12 +311,12 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
       }
     });
   }
-  
+
   //---------------------------------------------------------------------------
   // @fn agh.dom.getStyle
   // @fn agh.dom.setStyle
   // @fn agh.dom.defineCustomCssProperty
-  
+
   var CustomCssProperties={};
   agh.dom.defineCustomCssProperty=function(propertyName,definition){
     if(arguments.length===2){
@@ -441,7 +441,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
       }
     });
   }
-                     
+
   // -agh-opacity
   if(agh.browser.vIE){
     agh.dom.defineCustomCssProperty('-agh-opacity',{
@@ -586,7 +586,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
       if(value==null)return 0;
       if(typeof value==="number"||value instanceof Number)return isNaN(value)?0:value;
       value=value.toString();
-      
+
       var m=value.match(/([-+]?[.\d]+)(%|\w*\b)/);
       if(m==null)return 0;
 
@@ -606,7 +606,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
       return isNaN(n)?0:n*u;
     }
   })();
-  
+
   if(agh.browser.vIE){
     var parseLength_internal=function(value,childElement){
       var referenceElement=childElement.parentNode&&childElement.offsetParent;
@@ -722,7 +722,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
         }
         if(value<0)value=0;
         elem.style.width=value+"px";
-        
+
         // TODO: overflow:visible だと正しく働かない (勝手に変更するか?)
       }
     },
@@ -738,7 +738,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
         }
         if(value<0)value=0;
         elem.style.height=value+"px";
-        
+
         // TODO: overflow:visible だと正しく働かない (勝手に変更するか?)
       }
     }
@@ -835,7 +835,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
           var e=this.elem;
           var body=e.ownerDocument.body;
           var html=e.ownerDocument.documentElement;
-          
+
           var x=e.offsetLeft;
           var y=e.offsetTop;
           var offset;
@@ -843,7 +843,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
             x+=e.offsetLeft+e.clientLeft;
             y+=e.offsetTop+e.clientTop;
           }
-          
+
           // 途中のスクロールの引き算
           e=this.elem;
           for(;;){
@@ -856,7 +856,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
             x-=e.scrollLeft;
             y-=e.scrollTop;
           }
-          
+
           // 全体のスクロール
           x-=body.scrollLeft-html.clientLeft;
           y-=body.scrollTop-html.clientTop
@@ -887,7 +887,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
 
       // body の場合は特別
       if(elem==elem.ownerDocument.body)sl=st=0;
-      
+
       // scrollW/H 修正必要性
       var scroll_ok=false;
       if(agh.browser.vIE){
@@ -916,7 +916,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
           check_scroll(agh.dom.getStyle(elem,'overflow-x'))||
           check_scroll(agh.dom.getStyle(elem,'overflow-y'));
       }
-      
+
       // scrollW/H 修正
       if(!scroll_ok){
         var bl=this.css('-agh-border-left-width');
@@ -928,7 +928,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
         sw=biw;
         sh=bih;
       }
-      
+
       this.pbox_x=-sl;
       this.pbox_y=-st;
       this.pbox_w=sw;
@@ -1262,7 +1262,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
         // this.frame4.clear();
         // this.frame5.clear();
       },
-      
+
       setHighlightTarget:function(elem){
         if(this.target==elem)return;
 
@@ -1275,7 +1275,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
           this.frame5.style.display='block';
           this.panel1.style.display='block';
         }
-        
+
         var m=new ElementMetric(elem);
         this.frame1.setRectangle(m.mx,m.my,m.mw,m.mh);
         this.frame2.setRectangle(m.ox,m.oy,m.ow,m.oh);
@@ -1322,7 +1322,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
         }
       }
     });
-    
+
     return ElementHighlighter;
   })();
 
@@ -1352,10 +1352,10 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
     agh.addEventListener(document,'mousemove',function(e){
       var elem=e.srcElement||e.target;
       if(elem==null)return;
-      
+
       if(elem[agh.dom.ElementHighlighter.NOT_TARGET]){
         if(h.target==null)return;
-      
+
         var x=e.clientX;
         var y=e.clientY;
         // var elem=h.target;
@@ -1467,7 +1467,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
       var dict=useCapture?info.capt:info.bubl;
       var hlist=dict[eventName];
       if(!hlist)return false;
-      
+
       var index=agh.Array.indexOf(hlist,handler);
       if(index>=0){
         agh.Array.remove_atD(hlist,index);
@@ -1526,7 +1526,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
         // capturing
         for(var i=chain.length;!_propagateCanceled&&--i>=0;)
           this._simple_fire(chain[i],eventName,params,true);
-        
+
         // bubbling
         for(var i=0;!_propagateCanceled&&i<chain.length;i++)
           this._simple_fire(chain[i],eventName,params,false);
@@ -1812,7 +1812,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
  * @namespace agh.document
  * @fn  agh.document.getElementsByClassName
  * @fn  agh.document.getElementsByTagName // 不完全
- * 
+ *
  */
-    
+
 });

@@ -2,10 +2,10 @@
 
 /**
  *  mod_math
- * 
+ *
  *  @section 公開オブジェクト
  *    ※以下 mod_base = ns.Modules["mod:base"] とする。
- *    
+ *
  *    @fn mod_base.OutputStretchBracketTd(output,text,rowspan)
  *    @fn mod_base.GetStretchImageTd(imageUrl,rowspan,alternativeText);
  *
@@ -133,13 +133,13 @@ context "global" new(){
     doc.scanner.Next();
   });
 
-  //------------------------------------------------------------    
+  //------------------------------------------------------------
   //    領域終了
   //------------------------------------------------------------
   _Ctx.AddLetterHandler("}",LH_IGNORE_EXIT_ERROR);
   //_Ctx.AddLetterHandler("]",LH_IGNORE_EXIT_ERROR);
   _Ctx.AddCommandHandler("end",CH_IGNORE_EXIT_ERROR);
-  //------------------------------------------------------------    
+  //------------------------------------------------------------
   //    領域開始
   //------------------------------------------------------------
   _Ctx.AddLetterHandler("{",function(doc){
@@ -150,14 +150,14 @@ context "global" new(){
   _Ctx.AddCommandHandler("begin",function(doc){
     doc.scanner.Next();
     var env=doc.GetArgumentRaw().trim();
-    
+
     // 環境名→環境
     var environment=doc.currentCtx.GetEnvironment(env);
     if(environment!=null){
       environment.Process(doc,env);
       return;
     }
-    
+
     // 環境が見つからなかった場合
     //---------------------------
     if(doc.currentCtx.GetCommandHandler(doc,env)!=null){
@@ -169,7 +169,7 @@ context "global" new(){
         "UnknownEnvironment",{env:env,contexts:doc.currentCtx.dbgGetContexts()},
         "\\begin{"+env+"}");
     }
-    
+
     var ctx=doc.context_cast([doc.currentCtx,"sub.env"]);
     ctx.ENVNAME=env;
     doc.currentCtx.output.buff.push(doc.Read(ctx));
@@ -238,7 +238,7 @@ function LHR_MISARG_BRACE(doc,letter){
       // ・未だ sub.argument で初期化していない時だけ
       if(mainctx[_Ctx.key]||!mainctx.ContainsBaseContext(this))return;
       mainctx[_Ctx.key]=true;
-      
+
       // text_modifier 付け替え
       //------------------------------
       // ※ mode.math の方が先に初期化されている必要あり
@@ -264,14 +264,14 @@ function LHR_MISARG_BRACE(doc,letter){
       doc.scanner.Next();
       var ctx=doc.currentCtx;
       ctx.BREAK=false;
-      
+
       // sub.brace に見せかけ
       //------------------------------
       // sub.argument を base から削除
 
       ctx.RemoveBaseContextWithInitializer(_Ctx.initializer);
       ctx.AddBaseContext(doc.context_cast("sub.braced"));
-      
+
       // TextHandler 復元
       // ■ sub.argument 処理後に更に別のハンドラに置き換えられた場合には問題が生ずる
       ctx.text_modifier=ctx[_Ctx.key+":orig.txtmod"];
@@ -378,7 +378,7 @@ context "sub.env.raw" new(){
         return;
       }
     }
-    
+
     // 対応する始まりの括弧がない場合:
     // この直前で環境が終了していると解釈する。
     ctx.BREAK=true;
@@ -405,7 +405,7 @@ context "sub.env.raw" new(){
         return;
       }
     }
-    
+
     // 対応する始まりの begin がない場合:
     // 　自身の envname と一致するならばこの end を環境の終了と見做す。
     // 　一致していなければ、この直前で環境が不正終了していると見做す。
@@ -438,7 +438,7 @@ context "sub.env.raw" new(){
       // 終了条件の設定
       _Ctx.set_Terminator(mainctx,mainctx.until_type,mainctx.until_word);
     };
-    
+
     /// <summary>
     /// sub.until の終了条件を設定します。
     /// </summary>
@@ -461,7 +461,7 @@ context "sub.env.raw" new(){
 //#end debug
       }
     };
-    
+
     _Ctx.AddLetterHandler("}",LH_EXIT_WITH_ERROR);
     _Ctx.AddLetterHandler("EOF",LH_EXIT_WITH_ERROR);
     _Ctx.AddCommandHandler("right",CH_EXIT_WITH_ERROR);
@@ -484,7 +484,7 @@ context "sub.until.raw" new(){
     // 終了条件の設定
     _Ctx.set_Terminator(mainctx,mainctx.until_type,mainctx.until_word);
   };
-  
+
   /// <summary>
   /// sub.until の終了条件を設定します。
   /// </summary>
@@ -550,7 +550,7 @@ context "sub.until.raw" new(){
 //----------------------------------------------------------------
 context "sub.until.]" new(){
   _Ctx.AddLetterHandler("]",LH_EXIT);
-  
+
   _Ctx.AddLetterHandler("}",LH_EXIT_WITH_ERROR);
   _Ctx.AddLetterHandler("EOF",LH_EXIT_WITH_ERROR);
   _Ctx.AddCommandHandler("right",CH_EXIT_WITH_ERROR);
@@ -567,7 +567,7 @@ context "sub.until.]" new(){
 /// <condition>[ の次の語から始めて下さい。</condition>
 context "sub.bracket" new(){
   _Ctx.AddLetterHandler("]",LH_EXIT);
-  
+
   _Ctx.AddLetterHandler("}",LH_EXIT_WITH_ERROR);
   _Ctx.AddLetterHandler("EOF",LH_EXIT_WITH_ERROR);
   _Ctx.AddCommandHandler("right",CH_EXIT_WITH_ERROR);
@@ -599,7 +599,7 @@ context "sub.env" new(){
       doc.currentCtx.output.error("UnexpectedEOR",env);
       doc.scanner.InsertSource(env);
       doc.currentCtx.BREAK=true;
-      
+
       // only for [ns.Environment#Process]
       //loc_err=true;
     }
@@ -615,13 +615,13 @@ context "mode.math" new("global"){
   _Ctx.initializer=function(mainctx){
     if(mainctx[_Ctx.key])return;
     mainctx[_Ctx.key]=true;
-    
+
     mainctx.text_modifier=function(doc,text){
       doc.scanner.Next();
       return text.replace(reg_math_text_modifier,rep_math_text_modifier);
     };
   };
-  
+
   // 無効化
   _Ctx.AddEnvironment("document",null);
   //============================================================
@@ -723,11 +723,11 @@ context "mode.math" new("global"){
       "]":'<td rowspan="2" class="tex-right-kaku">&nbsp;</td>',
       "〈":stretchImg("paren4l.png",1,"〈",'langle'),
       "〉":stretchImg("paren4r.png",1,"〉",'rangle'),
-      
+
       // 拡張
       "〔":stretchImg("paren5l.png",1,"〔"),
       "〕":stretchImg("paren5r.png",1,"〕"),
-      
+
       // 共通
       "|":
       agh.browser.vIE?'<td rowspan="2" class="tex-left-pipe">&nbsp;</td>':
@@ -735,18 +735,18 @@ context "mode.math" new("global"){
       "∥":
       agh.browser.vIE?'<td rowspan="2" class="tex-left-vert">&nbsp;</td>':
         '<td rowspan="2" class="tex-left-vert"></td>',
-      
+
       // ceiling / floor
-      "\u2308":'<td rowspan="2" class="tex-left-ceil">&nbsp;</td>', // 
+      "\u2308":'<td rowspan="2" class="tex-left-ceil">&nbsp;</td>', //
       "\uF0E9":'<td rowspan="2" class="tex-left-ceil">&nbsp;</td>', // Symbol Font
       "\u00E9":'<td rowspan="2" class="tex-left-ceil">&nbsp;</td>', // Symbol Font
-      "\u230A":'<td rowspan="2" class="tex-left-flor">&nbsp;</td>', // 
+      "\u230A":'<td rowspan="2" class="tex-left-flor">&nbsp;</td>', //
       "\uF0EB":'<td rowspan="2" class="tex-left-flor">&nbsp;</td>', // Symbol Font
       "\u00EB":'<td rowspan="2" class="tex-left-flor">&nbsp;</td>', // Symbol Font
-      "\u2309":'<td rowspan="2" class="tex-right-ceil">&nbsp;</td>', // 
+      "\u2309":'<td rowspan="2" class="tex-right-ceil">&nbsp;</td>', //
       "\uF0F9":'<td rowspan="2" class="tex-right-ceil">&nbsp;</td>', // Symbol Font
       "\u00F9":'<td rowspan="2" class="tex-right-ceil">&nbsp;</td>', // Symbol Font
-      "\u230B":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>', // 
+      "\u230B":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>', //
       "\uF0FB":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>', // Symbol Font
       "\u00FB":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>', // Symbol Font
       //"<tex:f>&#xF0E9;</tex:f>":'<td rowspan="2" class="tex-left-ceil">&nbsp;</td>',
@@ -757,7 +757,7 @@ context "mode.math" new("global"){
       //"<tex:f>&#xF9;</tex:f>":'<td rowspan="2" class="tex-right-ceil">&nbsp;</td>',
       //"<tex:f>&#xF0FB;</tex:f>":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>',
       //"<tex:f>&#xFB;</tex:f>":'<td rowspan="2" class="tex-right-flor">&nbsp;</td>',
-      
+
       // arrows
       "↑"    :stretchImg("stretch_uarr.png",  1.2,"↑"),
       "↓"    :stretchImg("stretch_darr.png",  1.2,"↓"),
@@ -767,7 +767,7 @@ context "mode.math" new("global"){
       "\u21D5":stretchImg("stretch_udarr2.png",1.2,"&#x21D5;"),
       "/"     :stretchImg("stretch_slash.png", 1.2,"/"),
       "\\"    :stretchImg("stretch_bslash.png",1.2,"\\"),
-      
+
       ".":""
     };
 
@@ -791,7 +791,7 @@ context "mode.math" new("global"){
       return true;
     };
   })();
-  
+
   _Ctx.AddCommandHandler("left",function(doc){
     //==== 補助変数 ==========================
     var output=doc.currentCtx.output;
@@ -815,7 +815,7 @@ context "mode.math" new("global"){
     doc.scanner.Next();
     var ltr=doc.GetArgumentHtml();
     var sbsp=doc.GetSubSup();
-    
+
     //-- [prologue]
     if(agh.browser.vFx)
       // Fx では border-collapse:collapse; にすると border-bottom/right が表示されない
@@ -830,10 +830,10 @@ context "mode.math" new("global"){
     _Mod.OutputStretchBracketTd(output,ltr,2);
 
     proc_subsup();
-    
+
     //-- [content]
     buff.push('<td class="aghtex-cmdleft-content" rowspan="2">');
-    
+
     // setup context and read under the context
     var ctx=doc.wrap_context(doc.currentCtx);
     ctx.AddCommandHandler("right",function(doc){
@@ -843,19 +843,19 @@ context "mode.math" new("global"){
       doc.currentCtx.BREAK=true;
     });
     buff.push(doc.Read(ctx));
-    
+
     //-- [epilogue]
     buff.push('</td>');
 
     _Mod.OutputStretchBracketTd(output,ltr,2);
 
     proc_subsup();
-    
+
     //-- [レイアウト用の二行目がある時]
     if(bottom_row!=""){
       buff.push('</tr><tr>',bottom_row);
     }
-    
+
     buff.push('</tr></table>');
   });
   _Ctx.AddCommandHandler("right",CH_EXIT_WITH_ERROR);
@@ -875,10 +875,10 @@ context "mode.para" new("global"){
   _Ctx.AddLetterHandler("$",function(doc){
     doc.scanner.Next();
     var buff=doc.currentCtx.output.buff;
-    
+
     //-- prologue
     buff.push('<tex:math>');
-    
+
     // setup context and read under the context
     var ctx=doc.context_cast(CTX_MATHENV);
     ctx.AddLetterHandler("$",function(doc){
@@ -886,7 +886,7 @@ context "mode.para" new("global"){
       doc.currentCtx.BREAK=true;
     });
     buff.push(doc.Read(ctx));
-    
+
     //-- epilogue
     buff.push('</tex:math>');
   });

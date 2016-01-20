@@ -58,7 +58,7 @@ var ns=agh.Forms;
     m_stop:0,      // Number 設定の上端
     m_left:-1,     // Number 表示の左端
     m_top:-1,      // Number 表示の上端
-    
+
     m_dock:null,   // null, "fill", "top", "bottom", "right", "left"
     // この要素に割り当てられた親内の表示領域 (Dock 用)
     m_ddock:null,  // Number (m_dock が反映されたかどうかを見る為に親が使用)
@@ -68,7 +68,7 @@ var ns=agh.Forms;
     m_dbottom:null,// Number
     m_ofs_r:null,  // Number? 表示の右端からのオフセット (Dock 時)
     m_ofs_b:null,  // Number? 表示の下端からのオフセット (Dock 時)
-    
+
     m_mgn_t:0,     // Number Dock 時の上端マージン
     m_mgn_b:0,     // Number Dock 時の下端マージン
     m_mgn_r:0,     // Number Dock 時の右端マージン
@@ -169,7 +169,7 @@ var ns=agh.Forms;
       var top=this.m_stop;
       var ofs_r=null;
       var ofs_b=null;
-      
+
       if(this.parentControl!=null)switch(this.m_dock){
         case "top":
         case "left":
@@ -188,7 +188,7 @@ var ns=agh.Forms;
           left  =this.m_dright-this.getMarginWidth();
           break;
       }
-      
+
       var ch=false;
       if(this.m_left!=left)this.m_left=left,ch=true;
       if(this.m_top!=top)this.m_top=top,ch=true;
@@ -202,7 +202,7 @@ var ns=agh.Forms;
     recalcSize:function(){
       var width=this.m_swidth;
       var height=this.m_sheight;
-      
+
       if(this.parentControl!=null)switch(this.m_dock){
         case "fill":
           width=this.m_dright-this.m_dleft-this.m_mgn_l-this.m_mgn_r;
@@ -217,7 +217,7 @@ var ns=agh.Forms;
           height=this.m_dbottom-this.m_dtop-this.m_mgn_t-this.m_mgn_b;
           break;
       }
-      
+
       if(width!=this.m_width||height!=this.m_height){
         this.m_width=width;
         this.m_height=height;
@@ -457,7 +457,7 @@ var ns=agh.Forms;
   // -環境や設定によって表示する内容を変更するのも楽。
   function initialize_stylesheet(document){
     if(agh.dom.bucket(document).reset('agh.forms.js/stylesheet.initialized',true))return;
-    
+
     var sheet=agh.dom.stylesheet();
     initializeStyleSheetControlBorders(sheet);
     initializeStyleSheetTabPages(sheet);
@@ -485,7 +485,7 @@ var ns=agh.Forms;
     constructor:function(doc){
       this.base();
       this.childControls=[];
-      
+
       // note: className による style 指定は DOM Tree に追加しないと有効にならない。
       //  これは、DOM Tree 追加前の -agh-offset-width 等の計算の際に不便。
       //  従って、できるだけスクリプトの中で直接スタイルを設定してしまう事にする。
@@ -513,7 +513,7 @@ var ns=agh.Forms;
       agh.dom.attach(this.e_b0,'-agh-mouseleave',agh.delegate(this,this.OnMouseLeave));
       agh.dom.attach(this.e_b0,'mouseover'      ,agh.delegate(this,this.OnMouseOver));
       agh.dom.attach(this.e_b0,'mouseout'       ,agh.delegate(this,this.OnMouseOut));
-      
+
       this.setBorderStyle("none");
       this.setPosition(0,0);
       //this.e_b0.attachEvent('onresize',agh.delegate(this,this.OnSizeChanged));
@@ -620,19 +620,19 @@ var ns=agh.Forms;
         if(ctrl.parentControl==this)return;
         if(ctrl.parentControl!=null)
           this.removeControl(ctrl,true);
-        
+
         // 追加
         this.childControls.push(ctrl);
         ctrl.parentControl=this;
         ctrl.__add('SizeChanged',this,this.eh_child_SizeChanged);
         ctrl.__add('DockChanged',this,this.eh_child_DockChanged);
         this.e_c0.appendChild(ctrl.getMainElement());
-        
+
         // 再配置
         if(ctrl.m_dock!=null){
           this.recalcChildrenSize(this.childControls.length-1);
         }
-        
+
         ctrl.OnAfterAppend();
       }else{
         throw this.createError("The specified argument is not Control instance.");
@@ -643,7 +643,7 @@ var ns=agh.Forms;
         if(ctrl.parentControl!=this)
           throw this.createError("The specified control is not child of this control.");
         ctrl.OnBeforeRemove();
-        
+
         // 削除
         agh.dom.remove(ctrl.getMainElement());
         ctrl.__remove('SizeChanged',this,this.eh_child_SizeChanged);
@@ -651,7 +651,7 @@ var ns=agh.Forms;
         ctrl.parentControl=null;
         var i=agh.Array.indexOf(this.childControls,ctrl);
         agh.Array.remove_atD(this.childControls,i);
-        
+
         // 再配置
         if(suppressLayout)return;
         if(ctrl.m_document==null)return;
@@ -686,14 +686,14 @@ var ns=agh.Forms;
       if(this.m_calculating_chsz)return;
       if(start==null)start=0;
       else if(start>=this.childControls.length)return;
-      
+
       this.m_calculating_chsz=true;
-      
+
       if(this.m_allowOverwrapMargin)
         this._recalcChildrenSize_implOverwrapMargin(start);
       else
         this._recalcChildrenSize_implAdditiveMargin(start);
-      
+
       this.m_calculating_chsz=false;
     },
     _recalcChildrenSize_implAdditiveMargin:function(start){
@@ -974,15 +974,15 @@ var ns=agh.Forms;
       this.setSize(18,19);
       this.setDock('top');
       this.setPaddingBottom(1);
-      
+
       this.init_gradient();
       this.init_title();
       this.init_buttons();
-      
+
       this.e_b0.isTitleBarFace=true;
       this.e_b1.isTitleBarFace=true;
       this.e_c0.isTitleBarFace=true;
-      
+
       this.setText("Hello");
     },
     init_gradient:function(){
@@ -1011,7 +1011,7 @@ var ns=agh.Forms;
           top:'0px'
         });
         this.e_c0.appendChild(this.e_image);
-        
+
         // 画像だけだと Drag & Drop の際に、
         // 画像リンクの D&D に為ってしまう為、上から被せる。
         this.e_cover=this.createElement("div",null,{
@@ -1024,7 +1024,7 @@ var ns=agh.Forms;
           AghOpacity:"0"
         });
         this.e_c0.appendChild(this.e_cover);
-      
+
         this.e_image.isTitleBarFace=true;
         this.e_cover.isTitleBarFace=true;
         var _this=this;
@@ -1046,7 +1046,7 @@ var ns=agh.Forms;
         AghUserSelect:"none"
       });
       this.e_c0.appendChild(this.e_icon);
-      
+
       // タイトル文字列
       this.e_title=this.createElement("span",{isTitleBarFace:true},{
         color:"white",fontWeight:"bold",
@@ -1058,7 +1058,7 @@ var ns=agh.Forms;
         AghUserSelect:"none"
       });
       this.e_c0.appendChild(this.e_title);
-      
+
       if(agh.browser.vIE){
         agh.dom.setStyle(this.e_icon,"-agh-opacity",1.0);
         agh.dom.setStyle(this.e_title,"-agh-opacity",1.0);
@@ -1070,24 +1070,24 @@ var ns=agh.Forms;
       this.c_btnC.getContentElement().title="閉じる";
       this.c_btnC.__add('Click',this,this.OnCloseButton);
       this.addControl(this.c_btnC);
-      
+
       this.c_btnX=this.createButton("agh.forms.max.png");
       this.c_btnX.__add('Click',this,this.OnMaximizeButton);
       this.c_btnX.getContentElement().title="最大化";
       this.addControl(this.c_btnX);
-      
+
       this.c_btnN=this.createButton("agh.forms.min.png");
       this.c_btnN.__add('Click',this,this.OnMinimizeButton);
       this.c_btnN.getContentElement().title="最小化";
       this.addControl(this.c_btnN);
-      
+
       /*
       this.c_btnR=this.createButton("agh.forms.res.png");
       this.c_btnR.__add('Click',this,this.OnRestoreButton);
       this.c_btnR.getContentElement().title="元に戻す (縮小)";
       this.addControl(this.c_btnR);
       //*/
-      
+
       if(agh.browser.vIE){
         agh.dom.setStyle(this.c_btnC.getMainElement(),"-agh-opacity",1.0);
         agh.dom.setStyle(this.c_btnX.getMainElement(),"-agh-opacity",1.0);
@@ -1161,7 +1161,7 @@ var ns=agh.Forms;
           this.m_tdrag=true;
           this.m_tdrag_scrX=e.screenX;
           this.m_tdrag_scrY=e.screenY;
-          
+
           agh.dom.captureMouse(this.e_b0,true);
           this.OnTitleDragStart(e);
         }
@@ -1180,7 +1180,7 @@ var ns=agh.Forms;
       if(this.m_tdrag){
         this.m_tdrag=false;
         agh.dom.releaseMouse(this.e_b0,true);
-        
+
         e.dragDeltaX=e.screenX-this.m_tdrag_scrX;
         e.dragDeltaY=e.screenY-this.m_tdrag_scrY;
         this.OnTitleDragEnd(e);
@@ -1218,7 +1218,7 @@ var ns=agh.Forms;
       var body=this.m_document.body;
       var dmat=agh.dom.getCssTransform(body);
       if(dmat.isIdentity)dmat=null;
-      
+
       // initialize this.m_ol, this.m_ot and frame position
       var x=rect.x,y=rect.y;
       if(dmat){
@@ -1247,7 +1247,7 @@ var ns=agh.Forms;
     },
     initializeMainElement:function(doc){
       if(doc==null||this.m_document==doc)return;
-      
+
       if(this.e_main)agh.dom.remove(this.e_main);
       this.m_document=doc;
       this.e_main=doc.createElement("div");
@@ -1289,15 +1289,15 @@ var ns=agh.Forms;
     },
     terminate:function(form){
       this.e_main.style.display="none";
-      
+
       if(form==null)return;
-      
+
       var w=form.getWidth();
       var h=form.getHeight();
       var dw=this.m_w-this.m_ow;
       var dh=this.m_h-this.m_oh;
       form.setSize(w+dw,h+dh);
-      
+
       var l=form.getLeft();
       var t=form.getTop();
       var dl=this.m_l-this.m_ol;
@@ -1357,7 +1357,7 @@ var ns=agh.Forms;
           if((m=/^([-+]?[\d.]+)px$/.exec(porigin[1])))oy=+m[1];
           if((m=/^([-+]?[\d.]+)px$/.exec(style.width)))w=+m[1];
           if((m=/^([-+]?[\d.]+)px$/.exec(style.height)))h=+m[1];
-          
+
           this.smod_cw=isNaN(ox)||isNaN(w)?0: ox/w;
           this.smod_ch=isNaN(oy)||isNaN(h)?0: oy/h;
         }
@@ -1384,7 +1384,7 @@ var ns=agh.Forms;
       /// @fn updateSize
       /// @param dw form 座標での幅の変化量を指定します。
       /// @param dh form 座標での高さの変化量を指定します。
-      
+
       form.setSize(this.ow+dw,this.oh+dh);
       var m=this.mat1;
       if(m&&!m.isIdentity){
@@ -1477,24 +1477,24 @@ var ns=agh.Forms;
     init:function(form,resizer,e){
       if(this.m_enableAlpha)
         agh.dom.setStyle(form.getMainElement(),"-agh-opacity",0.5);
-      
+
       if(this.m_use_dummy){
         dummy_frame.init(form);
         form=dummy_frame;
       }
-      
+
       resizer.init(form,e);
     },
     update:function(form,resizer,e){
       if(this.m_use_dummy)
         form=dummy_frame;
-      
+
       resizer.update(form,e);
     },
     terminate:function(form,resizer,e){
       if(this.m_enableAlpha)
         agh.dom.setStyle(form.getMainElement(),"-agh-opacity",form.getOpacity());
-    
+
       this.update(form,resizer,e);
       if(this.m_use_dummy){
         dummy_frame.terminate();
@@ -1533,7 +1533,7 @@ var ns=agh.Forms;
       this.setBorderStyle('bold');
       this.setSize(200,200);
       this.setPosition(100,100);
-      
+
       this.c_title=new agh.Forms.Titlebar();
       this.c_title.setText("Form1");
       this.c_title.__add('TitleDragStart',this,this.eh_title_DragStart);
@@ -1547,7 +1547,7 @@ var ns=agh.Forms;
       // MaximizeButton
       // MinimizeButton
       // RestoreButton
-      
+
       this.base.addControl.call(this,this.c_title);
       this.base.addControl.call(this,this.c_carea);
     },
@@ -1700,7 +1700,7 @@ var ns=agh.Forms;
       this.m_tabs[-1]={seps:this._generateSeps()};
       this.m_tabCount=0;
       this.m_selectedTab=-1;
-      
+
       this.getContentElement().appendChild(this.e_table);
     },
     _generateSeps:function(){

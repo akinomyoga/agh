@@ -7,7 +7,7 @@
 /// <reference path="agh.dom.js"/>
 /// <reference path="agh.class.js"/>
 /// <reference path="agh.forms.js"/>
-agh.scripts.register("agh.debug.js",[	
+agh.scripts.register("agh.debug.js",[
   "agh.js","agh.dom.js",
   "agh.text.color.js","prog.std.css",
   "agh.debug.css",
@@ -88,7 +88,7 @@ agh.scripts.register("agh.debug.js",[
             if(obj.hasOwnProperty(prop))a.push(prop);
           }
       }catch(ex){}
-      
+
       return agh.Array.uniqueD(a);
     };
   }
@@ -371,10 +371,10 @@ agh.scripts.register("agh.debug.js",[
           if(f.arguments)
             for(var j=0;j<f.arguments.length;j++)
               tnode.ehold.appendChild(agh.debug.createObjectTree("arguments["+j+"]",f.arguments[j]));
-          
+
           tnode.ehold.appendChild(agh.debug.createObjectTree('(frame)',f));
         }
-        
+
         //@@
       };
     }
@@ -544,7 +544,7 @@ agh.scripts.register("agh.debug.js",[
 
 
       this.eline.innerHTML=htline;
-        
+
       this.initializeContent=this._initializeContent_object;
     },
     _appendMemberNodes:function _static(elem,obj){
@@ -723,7 +723,7 @@ agh.scripts.register("agh.debug.js",[
         try{
           this_tree.Object2Node("prototype",func.prototype).$each(this.holder.appendChild);
         }catch(e){}
-        
+
         if(func.caller instanceof Function)
           this_tree.Function2Node("caller",func.caller).$each(holderAppender);
         if(func.arguments!=null){
@@ -1097,7 +1097,7 @@ agh.scripts.register("agh.debug.js",[
           Error.captureStackTrace({},arguments.callee);
           ret=data.slice(level);
         }catch(ex){}
-        
+
         Error.prepareStackTrace=originalPrepareStackTrace;
 
         return ret||captureStackTrace_default(level+1);

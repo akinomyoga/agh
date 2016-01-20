@@ -93,7 +93,7 @@ agh.memcpy(ns.Counter.prototype,{
       return ns.Writer.get_error(
         "mod:counter.cmd:roman.CounterOutOfRange",
         null,"Counter#roman (mod:counter)");
-    
+
     var x=this.val.toString();
     var r=[];
     for(var i=x.length-1;i>=0;i--){
@@ -227,7 +227,7 @@ context "global"{
     var counter=DOC.GetCounter(ARGS[1]);
     if(counter!=null)counter.Step();
   };
-  
+
   // counter 表示
   command arabic(1){
     var counter=DOC.GetCounter(ARGS[1]);

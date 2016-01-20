@@ -50,13 +50,13 @@ String.prototype.format=function(table){
       var a=$2.replace(/\\.|\:/g,function($0){
         return $0==':'?'<agh::split>':$0.substr(1);
       }).split('<agh::split>');
-      
+
       // obj の取得
       var key=a[0];
       var num=parseInt(key);
       var obj=num.toString()==key?args[num]:table[key];
       if(obj==null)obj="null";
-      
+
       // 変換
       for(var i=1;i<a.length;i++){
         if(agh.is(obj,String)){
@@ -165,7 +165,7 @@ Date.prototype.format=(function(){
     w3cdtf:"%4y-%2M-%2dT%2h:%2m:%2s%+3oh:%2om",
     // 参照: http://0-oo.net/sbox/javascript/date
     rfc2822:"%D, %2d %[en]M %4y %2H:%2m:%2s%+3oh%2om",
-    
+
     GMTString:"%uD, %2ud %[en]uM %4uy %2uH:%2um:%2us GMT",
     UTCString:"%uD, %2ud %[en]uM %4uy %2uH:%2um:%2us UTC",
     LocaleString:"%4y年%M月%2d日 %H:%m:%s",
@@ -221,7 +221,7 @@ Date.prototype.format=(function(){
   return function(f){
     var _this=this;
     if(!f)return this.toString();
-      
+
     //if(f=="w3cdtf"){
     //	var tzos=this.getTimezoneOffset();
     //	return "{0:%4y-%2M-%2dT%2h\\:%2m\\:%2s}{1:%+03d}:{2:%02d}".format(this,tzos/60,tzos%60);
@@ -230,7 +230,7 @@ Date.prototype.format=(function(){
     return f.replace(/\%(?:\[([^\[\]]+)\])?([ \+\-]*[0-9])?(oh|om|u?[\w\:\/])/g,function($0,$L,$F,$T){
       // Argument Modification
       $L=($L||"").toLowerCase();$F=$F||"";
-      
+
       // Local / UTC
       var METHOD;
       if($T.substr(0,1)=="u"){
@@ -239,7 +239,7 @@ Date.prototype.format=(function(){
       }else{
         METHOD=METHOD_NAME;
       }
-      
+
       // Formatting
       var $Fd="%0"+$F+"d";
       switch($T){
@@ -328,7 +328,7 @@ var num_sprintf=(function(){
       reader.next();
       return "*";
     }
-    
+
     var ret="";
     while("0123456789".indexOf(reader.current)>=0){
       ret+=reader.current;
@@ -423,7 +423,7 @@ var num_sprintf=(function(){
     var reader=new agh.StringReader(format);
     if(reader.next()!="%")throw "Format-string has unknown format.";
     reader.next();
-    
+
     // 読み取り
     //--------------------
     var iarg=0;
@@ -437,23 +437,23 @@ var num_sprintf=(function(){
       }
       reader.next();
     }
-    
+
     var w=read_width(reader);
     if(w=="*")w=args[iarg++];
     w=parseInt(w);
     if(isNaN(w))w=0;
-        
+
     var p=read_prec(reader);
     if(p=="*")p=args[iarg++];
-    
+
     var m=read_letter(reader,"hlLjzt");
     if((m=="h"||m=="l")&&reader.current==m){
       m+=m;
       reader.next();
     }
-    
+
     var t=read_letter(reader,"odixXufeEgGaAc");
-    
+
     // 変換
     //--------------------
     var sgn="";
@@ -462,7 +462,7 @@ var num_sprintf=(function(){
     var split_sgn=function(){
       var i=0;
       while(" +-".indexOf(ret.substr(i,1))>=0)i++;
-      
+
       sgn=ret.substr(0,i)||f.sgn;
       ret=ret.substr(i);
     };
@@ -530,7 +530,7 @@ var num_sprintf=(function(){
       default:
         throw "Undefined transform character specification: '"+t+"'";
     }
-    
+
     // 位置合わせ
     //--------------------
     if(f.pad=="0"){
@@ -542,10 +542,10 @@ var num_sprintf=(function(){
     }else{
       ret+=" ".repeat(w-ret.length);
     }
-    
+
     return ret;
   }
-  
+
   return ret_proc;
 })();
 //--------------------------------------------------------------------

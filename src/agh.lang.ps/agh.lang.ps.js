@@ -2,10 +2,10 @@
   agh.Namespace("PostScript",agh);
   var ns=agh.PostScript;
   var nsName='agh.PostScript';
-  
+
   var MARK_PROC_BEGIN={__xaccess__:true,toString:function(){return '--{--';}};
   var MARK_PROC_END={__xaccess__:true,toString:function(){return '--}--';}};
-  
+
   //----------------------------------------------------------------------------
   //	オブジェクト
   //----------------------------------------------------------------------------
@@ -61,13 +61,13 @@
         proc.onerror("invalidaccess","!__waccess__");
         return;
       }
-      
+
       var index=parseInt(key);
       if(isNaN(index)||index<0||this.length<=index){
         proc.onerror("rangeerror","array="+this+", key="+key);
         return;
       }
-      
+
       //proc.onerror("debug","key="+index+", val="+val);
       this.data[this.offset+index]=val;
       /*
@@ -173,13 +173,13 @@
         proc.onerror("rangeerror","string="+this+", key="+key);
         return;
       }
-      
+
       var value=parseInt(val);
       if(isNaN(value)){
         proc.onerror("typecheck","operand 3/3 must be integer. value="+val);
         return;
       }
-      
+
       this.data[this.offset+index]=value;
     },
     toString:function(){
@@ -211,11 +211,11 @@
         proc.onerror('invalidaccess',"this dictionary has no waccess.");
         return;
       }
-      
+
       key=""+key;
       // dictionary は agh.wrap 元は更新しないという想定の下
       if(!(key in this.data))this.length++;
-      
+
       this.data[key]=val;
     },
     undef:function(proc,key){
@@ -223,7 +223,7 @@
         proc.onerror('invalidaccess',"this dictionary has no waccess.");
         return;
       }
-      
+
       key=""+key;
       if(key in this.data){
         delete this.data[key];
@@ -252,7 +252,7 @@
       /// <summary>
       /// __psput__ を介さずにメンバを追加した場合に呼び出します。
       /// </summary>
-      
+
       // dictionary は実行中に agh.wrap しないという想定の下
       this.length=agh.ownkeys(this.data).length;
       /*
@@ -286,7 +286,7 @@
         proc.onerror("invalidrestore","fatal: the specified snapshot is that of different Processor.");
         return;
       }
-      
+
       proc.graphics.restore_graphics(this.gsnap);
       this.proc=null;
     },
@@ -322,7 +322,7 @@
     this.userdict=new ns.PsDict();
     this.globaldict=new ns.PsDict();
     this.systemdict=new ns.PsDict();
-    
+
     this.systemdict.data=agh.wrap(ns.systemdict.data,{
       userdict:this.userdict,
       globaldict:this.globaldict
@@ -342,7 +342,7 @@
       /*/
       if(key in this.systemdict.data)
         return this.systemdict.data[key];
-        
+
       proc.onerror("undefined","key="+key+" @ dictstack");
       return null;
       //*/
@@ -395,15 +395,15 @@
   var PATH_CBEZ =2;
   var PATH_CLOSE=3;
   var PATH_CHAR =4;
-  
+
   var LNCAP_BUTT=0;
   var LNCAP_ROUND=1;
   var LNCAP_SQUARE=2;
-  
+
   var LNJOIN_MITER=0;
   var LNJOIN_ROUND=1;
   var LNJOIN_BEVEL=2;
-  
+
   //----------------------------------------------------------------------------
   ns.color=function(r,g,b){
     if(arguments.length==3){
@@ -425,11 +425,11 @@
     },
     intensity_hex:function(value){
       value=0|(value*255+0.5);
-      
+
       // 例外値
       if(value<0)return '00';
       if(value>255)return 'FF';
-      
+
       // 整形
       value=value.toString(16).toUpperCase();
       if(value.length==1)value='0'+value;
@@ -443,7 +443,7 @@
     },
     toHSV:function(){
       var a=[this.r,this.g,this.b];
-      
+
       var m=0,v=a[m];
       if(v<a[1])m=1,v=a[1];
       if(v<a[2])m=2,v=a[2];
@@ -452,7 +452,7 @@
       var d=v-Math.min(t,u);
       var s=d/v;
       var h=((t-u)/d+2*m)/6;
-      
+
       return [h,s,v];
     },
     toCMYK:function(){
@@ -495,13 +495,13 @@
     this.CTM=agh.Array.clone(ns.AffineA.defaultMatrix);
     this.path=[];
     this.clipstack=[];  // to impl
-    
+
     this.font=ns.PsNullFont.instance;
   };
   agh.memcpy(ns.PsGState.prototype,{
     CTM:[],                 //       array
     position:null,          // const array
-    path:[],                //       array 
+    path:[],                //       array
     clippath:null,          // const array : to impl
     clipstack:null,         //       array : to impl
     color:new ns.color(),
@@ -783,7 +783,7 @@
       //    現状では、PsArray の中身などに関しては復元しない実装になっている。
       // ※ save のもう一つの目的である、確保した領域を解放するという事については、
       //    javascript には GarbageCollector が居るので、特別な配慮は要らない。
-      
+
       proc.stk.push(new ns.PsSave(proc));
     },
     restore:function restore(proc){
@@ -792,7 +792,7 @@
         proc.onerror("typecheck","a savetype operand is required.");
         return;
       }
-      
+
       snap.restore(proc);
     },
     //------------------------------------------------------
@@ -919,7 +919,7 @@
         proc.onerror("typecheck","operand 1/2 should be an array");
         return;
       }
-      
+
       var darr=new Array(arr.length);
       for(var i=0;i<arr.length;i++)
         darr[i]=parseFloat(arr.data[arr.offset+i]);
@@ -1024,7 +1024,7 @@
       var text=proc.stk.pop();
       var s=proc.graphics.gstate;
       var font=s.font;
-      
+
       if(!agh.is(type,Boolean)){
         proc.onerror('typecheck',"operand2/2: a boolean value is expected.");
         return;
@@ -1032,12 +1032,12 @@
         proc.onerror("invalidfont","font is not set");
         return;
       }
-      
+
       text=font.Decode(text);
       var smove=font.GetStringMove(text);
-      
+
       s.path.push([PATH_CHAR,s.position,agh.Array.clone(s.CTM),font,text,smove]);
-      
+
       var m_=ns.AffineA.dtransform(smove,font.matrix);
       s.position=proc.graphics.rtransf_point(s.position,m_);
     },
@@ -1075,7 +1075,7 @@
         }
 #%)
       }
-      
+
       var path=gstate.path;
       var pos=null;
       for(var i=0;i<path.length;i++){
@@ -1102,16 +1102,16 @@
             var pos=e[1];
             var ctm=e[2];
             var font=e[3];
-            
+
             var matrix=ns.AffineA.mul(font.matrix,ctm);
             var sz=font.GetStringRawSize(e[4]);
             var dx=ns.AffineA.dtransformD([sz[0],0],matrix);
             var dy=ns.AffineA.dtransformD([0,sz[1]],matrix);
-            
+
             var vtx=font.matrix.slice(4,6);
             ns.AffineA.dtransformD(vtx,ctm);
             vtx[0]+=pos[0];vtx[1]+=pos[1];
-            
+
             vtx[0]+=dy[0]*0.1;vtx[1]+=dy[1]*0.1;   // 余白補正
             addp(vtx);
             vtx[0]+=dx[0];vtx[1]+=dx[1];
@@ -1125,7 +1125,7 @@
             break;
         }
       }
-      
+
       if(fNULL){
         if(gstate.position){
           var p=ns.AffineA.itransform(gstate.position,gstate.CTM);
@@ -1145,7 +1145,7 @@
         var ictm=ns.AffineA.inv(gstate.CTM);
         ns.AffineA.transformD(m,ictm);
         M[0]=m[0];M[1]=m[1];
-        
+
         // m += [min(dd0),min(dd1)], M += [max(dd0),max(dd1)]
         //   where dd = (dx? dy?) ictm = (dx?*ictm0 + dy?*ictm2, dx?*ictm1 + dy?*ictm3)
         //         dx? = 0 or dx
@@ -1176,14 +1176,14 @@
         var y=proc.stk.pop();
         var x=proc.stk.pop();
       }
-      
+
       var g=proc.graphics;
       var p0=g.gstate.position;
       var p1=g.rtransf_point(p0,[x,y]);
       var p2=g.rtransf_point(p0,[x+w,y]);
       var p3=g.rtransf_point(p0,[x+w,y+h]);
       var p4=g.rtransf_point(p0,[x,y+h]);
-      
+
       var oPath=g.gstate.path;
       g.gstate.path=[
         [PATH_LINE,p1,p2],
@@ -1197,7 +1197,7 @@
     },
     rectstroke:function rectstroke(proc){
       var g=proc.graphics;
-      
+
       // 引数 m=matrix
       var m=proc.stk.pop();
       if(a instanceof ns.PsArray&&a.length==6){
@@ -1207,7 +1207,7 @@
         var a=m;
         m=g.gstate.CTM;
       }
-      
+
       // 引数 矩形
       if(a instanceof ns.PsArray){
         var x=a.data[a.offset];
@@ -1224,14 +1224,14 @@
         var y=proc.stk.pop();
         var x=proc.stk.pop();
       }
-      
+
       //window.log("dbg: x={0} y={1} w={2} h={3}".format(x,y,w,h));
       //window.log("dbg: m="+m);
       var p1=ns.AffineA.transformD([x,y],m);
       var p2=ns.AffineA.transformD([x+w,y],m);
       var p3=ns.AffineA.transformD([x+w,y+h],m);
       var p4=ns.AffineA.transformD([x,y+h],m);
-      
+
       var oPath=g.gstate.path;
       g.gstate.path=[
         [PATH_LINE,p1,p2],
@@ -1267,16 +1267,16 @@
       this.base();
       if(agh.is(arg1,String)){
         this.init_fontname(arg1);
-        
+
         var size=arg2||1;
         this.matrix=[size/PS_FONT_SCALE,0,0,size/PS_FONT_SCALE,0,0];
       }else if(arg1 instanceof ns.PsFont){
         var font=arg1;
-        
+
         this.bold=font.bold;
         this.style=font.style;
         this.fontname=font.fontname;
-        
+
         // 線形合成
         if(arg2 instanceof Array){
           ns.AffineA.mulD(font.matrix,this.matrix=arg2);
@@ -1306,9 +1306,9 @@
         this.style='italic';
         fontname=fontname.slice(0,-11);
       }
-      
+
       // ■ Encoding
-      
+
       if(fontname in ns.FontMapping)
         fontname=ns.FontMapping[fontname];
       this.fontname=fontname;
@@ -1320,14 +1320,14 @@
         overflow:'hidden',visibility:'hidden',
         fontSize:'100px'
       });
-      
+
       // document.body 待ち
       var init=false;
       agh.scripts.wait(["event:onload"],function(){
         document.body.appendChild(span);
         init=true;
       });
-      
+
       return function(text){
         if(!init){
           var w=0;
@@ -1335,11 +1335,11 @@
             if(text.charCodeAt(i)>0xFF)w++;
           return [this.size*(text.length+w)*0.5,this.size];
         }
-        
+
         span.style.fontFamily=this.fontname;
         span.style.fontWidth=this.bold?'bold':'normal';
         span.style.fontStyle=this.oblique?'oblique':'normal';
-        
+
         if(agh.browser.vFx){
           span.textContent='xx';
           var w_xx=span.offsetWidth;
@@ -1390,7 +1390,7 @@
       this.m_priv=dict.data.Private;
       this.m_table=dict.data.Encoding.data;
       this.m_glyph=dict.data.CharStrings.data;
-      
+
       window.log(this.m_dict.toPs2());
     },
     // Decode:function override(text){
@@ -1459,7 +1459,7 @@
         proc.onerror("typecheck","operand1/1: a font is expectedmust");
         return;
       }
-      
+
       proc.graphics.gstate.font=font;
     },
     currentfont:function currentfont(proc){
@@ -1473,7 +1473,7 @@
       var _scal;
       var scal=parseFloat(_scal=proc.stk.pop());
       var font=proc.stk.pop();
-      
+
       if(isNaN(scal)){
         proc.onerror("typecheck","operand2/2: a number is expected. "+to_ps(_scal));
         return;
@@ -1490,7 +1490,7 @@
     makefont:function makefont(proc){
       var mat=proc.stk.pop();
       var font=proc.stk.pop();
-      
+
       if(!(mat instanceof ns.PsArray)){
         proc.onerror("typecheck","operand2/2: an array is expected");
         return;
@@ -1498,7 +1498,7 @@
         proc.onerror("typecheck","operand1/2: a font is expected");
         return;
       }
-      
+
       if(mat.offset!=0){
         mat=mat.data.slice(mat.offset,mat.offset+6);
       }else{
@@ -1519,7 +1519,7 @@
         proc.onerror("typecheck","operand1/2: a fontname-key is required");
         return;
       }
-      
+
       proc.graphics.gstate.font=new ns.PsFont(""+name,scal);
     },
     definefont:function definefont(proc){
@@ -1605,7 +1605,7 @@
         proc.onerror("invalidfont","font is not set");
         return;
       }
-      
+
       var text=font.Decode(proc.stk.pop());
       proc.stk.push.apply(proc.stk,font.GetStringRawSize(text));
     },
@@ -1616,7 +1616,7 @@
         return;
       }
       var text=font.Decode(proc.stk.pop());
-      
+
       var smove=font.GetStringMove(text);
       font.fillText(proc.graphics,text,smove);
       ns.AffineA.dtransformD(smove,font.matrix);
@@ -1631,13 +1631,13 @@
       var text=font.Decode(proc.stk.pop());
       var dy=parseFloat(proc.stk.pop());
       var dx=parseFloat(proc.stk.pop());
-      
+
       var pos=[0,0];
       for(var i=0;i<text.length;i++){
         var c=text.charAt(i);
         var move=font.GetStringMove(c);
         font.fillText(proc.graphics,c,move,pos);
-        
+
         ns.AffineA.dtransformD(move,font.matrix);
         pos[0]+=move[0]+dx;
         pos[1]+=move[1]+dy;
@@ -1654,13 +1654,13 @@
       var ch=proc.stk.pop()|0;
       var dy=parseFloat(proc.stk.pop());
       var dx=parseFloat(proc.stk.pop());
-      
+
       var pos=[0,0];
       for(var i=0;i<text.length;i++){
         var c=text.charAt(i);
         var move=font.GetStringMove(c);
         font.fillText(proc.graphics,c,move,pos);
-        
+
         ns.AffineA.dtransformD(move,font.matrix);
         pos[0]+=move[0];
         pos[1]+=move[1];
@@ -1683,13 +1683,13 @@
       var ch=proc.stk.pop()|0;
       var cy=parseFloat(proc.stk.pop());
       var cx=parseFloat(proc.stk.pop());
-      
+
       var pos=[0,0];
       for(var i=0;i<text.length;i++){
         var c=text.charAt(i);
         var move=font.GetStringMove(c);
         font.fillText(proc.graphics,c,move,pos);
-        
+
         ns.AffineA.dtransformD(move,font.matrix);
         pos[0]+=move[0]+dx;
         pos[1]+=move[1]+dy;
@@ -1708,14 +1708,14 @@
       }
       var text=font.Decode(proc.stk.pop());
       var exec=proc.stk.pop();
-      
+
       for(var i=0;i<text.length;i++){
         if(i>0){
           proc.stk.push(text.charCodeAt(i-1));
           proc.stk.push(text.charCodeAt(i));
           proc.process(exec);
         }
-        
+
         var c=text.charAt(i);
         var move=font.GetStringMove(c);
         font.fillText(proc.graphics,c,move);
@@ -1731,16 +1731,16 @@
       }
       var text=font.Decode(proc.stk.pop());
       var exec=proc.stk.pop();
-      
+
       for(var i=0;i<text.length;i++){
         var c=text.charAt(i);
         var move=font.GetStringMove(c);
         ns.AffineA.dtransformD(move,font.matrix);
-        
+
         proc.stk.push(text.charCodeAt(i),move[0],move[1]);
         proc.process(exec);
       }
-      
+
       proc.graphics.gstate.font=font; // restore
     },
     xyshow:function xyshow(proc){
@@ -1751,7 +1751,7 @@
       }
       var arr=proc.stk.pop();
       var text=font.Decode(proc.stk.pop());
-      
+
       // typecheck
       if(arr instanceof ns.PsArray){
         if(arr.length<2*text.length){
@@ -1767,13 +1767,13 @@
         proc.onerror("typecheck","operand2/2: an array or an encoded number string is expected.");
         return;
       }
-      
+
       var pos=[0,0];
       for(var i=0;i<text.length;i++){
         var c=text.charAt(i);
         var move=font.GetStringMove(c);
         font.fillText(proc.graphics,c,move,pos);
-        
+
         pos[0]+=arr[2*i];
         pos[1]+=arr[2*i+1];
       }
@@ -1787,7 +1787,7 @@
       }
       var arr=proc.stk.pop();
       var text=font.Decode(proc.stk.pop());
-      
+
       // typecheck
       if(arr instanceof ns.PsArray){
         if(arr.length<text.length){
@@ -1803,13 +1803,13 @@
         proc.onerror("typecheck","operand2/2: an array or an encoded number string is expected.");
         return;
       }
-      
+
       var pos=[0,0];
       for(var i=0;i<text.length;i++){
         var c=text.charAt(i);
         var move=font.GetStringMove(c);
         font.fillText(proc.graphics,c,move,pos);
-        
+
         pos[1]+=arr[i];
       }
       proc.graphics.rmoveto(pos[0],pos[1]);
@@ -1822,7 +1822,7 @@
       }
       var arr=proc.stk.pop();
       var text=font.Decode(proc.stk.pop());
-      
+
       // typecheck
       if(arr instanceof ns.PsArray){
         if(arr.length<text.length){
@@ -1838,13 +1838,13 @@
         proc.onerror("typecheck","operand2/2: an array or an encoded number string is expected.");
         return;
       }
-      
+
       var pos=[0,0];
       for(var i=0;i<text.length;i++){
         var c=text.charAt(i);
         var move=font.GetStringMove(c);
         font.fillText(proc.graphics,c,move,pos);
-        
+
         pos[0]+=arr[i];
       }
       proc.graphics.rmoveto(pos[0],pos[1]);
@@ -1869,21 +1869,21 @@
       }
     }
   });
-  
+
   ns.Processor=function(info){
     this.stk_wgen=[];
     this.stk=[];
     this.scope=new ns.Scope();
     this.option=new ns.ProcOption();
-    
+
     this.m_filestk=[];
     this.m_blklv=-1;
     this.m_blkstk=[];
-    
+
     this.m_stop=false; // exit/stop/quit
-    
+
     this.m_wstack=[]; // for debug trace
-    
+
     this.InitGraphics('target' in info?info.target:'svg');
     if('bb' in info&&info.bb instanceof Array){
       this.graphics.SetBoundingBox.apply(this.graphics,info.bb);
@@ -1941,14 +1941,14 @@
           buff.push('@?'+w);
         }
       }
-      
+
       buff.push(':');
       buff.push(name);
       if(desc!=null){
         buff.push(': ');
         buff.push(desc);
       }
-      
+
       this.errstream(buff.join(''));
     },
     //--------------------------------------------
@@ -1968,7 +1968,7 @@
         this.graphics=new agh.PostScript.GraphicsCanvas(type);
         return;
       }
-      
+
       this.errstream("error:InitGraphics(): unrecognized output type '"+type+"'");
     },
     //--------------------------------------------
@@ -2015,13 +2015,13 @@
       this.m_blklv=-1;
       this.m_blkstk=[];
       this.m_inittime=new Date().getTime();
-      
+
       this.runfile(text);
       if(this.m_stop){
         if(this.m_stop=='exit')this.onerror("invalidexit");
         this.m_stop=false;
       }
-        
+
       this.scope.userdict.clear();
       this.option=new ns.ProcOption();
       //window.log(agh.keys(this.scope.systemdict.userdict.data));
@@ -2100,7 +2100,7 @@
         if(w==MARK_PROC_BEGIN){
           this.m_blklv++;
           this.m_blkstk.push([]);
-          
+
           this.m_wstack.pop();return;
         }else if(w==MARK_PROC_END){
           this.m_blklv--;
@@ -2111,10 +2111,10 @@
             a.iC=w.iC;
             //■TODO: whether a procedure is defaultly packed? device 設定
           w=a;
-          
+
           if(this.m_blklv<0){
             this.stk.push(w);
-            
+
             this.m_wstack.pop();return;
           }
         }else if(w.__imediate__){
@@ -2125,7 +2125,7 @@
             w=val;
           }
         }
-        
+
         this.m_blkstk[this.m_blklv].push(w);
       }
       this.m_wstack.pop();
@@ -2136,9 +2136,9 @@
   ns.systemdict.update_length();
   ns.Optimizer.initialize();
   /*
-        
+
     ■ Clippnig path の実装
-      
+
   */
 
 });

@@ -65,7 +65,7 @@ agh.Class=function Class(name,base,members){
   if(!newclass.toString().match(/\bthis\s*\.\s*base\s*(?:\.\s*apply|\.\s*call)?\(/)){
     throw new Error("definition of class '"+name+"': No this.base call in constructor.");
   }
-  
+
   // newclass.base
   //--------------------------------------------
   if(agh.is(base,Function)){
@@ -127,7 +127,7 @@ agh.Class=function Class(name,base,members){
   newclass.className=name;
   newclass.eventNames=[];
   var eventNames=newclass.eventNames;
-  
+
   // newclass#members
   //--------------------------------------------
   newclass.prototype=agh.wrap(base_proto,members);
@@ -176,7 +176,7 @@ agh.Class=function Class(name,base,members){
     this.base=new BaseMethodsDelegator(this,this.base);
     // ※ 多段継承の場合は既に this.base が割り当てられている。
     // → これを this.base.base に設定
-    
+
     // イベントの初期化
     if(!this.__event__)
       this.__event__=new agh.Class.EventTable(this);
@@ -234,17 +234,17 @@ agh.Class=function Class(name,base,members){
     var _meth=arguments.callee.caller;
     var info=_meth.memberInfo;
     var vf=info&&info.baseMethod;
-    
+
     if(!agh.is(vf,Function)){
       // 基底関数がない時
       if(!agh.is(info.fullName,String))
         throw new Error("Method 'callbase' should be called from a instance method.");
       throw new Error("There is no base-method for the method '"+info.fullName+"'.");
     }
-    
+
     return vf.apply(this,arguments);
   };
-  
+
   return newclass;
 };
 
@@ -299,7 +299,7 @@ agh.Class.MemberCollection=(function(){
     this._base=_class.base.members;
     if(!(this._base instanceof MemberCollection))this._base=null;
     this._data={};
-    
+
     _class.members=this;
   }
   agh.memcpy(MemberCollection.prototype,{

@@ -208,12 +208,12 @@ var GetUnicodeGeneralCategory=(function(){
   ];
 
   var cache={};
-  
+
   return function(code){
     // binary search
     if(code<0||0x110000<=code)return "Cn";
     if(code in cache)return cache[code];
-  
+
     var il=0,iu=table.length;
     while(il+1<iu){
       var im=il+iu>>1;

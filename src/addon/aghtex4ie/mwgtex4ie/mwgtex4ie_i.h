@@ -9,8 +9,8 @@
 /* Compiler settings for .\mwgtex4ie.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
-    error checks: stub_data 
-    VC __declspec() decoration level: 
+    error checks: stub_data
+    VC __declspec() decoration level:
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
          DECLSPEC_UUID(), MIDL_INTERFACE()
 */
@@ -43,7 +43,7 @@
 #pragma once
 #endif
 
-/* Forward Declarations */ 
+/* Forward Declarations */
 
 #ifndef __IMwgtex4IeBho_FWD_DEFINED__
 #define __IMwgtex4IeBho_FWD_DEFINED__
@@ -105,63 +105,63 @@ typedef struct HttpsProtocolHookFactory HttpsProtocolHookFactory;
 
 #ifdef __cplusplus
 extern "C"{
-#endif 
+#endif
 
 
 #ifndef __IMwgtex4IeBho_INTERFACE_DEFINED__
 #define __IMwgtex4IeBho_INTERFACE_DEFINED__
 
 /* interface IMwgtex4IeBho */
-/* [unique][helpstring][nonextensible][dual][uuid][object] */ 
+/* [unique][helpstring][nonextensible][dual][uuid][object] */
 
 
 EXTERN_C const IID IID_IMwgtex4IeBho;
 
 #if defined(__cplusplus) && !defined(CINTERFACE)
-    
+
     MIDL_INTERFACE("069073F0-741B-4399-871D-D7D278FCDD24")
     IMwgtex4IeBho : public IDispatch
     {
     public:
     };
-    
+
 #else 	/* C style interface */
 
     typedef struct IMwgtex4IeBhoVtbl
     {
         BEGIN_INTERFACE
-        
-        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )(
             IMwgtex4IeBho * This,
             /* [in] */ REFIID riid,
-            /* [iid_is][out] */ 
+            /* [iid_is][out] */
             __RPC__deref_out  void **ppvObject);
-        
-        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+
+        ULONG ( STDMETHODCALLTYPE *AddRef )(
             IMwgtex4IeBho * This);
-        
-        ULONG ( STDMETHODCALLTYPE *Release )( 
+
+        ULONG ( STDMETHODCALLTYPE *Release )(
             IMwgtex4IeBho * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
+
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )(
             IMwgtex4IeBho * This,
             /* [out] */ UINT *pctinfo);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
+
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )(
             IMwgtex4IeBho * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
+
+        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )(
             IMwgtex4IeBho * This,
             /* [in] */ REFIID riid,
             /* [size_is][in] */ LPOLESTR *rgszNames,
             /* [range][in] */ UINT cNames,
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
-        
-        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
+
+        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )(
             IMwgtex4IeBho * This,
             /* [in] */ DISPID dispIdMember,
             /* [in] */ REFIID riid,
@@ -171,7 +171,7 @@ EXTERN_C const IID IID_IMwgtex4IeBho;
             /* [out] */ VARIANT *pVarResult,
             /* [out] */ EXCEPINFO *pExcepInfo,
             /* [out] */ UINT *puArgErr);
-        
+
         END_INTERFACE
     } IMwgtex4IeBhoVtbl;
 
@@ -180,32 +180,32 @@ EXTERN_C const IID IID_IMwgtex4IeBho;
         CONST_VTBL struct IMwgtex4IeBhoVtbl *lpVtbl;
     };
 
-    
+
 
 #ifdef COBJMACROS
 
 
 #define IMwgtex4IeBho_QueryInterface(This,riid,ppvObject)	\
-    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) )
 
 #define IMwgtex4IeBho_AddRef(This)	\
-    ( (This)->lpVtbl -> AddRef(This) ) 
+    ( (This)->lpVtbl -> AddRef(This) )
 
 #define IMwgtex4IeBho_Release(This)	\
-    ( (This)->lpVtbl -> Release(This) ) 
+    ( (This)->lpVtbl -> Release(This) )
 
 
 #define IMwgtex4IeBho_GetTypeInfoCount(This,pctinfo)	\
-    ( (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo) ) 
+    ( (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo) )
 
 #define IMwgtex4IeBho_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
-    ( (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo) ) 
+    ( (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo) )
 
 #define IMwgtex4IeBho_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
-    ( (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId) ) 
+    ( (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId) )
 
 #define IMwgtex4IeBho_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
-    ( (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr) ) 
+    ( (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr) )
 
 
 #endif /* COBJMACROS */
@@ -223,56 +223,56 @@ EXTERN_C const IID IID_IMwgtex4IeBho;
 #define __IHttpsProtocolHook_INTERFACE_DEFINED__
 
 /* interface IHttpsProtocolHook */
-/* [unique][helpstring][nonextensible][dual][uuid][object] */ 
+/* [unique][helpstring][nonextensible][dual][uuid][object] */
 
 
 EXTERN_C const IID IID_IHttpsProtocolHook;
 
 #if defined(__cplusplus) && !defined(CINTERFACE)
-    
+
     MIDL_INTERFACE("0B7933E3-EDD9-4293-8B9D-1FDA6EDF04A0")
     IHttpsProtocolHook : public IDispatch
     {
     public:
     };
-    
+
 #else 	/* C style interface */
 
     typedef struct IHttpsProtocolHookVtbl
     {
         BEGIN_INTERFACE
-        
-        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )(
             IHttpsProtocolHook * This,
             /* [in] */ REFIID riid,
-            /* [iid_is][out] */ 
+            /* [iid_is][out] */
             __RPC__deref_out  void **ppvObject);
-        
-        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+
+        ULONG ( STDMETHODCALLTYPE *AddRef )(
             IHttpsProtocolHook * This);
-        
-        ULONG ( STDMETHODCALLTYPE *Release )( 
+
+        ULONG ( STDMETHODCALLTYPE *Release )(
             IHttpsProtocolHook * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
+
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )(
             IHttpsProtocolHook * This,
             /* [out] */ UINT *pctinfo);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
+
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )(
             IHttpsProtocolHook * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
+
+        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )(
             IHttpsProtocolHook * This,
             /* [in] */ REFIID riid,
             /* [size_is][in] */ LPOLESTR *rgszNames,
             /* [range][in] */ UINT cNames,
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
-        
-        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
+
+        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )(
             IHttpsProtocolHook * This,
             /* [in] */ DISPID dispIdMember,
             /* [in] */ REFIID riid,
@@ -282,7 +282,7 @@ EXTERN_C const IID IID_IHttpsProtocolHook;
             /* [out] */ VARIANT *pVarResult,
             /* [out] */ EXCEPINFO *pExcepInfo,
             /* [out] */ UINT *puArgErr);
-        
+
         END_INTERFACE
     } IHttpsProtocolHookVtbl;
 
@@ -291,32 +291,32 @@ EXTERN_C const IID IID_IHttpsProtocolHook;
         CONST_VTBL struct IHttpsProtocolHookVtbl *lpVtbl;
     };
 
-    
+
 
 #ifdef COBJMACROS
 
 
 #define IHttpsProtocolHook_QueryInterface(This,riid,ppvObject)	\
-    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) )
 
 #define IHttpsProtocolHook_AddRef(This)	\
-    ( (This)->lpVtbl -> AddRef(This) ) 
+    ( (This)->lpVtbl -> AddRef(This) )
 
 #define IHttpsProtocolHook_Release(This)	\
-    ( (This)->lpVtbl -> Release(This) ) 
+    ( (This)->lpVtbl -> Release(This) )
 
 
 #define IHttpsProtocolHook_GetTypeInfoCount(This,pctinfo)	\
-    ( (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo) ) 
+    ( (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo) )
 
 #define IHttpsProtocolHook_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
-    ( (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo) ) 
+    ( (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo) )
 
 #define IHttpsProtocolHook_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
-    ( (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId) ) 
+    ( (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId) )
 
 #define IHttpsProtocolHook_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
-    ( (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr) ) 
+    ( (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr) )
 
 
 #endif /* COBJMACROS */
@@ -334,56 +334,56 @@ EXTERN_C const IID IID_IHttpsProtocolHook;
 #define __IHttpsProtocolHookFactory_INTERFACE_DEFINED__
 
 /* interface IHttpsProtocolHookFactory */
-/* [unique][helpstring][nonextensible][dual][uuid][object] */ 
+/* [unique][helpstring][nonextensible][dual][uuid][object] */
 
 
 EXTERN_C const IID IID_IHttpsProtocolHookFactory;
 
 #if defined(__cplusplus) && !defined(CINTERFACE)
-    
+
     MIDL_INTERFACE("7543FADC-2527-4b5d-B7BC-D3894984AEC6")
     IHttpsProtocolHookFactory : public IDispatch
     {
     public:
     };
-    
+
 #else 	/* C style interface */
 
     typedef struct IHttpsProtocolHookFactoryVtbl
     {
         BEGIN_INTERFACE
-        
-        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )(
             IHttpsProtocolHookFactory * This,
             /* [in] */ REFIID riid,
-            /* [iid_is][out] */ 
+            /* [iid_is][out] */
             __RPC__deref_out  void **ppvObject);
-        
-        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+
+        ULONG ( STDMETHODCALLTYPE *AddRef )(
             IHttpsProtocolHookFactory * This);
-        
-        ULONG ( STDMETHODCALLTYPE *Release )( 
+
+        ULONG ( STDMETHODCALLTYPE *Release )(
             IHttpsProtocolHookFactory * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
+
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )(
             IHttpsProtocolHookFactory * This,
             /* [out] */ UINT *pctinfo);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
+
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )(
             IHttpsProtocolHookFactory * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
+
+        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )(
             IHttpsProtocolHookFactory * This,
             /* [in] */ REFIID riid,
             /* [size_is][in] */ LPOLESTR *rgszNames,
             /* [range][in] */ UINT cNames,
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
-        
-        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
+
+        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )(
             IHttpsProtocolHookFactory * This,
             /* [in] */ DISPID dispIdMember,
             /* [in] */ REFIID riid,
@@ -393,7 +393,7 @@ EXTERN_C const IID IID_IHttpsProtocolHookFactory;
             /* [out] */ VARIANT *pVarResult,
             /* [out] */ EXCEPINFO *pExcepInfo,
             /* [out] */ UINT *puArgErr);
-        
+
         END_INTERFACE
     } IHttpsProtocolHookFactoryVtbl;
 
@@ -402,32 +402,32 @@ EXTERN_C const IID IID_IHttpsProtocolHookFactory;
         CONST_VTBL struct IHttpsProtocolHookFactoryVtbl *lpVtbl;
     };
 
-    
+
 
 #ifdef COBJMACROS
 
 
 #define IHttpsProtocolHookFactory_QueryInterface(This,riid,ppvObject)	\
-    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) )
 
 #define IHttpsProtocolHookFactory_AddRef(This)	\
-    ( (This)->lpVtbl -> AddRef(This) ) 
+    ( (This)->lpVtbl -> AddRef(This) )
 
 #define IHttpsProtocolHookFactory_Release(This)	\
-    ( (This)->lpVtbl -> Release(This) ) 
+    ( (This)->lpVtbl -> Release(This) )
 
 
 #define IHttpsProtocolHookFactory_GetTypeInfoCount(This,pctinfo)	\
-    ( (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo) ) 
+    ( (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo) )
 
 #define IHttpsProtocolHookFactory_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
-    ( (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo) ) 
+    ( (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo) )
 
 #define IHttpsProtocolHookFactory_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
-    ( (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId) ) 
+    ( (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId) )
 
 #define IHttpsProtocolHookFactory_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
-    ( (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr) ) 
+    ( (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr) )
 
 
 #endif /* COBJMACROS */
@@ -446,7 +446,7 @@ EXTERN_C const IID IID_IHttpsProtocolHookFactory;
 #define __mwgtex4ieLib_LIBRARY_DEFINED__
 
 /* library mwgtex4ieLib */
-/* [helpstring][version][uuid] */ 
+/* [helpstring][version][uuid] */
 
 
 EXTERN_C const IID LIBID_mwgtex4ieLib;

@@ -17,7 +17,7 @@
         out[io++]=T[(c2&0xF)<<2|(c3&0xC0)>>6];
         out[io++]=T[c3&0x3F];
       }
-      
+
       switch(str.length-i){
         case 1:
           var c1=str.charCodeAt(i  )&0xff;
@@ -34,7 +34,7 @@
           out[io++]='=';
           break;
       }
-      
+
       //++++++++++++++++++++++++++++++++++++++++++++++++++++
       // 速度について
       //----------------------------------------------------
@@ -48,7 +48,7 @@
     };
     //log(agh.PostScript.Base64Encode("Hello! How are you, today?"));
   })();
-  
+
   var SVG_LNCAP=agh.memcpy(null,VML_LNCAP);
   SVG_LNCAP[LNCAP_BUTT]="butt";
   var SVG_LNJOIN=VML_LNJOIN;
@@ -59,7 +59,7 @@
     }
     return ret.join(','); // Firefox はスペース区切だと認識しない。
   };
-  
+
   ns.GraphicsSvg=agh.Class(nsName+'.GraphicsSvg',ns.GraphicsBase,{
     constructor:function(){
       this.base();
@@ -92,7 +92,7 @@
       this.output_path();
       this.buffer.push('" />\n');
       // ■ TODO: strokeadjust の指定
-      
+
       // PATH_CHAR
       for(var i=0,iN=s.path.length;i<iN;i++){
         var e=s.path[i];
@@ -113,7 +113,7 @@
       this.buffer.push('" d="');
       this.output_path();
       this.buffer.push('" />\n');
-      
+
       // PATH_CHAR
       for(var i=0,iN=s.path.length;i<iN;i++){
         var e=s.path[i];
@@ -122,7 +122,7 @@
           this.fill_text(e[4],e[5],null,e[3],e[2]);
         }
       }
-      
+
       s.path.length=0;
       s.position=null;
     },
@@ -131,7 +131,7 @@
       var pos=null;
       for(var i=0;i<path.length;i++){
         if(i!=0)this.buffer.push(" ");
-        
+
         var e=path[i];
         switch(e[0]){
           case PATH_LINE:
@@ -173,7 +173,7 @@
     //	文字列表示
     fill_text:function(text,move,pos,font,ctm,fSTROKE){
       if(font==null)font=this.gstate.font;
-    
+
       var matrix=ns.AffineA.mul(font.matrix,ctm||this.gstate.CTM);
       var v2c=font.matrix.slice(4,6);
       if(pos instanceof Array){
@@ -181,10 +181,10 @@
         v2c[1]+=pos[1];
       }
       v2c=this.rtransf_point(this.gstate.position,v2c);
-      
+
       //------------------------------------------
       ns.AffineA.idtransformD(v2c,matrix);
-      
+
       if(fSTROKE){
         var s=this.gstate;
         var scal=this.getMeanScale();
@@ -241,7 +241,7 @@
     //------------------------------------------------------
     showpage:function(){
       if(this.buffer.length==0)return;
-      
+
       var buff=[];
       buff.push('<?xml version="1.0" standalone="no"?>\n');
       buff.push('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n');
@@ -264,10 +264,10 @@
       buff.push(this.buffer.join(''));
       buff.push('</g></svg>');
       this.buffer.length=0;
-      
+
       var svg_source=buff.join('');
       //log("debug: "+svg_source);
-      
+
       this.output.push('<object width="');
       this.output.push(this.m_width);
       this.output.push('" height="');
@@ -282,7 +282,7 @@
       //         div[$position=relative,$overflow=visible] 等で包んで誤魔化す。
       //   →どうやら、はみ出ている部分はそもそも表示されない様である。
       //     無理矢理表示する方法はあるのかどうか?
-      
+
       this.ginit();
     },
     //------------------------------------------------------

@@ -76,7 +76,7 @@
 
   //       if(f.aghtex_processed!=null)continue;
   //       f.aghtex_processed=true;
-        
+
   //       var _window=f.contentWindow; // f for IE
   //       initialize_frame(_window);
   //     }catch(ex){

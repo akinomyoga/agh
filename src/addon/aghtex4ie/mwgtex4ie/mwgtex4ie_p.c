@@ -9,8 +9,8 @@
 /* Compiler settings for .\mwgtex4ie.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
-    error checks: stub_data 
-    VC __declspec() decoration level: 
+    error checks: stub_data
+    VC __declspec() decoration level:
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
          DECLSPEC_UUID(), MIDL_INTERFACE()
 */
@@ -30,7 +30,7 @@
 #pragma warning( disable: 4152 )  /* function/data pointer conversion in expression */
 #pragma warning( disable: 4100 ) /* unreferenced arguments in x86 call */
 
-#pragma optimize("", off ) 
+#pragma optimize("", off )
 
 #define USE_STUBLESS_PROXY
 
@@ -49,11 +49,11 @@
 
 #include "mwgtex4ie_i.h"
 
-#define TYPE_FORMAT_STRING_SIZE   3                                 
-#define PROC_FORMAT_STRING_SIZE   1                                 
-#define EXPR_FORMAT_STRING_SIZE   1                                 
-#define TRANSMIT_AS_TABLE_SIZE    0            
-#define WIRE_MARSHAL_TABLE_SIZE   0            
+#define TYPE_FORMAT_STRING_SIZE   3
+#define PROC_FORMAT_STRING_SIZE   1
+#define EXPR_FORMAT_STRING_SIZE   1
+#define TRANSMIT_AS_TABLE_SIZE    0
+#define WIRE_MARSHAL_TABLE_SIZE   0
 
 typedef struct _mwgtex4ie_MIDL_TYPE_FORMAT_STRING
     {
@@ -74,7 +74,7 @@ typedef struct _mwgtex4ie_MIDL_EXPR_FORMAT_STRING
     } mwgtex4ie_MIDL_EXPR_FORMAT_STRING;
 
 
-static RPC_SYNTAX_IDENTIFIER  _RpcTransferSyntax = 
+static RPC_SYNTAX_IDENTIFIER  _RpcTransferSyntax =
 {{0x8A885D04,0x1CEB,0x11C9,{0x9F,0xE8,0x08,0x00,0x2B,0x10,0x48,0x60}},{2,0}};
 
 
@@ -169,7 +169,7 @@ static const MIDL_STUBLESS_PROXY_INFO IMwgtex4IeBho_ProxyInfo =
     };
 
 
-static const MIDL_SERVER_INFO IMwgtex4IeBho_ServerInfo = 
+static const MIDL_SERVER_INFO IMwgtex4IeBho_ServerInfo =
     {
     &Object_StubDesc,
     0,
@@ -179,7 +179,7 @@ static const MIDL_SERVER_INFO IMwgtex4IeBho_ServerInfo =
     0,
     0,
     0};
-CINTERFACE_PROXY_VTABLE(7) _IMwgtex4IeBhoProxyVtbl = 
+CINTERFACE_PROXY_VTABLE(7) _IMwgtex4IeBhoProxyVtbl =
 {
     0,
     &IID_IMwgtex4IeBho,
@@ -235,7 +235,7 @@ static const MIDL_STUBLESS_PROXY_INFO IHttpsProtocolHook_ProxyInfo =
     };
 
 
-static const MIDL_SERVER_INFO IHttpsProtocolHook_ServerInfo = 
+static const MIDL_SERVER_INFO IHttpsProtocolHook_ServerInfo =
     {
     &Object_StubDesc,
     0,
@@ -245,7 +245,7 @@ static const MIDL_SERVER_INFO IHttpsProtocolHook_ServerInfo =
     0,
     0,
     0};
-CINTERFACE_PROXY_VTABLE(7) _IHttpsProtocolHookProxyVtbl = 
+CINTERFACE_PROXY_VTABLE(7) _IHttpsProtocolHookProxyVtbl =
 {
     0,
     &IID_IHttpsProtocolHook,
@@ -301,7 +301,7 @@ static const MIDL_STUBLESS_PROXY_INFO IHttpsProtocolHookFactory_ProxyInfo =
     };
 
 
-static const MIDL_SERVER_INFO IHttpsProtocolHookFactory_ServerInfo = 
+static const MIDL_SERVER_INFO IHttpsProtocolHookFactory_ServerInfo =
     {
     &Object_StubDesc,
     0,
@@ -311,7 +311,7 @@ static const MIDL_SERVER_INFO IHttpsProtocolHookFactory_ServerInfo =
     0,
     0,
     0};
-CINTERFACE_PROXY_VTABLE(7) _IHttpsProtocolHookFactoryProxyVtbl = 
+CINTERFACE_PROXY_VTABLE(7) _IHttpsProtocolHookFactoryProxyVtbl =
 {
     0,
     &IID_IHttpsProtocolHookFactory,
@@ -342,7 +342,7 @@ CInterfaceStubVtbl _IHttpsProtocolHookFactoryStubVtbl =
     CStdStubBuffer_DELEGATING_METHODS
 };
 
-static const MIDL_STUB_DESC Object_StubDesc = 
+static const MIDL_STUB_DESC Object_StubDesc =
     {
     0,
     NdrOleAllocate,
@@ -366,7 +366,7 @@ static const MIDL_STUB_DESC Object_StubDesc =
     0
     };
 
-const CInterfaceProxyVtbl * _mwgtex4ie_ProxyVtblList[] = 
+const CInterfaceProxyVtbl * _mwgtex4ie_ProxyVtblList[] =
 {
     ( CInterfaceProxyVtbl *) &_IHttpsProtocolHookFactoryProxyVtbl,
     ( CInterfaceProxyVtbl *) &_IHttpsProtocolHookProxyVtbl,
@@ -374,7 +374,7 @@ const CInterfaceProxyVtbl * _mwgtex4ie_ProxyVtblList[] =
     0
 };
 
-const CInterfaceStubVtbl * _mwgtex4ie_StubVtblList[] = 
+const CInterfaceStubVtbl * _mwgtex4ie_StubVtblList[] =
 {
     ( CInterfaceStubVtbl *) &_IHttpsProtocolHookFactoryStubVtbl,
     ( CInterfaceStubVtbl *) &_IHttpsProtocolHookStubVtbl,
@@ -382,7 +382,7 @@ const CInterfaceStubVtbl * _mwgtex4ie_StubVtblList[] =
     0
 };
 
-PCInterfaceName const _mwgtex4ie_InterfaceNamesList[] = 
+PCInterfaceName const _mwgtex4ie_InterfaceNamesList[] =
 {
     "IHttpsProtocolHookFactory",
     "IHttpsProtocolHook",
@@ -390,7 +390,7 @@ PCInterfaceName const _mwgtex4ie_InterfaceNamesList[] =
     0
 };
 
-const IID *  _mwgtex4ie_BaseIIDList[] = 
+const IID *  _mwgtex4ie_BaseIIDList[] =
 {
     &IID_IDispatch,
     &IID_IDispatch,
@@ -408,16 +408,16 @@ int __stdcall _mwgtex4ie_IID_Lookup( const IID * pIID, int * pIndex )
     IID_BS_LOOKUP_INITIAL_TEST( _mwgtex4ie, 3, 2 )
     IID_BS_LOOKUP_NEXT_TEST( _mwgtex4ie, 1 )
     IID_BS_LOOKUP_RETURN_RESULT( _mwgtex4ie, 3, *pIndex )
-    
+
 }
 
-const ExtendedProxyFileInfo mwgtex4ie_ProxyFileInfo = 
+const ExtendedProxyFileInfo mwgtex4ie_ProxyFileInfo =
 {
     (PCInterfaceProxyVtblList *) & _mwgtex4ie_ProxyVtblList,
     (PCInterfaceStubVtblList *) & _mwgtex4ie_StubVtblList,
     (const PCInterfaceName * ) & _mwgtex4ie_InterfaceNamesList,
     (const IID ** ) & _mwgtex4ie_BaseIIDList,
-    & _mwgtex4ie_IID_Lookup, 
+    & _mwgtex4ie_IID_Lookup,
     3,
     2,
     0, /* table of [async_uuid] interfaces */

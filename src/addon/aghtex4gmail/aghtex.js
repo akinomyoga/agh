@@ -207,7 +207,7 @@ agh.scripts.register("addon/aghtex.js",[
       var remove_anchors=function(html){
         return html.replace(/(^|\<br\s*\/?\>)(?:[ \t]*\&gt\;)+/g,"$1");
       };
-      
+
       return function(html){
         var fREP=0;
         var html1=html.replace(reg_tex_range,function($0,$1,$2,$3,$4,$5){
@@ -324,7 +324,7 @@ agh.scripts.register("addon/aghtex.js",[
           var htmlbuff=mode.transform(texbuff.join("\\AghTeXSplitter{}"),option).split("(@)");
           for(var i=0;i<elems.length;i++)
             mode.sethtml(elems[i],htmlbuff[i]);
-        }else{ // if('tagName' in target)                                                                                                                                                                         
+        }else{ // if('tagName' in target)
           var span=target;
           var result=mode.transform(aghtex.dom_getInnerText(span),option);
           mode.sethtml(span,result);
@@ -456,7 +456,7 @@ agh.scripts.register("addon/aghtex.js",[
         aghtex.tex_transform(elems_tex.full[i],"full","");
     }
     body.style.backgroundColor=backgroundColorDefault;
-    
+
     // on/off switch
     aghtex.dom_addClassName(body,aghtex.className_switch_on);
     body.aghtex_switch=true;

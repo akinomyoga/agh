@@ -15,11 +15,11 @@
 //   doc.NewCounter("subsubsection","subsection");
 //   doc.NewCounter("paragraph","subsubsection");
 //   doc.NewCounter("subparagraph","paragraph");
-  
+
 //   doc.NewCounter("equation","section");
 //   doc.NewCounter("figure","section");
 //   doc.NewCounter("table","section");
-  
+
 //   doc.context_cast("mode.para");
 //   with(doc.contexts["mode.para"]){
 //     command s\part("#1")            @"\stepcounter{part}\begin{center}\Huge\vspace{2em}\textbf{第\Roman{part}部\\ #1}\vspace{2em}\end{center}";
@@ -45,11 +45,11 @@
 //   doc.NewCounter("subsubsection","subsection");
 //   doc.NewCounter("paragraph","subsubsection");
 //   doc.NewCounter("subparagraph","paragraph");
-  
+
 //   doc.NewCounter("equation","section");
 //   doc.NewCounter("figure","section");
 //   doc.NewCounter("table","section");
-  
+
 //   doc.context_cast("mode.para");
 //   with(doc.contexts["mode.para"]){
 //     command s\part("#1")            @"\stepcounter{part}{\Large 第\Roman{part}部}\vspace{1em}{\quad\Huge\textbf{#1}}\vspace{2em}";

@@ -273,11 +273,11 @@ namespace MshtmlDom{
     HTMLElement operator[](int index){
       if(index<0||this->length<=index)
         return HTMLElement(CComPtr<IHTMLElement>());
-      
+
       CComPtr<IDispatch> dispElem=this->item(CComVariant(index),CComVariant());
       if(!dispElem)
         return HTMLElement(CComPtr<IHTMLElement>());
-      
+
       return HTMLElement(CComQIPtr<IHTMLElement>(dispElem));
     }
   };

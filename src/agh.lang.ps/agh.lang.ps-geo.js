@@ -198,13 +198,13 @@
           x=proc.stk.pop();
           a=proc.graphics.gstate.CTM;
         }
-        
+
         proc.stk.push.apply(proc.stk,func([x,y],a));
       };
       op.ps_name=name;
       return op;
     }
-    
+
     function create_matrix_operation(ps_name,transf,N,i0,iN){
       // transf(a1,...,aN,matrix) : 変換関数
       // [i0,iN)                  : 行列に対して変更される範囲
@@ -212,14 +212,14 @@
         var a=proc.stk.pop();
         var args=new Array(N);
         var j=N-1;
-        
+
         if(a instanceof ns.PsArray){
           if(!a.__waccess__){
             proc.onerror('typecheck',"operand3/3: no waccess.");
             return;
           }else{
             while(j>=0)args[j--]=proc.stk.pop();
-              
+
             if(a.offset==0){
               args.push(a.data);
               transf.apply(null,args);
@@ -231,12 +231,12 @@
                 a.data[a.offset+i]=buff[i];
             }
           }
-          
+
           proc.stk.push(a);
         }else{
           args[j--]=a;
           while(j>=0)args[j--]=proc.stk.pop();
-          
+
           args.push(proc.graphics.gstate.CTM);
           transf.apply(null,args);
         }
@@ -244,7 +244,7 @@
       op.ps_name=ps_name;
       return op;
     }
-    
+
     function load_matrix(proc,source){
       var r=proc.stk[proc.stk.length-1];
       if(!(r instanceof ns.PsArray)){
@@ -254,10 +254,10 @@
         proc.onerror('typecheck',"operand1/1: no waccess");
         return;
       }
-      
+
       for(var i=0;i<6;i++)r.data[r.offset+i]=source[i];
     }
-    
+
     agh.memcpy(ns.systemdict.data,{
       currentpoint:function currentpoint(proc){
         var p=proc.graphics.gstate.position;
@@ -276,7 +276,7 @@
           proc.onerror("typecheck","the 1st operand should be an array.");
           return;
         }
-        
+
         var ctm=proc.graphics.gstate.CTM;
         for(var i=0;i<6;i++)ctm[i]=a.data[a.offset+i];
       },
@@ -286,7 +286,7 @@
           proc.onerror("typecheck","the 1st operand should be an array.");
           return;
         }
-        
+
         a=a.offset==0?a.data:a.data.slice(a.offset,a.offset+6);
         ns.AffineA.mulD(a,proc.graphics.gstate.CTM);
       },
@@ -294,7 +294,7 @@
         var r=proc.stk.pop();
         var b=proc.stk.pop();
         var a=proc.stk.pop();
-        
+
         // typecheck (arr_mod:rw-)
         if(!(r instanceof ns.PsArray)){
           proc.onerror('typecheck',"operand3/3: an array is required.");
@@ -309,7 +309,7 @@
           proc.onerror('typecheck',"operand1/3: an array is required.");
           return;
         }
-        
+
         a=a.offset==0?a.data:a.data.slice(a.offset,a.offset+6);
         b=b.offset==0?b.data:b.data.slice(b.offset,b.offset+6);
         if(r.offset==0){
@@ -345,7 +345,7 @@
       invertmatrix:function invertmatrix(proc){
         var r=proc.stk.pop();
         var a=proc.stk.pop();
-        
+
         // typecheck (arr_mod:rw-)
         if(!(r instanceof ns.PsArray)){
           proc.onerror('typecheck',"operand2/2: an array is required.");
@@ -357,7 +357,7 @@
           proc.onerror('typecheck',"operand1/2: an array is required.");
           return;
         }
-        
+
         a=a.offset==0?a.data:a.data.slice(a.offset,a.offset+6);
         if(r.offset==0){
           ns.AffineA.invR(a,r.data);

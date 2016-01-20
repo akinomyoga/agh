@@ -81,7 +81,7 @@
           if(!register_frame(f))continue;
           // if(f.aghtex_processed!=null)continue;
           // f.aghtex_processed=true; // ERR
-          
+
           var _window=f;
           initialize_frame(_window);
         }catch(ex){

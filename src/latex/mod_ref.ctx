@@ -178,12 +178,12 @@ ns.Document.prototype.AddContentsLine=function(doc,file,type,content,id){
       '<tex:i class="aghtex-toc-item"><table class="aghtex-toc-item aghtex-toc-',type,
       '"><tr><td class="aghtex-toc-label">',content,
       '</td><td class="aghtex-toc-hfill"><tex:i class="aghtex-toc-hfill">&nbsp;</tex:i></td><td class="aghtex-toc-page">');
-    
+
     if(id)
       f.buff.push('<a class="aghtex-ref" href="#',id,'">',page,'</a>');
     else
       f.buff.push(page);
-    
+
     f.buff.push('</td></tr></table></tex:i>');
     f.data.push({type:type,content:content,id:id});
     break;
@@ -386,7 +386,7 @@ agh.memcpy(ns.Document.prototype,{
   ResolveReferences:function(){
     if(this.html==null)return;
     var self=this;
-    return this.html=this.html.replace(/<tex:ref ref="(\w+)\.([^"<>]+)">\?<\/tex:ref>|<a class="aghtex-ref" href="#aghtex\.([^"]+)">/g,function($0,$1,$2,$B1){ // 
+    return this.html=this.html.replace(/<tex:ref ref="(\w+)\.([^"<>]+)">\?<\/tex:ref>|<a class="aghtex-ref" href="#aghtex\.([^"]+)">/g,function($0,$1,$2,$B1){ //
       if($1!=null&&$1!=""){
         switch($1){
         case "ref":
@@ -468,7 +468,7 @@ context "mode.para"{
     fn_out.clear();
     output.buff.push('<tex:i class="aghtex-footnote"><ul class="aghtex-footnote">',ht,'</ul></tex:i>');
   };
-  
+
   command f\footnotemark("#[]1"){
     var fn=get_footnote(doc);
 

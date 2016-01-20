@@ -48,31 +48,31 @@
  *      @param[in] arguments
  *        残りの引数には agh(obj,type,...) に渡された可変長部分が渡されます。
  *    }
- * 
+ *
  *    @deprecated[mwg-2.0] mwg.dynamic_cast.__AddClass(type,fun) // fun の形式に変更あり
  *    @deprecated[agh-3.1] agh.__AddCast__(type,fun)
- * 
+ *
  *  @fn agh.is(obj)
  *    obj が非 null かどうかを判定します。
  *    @return obj が null の時に false を返します。それ以外の場合に true を返します。
- * 
+ *
  *    @deprecated[mwg-2.0] Object.IsNull(o)
- * 
+ *
  *  @fn agh.is(obj,type)
  *    obj が type インスタンスである事を確認します。
  *    @remarks
  *      type = Number, String, Boolean に対しては typeof obj=="type"||obj instanceof type などに等価です。
  *      それ以外の場合は obj instanceof type に等価です。
- * 
+ *
  *    @deprecated[mwg-2.0] mwg.is_type(obj,type)
- * 
+ *
  *  @class agh.Namespace
  *
  *  @fn agh.Namespace(name,target)
  *    新しい名前空間を target[name] に作成します。
  *    name を省略した場合は自動的に名前を割り振ります。
  *    @return 作成した名前空間の名称を返します。
- *  
+ *
  *  @fn agh.keys(obj)
  *    @deprecated[agh-3.1] agh.get_keys(obj)
  *
@@ -119,7 +119,7 @@
  *
  *  @fn agh.XMLHttpRequest
  *  @fn agh.addEventListener
- * 
+ *
  *  @namespace agh.Array
  *  @fn agh.Array.each(arr,func,start,end)
  *  @fn agh.Array.eachR(arr,func,start,end)
@@ -156,7 +156,7 @@
  *  @fn Array.prototype.lastIndexOf(value,from) // 補完 for IE6
  *
  *
-//     -> 
+//     ->
 //    Array#& -> Array.intersec
 //    Array#- -> Array.diff
 
@@ -205,14 +205,14 @@
  *    @param[in] type "regexp" | "html" | "backslash" | "camel" | "quoted" | "double-quoted"
  *  @fn agh.Text.ResolveUnicode(code)
  *  @fn agh.Text.ResolveEntity(code)
- *  
+ *
  *  @namespace agh.Text.Url
  *  @fn agh.Text.Url.Combine:function(a,b);
  *  @fn agh.Text.Url.Directory:function(str);
  *  @fn agh.Text.Url.Parent:function(str);
  *  @fn agh.Text.Url.GetExtension:function(str);
  *  @fn agh.Text.Url.GetFileName:function(str);
- *  
+ *
  *  - definition for agh(obj,String)
  *  - definition for agh(obj,"HTML")
  *  - definition for agh(obj,"JSON")
@@ -334,21 +334,21 @@
           }
           return null;
         };
-        
+
         castdef.AddHandler=function(handler){
           handlers.push(handler);
         };
 
         cast_table[_class]=castdef;
       }
-      
+
       if(handler)
         castdef.AddHandler(handler);
     };
     agh.registerAgehaExtension=function registerAgehaExtension(value){
       ext.push(value);
     };
-    
+
     return agh;
   })();
   //--------------------------------------------------------------------------
@@ -409,12 +409,12 @@
       var v=parseFloat(ua.substr(index+12,3));
       agh.browser.vFx=v;
       agh.browser.vTb=v;
-      
+
       //Thunderbird example:
       //  UserAgent: Mozilla/5.0 (Windows NT 5.1; rv:8.0) Gecko/20111105 Thunderbird/8.0
       //  document.compatMode=null
     }
-    
+
     if((index=ua.indexOf("AppleWebKit"))>=0)
       agh.browser.isWk=true;
   }else{
@@ -593,7 +593,7 @@
         if(Object.prototype.hasOwnProperty.call(obj,"valueOf"))keys.push("valueOf");
         if(Object.prototype.hasOwnProperty.call(obj,"constructor"))keys.push("constructor");
         return keys;
-      }; 
+      };
     }
   }
   if(Object.keys){
@@ -633,7 +633,7 @@
     /// <param name="keys" type="Array|Number">
     /// 配列で指定する場合には、コピーする key の名前の集合をを指定します。
     /// 整数で指定する場合には、コピーする添え字の上限を指定します。-1 を指定した場合には length を参照します。
-    /// オブジェクトで指定する場合には、{コピー先のメンバ名:コピー元のメンバ名, ...} と指定します。 
+    /// オブジェクトで指定する場合には、{コピー先のメンバ名:コピー元のメンバ名, ...} と指定します。
     /// </param>
     /// <returns type="Object" mayBeNull="true">
     /// コピーを完了した場合、コピー先のオブジェクトを返します。
@@ -642,7 +642,7 @@
     //----------------------------------------------------------------------
     if(dst==null)dst={};
     if(keys==null)keys=agh.keys(src);
-    
+
     if(keys instanceof Array){
       for(var i=keys.length-1;i>=0;i--){
         dst[keys[i]]=src[keys[i]];
@@ -718,7 +718,7 @@
     }else{
       agh.XMLHttpRequest=agh.global.XMLHttpRequest;
     }
-    
+
     // [OBSOLETE] 削除予定?
     if(!window.XMLHttpRequest)
       window.XMLHttpRequest=agh.XMLHttpRequest;
@@ -759,7 +759,7 @@
     }
     return null;
   });
-  
+
   agh.BREAK={};
   agh.CONTINUE={};
 
@@ -885,7 +885,7 @@
         if(!func(e,i))arr[w++]=e;
       }
       if(w==i)return arr; // 削除がなかった時
-      
+
       // 後半を詰める
       while(i<arr.length)arr[w++]=arr[i++];
       arr.length=w;
@@ -1059,7 +1059,7 @@
       if(arguments.length>1){
         arr=agh(arguments,Array);
       }
-      
+
       // 転置
       var ret=[];
       var len=agh.Array.max(agh.Array.map(arr,function(a){return a.length;}));
@@ -1159,7 +1159,7 @@
         i=0|from;
         if(i<0)i+=this.length;
       }
-      
+
       for(;i>=0;i--)if(this[i]===value)return i;
       return -1;
     };
@@ -1255,9 +1255,9 @@ agh.memcpy(String.prototype,{
         var iC=(iB+iT)/2;
         var i=this.$indexOf(text,iC);
         if(i>index)i=-1;
-        
+
         if(iB==iC)return i;
-        
+
         if(i<0){
           iT=iC;
         }else{
@@ -1353,7 +1353,7 @@ agh.memcpy(agh.String,{
       className=className.join(" ");
     else
       className=className.toString();
-    
+
     return '<span class="'+agh.Text.Escape(className,"html-attr")+'">'+html+"</span>";
   },
   tag:function(html,tagName){
@@ -1618,7 +1618,7 @@ var resolve_entity=(function(){
   if(agh.browser.vNode){
     return function(name){
       if(name in cache)return cache[name];
-      
+
       var m;
       if((m=(/^&#x([\da-f]+);$|^&#(\d+);$/i).exec(name))){
         var code=parseInt(m[1]?"0x"+m[1]:m[2]);
@@ -1869,7 +1869,7 @@ Function.prototype.get_name=function(){
       // assert(agh.is(main,Function));
       if(this.files[name]=="ready")return;
       this.files[name]="parsed";
-      
+
       var isReady=this.load(files);
       if(main){
         if(isReady){
@@ -1924,9 +1924,9 @@ Function.prototype.get_name=function(){
         }
         this.waiting=proc_wait;
 //#unlock(this.waiting)
-        
+
         if(proc_call.length==0)return;
-        
+
         // 実行
         for(var i=0;i<proc_call.length;i++)
           try{
@@ -2006,7 +2006,7 @@ Function.prototype.get_name=function(){
           throw new Error("agh.scripts.load: unrecognized load target: "+agh(filename,"JSON")+".");
         }
       }
-      
+
       return this.isready(filename);
     }
   };
@@ -2069,7 +2069,7 @@ Function.prototype.get_name=function(){
     var scripts=document.getElementsByTagName("script");
     for(var i=0;i<scripts.length;i++){
       var src=scripts[i].src;
-      
+
       var fname=agh.Text.Url.GetFileName(src);
       var js_ext=".js";
       if(fname.endsWith(".js.gz")){
@@ -2080,7 +2080,7 @@ Function.prototype.get_name=function(){
         js_ext=".jgz";
       }
       if(fname!=THIS_FILE)continue;
-      
+
       agh.scripts.AGH_URLBASE=agh.Text.Url.Directory(src);
       agh.scripts.JGZ_EXTENSION=js_ext;
       break;
@@ -2289,7 +2289,7 @@ Function.prototype.get_name=function(){
         return processKey(e,_char,_meta,_ctrl);
     });
   }
-  
+
 })();
 //------------------------------------------------------------------------------
   agh.scripts.files[THIS_FILE]="ready";
