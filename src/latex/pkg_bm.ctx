@@ -3,6 +3,8 @@
 // Package
 //   \usepackage{bm}
 // ChangeLog
+//   2016-04-02, KM
+//     bugfix: Fixed mismatches of opening tags <tex:f> and closing tags </tex:i>.
 //   2012/12/02, KM
 //     Created, \DeclareBoldSymbol, \bmdefine, \hmdefine, \bm, \hm, \boldsymbol, \heavysymbol
 // References
@@ -21,9 +23,9 @@ agh.memcpy(ns.Modules["core"].ErrorMessages,{
 context "pkg:bm/global" new(){
   function DefineBoldSymbol(doc,weight,name,content){
     if(weight=='bold'){
-      content='<tex:f class="aghtex-mathbm">'+content+'</tex:i>';
+      content='<tex:f class="aghtex-mathbm">'+content+'</tex:f>';
     }else if(weight=='heavy'){
-      content='<tex:f class="aghtex-mathhm">'+content+'</tex:i>';
+      content='<tex:f class="aghtex-mathhm">'+content+'</tex:f>';
     }else{
       doc.currentCtx.output.error(
         "pkg:bm.DefineBoldSymbol.InvalidMathVersion",
@@ -40,21 +42,26 @@ context "pkg:bm/global" new(){
 
     doc.SetMacroHandler(name,new ns.Command2("s@","",content));
   }
-  command f\DeclareBoldSymbol("#[bold]!1#2#mode.math>3"){
-    DefineBoldSymbol(doc,argv[1].trim(),argv[2].trim(),argv[3]);
-  };
-  command f\bmdefine("#1#mode.math>3"){
-    DefineBoldSymbol(doc,'bold',argv[1].trim(),argv[2]);
-  };
-  command f\hmdefine("#1#mode.math>3"){
-    DefineBoldSymbol(doc,'heavy',argv[1].trim(),argv[2]);
-  };
+  _Ctx.DefineCommand({
+    DeclareBoldSymbol:['f;#[bold]!1#2#mode.math>3',function(doc,argv){
+      DefineBoldSymbol(doc,argv[1].trim(),argv[2].trim(),argv[3]);
+    }],
+    bmdefine:['f;#1#mode.math>3',function(doc,argv){
+      DefineBoldSymbol(doc,'bold',argv[1].trim(),argv[2]);
+    }],
+    hmdefine:['f;#1#mode.math>3',function(doc,argv){
+      DefineBoldSymbol(doc,'heavy',argv[1].trim(),argv[2]);
+    }]
+  });
+
 }
 context "pkg:bm/mode.math" new(){
-  command s@\bm("#>1")          '<tex:f class="aghtex-mathbm">#1</tex:i>';
-  command s@\hm("#>1")          '<tex:f class="aghtex-mathhm">#1</tex:i>';
-  command s@\boldsymbol("#>1")  '<tex:f class="aghtex-mathbm">#1</tex:i>';
-  command s@\heavysymbol("#>1") '<tex:f class="aghtex-mathhm">#1</tex:i>';
+  _Ctx.DefineCommand({
+    bm         : ['s@;#>1','<tex:f class="aghtex-mathbm">#1</tex:f>'],
+    hm         : ['s@;#>1','<tex:f class="aghtex-mathhm">#1</tex:f>'],
+    boldsymbol : ['s@;#>1','<tex:f class="aghtex-mathbm">#1</tex:f>'],
+    heavysymbol: ['s@;#>1','<tex:f class="aghtex-mathhm">#1</tex:f>']
+  });
 
   // \bmmax, \hmmax
   //   これはユーザが指定する変数で、
