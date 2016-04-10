@@ -222,8 +222,8 @@
       [0x2b66,[0x02E5,0x02E9]]
     ];
     for(var i=0;i<data.length;i++){
-      jis2004t1_u2[data[0]]=data[1];
-      sjis2004_u2[shift_jis(data[0])]=data[1];
+      jis2004t1_u2[data[i][0]]=data[i][1];
+      sjis2004_u2[shift_jis(data[i][0])]=data[i][1];
     }
   })();
 
@@ -463,7 +463,7 @@
         }else{
           if(mode===20){
             // JIS X 0213:2004 第1面 B2
-            var j1=this.cprev<<8|c
+            var j1=this.cprev<<8|c;
             if(j1 in jis2004t1){
               dst.push(jis2004t1[j1]);
             }else if(j1 in jis2004t1_u2){
@@ -475,7 +475,7 @@
           }else if(mode===30){
             // JIS X 0213:2004 第2面 B2
             // JIS X 0212-1990 補助漢字 B2
-            var j2=this.cprev<<8|c
+            var j2=this.cprev<<8|c;
             if(j2 in jis2004t2){
               dst.push(jis2004t2[j2]);
             }else
