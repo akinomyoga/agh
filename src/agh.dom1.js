@@ -105,7 +105,7 @@ function complement(name,obj){
   /// comlement("Node.prototype.insertAfter",function(){...});
   /// </example>
   var isProp;
-  if(isProp=name.startsWith("P:")){
+  if((isProp=name.startsWith("P:"))){
     name=name.slice(2);
   }
   var names=name.split(".");

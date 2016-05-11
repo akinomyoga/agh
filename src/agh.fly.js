@@ -17,7 +17,7 @@
   var isFx=browser=="Fx";
   var isIE=browser=="IE";
 
-  if(isFx&&!HTMLElement.prototype.innerText){
+  if(isFx&&!('innerText' in HTMLElement.prototype)){
     HTMLElement.prototype.__defineSetter__("innerText",function(value){
       this.textContent=value;
     });
