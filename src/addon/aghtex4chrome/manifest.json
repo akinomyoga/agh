@@ -12,7 +12,7 @@
     "128":"agh.icon.agh_128x128.png"
   },
   "homepage_url":"http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/addon/",
-  "description":"Displays mathematical formulae in GMail, Google Groups and Google Sites",
+  "description":"View LaTeX files in Google Chrome. Also, convert embedded tex codes in Gmail, Google Groups and Google Sites.",
   "web_accessible_resources":[
     "aghtex.css",
     "agh/latex/latex.sf.css",

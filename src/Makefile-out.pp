@@ -10,6 +10,9 @@ endif
 .PHONY: all
 all:
 
+Makefile: ../src/Makefile-out.pp
+	mwg_pp.awk $< > $@
+
 stamp@myoga.web.fc2.com:
 	mkdir $@
 myogaftpfiles:=stamp@myoga.web.fc2.com
@@ -218,9 +221,11 @@ f icons/prog-type.png;
 #%x file.r|%file%|addon/agh.addon.aghtex4chrome.tar.xz|
 #%x file.r|%file%|addon/agh.addon.aghtex4chrome.crx|
 #%x file.r|%file%|addon/agh.addon.aghtex4chrome.xml|
-addon_dist_files+=addon/agh.addon.aghtex4chrome.tar.xz
+addon_dist_files+=addon/agh.addon.aghtex4chrome.tar.xz addon/agh.addon.aghtex4chrome.zip
 addon/agh.addon.aghtex4chrome.tar.xz: addon/agh.addon.aghtex4chrome/manifest.json
 	cd addon && tar cavf agh.addon.aghtex4chrome.tar.xz agh.addon.aghtex4chrome
+addon/agh.addon.aghtex4chrome.zip: addon/agh.addon.aghtex4chrome/manifest.json
+	cd addon/agh.addon.aghtex4chrome && zip -r ../agh.addon.aghtex4chrome.zip *
 
 #%x file.r|%file%|addon/agh.addon.aghtex4thunderbird.tar.xz|
 #%x file.r|%file%|addon/agh.addon.aghtex4thunderbird.xpi|
@@ -264,6 +269,8 @@ addon/agh.addon.aghtex4seahorse.zip: addon/insdir_seahorse/agh.addon.aghtex4seah
 
 .PHONY: addon_dist
 addon_dist: $(addon_dist_files)
+
+all: addon_dist
 
 .PHONY: upload myoga
 upload: $(uploadfiles)
