@@ -93,6 +93,7 @@ agh.scripts.register("agh.dom1.js",["agh.js","event:onload"],function(){
 //		mwg.$E(str)  -> agh(hoge,'E')
 //		mwg.$E(elem) -> agh(hoge)
 //-----------------------------------------------------------------------------
+var agh=this;
 agh.Namespace("document",agh);
 var ns=agh.document;
 //-------------------------------------------------------------------

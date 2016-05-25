@@ -6,6 +6,7 @@
 agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
   // agh.dom1.js の API を組み直し
 
+  var agh=this;
   agh.Namespace('dom',agh);
 
   function _empty(){}
@@ -44,12 +45,12 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
 
   function insertAdjacentHTML(elem,position,html){
     if(elem.insertAdjacentHTML)
-      return elem.insertAdjacentHTML(elem,position,html);
+      return elem.insertAdjacentHTML(position,html);
 
     var range=elem.ownerDocument.createRange();
     range.setStartBefore(elem);
     var frag=range.createContextualFragment(html);
-    return insertAdjacentNode(elem,where,frag);
+    return insertAdjacentNode(elem,position,frag);
 
     // var nodes=elem.ownerDocument.createElement('div');
     // nodes.innerHTML=html;
@@ -74,18 +75,18 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
   }
 
   var insertPositions={
-    beforebegin:'beforebegin',
-    afterbegin:'afterbegin',
-    beforeend:'beforeend',
-    afterend:'afterend',
+    beforebegin:'beforeBegin',
+    afterbegin:'afterBegin',
+    beforeend:'beforeEnd',
+    afterend:'afterEnd',
 
-    before:'beforebegin',
-    begin:'afterbegin',
-    end:'beforeend',
-    after:'afterend'
+    before:'beforeBegin',
+    begin:'afterBegin',
+    end:'beforeEnd',
+    after:'afterEnd'
   };
   agh.dom.insert=function(elem,node,position){
-    position=insertPositions[position]||'beforeend';
+    position=insertPositions[(position||"").toLowerCase()]||'beforeEnd';
 
     if(node!=null){
       if(node.nodeType!=null){
@@ -100,22 +101,24 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
         /// @fn  agh.dom.insert(elem,[...],position)
         ///   指定したノード・HTML の列を指定した位置に挿入します。
         switch(position){
-        case 'beforebegin':case 'beforeend':
+        case 'beforeBegin':case 'beforeEnd':
           for(var i=node.length-1;i>=0;i--)
             agh.dom.insert(elem,node[i],position);
-          break;
+          return true;
         default:
           for(var i=0,iN=node.length;i<iN;i++)
             agh.dom.insert(elem,node[i],position);
-          break;
+          return true;
         }
       }else if('length' in node){
-        agh.dom.insert(elem,position,agh(node,Array));
+        return agh.dom.insert(elem,agh(node,Array),position);
       }
     }
+
+    return null;
   };
   agh.dom.insertText=function(elem,text,position){
-    position=insertPositions[position]||'afterend';
+    position=insertPositions[(position||"").toLowerCase()]||'afterEnd';
     return insertAdjacentText(elem,position,text);
   };
 
@@ -139,7 +142,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
   agh.dom.setInnerText=function(elem,value){
     elem.innerText=value;
   };
-  if(agh.browser.vFx){
+  if(agh.browser.vFx<45){
     agh.dom.getInnerText=function(elem){
       return elem.textContent;
     };
@@ -693,20 +696,20 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
       get:(function(){
         if(agh.browser.vIE){
           if(agh.browser.vIE>=8){
-            return function(elem){return agh.dom.getStyle(elem,'box-sizing')||agh.dom.getStyle(elem,'-ms-box-sizing');}
+            return function(elem){return agh.dom.getStyle(elem,'box-sizing')||agh.dom.getStyle(elem,'-ms-box-sizing');};
           }else if(agh.browser.vIE>=6&&!agh.browser.isQks){
             return function(elem){return 'content-box';};
           }else{
             return function(elem){return 'border-box';};
           }
         }else if(agh.browser.vFx){
-          return function(elem){return agh.dom.getStyle(elem,'box-sizing')||agh.dom.getStyle(elem,'-moz-box-sizing');}
+          return function(elem){return agh.dom.getStyle(elem,'box-sizing')||agh.dom.getStyle(elem,'-moz-box-sizing');};
         }else if(agh.browser.isWk){
-          return function(elem){return agh.dom.getStyle(elem,'box-sizing')||agh.dom.getStyle(elem,'-webkit-box-sizing');}
+          return function(elem){return agh.dom.getStyle(elem,'box-sizing')||agh.dom.getStyle(elem,'-webkit-box-sizing');};
         }else if(agh.browser.vOp){
-          return function(elem){return agh.dom.getStyle(elem,'box-sizing')||agh.dom.getStyle(elem,'-o-box-sizing');}
+          return function(elem){return agh.dom.getStyle(elem,'box-sizing')||agh.dom.getStyle(elem,'-o-box-sizing');};
         }else{
-          return function(elem){return agh.dom.getStyle(elem,'box-sizing');}
+          return function(elem){return agh.dom.getStyle(elem,'box-sizing');};
         }
       })()
     },

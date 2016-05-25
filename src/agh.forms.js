@@ -13,6 +13,7 @@ agh.scripts.register("agh.forms.js",[
   "agh.class.js"
 ],function(){
 //==============================================================================
+var agh=this;
 agh.Namespace("Forms",agh);
 var ns=agh.Forms;
 
