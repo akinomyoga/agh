@@ -31,3 +31,6 @@
 # edit
 /COMMIT
 *~
+
+# local settings
+/Desktop.ini
