@@ -40,6 +40,13 @@ ChangeLog.txt: ChangeLog.htm
 	w3m -T text/html -no-graph $< > $@
 all: ChangeLog.txt
 
+.PHONY: make-tools make-src
+all: make-src
+make-tools:
+	make -C tools all
+make-src: make-tools
+	make -C src all
+
 # --exclude=./$(AGHDIR)/out/stamp@* \
 # --exclude=./$(AGHDIR)/out/addon \
 # --exclude=./$(AGHDIR)/out/*.js \

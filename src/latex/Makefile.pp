@@ -12,6 +12,14 @@ GZJS:=$(MONO) $(BASE)/tools/ext/gzjs.exe
 CTXC:=$(MONO) $(BASE)/tools/out/ctxc.exe
 MWGPP:=$(BASE)/tools/ext/mwg_pp.awk
 
+TTF2EOT   := ttf2eot
+SFNT2WOFF := sfnt2woff
+
+ifeq ($(USER)@$(HOSTNAME),koichi@gauge)
+TTF2EOT:=lib/ttf2eot
+SFNT2WOFF:=lib/sfnt2woff
+endif
+
 all: $(OUTDIR) $(OUTDIR)/.htaccess
 $(OUTDIR):
 	mkdir -p $@
@@ -101,9 +109,9 @@ resources:=$(resources)      \
 $(OUTDIR)/%fontname%.ttf: res/%fontname%.ttf
 	cp -p $< $@
 $(OUTDIR)/%fontname%.eot: res/%fontname%.ttf
-	lib/ttf2eot $< > $@
+	$(TTF2EOT) $< > $@
 $(OUTDIR)/%fontname%.woff: res/%fontname%.ttf
-	lib/sfnt2woff $<
+	$(SFNT2WOFF) $<
 	mv res/%fontname%.woff $(OUTDIR)
 #%)
 #%define RegisterAgehaFont (
@@ -114,9 +122,9 @@ resources:=$(resources)      \
 $(OUTDIR)/%fontname%.ttf: $(AgehaFontsDir)/%fontname%.ttf
 	cp -p $< $@
 $(OUTDIR)/%fontname%.eot: $(AgehaFontsDir)/%fontname%.ttf
-	lib/ttf2eot $< > $@
+	$(TTF2EOT) $< > $@
 $(OUTDIR)/%fontname%.woff: $(AgehaFontsDir)/%fontname%.ttf
-	lib/sfnt2woff $<
+	$(SFNT2WOFF) $<
 	mv $(AgehaFontsDir)/%fontname%.woff $(OUTDIR)
 #%)
 #%expand RegisterAgehaFont.r|%fontname%|aghtex_mathit|
