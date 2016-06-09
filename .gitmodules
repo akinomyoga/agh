@@ -1,0 +1,3 @@
+[submodule "src/latex/aghfonts"]
+	path = src/latex/aghfonts
+	url = git@github.com:akinomyoga/aghfonts.git
