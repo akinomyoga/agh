@@ -1,24 +1,29 @@
 # -*- mode:makefile-gmake -*-
 
-OUTDIR:=../../out
+BASE=../..
+OUTDIR:=$(BASE)/out
 
-#%define compress_js
+MONO:=$(shell bash -c 'type -p mono')
+GZJS:=$(MONO) $(BASE)/tools/ext/gzjs.exe
+MWGPP:=$(BASE)/tools/ext/mwg_pp.awk
+
+#%m compress_js
 jsfiles+=$(OUTDIR)/%name%.js $(OUTDIR)/%name%.js.gz $(OUTDIR)/%name%.jgz
 $(OUTDIR)/%name%.js.gz: $(OUTDIR)/%name%.js
-	gzjs $<
+	$(GZJS) $<
 $(OUTDIR)/%name%.jgz: $(OUTDIR)/%name%.js.gz
 	cp $< $@
-#%define end
+#%end
 
 all:
 .PHONY:
 
 Makefile: Makefile.pp
-	mwg_pp.awk $< > $@
+	$(MWGPP) $< > $@
 
-#%expand compress_js.r|%name%|agh.text.encode|
+#%x compress_js.r|%name%|agh.text.encode|
 $(OUTDIR)/agh.text.encode.js: main.pp gencat.js enc_uni.js enc_jis.js test.js
-	mwg_pp.awk $< > $@
+	$(MWGPP) $< > $@
 gencat.js: /home/koichi/prog/mat/unicode/gencat.js
 	cp -p $< $@
 

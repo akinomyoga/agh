@@ -26,7 +26,8 @@
 /src/addon/aghtex4thunderbird/mat
 /src/agh.text.encode/Makefile
 /src/agh.text.encode/mat
-/tools/*.exe
+
+/tools/out
 
 # edit
 /COMMIT
