@@ -1,18 +1,33 @@
 # Makefile
 
-KCHBIN=$(shell cygpath -u c:/usr/koichi/bin)
+include csc_default.mk
 
-all: csscompat.exe ctxc.exe reptxt.exe
-
+all: csscompat.exe
 csscompat.exe: csscompat.cs
-	csc '-r:System.dll' $<
+	$(CSC) $(CSFLAGS) $<
 
+all: ctxc.exe
 ctxc.exe: ctxc.frame.js ctxc.cs
-	csc -r:'System.dll' /res:ctxc.frame.js ctxc.cs
+	$(CSC) $(CSFLAGS) -res:ctxc.frame.js ctxc.cs
 
+all: gzjs.exe
 gzjs.exe:
 	make -C gzjs
 
+all: reptxt.exe
 reptxt.exe: reptxt.cs
-	csc -r:'System.dll' $<
-	cp reptxt.exe $(KCHBIN)
+	$(CSC) $(CSFLAGS) $<
+
+#------------------------------------------------------------------------------
+# on koichi@gauge
+
+ifeq ($(USER)@$(HOSTNAME)/$(OSTYPE),koichi@gauge/win)
+
+KCHBIN:=$(shell cygpath -u c:/usr/koichi/bin)
+all: $(KCHBIN)/reptxt.exe
+$(KCHBIN)/reptxt.exe: reptxt.exe
+	cp $< $@
+
+endif
+
+#------------------------------------------------------------------------------
