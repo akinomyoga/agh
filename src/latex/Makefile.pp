@@ -3,12 +3,14 @@
 all:
 .PHONY: all
 
-TOOLS=../../tools
-CTXC:=$(TOOLS)/ctxc.sh
-OUTDIR=../../out/latex
-DOCDIR=../../doc/latex
+BASE=../..
+OUTDIR=$(BASE)/out/latex
+DOCDIR=$(BASE)/doc/latex
 
-MWGPP:=mwg_pp.awk
+MONO:=$(shell bash -c 'type -p mono')
+GZJS:=$(MONO) $(BASE)/tools/ext/gzjs.exe
+CTXC:=$(MONO) $(BASE)/tools/out/ctxc.exe
+MWGPP:=$(BASE)/tools/ext/mwg_pp.awk
 
 all: $(OUTDIR) $(OUTDIR)/.htaccess
 $(OUTDIR):
@@ -39,15 +41,18 @@ $(OUTDIR)/latex.ie.css: latex.pp.css
 #%define add_js
 jsfiles:=$(jsfiles) $(OUTDIR)/%name%.js
 $(OUTDIR)/%name%.js.gz: $(OUTDIR)/%name%.js
-	$(TOOLS)/gzjs.sh $<
+	$(GZJS) $<
 $(OUTDIR)/%name%.jgz: $(OUTDIR)/%name%.js.gz
 	cp $< $@
 #%define end
 #-------------------------------------------------------------------------------
 
+.gen:
+	mkdir -p $@
+
 #%m aghtex::Module (
 modules+=.gen/%name%.js
-.gen/%name%.ctx: %name%.ctx
+.gen/%name%.ctx: %name%.ctx | .gen
 	cp -p $< $@ 
 .gen/%name%.js: .gen/%name%.ctx
 	$(CTXC) -p -o$@ $<
@@ -62,7 +67,7 @@ modules+=.gen/%name%.js
 #%x aghtex::Module.r/%name%/mod_list/
 modules+=.gen/mod_ref.js
 .gen/mod_ref.ctx: mod_ref.ctx
-	mwg_pp.awk $< > $@
+	$(MWGPP) $< > $@
 .gen/mod_ref.js: .gen/mod_ref.ctx
 	$(CTXC) -p -o$@ $<
 #%x aghtex::Module.r/%name%/mod_array/

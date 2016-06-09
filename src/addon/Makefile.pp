@@ -1,6 +1,8 @@
 # -*- Makefile -*-
 
-OUTDIR:=../../out
+BASE=../..
+OUTDIR:=$(BASE)/out
+MWGPP:=$(BASE)/tools/ext/mwg_pp.awk
 
 .PHONY: all
 all: $(OUTDIR)/addon $(OUTDIR)/addon/index.html \
@@ -11,7 +13,7 @@ all: $(OUTDIR)/addon $(OUTDIR)/addon/index.html \
 	aghtex4seahorse
 
 Makefile: Makefile.pp
-	mwg_pp.awk $< > $@
+	$(MWGPP) $< > $@
 
 .PHONY: upload
 upload: aghtex4gmail.htm

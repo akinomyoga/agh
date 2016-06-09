@@ -1,13 +1,18 @@
 # -*- Makefile -*-
 
-DOCDIR:=../../doc/agh.lang.ps
-OUTDIR:=../../out
+BASE=../..
+DOCDIR:=$(BASE)/doc/agh.lang.ps
+OUTDIR:=$(BASE)/out
+
+MONO:=$(shell bash -c 'type -p mono')
+GZJS:=$(MONO) $(BASE)/tools/ext/gzjs.exe
+MWGPP:=$(BASE)/tools/ext/mwg_pp.awk
 
 .PHONY: all jsfiles doc
 all: jsfiles
 
 Makefile: Makefile.pp
-	mwg_pp.awk $< > $@
+	$(MWGPP) $< > $@
 
 #------------------------------------------------------------------------------
 #  jsfiles
@@ -23,11 +28,11 @@ agh_lang_ps_source:= \
   agh.lang.ps-cmd.js
 
 jsfiles:=$(jsfiles) $(OUTDIR)/agh.lang.ps.js $(OUTDIR)/agh.lang.ps.js.gz $(OUTDIR)/agh.lang.ps.jgz
-$(OUTDIR)/agh.lang.ps.js: $(agh_lang_ps_source)
-	mwg_pp.awk $< > $@
-$(OUTDIR)/agh.lang.ps.js.gz: $(OUTDIR)/agh.lang.ps.js
-	gzjs $<
-$(OUTDIR)/agh.lang.ps.jgz: $(OUTDIR)/agh.lang.ps.js.gz
+$(OUTDIR)/agh.lang.ps.js: $(agh_lang_ps_source) | $(OUTDIR)
+	$(MWGPP) $< > $@
+$(OUTDIR)/agh.lang.ps.js.gz: $(OUTDIR)/agh.lang.ps.js | $(OUTDIR)
+	$(GZJS) -o $@ $<
+$(OUTDIR)/agh.lang.ps.jgz: $(OUTDIR)/agh.lang.ps.js.gz | $(OUTDIR)
 	cp $< $@
 
 jsfiles: $(jsfiles)

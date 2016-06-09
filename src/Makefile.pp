@@ -1,14 +1,21 @@
 # Makefile -*- Makefile -*-
 
-OUTDIR=../out
+all:
+.PHONY: all
+
+BASE=..
+OUTDIR=$(BASE)/out
+
+MONO:=$(shell bash -c 'type -p mono')
+GZJS:=$(MONO) $(BASE)/tools/ext/gzjs.exe
+MWGPP:=PPC_CPP=1 $(BASE)/tools/ext/mwg_pp.awk
 
 all: directory jsfiles jgzfiles copy_file
-.PHONY: all upload
 
+.PHONY: upload
 upload:
 	make -C ../out upload
 
-MWGPP:=PPC_CPP=1 mwg_pp.awk
 Makefile: Makefile.pp
 	$(MWGPP) $< > $@
 
@@ -16,9 +23,9 @@ all: $(OUTDIR)/Makefile
 $(OUTDIR)/Makefile: Makefile-out.pp
 	test -d '$(OUTDIR)' || mkdir -p $(OUTDIR) && $(MWGPP) $< > $@
 
+.PHONY: jsdoc
 jsdoc:
 	jsdoc -d ../out/jsdoc agh.js
-.PHONY: jsdoc
 #-------------------------------------------------------------------------------
 # .js files
 #-------------------------------------------------------------------------------
@@ -27,7 +34,7 @@ jsfiles+=$(OUTDIR)/%name%.js
 $(OUTDIR)/%name%.js: %name%.js
 	cp $< $@
 $(OUTDIR)/%name%.js.gz: $(OUTDIR)/%name%.js
-	gzjs -o $@ $<
+	$(GZJS) -o $@ $<
 $(OUTDIR)/%name%.jgz: $(OUTDIR)/%name%.js.gz
 	cp $< $@
 #%end
@@ -36,7 +43,7 @@ jsfiles+=$(OUTDIR)/%name%.js
 $(OUTDIR)/%name%.js: %from%
 	cp $< $@
 $(OUTDIR)/%name%.js.gz: $(OUTDIR)/%name%.js
-	gzjs -o $@ $<
+	$(GZJS) -o $@ $<
 $(OUTDIR)/%name%.jgz: $(OUTDIR)/%name%.js.gz
 	cp $< $@
 #%)
@@ -47,7 +54,7 @@ jsfiles+=$(OUTDIR)/%file%
 $(OUTDIR)/${name}.js: ${name}.js %depends%
 	$(MWGPP) $< > $@
 $(OUTDIR)/${name}.js.gz: $(OUTDIR)/${name}.js
-	gzjs -o $@ $<
+	$(GZJS) -o $@ $<
 $(OUTDIR)/${name}.jgz: $(OUTDIR)/${name}.js.gz
 	cp $< $@
 ##%).i
