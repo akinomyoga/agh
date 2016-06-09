@@ -172,6 +172,8 @@ i prog-type.png
 #%expand simple_copy_file.r|%filename%|agh.forms.plus.png|
 #%expand simple_copy_file.r|%filename%|agh.forms.minus.png|
 
+#-------------------------------------------------------------------------------
+
 .PHONY: directory
 directory: $(directory)
 .PHONY: jsfiles
@@ -179,3 +181,28 @@ jsfiles: $(jsfiles)
 jgzfiles: $(jsfiles:.js=.js.gz) $(jsfiles:.js=.jgz)
 .PHONY: copy_file
 copy_file: $(copy_file)
+
+#-------------------------------------------------------------------------------
+# subdirectories
+#-------------------------------------------------------------------------------
+
+.PHONY: make-latex
+all: make-latex
+make-latex:
+	make -C latex
+
+.PHONY: make-addon
+all: make-addon
+make-addon:
+	make -C addon
+
+.PHONY: make-ps
+all: make-ps
+make-ps:
+	make -C agh.lang.ps
+
+.PHONY: make-encode
+all: make-encode
+make-encode:
+	make -C agh.text.encode
+

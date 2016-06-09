@@ -26,7 +26,9 @@ all: $(OUTDIR)/reptxt.exe
 $(OUTDIR)/reptxt.exe: reptxt.cs | $(OUTDIR)
 	$(CSC) $(CSFLAGS) '-out:$@' $<
 
+.PHONY: make-unidata
 all: make-unidata
+make-unidata:
 	make -C ext/unidata
 
 #------------------------------------------------------------------------------
