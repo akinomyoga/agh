@@ -1,16 +1,20 @@
-# -*- Makefile -*-
+# -*- mode: makefile-gmake -*-
+
+all:
+.PHONY: all
 
 BASE=../..
 OUTDIR:=$(BASE)/out
 MWGPP:=$(BASE)/tools/ext/mwg_pp.awk
 
-.PHONY: all
-all: $(OUTDIR)/addon $(OUTDIR)/addon/index.html \
-	aghtex4chrome \
-	aghtex4thunderbird \
-	aghtex4firefox \
-	aghtex4ie \
-	aghtex4seahorse
+OSTYPE:=$(shell bash -c 'case "$$OSTYPE" in (cygwin*|win*) echo win;; (*) echo "$$OSTYPE";; esac')
+
+all: $(OUTDIR)/addon $(OUTDIR)/addon/index.html
+all: aghtex4chrome
+all: aghtex4thunderbird aghtex4firefox aghtex4seahorse
+ifeq ($(OSTYPE),win)
+all: aghtex4ie
+endif
 
 Makefile: Makefile.pp
 	$(MWGPP) $< > $@
@@ -122,14 +126,17 @@ aghtex4chrome: $(aghtex4chrome_files)
 #------------------------------------------------------------------------------
 MWGTEX4TB_ID:=agh.addon.aghtex4thunderbird@kch.murase
 MWGTEX4TB_OUTDIR:=$(OUTDIR)/addon/$(MWGTEX4TB_ID)
-MWGTEX4TB_EXTDIR:=$(HOME)/User/AppData/Thunderbird/Profiles/15p01skq.temporary/extensions
 
 aghtex4thunderbird_files:=$(MWGTEX4TB_OUTDIR)
 $(MWGTEX4TB_OUTDIR):
 	mkdir -p $@
+
+ifeq ($(USER)@$(HOSTNAME),koichi@gauge)
+MWGTEX4TB_EXTDIR:=$(HOME)/User/AppData/Thunderbird/Profiles/15p01skq.temporary/extensions
 aghtex4thunderbird_files:=$(aghtex4thunderbird_files) $(MWGTEX4TB_EXTDIR)/$(MWGTEX4TB_ID)
 $(MWGTEX4TB_EXTDIR)/$(MWGTEX4TB_ID):
 	cygpath -w "$(MWGTEX4TB_OUTDIR)" > $@
+endif
 
 #..............................................................................
 # install.rdf, update.xml
@@ -216,15 +223,17 @@ aghtex4thunderbird: $(aghtex4thunderbird_files)
 #------------------------------------------------------------------------------
 MWGTEX4FX_ID:=agh.addon.aghtex4firefox@kch.murase
 MWGTEX4FX_OUTDIR:=$(OUTDIR)/addon/$(MWGTEX4FX_ID)
-MWGTEX4FX_EXTDIR:=$(HOME)/User/AppData/Mozilla/Firefox/Profiles/v2mkqyju.default/extensions
 
 aghtex4firefox_files:=$(MWGTEX4FX_OUTDIR)
 $(MWGTEX4FX_OUTDIR):
 	mkdir -p $@
+
+ifeq ($(USER)@$(HOSTNAME),koichi@gauge)
+MWGTEX4FX_EXTDIR:=$(HOME)/User/AppData/Mozilla/Firefox/Profiles/v2mkqyju.default/extensions
 aghtex4firefox_files+=$(MWGTEX4FX_EXTDIR)/$(MWGTEX4FX_ID)
 $(MWGTEX4FX_EXTDIR)/$(MWGTEX4FX_ID):
 	cygpath -w "$(MWGTEX4FX_OUTDIR)" > $@
-
+endif
 #..............................................................................
 # install.rdf, update.xml
 aghtex4firefox_files+=$(subst @kch.murase,,$(MWGTEX4FX_OUTDIR)).xml
