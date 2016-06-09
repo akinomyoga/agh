@@ -1,3 +1,4 @@
+// -*- coding:utf-8 -*-
 using Gen=System.Collections.Generic;
 
 class Deflator{
@@ -1644,8 +1645,8 @@ class Deflator{
 		return ToEncode85String(data);
 	}
 
-  // “Æ©‚Ì85•¶š•„†‰»B
-  // •¶š(0x40-0x7D ’A‚µ 0x52 ‚ğœ‚­)‚Æ”š(0-84)‚Ì‘Î‰‚ÍˆÈ‰º‚Å—^‚¦‚ç‚ê‚éB
+  // ç‹¬è‡ªã®85æ–‡å­—ç¬¦å·åŒ–ã€‚
+  // æ–‡å­—(0x40-0x7D ä½†ã— 0x52 ã‚’é™¤ã)ã¨æ•°å­—(0-84)ã®å¯¾å¿œã¯ä»¥ä¸‹ã§ä¸ãˆã‚‰ã‚Œã‚‹ã€‚
   //   i85=c-'\x28';if(i85==85)i85=52;
   public static string ToEncode85String(byte[] arr){
     System.Text.StringBuilder b=new System.Text.StringBuilder();
@@ -1691,11 +1692,11 @@ class Deflator{
 [afh.Tester.TestTarget]
 public static class TestJsDeflate{
 	public static void testDeflateString(afh.Application.Log log){
-		string input="Š´‚¶‚Ì¬‚¶‚Á‚½•¶Í\n‰¼–¼Š¿šŒğ‚¶‚è";
+		string input="æ„Ÿã˜ã®æ··ã˜ã£ãŸæ–‡ç« \nä»®åæ¼¢å­—äº¤ã˜ã‚Š";
 		log.DumpString(input);
 		string compressed=Deflator.DeflateToBase64String(input,9);
 
-		// s•ªŠ„
+		// è¡Œåˆ†å‰²
 		System.Text.StringBuilder b=new System.Text.StringBuilder();
 		const int C_WIDTH=128;
 		for(int i=0;i<compressed.Length;i+=C_WIDTH){

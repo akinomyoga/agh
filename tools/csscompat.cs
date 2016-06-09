@@ -1,3 +1,4 @@
+// -*- coding:utf-8 -*-
 using Rgx=System.Text.RegularExpressions;
 using Gen=System.Collections.Generic;
 
@@ -5,7 +6,7 @@ public static class Program{
 	public static void Main(string[] args){
 		Setting s=new Setting(args);
 		if(s.InputFile==null){
-			System.Console.WriteLine("! —LŒø‚È“ü—Íƒtƒ@ƒCƒ‹‚ªw’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñBI—¹‚µ‚Ü‚·B");
+			System.Console.WriteLine("! æœ‰åŠ¹ãªå…¥åŠ›ãƒ•ã‚¡ã‚¤ãƒ«ãŒæŒ‡å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚çµ‚äº†ã—ã¾ã™ã€‚");
 			return;
 		}
 
@@ -31,14 +32,14 @@ public static class Program{
 
 		string outputfile=s.InputFileWithoutExtension+extensions[renderer];
 		System.IO.File.WriteAllText(outputfile,compat_content,System.Text.Encoding.UTF8);
-		System.Console.WriteLine(". '{0}' ‚Éo—Í‚ğ‚µ‚Ü‚µ‚½B",outputfile);
+		System.Console.WriteLine(". '{0}' ã«å‡ºåŠ›ã‚’ã—ã¾ã—ãŸã€‚",outputfile);
 	}
 
 	const string rex_0braces	=@"(?:"+rex_nobrace+@")+";
 	const string rex_1braces	=@"(?:"+rex_0braces+@"|\{"+rex_0braces+@"\})+";
 
 	const string rex_quotedstr	=@"""(?:[^""\\]|\\.)*""|'(?:[^'\\]|\\.)*'";
-	const string rex_comment	=@"\/\*(?!\#)(?:[^\*]|\*(?!\/))+\*\/"; // /*# .. */ ˆÈŠO‚ÌƒRƒƒ“ƒg
+	const string rex_comment	=@"\/\*(?!\#)(?:[^\*]|\*(?!\/))+\*\/"; // /*# .. */ ä»¥å¤–ã®ã‚³ãƒ¡ãƒ³ãƒˆ
 	const string rex_nobrace	=@"[^\{\}'""\/]|\/(?!\*)|"+rex_quotedstr+"|"+rex_comment;
 	const string rex_braces		=@"(?:"+rex_nobrace+@"|(?'start'\{)|(?'end-start'\}))*?(?=\})(?(start)(?!))";
 	const string rex_compat_h	=@"\/\*\#compat\:(?<renderer>[\w\|]+)\#\*\/";
@@ -65,47 +66,47 @@ public static class Program{
 	public static void ShowHelp(){
 		System.Console.WriteLine(@"
 ===============================================================================
-        ƒuƒ‰ƒEƒUŒİŠ·•Ê CSS ¶¬Ší                     copyright 2009, K. Murase
+        ãƒ–ãƒ©ã‚¦ã‚¶äº’æ›åˆ¥ CSS ç”Ÿæˆå™¨                     copyright 2009, K. Murase
 ===============================================================================
-ƒuƒ‰ƒEƒU•Ê‚É CSS ‚ğ—pˆÓ‚µ‚½‚¢‚É•¡”‹Lq‚·‚é‚Ì‚Í–Ê“|‚­‚³‚¢B‚È‚Ì‚ÅAˆê‚Â‚Ì css
-ƒtƒ@ƒCƒ‹‚Ì’†‚É“Z‚ß‚Ä‹Lq‚ğs‚Á‚Äd•‘‚¢A‚»‚ÌŒã‚Å•¡”¶¬‚·‚éB‚»‚Ìˆ×‚Ì•¨B
+ãƒ–ãƒ©ã‚¦ã‚¶åˆ¥ã« CSS ã‚’ç”¨æ„ã—ãŸã„æ™‚ã«è¤‡æ•°è¨˜è¿°ã™ã‚‹ã®ã¯é¢å€’ãã•ã„ã€‚ãªã®ã§ã€ä¸€ã¤ã® css
+ãƒ•ã‚¡ã‚¤ãƒ«ã®ä¸­ã«çºã‚ã¦è¨˜è¿°ã‚’è¡Œã£ã¦ä»•èˆã„ã€ãã®å¾Œã§è¤‡æ•°ç”Ÿæˆã™ã‚‹ã€‚ãã®ç‚ºã®ç‰©ã€‚
 
-à–¾)
+èª¬æ˜)
 
-¥ g‚¢•û
-  >csscompat <css ƒtƒ@ƒCƒ‹–¼:sample.css>
+â–¼ ä½¿ã„æ–¹
+  >csscompat <css ãƒ•ã‚¡ã‚¤ãƒ«å:sample.css>
 
-utf-8 ‚Å•Û‘¶‚³‚ê‚½ sample.css ‚©‚çA
-Esample.ie.css /* for Trident */
-Esample.fx.css /* for Gecko */
-Esample.sf.css /* for WebKit */
-‚ÌO‚Â‚Ìƒtƒ@ƒCƒ‹‚ğo—Í‚µ‚Ü‚·B
+utf-8 ã§ä¿å­˜ã•ã‚ŒãŸ sample.css ã‹ã‚‰ã€
+ãƒ»sample.ie.css /* for Trident */
+ãƒ»sample.fx.css /* for Gecko */
+ãƒ»sample.sf.css /* for WebKit */
+ã®ä¸‰ã¤ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‡ºåŠ›ã—ã¾ã™ã€‚
 
-¥ “Z‚ß‚Ä‹Lq‚ğs‚¤ css ‚Ì‘‚«•û (—á)
+â–¼ çºã‚ã¦è¨˜è¿°ã‚’è¡Œã† css ã®æ›¸ãæ–¹ (ä¾‹)
 ----------------------------------------------------
   @compat(gecko){
-     /* Firefox —p‚Ìƒtƒ@ƒCƒ‹‚É‚¾‚¯o—Í‚·‚é•”•ª */
+     /* Firefox ç”¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã«ã ã‘å‡ºåŠ›ã™ã‚‹éƒ¨åˆ† */
      toge{toge:toge;}
      ...
   }
 
-  /* ‹¤’Ê•”•ª */
+  /* å…±é€šéƒ¨åˆ† */
   hoge{hoge:hoge;}
   ...
 
   @compat(trident){
-    /* IE —p‚Ìƒtƒ@ƒCƒ‹‚É‚¾‚¯o—Í */
+    /* IE ç”¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã«ã ã‘å‡ºåŠ› */
     hone{hone:hone;}
     ...
   }
 
   @compat(webkit){
-    /* WebKit —p‚Ìƒtƒ@ƒCƒ‹‚É‚¾‚¯o—Í */
+    /* WebKit ç”¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã«ã ã‘å‡ºåŠ› */
     koge{koge:koge;}
     ...
   }
 ----------------------------------------------------
-                                                                             ¡
+                                                                             â– 
 ");
 	}
 }
@@ -113,20 +114,20 @@ utf-8 ‚Å•Û‘¶‚³‚ê‚½ sample.css ‚©‚çA
 public class Setting{
 	private string directory="";
 	/// <summary>
-	/// “ü—Íƒtƒ@ƒCƒ‹‚ÌƒpƒX‚ğ•Û‚µ‚Ü‚·B
+	/// å…¥åŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã‚’ä¿æŒã—ã¾ã™ã€‚
 	/// </summary>
 	private string input=null;
 	/// <summary>
-	/// “ü—Íƒtƒ@ƒCƒ‹‚ÌƒpƒX‚ğæ“¾–”‚Íİ’è‚µ‚Ü‚·B
+	/// å…¥åŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã‚’å–å¾—åˆã¯è¨­å®šã—ã¾ã™ã€‚
 	/// </summary>
 	public string InputFile{
 		get{return this.input;}
 		set{
 			if(!System.IO.File.Exists(value)){
-				System.Console.WriteLine("setting> ƒtƒ@ƒCƒ‹ '{0}' ‚Í‘¶İ‚µ‚Ü‚¹‚ñB",value);
+				System.Console.WriteLine("setting> ãƒ•ã‚¡ã‚¤ãƒ« '{0}' ã¯å­˜åœ¨ã—ã¾ã›ã‚“ã€‚",value);
 				value+=".css";
 				if(!System.IO.File.Exists(value))return;
-				System.Console.WriteLine("setting> ƒtƒ@ƒCƒ‹ '{0}' ‚Æ‰ğß‚µ‚Ü‚·B",value);
+				System.Console.WriteLine("setting> ãƒ•ã‚¡ã‚¤ãƒ« '{0}' ã¨è§£é‡ˆã—ã¾ã™ã€‚",value);
 			}
 
 			this.input=value;
@@ -140,7 +141,7 @@ public class Setting{
 		}
 	}
 	/// <summary>
-	/// w’è‚µ‚½ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“ˆø”‚ğg—p‚µ‚Ä Setting ‚Ì‰Šú‰»‚ğÀs‚µ‚Ü‚·B
+	/// æŒ‡å®šã—ãŸã‚³ãƒãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³å¼•æ•°ã‚’ä½¿ç”¨ã—ã¦ Setting ã®åˆæœŸåŒ–ã‚’å®Ÿè¡Œã—ã¾ã™ã€‚
 	/// </summary>
 	/// <param name="args"></param>
 	public Setting(string[] args){
@@ -154,7 +155,7 @@ public class Setting{
 						Program.ShowHelp();
 						break;
 					default:
-						System.Console.WriteLine("setting> ƒIƒvƒVƒ‡ƒ“ -{0} ‚Í”F¯‚Å‚«‚Ü‚¹‚ñB",arg);
+						System.Console.WriteLine("setting> ã‚ªãƒ—ã‚·ãƒ§ãƒ³ -{0} ã¯èªè­˜ã§ãã¾ã›ã‚“ã€‚",arg);
 						break;
 				}
 			}else{

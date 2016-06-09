@@ -1,3 +1,4 @@
+// -*- coding:utf-8 -*-
 #define REPL_INTEG
 using Rgx=System.Text.RegularExpressions;
 using Diag=System.Diagnostics;
@@ -50,7 +51,7 @@ public static class Program{
       return;
     }
 
-    // Šeƒtƒ@ƒCƒ‹‚É‘Î‚·‚éˆ—
+    // å„ãƒ•ã‚¡ã‚¤ãƒ«ã«å¯¾ã™ã‚‹å‡¦ç†
     System.Text.StringBuilder bcontent=new System.Text.StringBuilder();
     foreach(string file in cmdline.FileNames){
       string content1=System.IO.File.ReadAllText(file,System.Text.Encoding.UTF8);
@@ -63,7 +64,7 @@ public static class Program{
       bcontent.Append(content1);
     }
 
-    // ‘S‘Ì‚É‘Î‚·‚éˆ—
+    // å…¨ä½“ã«å¯¾ã™ã‚‹å‡¦ç†
     string content=bcontent.ToString();
     if(cmdline.IsSfx85)
       content=Trans.CreateSfx85(content);
@@ -72,7 +73,7 @@ public static class Program{
 
     content=content.Replace("\r\n","\n");
 
-    // ‘
+    // æ›¸è¾¼
     if(cmdline.IsGzipCompress){
       string gzfile=cmdline.OutputFile;
       if(cmdline.OutputFile=="-"){
@@ -81,7 +82,7 @@ public static class Program{
       }else
         IO.SaveAsGzipFile(gzfile,content);
 
-      // <gzip.exe ‚ğg‚¤ê‡>
+      // <gzip.exe ã‚’ä½¿ã†å ´åˆ>
       // string tempfile=System.IO.Path.Combine(IO.path_temp,System.IO.Path.GetFileName(cmdline.OutputFile));
       // writeFile(tempfile,content);
       // string gzfile=cmdline.OutputFile+".gz";
@@ -102,12 +103,12 @@ public static class Program{
   }
 
   private static void writeFile(string fname,string content){
-    // ŠÖ” System.IO.File.WriteAllText ‚ÍA
-    // System.Text.Encoding.UTF8 ‚ğ–¾¦“I‚Éw’è‚·‚é‚Æ BOM ‚ ‚è‚É‚È‚éBŠù’è‚Å‚ÍBOM‚È‚µutf-8B
+    // é–¢æ•° System.IO.File.WriteAllText ã¯ã€
+    // System.Text.Encoding.UTF8 ã‚’æ˜ç¤ºçš„ã«æŒ‡å®šã™ã‚‹ã¨ BOM ã‚ã‚Šã«ãªã‚‹ã€‚æ—¢å®šã§ã¯BOMãªã—utf-8ã€‚
 
-    //System.IO.File.WriteAllText(fname,content); // BOM ‚È‚µ
-    //System.IO.File.WriteAllText(fname,content,System.Text.Encoding.UTF8); // BOM‚ ‚è
-    System.IO.File.WriteAllText(fname,content,new System.Text.UTF8Encoding(false)); // BOM ‚È‚µ
+    //System.IO.File.WriteAllText(fname,content); // BOM ãªã—
+    //System.IO.File.WriteAllText(fname,content,System.Text.Encoding.UTF8); // BOMã‚ã‚Š
+    System.IO.File.WriteAllText(fname,content,new System.Text.UTF8Encoding(false)); // BOM ãªã—
   }
 
   internal static string Include(string filename,Argument args){
@@ -118,8 +119,8 @@ public static class Program{
     if(!System.IO.File.Exists(fname)){
       fname=fname0;
       if(!System.IO.File.Exists(fname)){
-        args.WriteLine("#> '"+fname0+"' ‚È‚éƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB");
-        args.WriteLine("#> include ‚Í’†~‚³‚ê‚Ü‚·B");
+        args.WriteLine("#> '"+fname0+"' ãªã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚");
+        args.WriteLine("#> include ã¯ä¸­æ­¢ã•ã‚Œã¾ã™ã€‚");
         return null;
       }
     }
@@ -151,7 +152,7 @@ public class Argument{
     get{return this.filenames;}
   }
 
-  string firstFile=null; // ‰‚ß‚Ì“ü—Íƒtƒ@ƒCƒ‹–¼ (Šù’è‚Ì outfile ‚ğŒˆ’è‚·‚é‚Ì‚Ég—p)
+  string firstFile=null; // åˆã‚ã®å…¥åŠ›ãƒ•ã‚¡ã‚¤ãƒ«å (æ—¢å®šã® outfile ã‚’æ±ºå®šã™ã‚‹ã®ã«ä½¿ç”¨)
   string outfile=null;
   public string OutputFile{
     get{
@@ -186,7 +187,7 @@ public class Argument{
   }
 
   public void WriteLine(string format,params object[] va){
-    // •W€o—Í‚ÉŒ‹‰Ê‚ğ“f‚­ê‡‚ÍAƒƒbƒZ[ƒW‚Í•W€ƒGƒ‰[‚ÖB
+    // æ¨™æº–å‡ºåŠ›ã«çµæœã‚’åãå ´åˆã¯ã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã¯æ¨™æº–ã‚¨ãƒ©ãƒ¼ã¸ã€‚
     if(this.OutputsStdout)
       System.Console.Error.WriteLine(format,va);
     else
@@ -194,7 +195,7 @@ public class Argument{
   }
 
   //------------------------------------------------------------
-  //  ˆ³k‚Ìí—Ş
+  //  åœ§ç¸®ã®ç¨®é¡
   //------------------------------------------------------------
   private bool flag_gz=true;
   public bool IsGzipCompress{
@@ -223,7 +224,7 @@ public class Argument{
     get{return this.comment;}
   }
   //============================================================
-  //  ‰Šú‰»
+  //  åˆæœŸåŒ–
   //============================================================
   public Argument(string filename){
     this.flag_gz=false;
@@ -250,7 +251,7 @@ public class Argument{
   }
 
   /// <summary>
-  /// ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“ˆø”‚©‚ç‰Šú‰»‚ğÀs‚µ‚Ü‚·B
+  /// ã‚³ãƒãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³å¼•æ•°ã‹ã‚‰åˆæœŸåŒ–ã‚’å®Ÿè¡Œã—ã¾ã™ã€‚
   /// </summary>
   /// <param name="args"></param>
   public Argument(string[] args){
@@ -414,7 +415,7 @@ Directrives in the input files
 
 public static class Trans{
   /// <summary>
-  /// #gzjs-replace(before,after) ‚Ìˆ—‚ğÀs‚·‚éƒNƒ‰ƒX‚Å‚·B
+  /// #gzjs-replace(before,after) ã®å‡¦ç†ã‚’å®Ÿè¡Œã™ã‚‹ã‚¯ãƒ©ã‚¹ã§ã™ã€‚
   /// </summary>
   class ReplaceData{
     Rgx::Regex reg;
@@ -434,12 +435,12 @@ public static class Trans{
     Argument args=_args;
     string dirname=System.IO.Path.GetDirectoryName(args.OutputFile);
 
-    // directives ‚Ì“Ç‚İæ‚è
+    // directives ã®èª­ã¿å–ã‚Š
     Gen::Dictionary<string,string> tokenmap=new Gen::Dictionary<string,string>();
     Gen::List<ReplaceData> replaces=new Gen::List<ReplaceData>();
 
     output=reg_gzjs_directive.Replace(output,delegate(Rgx::Match m){
-      // æ“ªˆÈŠO‚É‰üs‚ª“ü‚Á‚Ä‚¢‚é•¨‚Í–³Œø
+      // å…ˆé ­ä»¥å¤–ã«æ”¹è¡ŒãŒå…¥ã£ã¦ã„ã‚‹ç‰©ã¯ç„¡åŠ¹
       if(0<m.Value.IndexOfAny("\r\n".ToCharArray()))return m.Value;
       
       switch(m.Groups["dir"].Value){
@@ -475,7 +476,7 @@ public static class Trans{
       case "option":{
         string op=ReadArg(m.Groups["arg1"]);
         if(!args.ReadOption(op)){
-          args.WriteLine("#gzjs-option > '{0}' ‚Í”F¯‚Å‚«‚È‚¢ option ‚Å‚·",op);
+          args.WriteLine("#gzjs-option > '{0}' ã¯èªè­˜ã§ããªã„ option ã§ã™",op);
           return m.Value;
         }
         return "\n";
@@ -485,11 +486,11 @@ public static class Trans{
       }
     });
 
-    // ƒRƒƒ“ƒg‹ó”’—Ş‚Ìíœ
+    // ã‚³ãƒ¡ãƒ³ãƒˆç©ºç™½é¡ã®å‰Šé™¤
     if(args.CutComment)
       output=RegExp.CutComment(output);
 
-    // token ’u‚«Š·‚¦
+    // token ç½®ãæ›ãˆ
     if(tokenmap.Count>0){
       string rex=null;
       foreach(string token in tokenmap.Keys){
@@ -501,7 +502,7 @@ public static class Trans{
       });
     }
 
-    // #gzjs-replace Às
+    // #gzjs-replace å®Ÿè¡Œ
     foreach(ReplaceData r in replaces)
       output=r.Replace(output);
 
@@ -518,7 +519,7 @@ public static class Trans{
     );
 
   /// <summary>
-  /// “Ç‚İæ‚Á‚½ˆø”‚Ì“à—e‚ğ³‹K‰»‚µ‚Ü‚·B(trim, dequotation)
+  /// èª­ã¿å–ã£ãŸå¼•æ•°ã®å†…å®¹ã‚’æ­£è¦åŒ–ã—ã¾ã™ã€‚(trim, dequotation)
   /// </summary>
   static string ReadArg(Rgx::Group g){
     string ret=g.Value.Trim();
@@ -532,7 +533,7 @@ public static class Trans{
     return ret;
   }
   //**************************************************************************
-  //    ƒg[ƒNƒ“‚Ì’uŠ·‰»
+  //    ãƒˆãƒ¼ã‚¯ãƒ³ã®ç½®æ›åŒ–
   //==========================================================================
   static Rgx::Regex reg_tok=new Rgx::Regex(@"(\b(?:0|[1-9]\d*)\b)|\b[\w\d]{2,}\b",Rgx::RegexOptions.Compiled);
 
@@ -544,7 +545,7 @@ public static class Trans{
   }
 
   public static string GenerateTokenReplacing2(string input,Argument args){
-    // 1 Še’PŒê‚Ì“oê”‚ğ”‚¦‚é
+    // 1 å„å˜èªã®ç™»å ´æ•°ã‚’æ•°ãˆã‚‹
     //
     Gen::Dictionary<string,int> hist=new Gen::Dictionary<string,int>();
     foreach(Rgx::Match m in reg_tok.Matches(input)){
@@ -555,31 +556,31 @@ public static class Trans{
         hist[word]=1;
     }
 
-    // 2 ’PŒê‚Ì "d‚İ" ‚ğŒvZ‚·‚é
+    // 2 å˜èªã® "é‡ã¿" ã‚’è¨ˆç®—ã™ã‚‹
     //
-    //   ¦—Dæ‡ˆÊ‚Í•p“x‚¾‚¯‚ÅŒˆ‚Ü‚é (‹¤‚É’uŠ·‚·‚é‚ÆŒˆ‚Ü‚Á‚Ä‚¢‚éê‡)
+    //   â€»å„ªå…ˆé †ä½ã¯é »åº¦ã ã‘ã§æ±ºã¾ã‚‹ (å…±ã«ç½®æ›ã™ã‚‹ã¨æ±ºã¾ã£ã¦ã„ã‚‹å ´åˆ)
     //
-    //     æƒg[ƒNƒ“ A, B ‚Ì‚Ç‚¿‚ç‚ğ 1•¶š/2•¶š‚Å•\Œ»‚·‚é‚©Œˆ‚ß‚éê‡‚ÍA
-    //       u1•¶š‚Ìê‡‚Ì gain ‚ª‚æ‚è‘½‚¢•û‚ğ‘I‚Ôv‚Ì‚Å‚Í‚È‚­‡Œv‚Ì gain ‚Å”»’f‚·‚×‚«B
-    //       A, B ‚ğ‚»‚ê‚¼‚ê a, b ‚Æ•„†‰»‚·‚éA‡Œv‚Ì gain ‚Í
+    //     âˆµãƒˆãƒ¼ã‚¯ãƒ³ A, B ã®ã©ã¡ã‚‰ã‚’ 1æ–‡å­—/2æ–‡å­—ã§è¡¨ç¾ã™ã‚‹ã‹æ±ºã‚ã‚‹å ´åˆã¯ã€
+    //       ã€Œ1æ–‡å­—ã®å ´åˆã® gain ãŒã‚ˆã‚Šå¤šã„æ–¹ã‚’é¸ã¶ã€ã®ã§ã¯ãªãåˆè¨ˆã® gain ã§åˆ¤æ–­ã™ã¹ãã€‚
+    //       A, B ã‚’ãã‚Œãã‚Œ a, b ã¨ç¬¦å·åŒ–ã™ã‚‹æ™‚ã€åˆè¨ˆã® gain ã¯
     //         (len(A)-len(a))count(A)+(len(B)-len(b))count(B)-(len(A)+1+len(B)+1)
     //         = const - len(a)count(A) - len(b)count(B)
-    //       ‚±‚ê‚ğÅ‘å‰»‚·‚éˆ×‚É‚Í count() ‚Ì‘å‚«‚¢ƒg[ƒNƒ“‚É¬‚³‚¢•„†‚ğŠ„‚è“–‚Ä‚ê‚Î—Ç‚¢B
-    //       d—v‚È‚Ì‚ÍŠeƒg[ƒNƒ“©‘Ì‚Ì’·‚³‚É‚ÍˆË‘¶‚µ‚È‚¢‚Æ‚¢‚¤–‚Å‚ ‚é¡
+    //       ã“ã‚Œã‚’æœ€å¤§åŒ–ã™ã‚‹ç‚ºã«ã¯ count() ã®å¤§ãã„ãƒˆãƒ¼ã‚¯ãƒ³ã«å°ã•ã„ç¬¦å·ã‚’å‰²ã‚Šå½“ã¦ã‚Œã°è‰¯ã„ã€‚
+    //       é‡è¦ãªã®ã¯å„ãƒˆãƒ¼ã‚¯ãƒ³è‡ªä½“ã®é•·ã•ã«ã¯ä¾å­˜ã—ãªã„ã¨ã„ã†äº‹ã§ã‚ã‚‹â– 
     //
-    //   ¦ˆ½‚éƒg[ƒNƒ“ A ‚ª”š N ‚ğ‚¨‚µ‚Ì‚¯‚Ä‚Ü‚Å•„†‰»‚·‚é‚×‚«‚©‚Ç‚¤‚©‚à•p“x‚ÅŒˆ‚Ü‚é
+    //   â€»æˆ–ã‚‹ãƒˆãƒ¼ã‚¯ãƒ³ A ãŒæ•°å­— N ã‚’ãŠã—ã®ã‘ã¦ã¾ã§ç¬¦å·åŒ–ã™ã‚‹ã¹ãã‹ã©ã†ã‹ã‚‚é »åº¦ã§æ±ºã¾ã‚‹
     //
-    //     - ‚à‚µ”šN‚à’uŠ·‘ÎÛ‚É‚È‚Á‚Ä‚¢‚éê‡‚Í‘å‘Ì count(A)-count(N) ‚Ì gain ‚ª‚ ‚éB
-    //       (‚à‚µƒg[ƒNƒ“ A ‚ğ1•¶š’·‚¢•Ê‚Ì•„†‚Å•\‚·‚Æ count(A) ‚ÌƒƒX‚ª‚ ‚éB
-    //       ˆê•û‚Å”š N ‚ğ1•¶š’·‚¢•Ê‚Ì•„†‚Å•\‚·‚Æ count(N) ‚ÌƒƒX‚ª‚ ‚éB
-    //       ÀÛ‚É‚Í1•¶š’·‚¢‚¾‚¯‚Ì•„†‚Å•\‚·–‚ª‚Å‚«‚é‚©‚Ç‚¤‚©‚Í•ª‚©‚ç‚È‚¢‚ªB)
-    //     - ‰Á‚¦‚Ä”šN‚ğ‚¨‚µ‚Ì‚¯‚é–‚É‚æ‚Á‚Ä”šN‚ğ•\‚É“o˜^‚·‚é•K—v‚ªo‚é‚Ì‚Å
-    //       len(N) ‚ÌƒƒX‚ª‚ ‚éBX‚ÉA”šN‚Ì•„† n ‚ªÅ‘å‚Ì•„†‚¾‚Æ‚·‚é‚Æ‹æØ‚è•¶š
-    //       ‚Æ‚µ‚Ä 1 ˆÈã‚ÌƒƒX‚ª¶‚¶‚éB‚Â‚Ü‚èA•„†•\‚ª
-    //         ....|foo ¨ ....|foo||||||n
-    //       “™‚Ì—l‚É•Ï‰»‚·‚é‚Æ‚¢‚¤–‚Å‚ ‚éB‹ß—“I‚Éí‚É 1 •¶š‚ÌƒƒX‚ª‚ ‚é‚Æ‚¢‚¤–‚É‚·‚éB
-    //     ¨Œ‹‹Ç‹ß—“I‚É count(A) - (count(N)+len(N)+1) ‚Ì gain ‚Æl‚¦‚é–‚É‚·‚éB
-    //       ‚Â‚Ü‚èA”š‚Ìd‚İ‚Í count(N)+len(N)+1 ‚Æ‚¢‚¤–‚Å‚ ‚éB
+    //     - ã‚‚ã—æ•°å­—Nã‚‚ç½®æ›å¯¾è±¡ã«ãªã£ã¦ã„ã‚‹å ´åˆã¯å¤§ä½“ count(A)-count(N) ã® gain ãŒã‚ã‚‹ã€‚
+    //       (ã‚‚ã—ãƒˆãƒ¼ã‚¯ãƒ³ A ã‚’1æ–‡å­—é•·ã„åˆ¥ã®ç¬¦å·ã§è¡¨ã™ã¨ count(A) ã®ãƒ­ã‚¹ãŒã‚ã‚‹ã€‚
+    //       ä¸€æ–¹ã§æ•°å­— N ã‚’1æ–‡å­—é•·ã„åˆ¥ã®ç¬¦å·ã§è¡¨ã™ã¨ count(N) ã®ãƒ­ã‚¹ãŒã‚ã‚‹ã€‚
+    //       å®Ÿéš›ã«ã¯1æ–‡å­—é•·ã„ã ã‘ã®ç¬¦å·ã§è¡¨ã™äº‹ãŒã§ãã‚‹ã‹ã©ã†ã‹ã¯åˆ†ã‹ã‚‰ãªã„ãŒã€‚)
+    //     - åŠ ãˆã¦æ•°å­—Nã‚’ãŠã—ã®ã‘ã‚‹äº‹ã«ã‚ˆã£ã¦æ•°å­—Nã‚’è¡¨ã«ç™»éŒ²ã™ã‚‹å¿…è¦ãŒå‡ºã‚‹ã®ã§
+    //       len(N) ã®ãƒ­ã‚¹ãŒã‚ã‚‹ã€‚æ›´ã«ã€æ•°å­—Nã®ç¬¦å· n ãŒæœ€å¤§ã®ç¬¦å·ã ã¨ã™ã‚‹ã¨åŒºåˆ‡ã‚Šæ–‡å­—
+    //       ã¨ã—ã¦ 1 ä»¥ä¸Šã®ãƒ­ã‚¹ãŒç”Ÿã˜ã‚‹ã€‚ã¤ã¾ã‚Šã€ç¬¦å·è¡¨ãŒ
+    //         ....|foo â†’ ....|foo||||||n
+    //       ç­‰ã®æ§˜ã«å¤‰åŒ–ã™ã‚‹ã¨ã„ã†äº‹ã§ã‚ã‚‹ã€‚è¿‘ä¼¼çš„ã«å¸¸ã« 1 æ–‡å­—ã®ãƒ­ã‚¹ãŒã‚ã‚‹ã¨ã„ã†äº‹ã«ã™ã‚‹ã€‚
+    //     â†’çµå±€è¿‘ä¼¼çš„ã« count(A) - (count(N)+len(N)+1) ã® gain ã¨è€ƒãˆã‚‹äº‹ã«ã™ã‚‹ã€‚
+    //       ã¤ã¾ã‚Šã€æ•°å­—ã®é‡ã¿ã¯ count(N)+len(N)+1 ã¨ã„ã†äº‹ã§ã‚ã‚‹ã€‚
     //
     int wordCount=hist.Count;
     string[] tokens =new string[wordCount];
@@ -597,24 +598,24 @@ public static class Trans{
     }
     System.Array.Sort(weights,tokens);
 
-    // 3 d‚İ‚Ì‚‚¢•„†‚©‚ç‡”Ô‚É•„†‚ğŠ„‚è“–‚Ä‚é
-    //   - •„†‚Í’Z‚¢•¨‚©‚ç‡‚ÉŠ„‚è“–‚Ä‚é
-    //   - ®”‚Í–³ğŒ‚Å•„†‰»‘ÎÛ‚Æ‚µ‚Äl—¶‚·‚é
-    //   - ‚»‚Ì‘¼‚Ì’PŒê‚Í gain > loss ‚Ì‚Él—¶‚·‚é:
-    //     "Ÿ‚É’Z‚¢•„†‚Ì’·‚³" ‚ğ—p‚¢‚ÄA
-    //     ‚»‚Ì’PŒê‚Ì gain, loss ‚ğŒvZ‚·‚éB
+    // 3 é‡ã¿ã®é«˜ã„ç¬¦å·ã‹ã‚‰é †ç•ªã«ç¬¦å·ã‚’å‰²ã‚Šå½“ã¦ã‚‹
+    //   - ç¬¦å·ã¯çŸ­ã„ç‰©ã‹ã‚‰é †ã«å‰²ã‚Šå½“ã¦ã‚‹
+    //   - æ•´æ•°ã¯ç„¡æ¡ä»¶ã§ç¬¦å·åŒ–å¯¾è±¡ã¨ã—ã¦è€ƒæ…®ã™ã‚‹
+    //   - ãã®ä»–ã®å˜èªã¯ gain > loss ã®æ™‚ã«è€ƒæ…®ã™ã‚‹:
+    //     "æ¬¡ã«çŸ­ã„ç¬¦å·ã®é•·ã•" ã‚’ç”¨ã„ã¦ã€
+    //     ãã®å˜èªã® gain, loss ã‚’è¨ˆç®—ã™ã‚‹ã€‚
     //
     string[] mapCodeToWord=new string[wordCount];
 
-    // V‚µ‚¢ƒR[ƒh‚ÌŠ„“–æA‚©‚ÂA—LˆÓ‚È•„†‚ÌI’[‚ğ•\‚·B
-    // —LˆÓ‚È•„†‚Æ‚Í "©•ª©g‚©‚ç map ‚³‚ê‚é•„†" ‚Å‚Í‚È‚¢‚Æ‚¢‚¤–B
+    // æ–°ã—ã„ã‚³ãƒ¼ãƒ‰ã®å‰²å½“å…ˆã€ã‹ã¤ã€æœ‰æ„ãªç¬¦å·ã®çµ‚ç«¯ã‚’è¡¨ã™ã€‚
+    // æœ‰æ„ãªç¬¦å·ã¨ã¯ "è‡ªåˆ†è‡ªèº«ã‹ã‚‰ map ã•ã‚Œã‚‹ç¬¦å·" ã§ã¯ãªã„ã¨ã„ã†äº‹ã€‚
     int code=0;
 
-    // —LˆÓ‚©‚Ç‚¤‚©‚ÉS‚í‚ç‚¸“o˜^‚³‚ê‚Ä‚¢‚é•„†‚Ì”
+    // æœ‰æ„ã‹ã©ã†ã‹ã«æ‹˜ã‚ã‚‰ãšç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ç¬¦å·ã®æ•°
     int codeCount=0; // code Count
 
-    // Œ»İŠ„‚è“–‚Ä‚ç‚ê‚Ä‚¢‚é•„†‚Ì’·‚³
-    // ‹y‚ÑA‚»‚Ì’·‚³‚Ì•„†‚Ì”ÍˆÍ
+    // ç¾åœ¨å‰²ã‚Šå½“ã¦ã‚‰ã‚Œã¦ã„ã‚‹ç¬¦å·ã®é•·ã•
+    // åŠã³ã€ãã®é•·ã•ã®ç¬¦å·ã®ç¯„å›²
     int ndigit=0,code0=-1,codeM=0;
 
     int effectiveWordCount=wordCount;
@@ -631,8 +632,8 @@ public static class Trans{
       int icand;
       bool isInt=int.TryParse(cand,out icand)&&icand.ToString()==cand;
       if(!isInt||icand>=effectiveWordCount){
-        // gain, loss ‚ğŒvZ‚µŠ„‚É‡‚í‚È‚¢‚È‚ç’µ‚Î‚·
-        // ¬‚³‚¢®”(<effectiveWordCount)‚Í•Ê‚Ì’PŒê‚Éã‘‚«‚³‚ê‚éŠëŒ¯‚ª‚ ‚é‚Ì‚Å’µ‚Î‚¹‚È‚¢
+        // gain, loss ã‚’è¨ˆç®—ã—å‰²ã«åˆã‚ãªã„ãªã‚‰è·³ã°ã™
+        // å°ã•ã„æ•´æ•°(<effectiveWordCount)ã¯åˆ¥ã®å˜èªã«ä¸Šæ›¸ãã•ã‚Œã‚‹å±é™ºãŒã‚ã‚‹ã®ã§è·³ã°ã›ãªã„
         int loss=cand.Length+1;
         int gain=(cand.Length-ndigit)*hist[cand];
         if(gain<=loss){
@@ -642,20 +643,20 @@ public static class Trans{
       }
 
       if(isInt&&code0<=icand&&icand<codeM){
-        // •s•Ï‚È®”’l‚Ìê‡
-        //   ®”’l‚Å•„†‚Æ©g‚Ì’·‚³‚ª“¯‚¶ê‡‚Í•„†•\‚É“o˜^‚·‚é•K—v‚Í‚È‚¢
-        //   ©•ª©g‚É‘Î‚µ‚Ä mapping ‚·‚ê‚Î—Ç‚¢B
+        // ä¸å¤‰ãªæ•´æ•°å€¤ã®å ´åˆ
+        //   æ•´æ•°å€¤ã§ç¬¦å·ã¨è‡ªèº«ã®é•·ã•ãŒåŒã˜å ´åˆã¯ç¬¦å·è¡¨ã«ç™»éŒ²ã™ã‚‹å¿…è¦ã¯ãªã„
+        //   è‡ªåˆ†è‡ªèº«ã«å¯¾ã—ã¦ mapping ã™ã‚Œã°è‰¯ã„ã€‚
         
         if(icand<code){
-          // ©•ª©g‚Ì”Ô†‚ÉŠù‚É•Ê‚Ì’PŒê‚ªŠ„‚è“–‚Ä‚ç‚ê‚Ä‚¢‚éê‡‚Í‘Ò”ğ
+          // è‡ªåˆ†è‡ªèº«ã®ç•ªå·ã«æ—¢ã«åˆ¥ã®å˜èªãŒå‰²ã‚Šå½“ã¦ã‚‰ã‚Œã¦ã„ã‚‹å ´åˆã¯å¾…é¿
           mapCodeToWord[code++]=mapCodeToWord[icand];
         }
 
         if(icand<wordCount)
           mapCodeToWord[icand]="";
       }else{
-        // •’Ê‚Ì’PŒê‚Ìê‡
-        //   “o˜^‚·‚éBŠù‚É•s•Ï‚Ì®”’l‚Æ‚µ‚ÄŒˆ‚Ü‚Á‚Ä‚¢‚é”Ô†‚Í’µ‚Î‚·B
+        // æ™®é€šã®å˜èªã®å ´åˆ
+        //   ç™»éŒ²ã™ã‚‹ã€‚æ—¢ã«ä¸å¤‰ã®æ•´æ•°å€¤ã¨ã—ã¦æ±ºã¾ã£ã¦ã„ã‚‹ç•ªå·ã¯è·³ã°ã™ã€‚
         while(mapCodeToWord[code]!=null)code++;
         mapCodeToWord[code++]=cand;
       }
@@ -663,7 +664,7 @@ public static class Trans{
       codeCount++;
     }
 
-    // 4 ’uŠ·‚ÌÀs
+    // 4 ç½®æ›ã®å®Ÿè¡Œ
     if(code==0)return input;
 
     Gen::Dictionary<string,string> mapWordToCode=new Gen::Dictionary<string,string>();
@@ -716,7 +717,7 @@ eval("+strSource+@".replace(/\b\d+\b/g,function($){return r[$]||$;}));
   }
 
   public static string GenerateTokenReplacing(string input){
-    // token “oê‰ñ”‚ğŒv”
+    // token ç™»å ´å›æ•°ã‚’è¨ˆæ•°
     Gen::Dictionary<string,int> d_tok=new Gen::Dictionary<string,int>();
     foreach(Rgx::Match m in reg_tok.Matches(input)){
       string k=m.Value;
@@ -726,7 +727,7 @@ eval("+strSource+@".replace(/\b\d+\b/g,function($){return r[$]||$;}));
         d_tok[k]=1;
     }
 
-    // Še token ‚É‘Î‚·‚éƒR[ƒhŒ¸­—Ê‚ÌŠTZ
+    // å„ token ã«å¯¾ã™ã‚‹ã‚³ãƒ¼ãƒ‰æ¸›å°‘é‡ã®æ¦‚ç®—
     /*
     Gen::Dictionary<string,int> d_tok2=new Gen::Dictionary<string,int>();
     foreach(string k in d_tok.Keys){
@@ -738,13 +739,13 @@ eval("+strSource+@".replace(/\b\d+\b/g,function($){return r[$]||$;}));
     Gen::Dictionary<string,int> d_tok2=d_tok;
     //*/
 
-    // token ‚É‘Î‚·‚é‘ã‘Ö”Ô†‚ÌŠ„‚è“–‚Ä
+    // token ã«å¯¾ã™ã‚‹ä»£æ›¿ç•ªå·ã®å‰²ã‚Šå½“ã¦
     System.Text.StringBuilder b_tok=new System.Text.StringBuilder();
     Gen::Dictionary<string,int> d_map=new Gen::Dictionary<string,int>();
     int n=0;
     foreach(string k in EnumFreqOrder(d_tok2)){
 #if REPL_INTEG
-      // k ‚ª \d+ ‚©”Û‚©
+      // k ãŒ \d+ ã‹å¦ã‹
       bool isnum=true;
       for(int i=0;i<k.Length;i++){
         if('0'<=k[i]&&k[i]<='9')continue;
@@ -752,17 +753,17 @@ eval("+strSource+@".replace(/\b\d+\b/g,function($){return r[$]||$;}));
         break;
       }
 
-      // k ‚ª”ñ®”‚È‚ç}Š ‚è”»’è
+      // k ãŒéæ•´æ•°ãªã‚‰æåˆˆã‚Šåˆ¤å®š
       if(!isnum){
         if(d_tok[k]<=1)continue;
 
-        // ƒR[ƒhŒ¸­—Ê‚ğŒvZ
+        // ã‚³ãƒ¼ãƒ‰æ¸›å°‘é‡ã‚’è¨ˆç®—
         int iReduce=(k.Length-n.ToString().Length)*d_tok[k];
         iReduce-=k.Length+3;// "hoge",
         if(iReduce<=0)continue;
       }
 #else
-      // ƒR[ƒhŒ¸­—Ê‚ğŒvZ
+      // ã‚³ãƒ¼ãƒ‰æ¸›å°‘é‡ã‚’è¨ˆç®—
       int iReduce=(k.Length-1-n.ToString().Length)*d_tok[k];
       iReduce-=k.Length+3;// "hoge",
       if(iReduce<=0)continue;
@@ -773,7 +774,7 @@ eval("+strSource+@".replace(/\b\d+\b/g,function($){return r[$]||$;}));
       b_tok.Append(k);
     }
 
-    // token ‚Ì’uŠ·
+    // token ã®ç½®æ›
     string replaced=reg_tok.Replace(input,delegate(Rgx::Match m){
       string k=m.Value;
 #if REPL_INTEG
@@ -786,7 +787,7 @@ eval("+strSource+@".replace(/\b\d+\b/g,function($){return r[$]||$;}));
       return k;
     });
 
-    // •ÏŠ·Œ‹‰Ê
+    // å¤‰æ›çµæœ
 #if REPL_INTEG
     return @"(function(){
 var r="+Stringize(b_tok.ToString())+@".split('|');
@@ -803,12 +804,12 @@ eval(s.replace(/\b_(\d+)\b/g,function($0,$1){return r[$1];}));
   }
 
   /// <summary>
-  /// •¶š—ñ‚ğ‚»‚Ì•p“x‚ª‘½‚¢‡‚É—ñ‹“‚µ‚Ü‚·B
+  /// æ–‡å­—åˆ—ã‚’ãã®é »åº¦ãŒå¤šã„é †ã«åˆ—æŒ™ã—ã¾ã™ã€‚
   /// </summary>
-  /// <param name="d_tok">•¶š—ñ‚Æ•p“x‚ÌƒyƒA‚ğŠi”[‚µ‚½ Dictionary ‚ğ•Ô‚µ‚Ü‚·B</param>
-  /// <returns>•¶š—ñ‚Ì—ñ‹“q‚ğ•Ô‚µ‚Ü‚·B</returns>
+  /// <param name="d_tok">æ–‡å­—åˆ—ã¨é »åº¦ã®ãƒšã‚¢ã‚’æ ¼ç´ã—ãŸ Dictionary ã‚’è¿”ã—ã¾ã™ã€‚</param>
+  /// <returns>æ–‡å­—åˆ—ã®åˆ—æŒ™å­ã‚’è¿”ã—ã¾ã™ã€‚</returns>
   static Gen::IEnumerable<string> EnumFreqOrder(Gen::Dictionary<string,int> d_tok){
-    // •p“x‡‚É•À‚Ñ‘Ö‚¦
+    // é »åº¦é †ã«ä¸¦ã³æ›¿ãˆ
     int c=d_tok.Count;
     string[] tokens=new string[c];
     int[] freqs=new int[c];
@@ -829,7 +830,7 @@ eval(s.replace(/\b_(\d+)\b/g,function($0,$1){return r[$1];}));
       args.WriteLine("token pair#{2}({0}, {1})",freqs[j],tokens[j],j);
     //*/
 
-    // —ñ‹“
+    // åˆ—æŒ™
     for(int i=c-1;i>=0;i--){
       yield return tokens[i];
     }
@@ -838,11 +839,11 @@ eval(s.replace(/\b_(\d+)\b/g,function($0,$1){return r[$1];}));
     const int MAX_WIDTH=128;
     content=RegExp.RemoveLineBreaks(content);
 
-    // ’Z‚¢ê‡
+    // çŸ­ã„å ´åˆ
     if(content.Length<=MAX_WIDTH)
       return "'"+RegExp.EscapeSingleQuote(content)+"'";
 
-    // ’·‚¢ê‡
+    // é•·ã„å ´åˆ
     System.Text.StringBuilder b_src=new System.Text.StringBuilder();
     b_src.Append("[\n");
 
@@ -908,7 +909,7 @@ eval(s.replace(/\b_(\d+)\b/g,function($0,$1){return r[$1];}));
     }
   }
   //**************************************************************************
-  //    ©ŒÈ‰ğ“€Œ`®‰»
+  //    è‡ªå·±è§£å‡å½¢å¼åŒ–
   //==========================================================================
   private static string CreateSfx_embed(string frame,string compressed){
     System.Text.StringBuilder b=new System.Text.StringBuilder();
@@ -919,7 +920,7 @@ eval(s.replace(/\b_(\d+)\b/g,function($0,$1){return r[$1];}));
       b.Append(frame,0,k);
       k+=RPLACE_KEY.Length;
 
-      // s•ªŠ„o—Í
+      // è¡Œåˆ†å‰²å‡ºåŠ›
       const int C_WIDTH=128;
       int i=0;
       while(true){
@@ -986,21 +987,21 @@ public static class IO{
     string tempfile=System.IO.Path.Combine(path_temp,System.IO.Path.GetFileName(src)+"[gzip].esc");
     if(preserve)System.IO.File.Copy(src,tempfile);
 
-    // ˆ³k
-    System.Console.WriteLine("file '{0}' ‚ğˆ³k‚µ‚Ü‚·...",src);
+    // åœ§ç¸®
+    System.Console.WriteLine("file '{0}' ã‚’åœ§ç¸®ã—ã¾ã™...",src);
     //Diag::Process proc_gz=Diag::Process.Start("gzip.exe","\""+src+"\"");
     //proc_gz.WaitForExit();
 
     system("gzip.exe -9 \""+src+"\"");
 
-    // gz - ƒtƒ@ƒCƒ‹–¼•ÏX
+    // gz - ãƒ•ã‚¡ã‚¤ãƒ«åå¤‰æ›´
     string compressed=src+".gz";
     if(System.IO.File.Exists(compressed)) {
       if(System.IO.File.Exists(dest))System.IO.File.Delete(dest);
       System.IO.File.Move(compressed,dest);
-      System.Console.WriteLine("–³–‚É '"+dest+"' ‚Éˆ³k‚³‚ê‚Ü‚µ‚½B");
+      System.Console.WriteLine("ç„¡äº‹ã« '"+dest+"' ã«åœ§ç¸®ã•ã‚Œã¾ã—ãŸã€‚");
     }else{
-      System.Console.WriteLine("gz ˆ³kŒ‹‰Ê‚Ìƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñBˆ³k‚É¸”s‚µ‚Ä‚¢‚é‰Â”\«‚ª‚ ‚è‚Ü‚·B");
+      System.Console.WriteLine("gz åœ§ç¸®çµæœã®ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚åœ§ç¸®ã«å¤±æ•—ã—ã¦ã„ã‚‹å¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™ã€‚");
     }
 
     if(preserve)System.IO.File.Move(tempfile,src);
@@ -1054,22 +1055,22 @@ public static class RegExp{
   const string rex_quotedstr=_.rex_lit_str;
   const string rex_regexp=_.rex_lit_rex;
 
-  // ƒCƒ“ƒfƒ“ƒg‚Ì•t‰Á
+  // ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆã®ä»˜åŠ 
   static Rgx::Regex reg_startline=new Rgx::Regex("^",Rgx::RegexOptions.Multiline);
   public static string Indent(string str){
     return reg_startline.Replace(str,"\t");
   }
 
   //================================================================
-  //  ƒRƒƒ“ƒgE‹ó”’sE‹ó”’‚Ìíœ
+  //  ã‚³ãƒ¡ãƒ³ãƒˆãƒ»ç©ºç™½è¡Œãƒ»ç©ºç™½ã®å‰Šé™¤
   //================================================================
   const string rex_gr_literals=@"(?<string>"+rex_quotedstr+@"|"+rex_regexp+@")";
   //-----------------------------------
-  // ƒRƒƒ“ƒg‚ğÁ‚·
+  // ã‚³ãƒ¡ãƒ³ãƒˆã‚’æ¶ˆã™
   const string rex_gr_comment=@"(?<comment>/\*[\s\S]*?\*/|//.*?$)";
   static Rgx::Regex reg_comment=new Rgx::Regex(rex_gr_literals+"|"+rex_gr_comment,Rgx::RegexOptions.Multiline);
   //-----------------------------------
-  // ˜A‘±‚·‚é‹ó”’‚ğÁ‚·
+  // é€£ç¶šã™ã‚‹ç©ºç™½ã‚’æ¶ˆã™
   const string rex_gr_empline=@"(?<empline>(?:\r?\n|\r)(?:\s*(?:\r?\n|\r))+)";
   const string rex_gr_delete=@"(?<space>(?<=\b|\$)[\t ]+(?=\b|\$))|(?<delete>^\s+|\s+$|[\t ]+)";
 /*
@@ -1080,31 +1081,31 @@ public static class RegExp{
 //*/
 
   //-----------------------------------
-  // –³‘Ê‚È‰üs‚ğÁ‚·:
-  // 1 /;(\}|$)/ ‚ÍƒZƒ~ƒRƒƒ“‚àˆê‚ÉÁ‚µ‚Ä—Ç‚¢?
-  //   ’A‚µ {for();} “™‚ğ {for()} ‚É•ÏŒ`‚³‚ê‚é‚Æ‚Ü‚¸‚¢‚Ì‚Å’¼‘O‚É ) ‚â else “™‚ª‚È‚¢–‚ğŠm”F‚·‚éB
-  //   ‚±‚Ìƒpƒ^[ƒ“‚Í if();else; for(); while(); do; ‚È‚Ç‚ª‚ ‚éB
+  // ç„¡é§„ãªæ”¹è¡Œã‚’æ¶ˆã™:
+  // 1 /;(\}|$)/ ã¯ã‚»ãƒŸã‚³ãƒ­ãƒ³ã‚‚ä¸€ç·’ã«æ¶ˆã—ã¦è‰¯ã„?
+  //   ä½†ã— {for();} ç­‰ã‚’ {for()} ã«å¤‰å½¢ã•ã‚Œã‚‹ã¨ã¾ãšã„ã®ã§ç›´å‰ã« ) ã‚„ else ç­‰ãŒãªã„äº‹ã‚’ç¢ºèªã™ã‚‹ã€‚
+  //   ã“ã®ãƒ‘ã‚¿ãƒ¼ãƒ³ã¯ if();else; for(); while(); do; ãªã©ãŒã‚ã‚‹ã€‚
   const string rex_break_tailsemicolon=@"(?<!(?:\bdo|\belse|\))\s*);(?:\r?\n)?(?=\}|$)";
-  // 2 s––‚Ìƒ`ƒFƒbƒNB
-  //   Œ³XI’[‚É‚È‚Á‚Ä‚¢‚é–‚ª–¾‚ç‚©‚Èê‡
-  //   -; : ‚È‚Ç
-  //   ’¼Œã‚É ; ‚ğ‘}“ü‚·‚é‚Ì‚ª•¶–@“I‚É‚¨‚©‚µ‚¢ê‡‚ÍAŸ‚Ìs‚É‘±‚­‚Í‚¸‚È‚Ì‚Ås‚ğÁ‚µ‚ÄOKB
-  //   -—á‚¦‚Î“ñ€‰‰Zq . * / % << >> == != <= >= < > & ^ | && || +=etc ? ,  /[\.\*\/%=<>\^\&\|\?,]/
-  //   -‚Ü‚½‘O’u‰‰Zq‚à ! ~
-  //   -ŠJ‚«Š‡ŒÊ‚à‘±‚«‚ª‚ ‚é ( [ \{
-  //   -else Œã‚É‹L†‚ª—ˆ‚éê‡‚à OKB
+  // 2 è¡Œæœ«ã®ãƒã‚§ãƒƒã‚¯ã€‚
+  //   å…ƒã€…çµ‚ç«¯ã«ãªã£ã¦ã„ã‚‹äº‹ãŒæ˜ã‚‰ã‹ãªå ´åˆ
+  //   -; : ãªã©
+  //   ç›´å¾Œã« ; ã‚’æŒ¿å…¥ã™ã‚‹ã®ãŒæ–‡æ³•çš„ã«ãŠã‹ã—ã„å ´åˆã¯ã€æ¬¡ã®è¡Œã«ç¶šãã¯ãšãªã®ã§è¡Œã‚’æ¶ˆã—ã¦OKã€‚
+  //   -ä¾‹ãˆã°äºŒé …æ¼”ç®—å­ . * / % << >> == != <= >= < > & ^ | && || +=etc ? ,  /[\.\*\/%=<>\^\&\|\?,]/
+  //   -ã¾ãŸå‰ç½®æ¼”ç®—å­ã‚‚ ! ~
+  //   -é–‹ãæ‹¬å¼§ã‚‚ç¶šããŒã‚ã‚‹ ( [ \{
+  //   -else å¾Œã«è¨˜å·ãŒæ¥ã‚‹å ´åˆã‚‚ OKã€‚
   const string rex_break_nottail=@"(?<=[;:\.\*\/%=<>\^\&\|\?,!~\(\{\[])\r?\n|(?<=\belse)\r?\n\B";
-  // 3 s“ª‚Ìƒ`ƒFƒbƒN
-  //   •¶“ª‚É—ˆ‚é‚Í‚¸‚ª‚È‚¢‚Æ•ª‚©‚Á‚Ä‚¢‚é•¨‚ÍA‘O‚Ìs‚Ì‘±‚«‚ÆŒˆ‚ß‚Â‚¯‚é–‚ª‚Å‚«‚éB
-  //   -“ñ€‰‰Zq . * / % << >> == != <= >= < > & ^ | && || +=etc ? ,
-  //   -: ‚à•¶“ª‚É—ˆ‚é–‚Í‚È‚¢B
-  //   -;}]) ‚Í–¾‚ç‚©(?)‚È‚Ì‚ÅOK?
-  //   -/ ‚Í³‹K•\Œ»‚©‚à‚µ‚ê‚È‚¢‚Ì‚ÅŠëŒ¯‚©‚àB
+  // 3 è¡Œé ­ã®ãƒã‚§ãƒƒã‚¯
+  //   æ–‡é ­ã«æ¥ã‚‹ã¯ãšãŒãªã„ã¨åˆ†ã‹ã£ã¦ã„ã‚‹ç‰©ã¯ã€å‰ã®è¡Œã®ç¶šãã¨æ±ºã‚ã¤ã‘ã‚‹äº‹ãŒã§ãã‚‹ã€‚
+  //   -äºŒé …æ¼”ç®—å­ . * / % << >> == != <= >= < > & ^ | && || +=etc ? ,
+  //   -: ã‚‚æ–‡é ­ã«æ¥ã‚‹äº‹ã¯ãªã„ã€‚
+  //   -;}]) ã¯æ˜ã‚‰ã‹(?)ãªã®ã§OK?
+  //   -/ ã¯æ­£è¦è¡¨ç¾ã‹ã‚‚ã—ã‚Œãªã„ã®ã§å±é™ºã‹ã‚‚ã€‚
   const string rex_break_nothead=@"\r?\n(?=[;\}\]\):\.\*%=<>\^\&\|\?,]|!=)";
   static Rgx::Regex reg_breaks=new Rgx::Regex(rex_gr_literals+"|^(?:\r?\n)+|"+rex_break_tailsemicolon+"|"+rex_break_nottail+"|"+rex_break_nothead);
 
   public static string CutComment(string str) {
-    // ¦ '//' ‚Ån‚Ü‚éƒRƒƒ“ƒg‚É ",' ‚ªŠÜ‚Ü‚ê‚Ä‚¢‚éê‡‚É‚Í–³‹‚³‚ê‚é
+    // â€» '//' ã§å§‹ã¾ã‚‹ã‚³ãƒ¡ãƒ³ãƒˆã« ",' ãŒå«ã¾ã‚Œã¦ã„ã‚‹å ´åˆã«ã¯ç„¡è¦–ã•ã‚Œã‚‹
     str=reg_comment.Replace(str,delegate(Rgx::Match m){
       if(m.Groups["string"].Success)return m.Value;
       return "\n";
@@ -1130,7 +1131,7 @@ public static class RegExp{
     return str;
   }
 
-  // •¶š—ñ‰»
+  // æ–‡å­—åˆ—åŒ–
   static Rgx::Regex reg_quote_escape=new Rgx::Regex(
     @"\r\n|[\\\r\n\""\']",
     Rgx::RegexOptions.Compiled
@@ -1158,7 +1159,7 @@ public static class RegExp{
     });
   }
 
-  // ’Pƒ‚È‰üs‚Ìíœ
+  // å˜ç´”ãªæ”¹è¡Œã®å‰Šé™¤
   static Rgx::Regex reg_line=new Rgx::Regex(@"\r?\n|\r",Rgx::RegexOptions.Compiled);
   public static string RemoveLineBreaks(string content){
     return reg_line.Replace(content,"");

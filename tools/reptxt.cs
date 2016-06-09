@@ -1,3 +1,4 @@
+// -*- coding:utf-8 -*-
 using Rgx=System.Text.RegularExpressions;
 using Diag=System.Diagnostics;
 using Gen=System.Collections.Generic;
@@ -9,15 +10,15 @@ public static class Program {
 		System.Console.WriteLine("--------------------------------------------------");
 		Argument cmdline=new Argument(args);
 		if(cmdline.InputFile==null){
-			System.Console.WriteLine("! —LŒø‚È“ü—Íƒtƒ@ƒCƒ‹‚ªw’è‚³‚ê‚Ä‚¢‚È‚¢‚Ì‚ÅI—¹‚µ‚Ü‚·B");
+			System.Console.WriteLine("! æœ‰åŠ¹ãªå…¥åŠ›ãƒ•ã‚¡ã‚¤ãƒ«ãŒæŒ‡å®šã•ã‚Œã¦ã„ãªã„ã®ã§çµ‚äº†ã—ã¾ã™ã€‚");
 			return;
 		}
 		if(cmdline.OutputFile==null){
-			System.Console.WriteLine("! —LŒø‚Èo—Íƒtƒ@ƒCƒ‹‚ªw’è‚³‚ê‚Ä‚¢‚È‚¢‚Ì‚ÅI—¹‚µ‚Ü‚·B");
+			System.Console.WriteLine("! æœ‰åŠ¹ãªå‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ãŒæŒ‡å®šã•ã‚Œã¦ã„ãªã„ã®ã§çµ‚äº†ã—ã¾ã™ã€‚");
 			return;
 		}
 		if(cmdline.Before==null||cmdline.After==null){
-			System.Console.WriteLine("! ’uŠ·‚ÉŠÖ‚·‚éî•ñ‚ª•sŠ®‘S‚Å‚·B");
+			System.Console.WriteLine("! ç½®æ›ã«é–¢ã™ã‚‹æƒ…å ±ãŒä¸å®Œå…¨ã§ã™ã€‚");
 			return;
 		}
 
@@ -25,11 +26,11 @@ public static class Program {
 		try{
 			reg=new Rgx::Regex(cmdline.Before,Rgx::RegexOptions.Multiline);
 		}catch{
-			System.Console.WriteLine("! ³‹K•\Œ»‚ÉŒë‚è‚ªŠÜ‚Ü‚ê‚Ä‚¢‚é‰Â”\«‚ª‚ ‚è‚Ü‚·B");
-			System.Console.WriteLine("!> w’è‚³‚ê‚½³‹K•\Œ» == {0}",cmdline.Before);
+			System.Console.WriteLine("! æ­£è¦è¡¨ç¾ã«èª¤ã‚ŠãŒå«ã¾ã‚Œã¦ã„ã‚‹å¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™ã€‚");
+			System.Console.WriteLine("!> æŒ‡å®šã•ã‚ŒãŸæ­£è¦è¡¨ç¾ == {0}",cmdline.Before);
 			return;
 		}
-		System.Console.WriteLine("file '{0}' ‚É‘Î‚·‚éˆ—‚ğÀs‚µ‚Ü‚·B",cmdline.InputFile);
+		System.Console.WriteLine("file '{0}' ã«å¯¾ã™ã‚‹å‡¦ç†ã‚’å®Ÿè¡Œã—ã¾ã™ã€‚",cmdline.InputFile);
 		string content=System.IO.File.ReadAllText(cmdline.InputFile,System.Text.Encoding.UTF8);
 		content=reg.Replace(content,delegate(Rgx::Match m){
 			return cmdline.GetProcessedAfter(m);
@@ -37,7 +38,7 @@ public static class Program {
 
 		string outfile=cmdline.OutputFile;
 		System.IO.File.WriteAllText(outfile,content,System.Text.Encoding.UTF8);
-		System.Console.WriteLine("ˆ—Œ‹‰Ê‚ª–³–‚É '"+outfile+"' ‚Éo—Í‚³‚ê‚Ü‚µ‚½");
+		System.Console.WriteLine("å‡¦ç†çµæœãŒç„¡äº‹ã« '"+outfile+"' ã«å‡ºåŠ›ã•ã‚Œã¾ã—ãŸ");
 	}
 }
 
@@ -106,10 +107,10 @@ public class Argument{
 		Rgx::RegexOptions.Compiled
 		);
 	//============================================================
-	//	‰Šú‰»
+	//	åˆæœŸåŒ–
 	//============================================================
 	/// <summary>
-	/// ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“ˆø”‚©‚ç‰Šú‰»‚ğÀs‚µ‚Ü‚·B
+	/// ã‚³ãƒãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³å¼•æ•°ã‹ã‚‰åˆæœŸåŒ–ã‚’å®Ÿè¡Œã—ã¾ã™ã€‚
 	/// </summary>
 	/// <param name="args"></param>
 	public Argument(string[] args){
@@ -127,13 +128,13 @@ public class Argument{
 					while(i<a.Length){
 						s=a.IndexOf('/',i);
 
-						// / ‚ª–³‚¢
+						// / ãŒç„¡ã„æ™‚
 						if(s<0){
-							System.Console.WriteLine("’uŠ·w’è‚ªŒë‚Á‚Ä‚¢‚Ü‚·B\n/reg:’uŠ·‘O/’uŠ·Œã ‚ÌŒ`®‚Åw’è‚µ‚Ä‰º‚³‚¢");
+							System.Console.WriteLine("ç½®æ›æŒ‡å®šãŒèª¤ã£ã¦ã„ã¾ã™ã€‚\n/reg:ç½®æ›å‰/ç½®æ›å¾Œ ã®å½¢å¼ã§æŒ‡å®šã—ã¦ä¸‹ã•ã„");
 							break;
 						}
 
-						// ŒŸõ‚Ì‚â‚è’¼‚µ
+						// æ¤œç´¢ã®ã‚„ã‚Šç›´ã—
 						if(a[s-1]=='\\'){
 							i=s+1;
 							continue;
@@ -162,14 +163,14 @@ public class Argument{
 			}
 		}
 
-		// file ˆø”‚ÌŒŸ¸
+		// file å¼•æ•°ã®æ¤œæŸ»
 		if(file==null){
-			System.Console.WriteLine("ˆø”‚É‚Í file –¼‚ğw’è‚µ‚Ä‰º‚³‚¢B");
+			System.Console.WriteLine("å¼•æ•°ã«ã¯ file åã‚’æŒ‡å®šã—ã¦ä¸‹ã•ã„ã€‚");
 			goto comp;
 		}
 
 		if(System.IO.File.Exists(file))goto comp;
-		System.Console.WriteLine("file '{0}' ‚Í‘¶İ‚µ‚Ü‚¹‚ñB",file);
+		System.Console.WriteLine("file '{0}' ã¯å­˜åœ¨ã—ã¾ã›ã‚“ã€‚",file);
 		file=null;
 
 	comp:

@@ -1,3 +1,4 @@
+// -*- coding:utf-8 -*-
 using Rgx=System.Text.RegularExpressions;
 using Gen=System.Collections.Generic;
 
@@ -20,9 +21,9 @@ public class ProgramArgs{
   public bool option_compress=false;
 
   /// 2013-08-31, KM,
-  ///   Œ»İ‚Ìˆ—‚ª command/letter/environment/context ‚Ì‚İ‚Ìˆ—‚Å‚ ‚é–‚ğ•\‚·B
-  ///   agh.register() ‚ÅƒXƒNƒŠƒvƒg‘S‘Ì‚ğˆÍ‚ñ‚¾‚èA#include ‚È‚Ç‚ğ“WŠJ‚µ‚½‚è‚È‚Ç‚Ì‘€ì‚Ís‚í‚È‚¢B
-  ///   ‚Ü‚½A•ÏŠ·•û–@‚àV‚µ‚¢•û–@‚Ås‚¤•¨‚Æ‚·‚éB
+  ///   ç¾åœ¨ã®å‡¦ç†ãŒ command/letter/environment/context ã®ã¿ã®å‡¦ç†ã§ã‚ã‚‹äº‹ã‚’è¡¨ã™ã€‚
+  ///   agh.register() ã§ã‚¹ã‚¯ãƒªãƒ—ãƒˆå…¨ä½“ã‚’å›²ã‚“ã ã‚Šã€#include ãªã©ã‚’å±•é–‹ã—ãŸã‚Šãªã©ã®æ“ä½œã¯è¡Œã‚ãªã„ã€‚
+  ///   ã¾ãŸã€å¤‰æ›æ–¹æ³•ã‚‚æ–°ã—ã„æ–¹æ³•ã§è¡Œã†ç‰©ã¨ã™ã‚‹ã€‚
   public bool option_partial=false;
 
   public string option_filename=null;
@@ -39,11 +40,11 @@ public static class Program{
 
 		FileInfo info=new FileInfo();
 		info.filename=_args.option_filename??srcfile;
-		System.Console.WriteLine("file '{0}' ‚ğˆ—‚µ‚Ü‚·",srcfile);
+		System.Console.WriteLine("file '{0}' ã‚’å‡¦ç†ã—ã¾ã™",srcfile);
 		string content=System.IO.File.ReadAllText(srcfile,enc);
 
 		content=Preprocessor.Process(content,info);
-    content=RegExp.JsConvertAtStrings(content); // @"" @'' ‚Ìˆ—
+    content=RegExp.JsConvertAtStrings(content); // @"" @'' ã®å‡¦ç†
 		content=TranslateContext.Translate(_args,content);
 		if(_args.option_compress)
 			content=RegExp.CutComment(content);
@@ -63,7 +64,7 @@ public static class Program{
     }
 		System.IO.File.WriteAllText(info.filename+".js",content);
 
-		System.Console.WriteLine("file '{0}.js' ‚É‘‚«‚İ‚Ü‚µ‚½",info.filename);
+		System.Console.WriteLine("file '{0}.js' ã«æ›¸ãè¾¼ã¿ã¾ã—ãŸ",info.filename);
 	}
 
 	public static void InitConsole(){
@@ -106,25 +107,25 @@ public static class Program{
 			}
 		}
 
-		// file ˆø”‚ÌŒŸ¸
+		// file å¼•æ•°ã®æ¤œæŸ»
 		if(file==null){
-			System.Console.WriteLine("ˆø”‚É‚Í file –¼‚ğw’è‚µ‚Ä‰º‚³‚¢B");
+			System.Console.WriteLine("å¼•æ•°ã«ã¯ file åã‚’æŒ‡å®šã—ã¦ä¸‹ã•ã„ã€‚");
 			WriteUsage();
 			return null;
 		}
 		if(System.IO.File.Exists(file))return file;
-		System.Console.WriteLine("file '{0}' ‚Í‘¶İ‚µ‚Ü‚¹‚ñB",file);
+		System.Console.WriteLine("file '{0}' ã¯å­˜åœ¨ã—ã¾ã›ã‚“ã€‚",file);
 
 		file+=".ctx";
 		if(System.IO.File.Exists(file))return file;
-		System.Console.WriteLine("file '{0}' ‚Í‘¶İ‚µ‚Ü‚¹‚ñB",file);
+		System.Console.WriteLine("file '{0}' ã¯å­˜åœ¨ã—ã¾ã›ã‚“ã€‚",file);
 
 		WriteUsage();
 		return null;
 	}
 	static void WriteUsage(){
 		System.Console.WriteLine("-------------------------------------");
-		System.Console.WriteLine("g‚¢•û (syntax):\r\n\tctxc <filename>");
+		System.Console.WriteLine("ä½¿ã„æ–¹ (syntax):\r\n\tctxc <filename>");
 		System.Console.WriteLine("-------------------------------------");
 		System.Console.Write("Press any key to exit...");
 		System.Console.Read();
@@ -166,16 +167,16 @@ public static class Preprocessor{
 					return "";
 				}
 				case "include":{
-					// “Ç‚İæ‚éƒtƒ@ƒCƒ‹–¼
+					// èª­ã¿å–ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«å
 					string incfile=StringFromLiteral(m.Groups["filename"].Value);
 					if(!System.IO.File.Exists(incfile)){
-						System.Console.WriteLine("#include w’è‚µ‚½ file '{0}' ‚ÍŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½B",incfile);
+						System.Console.WriteLine("#include æŒ‡å®šã—ãŸ file '{0}' ã¯è¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸã€‚",incfile);
 						return "";
 					}else{
-						System.Console.WriteLine("#include w’è‚µ‚½ file '{0}' ‚ğæ‚è‚İ‚Ü‚·B",incfile);
+						System.Console.WriteLine("#include æŒ‡å®šã—ãŸ file '{0}' ã‚’å–ã‚Šè¾¼ã¿ã¾ã™ã€‚",incfile);
 					}
 					
-					// “à—e
+					// å†…å®¹
 					string inc_content=System.IO.File.ReadAllText(incfile,Program.enc);
 					FileInfo incinfo=new FileInfo();
 					incinfo.filename=incfile;
@@ -192,10 +193,10 @@ public static class Preprocessor{
 ";
 				}
 				case "debug": 
-					// ¡ debug 0 ˆÈŠO‚É‚Í‘Î‰‚µ‚Ä‚¢‚È‚¢B
-					// ¡ “ü‚êq‚É‚È‚Á‚Ä‚¢‚éê‡‚É‘Î‰‚µ‚Ä‚¢‚È‚¢
+					// â–  debug 0 ä»¥å¤–ã«ã¯å¯¾å¿œã—ã¦ã„ãªã„ã€‚
+					// â–  å…¥ã‚Œå­ã«ãªã£ã¦ã„ã‚‹å ´åˆã«å¯¾å¿œã—ã¦ã„ãªã„
 					System.Console.WriteLine("#debug");
-					System.Console.WriteLine("#> ˆê‚Â‚Ì debug-region ‚ªœ‹‚³‚ê‚Ü‚µ‚½");
+					System.Console.WriteLine("#> ä¸€ã¤ã® debug-region ãŒé™¤å»ã•ã‚Œã¾ã—ãŸ");
 					return "\n";
 				case "mwgwait":{
 					string fn=StringFromLiteral(m.Groups["filename"].Value).ToLower();
@@ -203,7 +204,7 @@ public static class Preprocessor{
 					return "";
 				}
 				default:
-					System.Console.WriteLine("!{0} ‚Í–¢’m‚ÌƒvƒŠƒvƒƒZƒbƒTƒfƒBƒŒƒNƒeƒBƒu‚Å‚·B–³‹‚µ‚Ü‚·B",m.Groups["name"].Value);
+					System.Console.WriteLine("!{0} ã¯æœªçŸ¥ã®ãƒ—ãƒªãƒ—ãƒ­ã‚»ãƒƒã‚µãƒ‡ã‚£ãƒ¬ã‚¯ãƒ†ã‚£ãƒ–ã§ã™ã€‚ç„¡è¦–ã—ã¾ã™ã€‚",m.Groups["name"].Value);
 					return m.Value;
 			}
 		});
@@ -213,14 +214,14 @@ public static class Preprocessor{
 	}
 
 	public static string StringFromLiteral(string str){
-		// ˆÍ‚İ•¶š
+		// å›²ã¿æ–‡å­—
 		//char c;
 		if(str[0]=='"'&&str[str.Length-1]=='"'){
 			//c='"';
 		}else if(str[0]=='\''&&str[str.Length-1]=='\''){
 			//c='\'';
 		}else{
-			throw new System.ArgumentException("w’è‚µ‚½•¶š—ñ‚ÍA•¶š—ñ‚ÌƒŠƒeƒ‰ƒ‹‚Å‚Í‚ ‚è‚Ü‚¹‚ñB\r\nw’è‚µ‚½•¶š—ñ: "+str,"str");
+			throw new System.ArgumentException("æŒ‡å®šã—ãŸæ–‡å­—åˆ—ã¯ã€æ–‡å­—åˆ—ã®ãƒªãƒ†ãƒ©ãƒ«ã§ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚\r\næŒ‡å®šã—ãŸæ–‡å­—åˆ—: "+str,"str");
 		}
 		str=str.Substring(1,str.Length-2);
 
@@ -242,7 +243,7 @@ public static class TranslateContext{
 	const string rex_quotedstr=@"""(?:[^""\\]|\\.)*""|'(?:[^'\\]|\\.)*'";
 	const string rex_quotedstr_at=@"@""(?:[^""]|"""")*""|@'(?:[^']|'')*'";
 
-	// context ‚Ì’uŠ·
+	// context ã®ç½®æ›
 	const string rex_ctxdecl=@"(?<indent>[ \t]*)\bcontext\b\s*(?<ctx>[\w\d_@]+|"+rex_quotedstr+@")\s*";
 	const string rex_ctx_new=@"(?:new\s*(?<newarg>\((?:[^""'\(\)]|"+rex_quotedstr+@")*\))\s*)?";
 #if MAKE_CONTEXT_SCOPE
@@ -255,13 +256,13 @@ public static class TranslateContext{
 		);
 #endif
 
-	// command ‚Ì’uŠ·
+	// command ã®ç½®æ›
 	const string rex_cmddecl=@"\b(?<target>command|letter)\s+(?<cmd>[\w\d_@]+\*?|"+rex_quotedstr+@")\s*";
 	const string rex_arglist=@"\s*(?<arglist>(?:[^\)'""]|"+rex_quotedstr+@")+)\s*";
 	const string rex_cmd_context=@"\s+in\s*(?<cmdctx>"+rex_quotedstr+@")\s*";
 
 
-	// {} ‚ğŠÜ‚Ü‚È‚¢ statements
+	// {} ã‚’å«ã¾ãªã„ statements
 	const string rex_nobrace	=@"[^\{\}'""]|"+rex_quotedstr;
 	const string rex_0braces	=@"(?:"+rex_nobrace+@")+";
 	const string rex_1braces	=@"(?:"+rex_0braces+@"|\{"+rex_0braces+@"\})+";
@@ -280,7 +281,7 @@ public static class TranslateContext{
   
   public static string Translate(ProgramArgs _args,string content){
 		//--------------------------------------------------
-		// context ‚Ì’uŠ·
+		// context ã®ç½®æ›
 		//--------------------------------------------------
 		content=reg_ctx.Replace(content,delegate(Rgx::Match m){
 			string name=m.Groups["ctx"].Value;
@@ -300,7 +301,7 @@ public static class TranslateContext{
         string baseContext="";
         if(m.Groups["newarg"].Success){
           baseContext=m.Groups["newarg"].Value;
-          baseContext=baseContext.Substring(1,baseContext.Length-2).Trim(); // ( ‚Æ ) ‚ğœ‹
+          baseContext=baseContext.Substring(1,baseContext.Length-2).Trim(); // ( ã¨ ) ã‚’é™¤å»
           if(baseContext.Length>0)
             baseContext=","+baseContext;
         }
@@ -318,10 +319,10 @@ public static class TranslateContext{
 #endif
 
 		//--------------------------------------------------
-		// command ‚Ì’uŠ·
+		// command ã®ç½®æ›
 		//--------------------------------------------------
 		content=reg_cmd.Replace(content,delegate(Rgx::Match m){
-			// Hook æ
+			// Hook å…ˆ
 			string target=m.Groups["target"].Value;
 			if(target=="command"){
 				target="Command";
@@ -329,11 +330,11 @@ public static class TranslateContext{
 				target="Letter";
 			}
 
-			// “o˜^–¼
+			// ç™»éŒ²å
 			string name=m.Groups["cmd"].Value;
 			if(name[0]!='"')name="\""+name+"\"";
 
-			// Šù’è‚Ìˆø”
+			// æ—¢å®šã®å¼•æ•°
 			string arglist=m.Groups["arglist"].Value;
 			if(arglist=="") {
 				arglist="null";
@@ -341,7 +342,7 @@ public static class TranslateContext{
 				arglist="["+arglist+"]";
 			}
 
-			// ƒRƒ}ƒ“ƒh‚Ìí—Ş
+			// ã‚³ãƒãƒ³ãƒ‰ã®ç¨®é¡
 			string type;
 			string definition=m.Groups["str"].Value;
 			if(definition!=""){
@@ -352,15 +353,15 @@ public static class TranslateContext{
 						type="Static";
 						if(m.Groups["cmdctx"].Success){
 							arglist+=","+m.Groups["cmdctx"].Value+"";
-							// ¦ m.Groups["cmdctx"].Value ‚Í context –¼‚ğŠi”[‚µ‚½•¶š—ñƒŠƒeƒ‰ƒ‹
-							// @ns.Command.parser “à‚Å (•¶š—ñ ¨ Context) ‚Ì©“®•ÏŠ·‚ªs‚í‚ê‚éB
+							// â€» m.Groups["cmdctx"].Value ã¯ context åã‚’æ ¼ç´ã—ãŸæ–‡å­—åˆ—ãƒªãƒ†ãƒ©ãƒ«
+							// ã€€ns.Command.parser å†…ã§ (æ–‡å­—åˆ— â†’ Context) ã®è‡ªå‹•å¤‰æ›ãŒè¡Œã‚ã‚Œã‚‹ã€‚
 						}else{
 							arglist+=",_Ctx";
 						}
 						break;
 					case 'D': type="Dynamic"; break;
 					default:
-						throw new System.Exception("ä¢‚É‚Í—ˆ‚È‚¢”¤");
+						throw new System.Exception("èŒ²ã«ã¯æ¥ãªã„ç­ˆ");
 				}
 			}else{
 				definition=m.Groups["func"].Value;
@@ -381,7 +382,7 @@ public static class TranslateContext{
 		content=TranslateCommand2(_args,content);
 
 		//--------------------------------------------------
-		// s“ª‚Ì’uŠ·
+		// è¡Œé ­ã®ç½®æ›
 		//--------------------------------------------------
 		//content=RegExp.Indent(content);
 
@@ -389,7 +390,7 @@ public static class TranslateContext{
 	}
   
 	//==========================================================================
-	//	command2 ‚Ì’uŠ·
+	//	command2 ã®ç½®æ›
 	//==========================================================================
 	const string rex_braces		=@"(?:"+rex_nobrace+@"|(?'start'\{)|(?'end-start'\}))*?(?=\})(?(start)(?!))";
 	const string rex_cmd2decl	=@"\b(?<target>command|letter|environment)\s+(?<cmdtype>[sf][^\\#]*)[\\#](?<cmdname>[\w\d_@]+\*?|"+rex_quotedstr+@"|[^'""])\s*";
@@ -402,11 +403,11 @@ public static class TranslateContext{
 		);
 	static string TranslateCommand2(ProgramArgs _args,string content){
 		content=reg_cmd2.Replace(content,delegate(Rgx::Match m){
-			// “o˜^–¼
+			// ç™»éŒ²å
 			string name=m.Groups["cmdname"].Value;
 			if(name[0]!='"'&&name[0]!='\'')name=RegExp.DoubleQuoteText(name);
 
-			// Hook æ
+			// Hook å…ˆ
 			string target=m.Groups["target"].Value;
 			switch(target){
 				case "command":
@@ -438,21 +439,21 @@ public static class TranslateContext{
 		return content;
 	}
 	static string GetCommandInitializer(Rgx::Match m){
-		// ƒRƒ}ƒ“ƒh‚Ìí—Ş
+		// ã‚³ãƒãƒ³ãƒ‰ã®ç¨®é¡
 		string cmdtype='"'+m.Groups["cmdtype"].Value+'"';
 
-		// Šù’è‚Ìˆø”
+		// æ—¢å®šã®å¼•æ•°
 		string argdef=m.Groups["arg"].Value;
 		if(argdef=="")
 			argdef="null";
 		else if(argdef[0]!='"'&&argdef[0]!='\'')
 			argdef=RegExp.DoubleQuoteText(argdef);
 
-		// ƒRƒ}ƒ“ƒh‚Ì“à—e
+		// ã‚³ãƒãƒ³ãƒ‰ã®å†…å®¹
 		string definition=m.Groups["str"].Value;
 		{
 			if(definition!=""){
-				// @ •¶š—ñ‚ğ’Êí•¶š—ñ‚É•ÏŠ·
+				// @ æ–‡å­—åˆ—ã‚’é€šå¸¸æ–‡å­—åˆ—ã«å¤‰æ›
 				if(definition[0]=='@'){
 					string q=definition[1].ToString();
 					definition=q+definition.Substring(2).Replace("\\","\\\\").Replace(q+q,"\\"+q);
@@ -469,7 +470,7 @@ public static class TranslateContext{
 		return "new ns.Command2("+cmdtype+","+argdef+","+definition+")";
 	}
   static string GetCommandInitializer_1308(Rgx::Match m){
-		// ƒRƒ}ƒ“ƒh‚Ìí—Ş
+		// ã‚³ãƒãƒ³ãƒ‰ã®ç¨®é¡
 		string cmdtype=m.Groups["cmdtype"].Value;
 		string argdef=RegExp.UnquoteText(m.Groups["arg"].Value);
     string commandTypeAndParam;
@@ -478,10 +479,10 @@ public static class TranslateContext{
     else
       commandTypeAndParam=RegExp.SingleQuoteText(cmdtype);
 
-		// ƒRƒ}ƒ“ƒh‚Ì“à—e
+		// ã‚³ãƒãƒ³ãƒ‰ã®å†…å®¹
 		string definition=m.Groups["str"].Value;
     if(definition!=""){
-      // @ •¶š—ñ‚ğ’Êí•¶š—ñ‚É•ÏŠ·
+      // @ æ–‡å­—åˆ—ã‚’é€šå¸¸æ–‡å­—åˆ—ã«å¤‰æ›
       if(definition[0]=='@'){
         string q=definition[1].ToString();
         definition=q+definition.Substring(2).Replace("\\","\\\\").Replace(q+q,"\\"+q);
@@ -498,7 +499,7 @@ public static class TranslateContext{
   }
 	static string GetEnvironmentInitializer(Rgx::Match m){
 
-		// ƒRƒ}ƒ“ƒh‚Ìí—Ş
+		// ã‚³ãƒãƒ³ãƒ‰ã®ç¨®é¡
 		string cmdtype,context;
 		{
 			string value=m.Groups["cmdtype"].Value;
@@ -508,22 +509,22 @@ public static class TranslateContext{
 				context=RegExp.DoubleQuoteText(value.Substring(index+1));
 			}else{
 				cmdtype=RegExp.DoubleQuoteText(value);
-				context="_CtxName"; // “o˜^æ‚Ì context
+				context="_CtxName"; // ç™»éŒ²å…ˆã® context
 			}
 		}
 
-		// Šù’è‚Ìˆø”
+		// æ—¢å®šã®å¼•æ•°
 		string argdef=m.Groups["arg"].Value;
 		if(argdef=="")
 			argdef="null";
 		else if(argdef[0]!='"'&&argdef[0]!='\'')
 			argdef=RegExp.DoubleQuoteText(argdef);
 
-		// ƒRƒ}ƒ“ƒh‚Ì“à—e
+		// ã‚³ãƒãƒ³ãƒ‰ã®å†…å®¹
 		string definition=m.Groups["str"].Value;
 		{
 			if(definition!=""){
-				// @ •¶š—ñ‚ğ’Êí•¶š—ñ‚É•ÏŠ·
+				// @ æ–‡å­—åˆ—ã‚’é€šå¸¸æ–‡å­—åˆ—ã«å¤‰æ›
 				if(definition[0]=='@'){
 					string q=definition[1].ToString();
 					definition=q+definition.Substring(2).Replace("\\","\\\\").Replace(q+q,"\\"+q);
@@ -586,7 +587,7 @@ public static class RegExp{
 	static Rgx::Regex reg_empline=new Rgx::Regex(@"(?:\r?\n|\r)(?:\s*(?:\r?\n|\r))+");
 	static Rgx::Regex reg_strline=new Rgx::Regex(@"^\s+",Rgx::RegexOptions.Multiline);
 	public static string CutComment(string str){
-		// ¦ '//' ‚Ån‚Ü‚éƒRƒƒ“ƒg‚ÉŒÇ—§‚µ‚½ ",' ‚ªŠÜ‚Ü‚ê‚Ä‚¢‚éê‡‚É‚Í–³‹‚³‚ê‚é
+		// â€» '//' ã§å§‹ã¾ã‚‹ã‚³ãƒ¡ãƒ³ãƒˆã«å­¤ç«‹ã—ãŸ ",' ãŒå«ã¾ã‚Œã¦ã„ã‚‹å ´åˆã«ã¯ç„¡è¦–ã•ã‚Œã‚‹
 		str=reg_comment.Replace(str,"\r\n");
 		str=reg_empline.Replace(str,"\r\n");
 		str=reg_strline.Replace(str,"");
