@@ -1,22 +1,30 @@
-# Makefile
+# -*- mode: makefile-gmake -*-
+
+all:
+.PHONY: all
 
 include csc_default.mk
 
-all: csscompat.exe
-csscompat.exe: csscompat.cs
-	$(CSC) $(CSFLAGS) $<
+OUTDIR:=out
 
-all: ctxc.exe
-ctxc.exe: ctxc.frame.js ctxc.cs
-	$(CSC) $(CSFLAGS) -res:ctxc.frame.js ctxc.cs
+all: $(OUTDIR)/csscompat.exe
+$(OUTDIR)/csscompat.exe: csscompat.cs | $(OUTDIR)
+	$(CSC) $(CSFLAGS) '-out:$@' $<
 
-all: gzjs.exe
-gzjs.exe:
+$(OUTDIR):
+	mkdir -p $@
+
+all: $(OUTDIR)/ctxc.exe
+$(OUTDIR)/ctxc.exe: ctxc.cs ctxc.frame.js | $(OUTDIR)
+	$(CSC) $(CSFLAGS) '-out:$@' $< '-res:ctxc.frame.js'
+
+all: $(OUTDIR)/gzjs.exe
+$(OUTDIR)/gzjs.exe:
 	make -C gzjs
 
-all: reptxt.exe
-reptxt.exe: reptxt.cs
-	$(CSC) $(CSFLAGS) $<
+all: $(OUTDIR)/reptxt.exe
+$(OUTDIR)/reptxt.exe: reptxt.cs | $(OUTDIR)
+	$(CSC) $(CSFLAGS) '-out:$@' $<
 
 #------------------------------------------------------------------------------
 # on koichi@gauge
@@ -25,7 +33,7 @@ ifeq ($(USER)@$(HOSTNAME)/$(OSTYPE),koichi@gauge/win)
 
 KCHBIN:=$(shell cygpath -u c:/usr/koichi/bin)
 all: $(KCHBIN)/reptxt.exe
-$(KCHBIN)/reptxt.exe: reptxt.exe
+$(KCHBIN)/reptxt.exe: $(OUTDIR)/reptxt.exe
 	cp $< $@
 
 endif
