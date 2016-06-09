@@ -26,6 +26,9 @@ all: $(OUTDIR)/reptxt.exe
 $(OUTDIR)/reptxt.exe: reptxt.cs | $(OUTDIR)
 	$(CSC) $(CSFLAGS) '-out:$@' $<
 
+all: make-unidata
+	make -C ext/unidata
+
 #------------------------------------------------------------------------------
 # on koichi@gauge
 

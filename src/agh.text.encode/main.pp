@@ -1,4 +1,4 @@
-//                                             -*- mode:js;coding:utf-8-dos -*-
+//                                            -*- mode:js;coding:utf-8-unix -*-
 //*****************************************************************************
 //
 //    Ageha 3.1 - agh.text.encode
@@ -15,7 +15,7 @@
 /// <reference path="agh.js"/>
 agh.scripts.register("agh.text.encode.js",["agh.js"],function(){
 
-#%include gencat.js
+#%include .gen/gencat.js
 
   var StringBuffer=function(){
     this.buff=[];

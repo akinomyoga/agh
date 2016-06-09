@@ -1,3 +1,6 @@
 [submodule "src/latex/aghfonts"]
 	path = src/latex/aghfonts
 	url = git@github.com:akinomyoga/aghfonts.git
+[submodule "tools/ext/unidata"]
+	path = tools/ext/unidata
+	url = git@github.com:akinomyoga/unidata.git
