@@ -1,1 +1,1 @@
---extension=ctx
+--extension=ctx --exclude=out
