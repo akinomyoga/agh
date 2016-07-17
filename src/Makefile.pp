@@ -189,14 +189,13 @@ copy_file: $(copy_file)
 #%m subdir
 .PHONY: "Name"
 all: "Name"
-"Name": "Dir"/Makefile
+"Name": "Dir"/Makefile "Deps"
 	make -C "Dir"
 "Dir"/Makefile: "Dir"/Makefile.pp
 	$(MWGPP) $< > $@
 #%end
 
-#%x subdir .r/"Name"/make-addon/ .r/"Dir"/addon/
-#%x subdir .r/"Name"/make-latex/ .r/"Dir"/latex/
-#%x subdir .r/"Name"/make-ps/    .r/"Dir"/agh.lang.ps/
-#%x subdir .r/"Name"/make-encode/.r/"Dir"/agh.text.encode/
-
+#%x subdir .r/"Name"/make-addon/ .r/"Dir"/addon/           .r/"Deps"/make-latex make-ps make-encode/
+#%x subdir .r/"Name"/make-latex/ .r/"Dir"/latex/           .r/"Deps"//
+#%x subdir .r/"Name"/make-ps/    .r/"Dir"/agh.lang.ps/     .r/"Deps"//
+#%x subdir .r/"Name"/make-encode/.r/"Dir"/agh.text.encode/ .r/"Deps"//
