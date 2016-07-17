@@ -186,23 +186,17 @@ copy_file: $(copy_file)
 # subdirectories
 #-------------------------------------------------------------------------------
 
-.PHONY: make-latex
-all: make-latex
-make-latex:
-	make -C latex
+#%m subdir
+.PHONY: "Name"
+all: "Name"
+"Name": "Dir"/Makefile
+	make -C "Dir"
+"Dir"/Makefile: "Dir"/Makefile.pp
+	$(MWGPP) $< > $@
+#%end
 
-.PHONY: make-addon
-all: make-addon
-make-addon:
-	make -C addon
-
-.PHONY: make-ps
-all: make-ps
-make-ps:
-	make -C agh.lang.ps
-
-.PHONY: make-encode
-all: make-encode
-make-encode:
-	make -C agh.text.encode
+#%x subdir .r/"Name"/make-addon/ .r/"Dir"/addon/
+#%x subdir .r/"Name"/make-latex/ .r/"Dir"/latex/
+#%x subdir .r/"Name"/make-ps/    .r/"Dir"/agh.lang.ps/
+#%x subdir .r/"Name"/make-encode/.r/"Dir"/agh.text.encode/
 

@@ -1,7 +1,7 @@
 # -*- makefile-gmake -*-
 
 all:
-.PHONY: all dist
+.PHONY: all dist doc
 
 dist_excludes= \
  --exclude=./$(AGHDIR)/.git \
@@ -38,14 +38,16 @@ ChangeLog.htm: ChangeLog.lwiki
 	lwiki convert --header --aghbase=out $< > $@
 ChangeLog.txt: ChangeLog.htm
 	w3m -T text/html -no-graph $< > $@
-all: ChangeLog.txt
+doc: ChangeLog.txt
 
 .PHONY: make-tools make-src
 all: make-src
 make-tools:
 	make -C tools all
-make-src: make-tools
+make-src: make-tools src/Makefile
 	make -C src all
+src/Makefile: src/Makefile.pp
+	tools/ext/mwg_pp.awk $< > $@
 
 # --exclude=./$(AGHDIR)/out/stamp@* \
 # --exclude=./$(AGHDIR)/out/addon \
