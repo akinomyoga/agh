@@ -122,45 +122,34 @@ The script `agh/agh.lang.tex.js` provides an interpreter of PostScript.
 ```html
 <script type="text/javascript" src="/path/to/agh/agh.js"></script>
 <script type="text/javascript">
-function get_script_content(elem){
-  if(agh.browser.vIE)
-    return elem.text;
-  else if(agh.browser.vFx)
-    return elem.textContent;
-  else
-    return elem.innerText;
-}
-
 agh.scripts.wait(["event:onload", "agh.lang.ps.js"], function(){
   var psimage = document.getElementById("psimage");
-  var source = get_script_content(psimage.getElementsByTagName("script")[0]);
+  var source = agh.Text.Unescape(psimage.innerHTML, "html");
   var ps = new agh.PostScript.Processor({
-    target: document.getElementById("psout"),
+    target: psimage,
     bb: [0,0,610,790],
     size: ['500px','500px']
   });
+  ps.graphics.SetBoundingBox(0,0,610,790);
   ps.outstream=console.log;
   ps.Run(source);
 });
 </script>
 <div id="psimage">
-<script type="application/postscript">
 %%BoundingBox: 0 0 600 600
 %%MwgOptimization: ib
 %!OPS-1.0 %%Creator: HAYAKAWA,Takashi (h-takasi@isea.is.titech.ac.jp)
 /p/floor/S/add/A/copy/n/exch/i/index/J/ifelse/r/roll/e/sqrt/H{count 2 idiv exch
 repeat}def/q/gt/h/exp/t/and/C/neg/T/dup/Y/pop/d/mul/w/div/s/cvi/R/rlineto{load
 def}H/c(j1idj2id42rd)/G(140N7)/Q(31C85d4)/B(V0R0VRVC0R)/K(WCVW)/U(4C577d7)300
-T translate/I(3STinTinTinY)/l(993dC99Cc96raN)/k(X&E9!&1!J)/Z(blxC1SdC9n5dh)/j
-(43r)/O(Y43d9rE3IaN96r63rvx2dcaN)/z(&93r6IQO2Z4o3AQYaNlxS2w!)/N(3A3Axe1nwc)/W
-270 def/L(1i2A00053r45hNvQXz&vUX&UOvQXzFJ!FJ!J)/D(cjS5o32rS4oS3o)/v(6A)/b(7o)
-/F(&vGYx4oGbxSd0nq&3IGbxSGY4Ixwca3AlvvUkbQkdbGYx4ofwnw!&vlx2w13wSb8Z4wS!J!)/X
-(4I3Ax52r8Ia3A3Ax65rTdCS4iw5o5IxnwTTd32rCST0q&eCST0q&D1!&EYE0!J!&EYEY0!J0q)/V
+T translate/I(3STinTinTinY)/l(993dC99Cc96raN)/k(X&amp;E9!&amp;1!J)/Z(blxC1SdC9n5dh)/j
+(43r)/O(Y43d9rE3IaN96r63rvx2dcaN)/z(&amp;93r6IQO2Z4o3AQYaNlxS2w!)/N(3A3Axe1nwc)/W
+270 def/L(1i2A00053r45hNvQXz&amp;vUX&amp;UOvQXzFJ!FJ!J)/D(cjS5o32rS4oS3o)/v(6A)/b(7o)
+/F(&amp;vGYx4oGbxSd0nq&amp;3IGbxSGY4Ixwca3AlvvUkbQkdbGYx4ofwnw!&amp;vlx2w13wSb8Z4wS!J!)/X
+(4I3Ax52r8Ia3A3Ax65rTdCS4iw5o5IxnwTTd32rCST0q&amp;eCST0q&amp;D1!&amp;EYE0!J!&amp;EYEY0!J0q)/V
 3 def/x(jd5o32rd4odSS)/a(1CD)/E(YYY)/o(1r)/f(nY9wn7wpSps1t1S){[n{( )T 0 4 3 r
 put T(/)q{T(9)q{cvn}{s}J}{($)q{[}{]}J}J cvx}forall]cvx def}H K{K{L setgray
 moveto B fill}for Y}for showpage
-</script>
-<div id="psout" style="width:540px;height:540px;overflow:scroll;position:relative;"></div>
 </div>
 ```
 
