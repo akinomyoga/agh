@@ -1,0 +1,958 @@
+@charset "utf-8"; /* 日本語 */
+
+/* @font-face Local Fonts, Synthesize の問題について
+ * -Cr local のフォントで bold 版がある場合でも、
+ *     font-weight:bold での指定がなければ synthesize を実行し、ぼけぼけになる。
+ *     これを防ぐ為に font-weight:bold での指定を明示的に追加する必要がある。
+ *     大体 local("フォント名 Bold") を指定すれば良い。
+ * -Fx ぼけぼけにはならないが改めて観察して見た所 synthesize している様だ。
+ *     Fx も local("フォント名 Bold") で大丈夫な様だ。
+ * -IE そもそも font-weight, font-style を指定できるのは IE9 以降だ。
+ * -Op12 Presto は優秀だ。local に bold 版があればちゃんとそれを使ってくれる。
+ */
+@font-face{
+  font-family:aghtex_roman;
+  src:local("Times New Roman"),local("Times Roman"),local("Times");
+}
+@font-face{
+  font-family:aghtex_mincho;
+  src:/*local("モリサワ リュウミン"),*/
+    local("Hiragino Mincho Pro"),
+    local("IPA P明朝"),local("MS PMincho"),local("ＭＳ Ｐ明朝");
+}
+@font-face{
+  font-family:aghtex_gothic;
+  src:local("Hiragino Kaku Gothic Pro"),
+    local("MS PGothic"),local("ＭＳ Ｐゴシック");
+}
+@font-face{
+  font-family:aghtex_meiryo;
+  /* MeiryoKe_PGothic は Firefox4.0 で文字化けする (Meiryo は OK) */
+  src:local("MeiryoKe_PGothic"),local("Hiragino Kaku Gothic Pro"),
+    local("MS PGothic"),local("ＭＳ Ｐゴシック");
+}
+
+/*----------------------------------------------------------
+		容れ物
+----------------------------------------------------------*/
+/* TeX 既定の設定 */
+tex\:container,
+tex\:math{text-indent:0px;line-height:normal;font-family:aghtex_roman,serif;font-style:normal;}
+
+/* TeX 既定の設定 - 数式モード */
+/* 2013-11-06 以下のコードは何の為にあったのか?
+tex\:container.aghtex-math table,
+tex\:math table{border:0px;border-collapse:separate;}
+*/
+tex\:container.aghtex-math td,
+tex\:math td{padding:0px;border-width:0px;white-space:nowrap;}
+
+/* -- */
+div.tex-center{text-align:center;}
+div.tex-right{text-align:right;}
+div.tex-left{text-align:left;}
+
+/* TeX */
+  tex\:La{font-family:aghtex_roman,aghtex_mincho,serif;letter-spacing:-0.5ex;}
+  tex\:La span{vertical-align:20%;font-size:80%;}
+  tex\:TeX{font-family:aghtex_roman,aghtex_mincho,serif;letter-spacing:-0.3ex;}
+  tex\:TeX span{vertical-align:-20%;}
+  tex\:AmS{font-family:aghtex_mathcal,aghtex_gothic,sans-serif;letter-spacing:-0.45ex;}
+  tex\:AmS span{vertical-align:-20%;}
+
+p.tex-vspace{margin:0px;padding:0px;}
+
+dl.tex-desc{margin-left:1em;}
+dl.tex-desc dt{font-weight:bold;}
+dl.tex-desc dt tex\:dt{position:relative;left:-1em;}
+dl.tex-desc dd{margin-left:1em;display:block;margin-top:.8ex;margin-bottom:.8ex;}
+
+blockquote.tex-quote{text-indent:0px;}
+blockquote.tex-quota{text-indent:1em;}
+tex\:verse{display:block;margin-left:2em;margin-right:2em;}
+
+tex\:mbox{display:inline-block;vertical-align:baseline;white-space:nowrap;}
+tex\:mbox.aghtex-latex-fbox{border:1px solid ;padding:.3em;}
+tex\:mbox.aghtex-latex-frame{border:1px solid ;padding:0em;}
+
+/* \begin{enumerate}, \begin{itemize} */
+ul.aghtex-ie,
+ol.aghtex-ie{margin-left:2em;}
+  ul.aghtex-item li,
+  ol.aghtex-enum li{margin-top:.8ex;margin-bottom:.8ex;}
+
+li.aghtex-itemize-marked{list-style-type:none;position:relative;}
+tex\:i.aghtex-itemize-mark1{position:absolute;left:-1ex;}
+tex\:i.aghtex-itemize-mark2{position:absolute;right:0px;}
+
+/*----------------------------------------------------------
+		基本共通コマンド (mod:common)
+----------------------------------------------------------*/
+
+/* overline (math mode) は中身の margin を反映する為に display:inline-block にする */
+tex\:i.aghtex-overline{border-top-width:1px;border-top-style:solid;display:inline-block;margin-top:1px;}
+
+/* underline は途中改行できるように display:inline にする */
+tex\:i.aghtex-underline{border-bottom-width:1px;border-bottom-style:solid;}
+
+/*----------------------------------------------------------
+		重ね合わせ・アクセント等 (mod:math)
+----------------------------------------------------------*/
+/* 重ね合わせ */
+tex\:lap{display:inline-block;text-align:center;line-height:0px;}
+tex\:lap tex\:m{display:block;position:relative;top:0;line-height:0px;}
+tex\:lap tex\:u{font-size:80%;display:block;position:relative;top:-0.6em;line-height:0px;}
+tex\:lap tex\:d{font-size:80%;display:block;position:relative;top:0.6em;line-height:0px;}
+tex\:lap tex\:math{line-height:0px;}
+
+tex\:lap tex\:lapm{display:block;position:relative;top:0px;left:0px;}
+tex\:lap tex\:lapm img.tex-lapm-cover{position:absolute;top:0px;left:0px;width:100%;height:100%;}
+
+tex\:i.aghtex-accent{position:relative;top:0;left:0;}
+tex\:i.aghtex-accent-acc{display:inline-block;margin-top:0.10em;}
+tex\:i.aghtex-accent-vec{display:inline-block;margin-top:0.15em;}
+  /* IE7 以下では display:inline とする */
+  tex\:i.aghtex-accent-acc{*display:inline;*margin-top:0.20em;}
+  tex\:i.aghtex-accent-vec{*display:inline;*margin-top:0.20em;}
+
+tex\:i.aghtex-accent-container{position:absolute;top:0;left:0;width:100%;text-align:center;}
+
+tex\:i.aghtex-accent-symbol-over,
+tex\:i.aghtex-accent-symbol-low ,
+tex\:i.aghtex-accent-symbol-lowT,
+tex\:i.aghtex-accent-symbol-acc ,
+tex\:i.aghtex-accent-symbol-accS,
+tex\:i.aghtex-accent-symbol-accL,
+tex\:i.aghtex-accent-symbol-accU,
+tex\:i.aghtex-accent-symbol-vec ,
+tex\:i.aghtex-accent-symbol-vecS,
+tex\:i.aghtex-accent-symbol-vecL,
+tex\:i.aghtex-accent-symbol-vecU{position:relative;margin-left:-0.5ex;margin-right:-0.5ex;}
+
+tex\:i.aghtex-accent-symbol-low {top:0.00em;}
+tex\:i.aghtex-accent-symbol-lowT{top:0.20em;}
+
+tex\:i.aghtex-accent-symbol-accS,
+tex\:i.aghtex-accent-symbol-accL{top:-0.10em;}
+tex\:i.aghtex-accent-symbol-acc,
+tex\:i.aghtex-accent-symbol-accU{top:-0.35em}
+tex\:i.aghtex-accent-symbol-vecS,
+tex\:i.aghtex-accent-symbol-vecL{top:-0.48em;}
+tex\:i.aghtex-accent-symbol-vec,
+tex\:i.aghtex-accent-symbol-vecU{top:-0.70em;}
+
+/* italic corrections */
+tex\:i.aghtex-accent-symbol-accL,
+tex\:i.aghtex-accent-symbol-vecL{left:0.08em;}
+tex\:i.aghtex-accent-symbol-accU,
+tex\:i.aghtex-accent-symbol-vecU{left:0.15em;}
+
+
+/* [Sf] 少し Chrome と表示される位置が異なる in Windows */
+tex\:i.aghtex-accent-sf-acc{top:-0.05em;}
+tex\:i.aghtex-accent-sf-vec{top:-0.05em;}
+
+/*----------------------------------------------------------
+		字体
+----------------------------------------------------------*/
+
+/* --- 数式フォント定義 --- */
+/* font:\mathit */
+  @font-face{
+    font-family:aghtex_mathit;
+    src:url(aghtex_mathit.eot);
+  }
+
+/* font:\mathcal */
+@font-face{
+  font-family:aghtex_mathcal;
+  src:url(aghtex_mathcal.eot);
+	/*local('cmsy10'),*/
+}
+/* font:\mathfrak */
+@font-face{
+  font-family:aghtex_mathfrak;
+  src:url(aghtex_mathfrak.eot);
+	/*local('eufm10'),*/
+}
+/* font:\mathbb, aghtex-syma */
+@font-face{
+  font-family:aghtex_mathbb;
+  src:url(aghtex_mathbb.eot);
+	/*local('msbm10'),*/
+}
+/* font:aghtex_mathrm, aghtex-symb */
+@font-face{
+  font-family:aghtex_mathrm;
+  src:url(aghtex_mathrm.eot);
+}
+
+/* ------------------------------------------------------ */
+
+/* --- フォント --- */
+
+/* サイズ */
+tex\:f.aghtex-size-normal{font-size:100%;}
+tex\:f.aghtex-size-small1{font-size:90%;} /* \small */
+tex\:f.aghtex-size-small2{font-size:80%;} /* \footnotesize */
+tex\:f.aghtex-size-small3{font-size:75%;} /* \scriptsize */
+tex\:f.aghtex-size-small4{font-size:65%;} /* \tiny */
+tex\:f.aghtex-size-large1{font-size:120%;} /* \large */
+tex\:f.aghtex-size-large2{font-size:140%;} /* \Large */
+tex\:f.aghtex-size-large3{font-size:170%;} /* \LARGE */
+tex\:f.aghtex-size-large4{font-size:200%;} /* \huge */
+tex\:f.aghtex-size-large5{font-size:250%;} /* \Huge */
+
+/* 字体 (text mode) */
+tex\:f.aghtex-textsy{font-family:Symbol;}
+tex\:f.aghtex-textmc{font-family:aghtex_mincho,serif;}
+tex\:f.aghtex-textgt{font-family:aghtex_gothic,sans-serif;}
+tex\:f.aghtex-textmr{font-family:aghtex_meiryo,sans-serif;}
+tex\:f.aghtex-textrm{font-family:aghtex_roman,aghtex_mincho,serif;}
+
+tex\:fcent{font-family:Century,aghtex_gothic,sans-serif;}
+tex\:fnorm{
+  font-family:aghtex_roman,aghtex_mincho,serif;
+  font-weight:normal;font-style:normal;}
+
+/* unused */
+tex\:f.aghtex-textui{font-family:'MS UI Gothic',aghtex_gothic,sans-serif;}
+
+tex\:f.aghtex-textsf{font-family:sans-serif;}
+tex\:f.aghtex-texttt{font-family:"Courier New",monospace;}
+/* - Font Series */
+tex\:f.aghtex-textmd{font-weight:normal;}
+tex\:f.aghtex-textbf{font-weight:bold;}
+/* - Font Shape */
+tex\:f.aghtex-textup{font-style:normal;}
+tex\:f.aghtex-textsl{font-style:oblique;font-family:sans-serif;}
+tex\:f.aghtex-textsc{font-style:normal;font-variant:small-caps;} /* text-transform:uppercase; */
+tex\:f.aghtex-textit{font-style:italic;font-family:"Times New Roman";}
+
+tex\:i.aghtex-emphasize,
+tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize,
+tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize
+{font-weight:normal;font-style:italic;font-family:aghtex_roman;}
+tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize,
+tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize
+{font-weight:bold;font-style:normal;font-family:aghtex_roman;}
+
+/* 記号類 */
+tex\:f.aghtex-symb-mincho{font-style:normal;font-family:aghtex_mathrm,aghtex_mincho,aghtex_roman,serif;}
+tex\:f.aghtex-symb-gothic{font-style:normal;font-family:aghtex_mathrm,aghtex_gothic,sans-serif;}
+tex\:f.aghtex-symb-roman{font-style:normal;font-family:aghtex_mathrm,aghtex_roman,serif;}
+tex\:f.aghtex-symb-meiryo{font-style:normal;font-family:aghtex_mathrm,aghtex_meiryo,sans-serif;}
+tex\:f.aghtex-symb-cent{font-family:aghtex_mathrm,Century,aghtex_gothic,sans-serif;}
+tex\:f.aghtex-syma-mincho{font-style:normal;font-family:aghtex_mathbb,aghtex_mathrm,aghtex_mincho,aghtex_roman,serif;}
+tex\:f.aghtex-binop{margin-left:0.2em;margin-right:0.2em;}
+tex\:f.aghtex-comma{margin-right:0.3ex;}
+tex\:f.aghtex-lbrace{margin-left:0.2ex;margin-right:0;}
+tex\:f.aghtex-rbrace{margin-left:0;margin-right:0.2ex;}
+tex\:f.aghtex-mbrace{margin-left:0.2ex;margin-right:0.2ex;}
+
+/* --- 数式フォント適用 --- */
+/* \mathit */
+tex\:f.aghtex-mathit{
+  font-family:aghtex_roman,serif;font-style:italic;font-weight:normal;
+}
+tex\:math tex\:f.aghtex-digit{ /* 数字は直立 (= mathrm) */
+  font-family:aghtex_mathrm,aghtex_roman,serif;font-style:normal;font-weight:normal;}
+tex\:math tex\:f.aghtex-greek,
+tex\:math tex\:f.aghtex-alpha,
+tex\:math tex\:f.aghtex-mathit tex\:f.aghtex-digit,
+tex\:math tex\:f.aghtex-mathit tex\:f.aghtex-greek,
+tex\:math tex\:f.aghtex-mathit tex\:f.aghtex-alpha{
+  font-family:aghtex_mathit,aghtex_roman,serif;font-style:normal;font-weight:normal;}
+/* \bm */
+tex\:f.aghtex-mathbm{
+  font-family:aghtex_roman,serif;font-style:italic;font-weight:bold;
+}
+tex\:math tex\:f.aghtex-mathbm tex\:f.aghtex-greek,
+tex\:math tex\:f.aghtex-mathbm tex\:f.aghtex-alpha{
+  font-family:aghtex_mathit,aghtex_roman,serif;font-style:normal;font-weight:bold;
+}
+tex\:math tex\:f.aghtex-mathbm tex\:f.aghtex-digit{ /* 数字は直立太字 (= mathbf) */
+  font-family:aghtex_mathrm,aghtex_roman,serif;font-style:normal;font-weight:bold;}
+/* \hm */
+tex\:f.aghtex-mathhm{
+  font-family:aghtex_roman,serif;font-style:italic;font-weight:900;
+}
+tex\:math tex\:f.aghtex-mathhm tex\:f.aghtex-alpha{
+  font-family:aghtex_mathit,aghtex_roman,serif;font-style:normal;font-weight:900;
+}
+/* \mathrm */
+tex\:f.aghtex-mathrm{
+  font-family:aghtex_roman,serif;font-style:normal;font-weight:normal;}
+tex\:math tex\:f.aghtex-mathrm tex\:f.aghtex-greek,
+tex\:math tex\:f.aghtex-mathrm tex\:f.aghtex-digit,
+tex\:math tex\:f.aghtex-mathrm tex\:f.aghtex-alpha{
+  font-family:aghtex_mathrm,aghtex_roman,serif;font-style:normal;font-weight:normal;}
+/* \mathsf */
+tex\:f.aghtex-mathsf,
+tex\:math tex\:f.aghtex-mathsf tex\:f.aghtex-alpha{
+  font-family:sans-serif;font-style:normal;font-weight:normal;
+}
+/* \mathtt */
+tex\:f.aghtex-mathtt,
+tex\:math tex\:f.aghtex-mathtt tex\:f.aghtex-alpha{
+  font-family:"Courier New",monospace;font-style:normal;font-weight:normal;
+}
+/* \mathbf */
+tex\:f.aghtex-mathbf{
+  font-family:aghtex_roman,serif;font-style:normal;font-weight:bold;}
+tex\:math tex\:f.aghtex-mathbf tex\:f.aghtex-alpha,
+tex\:math tex\:f.aghtex-mathbf tex\:f.aghtex-digit{
+  font-family:aghtex_mathrm,aghtex_roman,serif;font-style:normal;font-weight:bold;}
+/* \mathcal */
+tex\:f.aghtex-mathcal,
+tex\:math tex\:f.aghtex-mathcal tex\:f.aghtex-alpha-lower{
+  font-family:'Monotype Corsiva','Script','HG正楷書体-PRO','HGP教科書体',cursive;
+  font-style:normal;
+}
+tex\:math tex\:f.aghtex-mathcal tex\:f.aghtex-alpha-upper{
+  font-family:aghtex_mathcal,'Monotype Corsiva','Script',cursive;
+  font-style:normal;
+}
+/* \mathfrak */
+tex\:f.aghtex-mathfrak{
+  font-family:'Script','Monotype Corsiva','HGP行書体','HG行書体',cursive;}
+tex\:math tex\:f.aghtex-mathfrak tex\:f.aghtex-alpha,
+tex\:math tex\:f.aghtex-mathfrak tex\:f.aghtex-digit{
+  font-family:aghtex_mathfrak,'Script','Monotype Corsiva',cursive;
+  font-style:normal;letter-spacing:-.1ex;
+  padding-right:.1ex;
+}
+
+/* --- 文字の大きさ --- */
+tex\:big2{font-size:170%;}
+tex\:small1{font-size:85%;}
+tex\:small2{font-size:80%;}
+tex\:small3{font-size:75%;}
+tex\:small4{font-size:65%;}
+
+tex\:big.aghtex-bigl{margin-left:0.12em;margin-right:0;}
+tex\:big.aghtex-bigr{margin-left:0;margin-right:0.12em;}
+tex\:big.aghtex-bigm{margin-left:0.12em;margin-right:0.12em;}
+tex\:big.aghtex-bigl tex\:f,
+tex\:big.aghtex-bigr tex\:f,
+tex\:big.aghtex-bigm tex\:f{margin-left:0;margin-right:0;}
+tex\:big.aghtex-big1{font-size:120%;vertical-align:-0.044em;}
+tex\:big.aghtex-big2{font-size:180%;vertical-align:-0.126em;}
+tex\:big.aghtex-big3{font-size:240%;vertical-align:-0.153em;}
+tex\:big.aghtex-big4{font-size:300%;vertical-align:-0.174em;}
+
+tex\:big5{font-size:320%;}
+tex\:small5{font-size:50%;}
+tex\:small6{font-size:25%;}
+
+tex\:fsize.aghtex-default{font-size:medium;}
+tex\:fsize.aghtex-script{font-size:75%;}
+tex\:fsize.aghtex-scriptscript{font-size:60%;}
+
+tex\:close5{letter-spacing:-0.5ex;padding-right:0.5ex;}
+tex\:close4{letter-spacing:-0.4ex;padding-right:0.4ex;}
+
+  /* 変形 */
+  tex\:trlong{
+    width:0px;height:0px;
+    filter:'progid:DXImageTransform.Microsoft.Matrix(M11=2,M12=0,M21=0,M22=0.75,sizingMethod="auto expand")';
+    -ms-filter:'progid:DXImageTransform.Microsoft.Matrix(M11=2,M12=0,M21=0,M22=0.75,sizingMethod="auto expand")';
+  }
+  /* IE7-Strict */
+  html:first-child+html tex\:trlong,
+  html[xmlns] tex\:trlong{
+    width:auto;height:auto;
+    display:inline-block;
+    vertical-align:0.2ex;
+    filter:expression('progid:DXImageTransform.Microsoft.Matrix(M11=2,M12=0,M21=0,M22=0.75,sizingMethod="auto expand")');
+  }
+
+/* --- 空白 --- */
+tex\:phantom,
+tex\:vphantom,
+tex\:hphantom{
+  display:inline-block;vertical-align:baseline;
+  visibility:hidden;overflow:hidden;
+
+  background-color:lightblue;}
+tex\:vphantom{width:1px;}  /*  0 を指定すると何も指定していないのと同じ? */
+tex\:hphantom{height:1px;}
+tex\:vphantom2{display:block;width:100em;}
+tex\:vphantom.aghtex-vphantom-align-m{vertical-align:middle;}
+tex\:vphantom.aghtex-vphantom-align-t{vertical-align:top;}
+tex\:vphantom.aghtex-vphantom-align-b{vertical-align:bottom;}
+
+tex\:i.aghtex-latex-allowbreak{whit-espace:normal;}
+
+/* -- 負の空白 -- */
+  tex\:negspace{margin-left:-0.4ex;}
+  tex\:negspace.letter-spacing{letter-spacing:-2.0ex;margin-left:0px;}
+
+tex\:i.aghtex-nobr{white-space:nowrap;}
+tex\:i.aghtex-minipage{display:inline-block;vertical-align:middle;}
+tex\:i.aghtex-hfill,
+tex\:i.aghtex-hfill-dot,
+tex\:i.aghtex-hfill-rule{padding-right:4em;font-size:1px;}
+tex\:i.aghtex-hfill-dot{position:relative;top:-4px;left:0;border-bottom:2px dotted ;}
+tex\:i.aghtex-hfill-rule{position:relative;top:-2px;left:0;border-bottom:1px solid ;}
+
+/*--------------------------------------------------------------------
+		数式表現
+--------------------------------------------------------------------*/
+/* 数式環境 \begin{equation} */
+
+tex\:math.aghtex-flalign,
+tex\:math.aghtex-displaymath{
+  display:block;text-align:center;margin-top:1ex;margin-bottom:1ex;
+  position:relative;left:0;top:0;
+  white-space:nowrap;
+  zoom:1;
+}
+tex\:math.aghtex-flalign{text-align:left;}
+
+td.aghtex-stretch{padding:0px!important;border-width:0px!important;}
+td.aghtex-vstretch{position:relative;height:0px;}
+img.aghtex-stretch{position:absolute;left:0;top:0;width:100%;height:100%;}
+
+
+tex\:lceil{width:.5ex;border-top:1px solid ;border-left:1px solid ;margin-left:.5ex;}
+tex\:lflor{width:.5ex;border-bottom:1px solid ;border-left:1px solid ;margin-left:.5ex;}
+tex\:rceil{width:.5ex;border-top:1px solid ;border-right:1px solid ;margin-right:.5ex;}
+tex\:rflor{width:.5ex;border-bottom:1px solid ;border-right:1px solid ;margin-right:.5ex;}
+
+/*------------------------------------------------------------------*/
+/* inline-table */
+table.aghtex-inline{
+  display:inline; /* white-space:nowrap は駄目 */
+  vertical-align:middle;margin:0px;
+}
+
+/*------------------------------------------------------------------*/
+/* 上付・下付 */
+
+tex\:supsub,
+tex\:supsub-u,
+tex\:supsub-d{display:inline-block;text-align:left;text-indent:0px;padding:0px;margin:0px;}
+tex\:supsub-u{display:block;margin-bottom:-0.25em;}
+tex\:sub,tex\:supsub-d{margin-right:0.15ex;}
+  tex\:sub{font-size:75%;vertical-align:-35%;display:inline-block;}
+  tex\:sup{font-size:75%;vertical-align:40%;display:inline-block;}
+  tex\:supsub{font-size:75%;vertical-align:-0.5em;}
+tex\:i.aghtex-sup-nest{display:inline-block;vertical-align:text-bottom;}
+
+tex\:supsub.aghtex-textstyle{font-size:100%;margin-top:-1ex;margin-bottom:-1ex;}
+tex\:supsub.aghtex-textstyle>tex\:supsub-u{font-size:60%;}
+tex\:supsub.aghtex-textstyle>tex\:supsub-d{font-size:60%;}
+tex\:supsub.aghtex-textstyle>tex\:supsub-u>tex\:i{display:block;margin-bottom:-0.1ex;}
+tex\:supsub.aghtex-textstyle>tex\:supsub-d>tex\:i{display:block;margin-top:-0.1ex;}
+.aghtex-tag-script tex\:supsub.aghtex-textstyle{margin-top:0;margin-bottom:0}
+.aghtex-tag-script tex\:supsub.aghtex-textstyle>tex\:supsub-u{font-size:80%;}
+.aghtex-tag-script tex\:supsub.aghtex-textstyle>tex\:supsub-d{font-size:80%;}
+
+
+/*------------------------------------------------------------------*/
+/* \left-\right 括弧 */
+
+table.aghtex-cmdleft{
+  /* tex-inline */
+  display:inline;
+  vertical-align:middle;
+  margin:0 0.15em;
+  /* white-space:nowrap は駄目 */
+
+  /* Fx では border-collapse:collapse; にすると border-bottom/right が表示されない */
+  border-collapse:separate;border-spacing:0;
+}
+
+tr.aghtex-cmdleft{height:0px;}
+td.aghtex-cmdleft-content{vertical-align:baseline;}
+
+td.tex-left-kaku, td.tex-right-kaku,
+td.tex-left-ceil, td.tex-right-ceil,
+td.tex-left-flor, td.tex-right-flor,
+td.tex-left-vert,
+td.tex-left-pipe, td.tex-right-pipe{
+  border-style:solid!important;
+	width:.5ex;padding:0px!important;
+}
+td.tex-left-kaku {border-width:1px 0px 1px 1px!important;}
+td.tex-right-kaku{border-width:1px 1px 1px 0px!important;}
+td.tex-left-ceil {border-width:1px 0px 0px 1px!important;}
+td.tex-right-ceil{border-width:1px 1px 0px 0px!important;}
+td.tex-left-flor {border-width:0px 0px 1px 1px!important;}
+td.tex-right-flor{border-width:0px 1px 1px 0px!important;}
+td.tex-left-vert {border-width:0px 1px 0px 1px!important;width:1px;font-size:1px;}
+td.tex-left-pipe {border-width:0px 0px 0px 1px!important;width:1px;font-size:1px;}
+td.tex-right-pipe{border-width:0px 1px 0px 0px!important;width:1px;font-size:1px;}
+
+td.aghtex-cmdleft-sup{font-size:75%;padding:0px;vertical-align:top;}
+  span.aghtex-cmdleft-sup{position:relative;top:-0.6em;margin-bottom:-0.6em;display:block;}
+td.aghtex-cmdleft-sub{font-size:75%;padding:0px;vertical-align:bottom;}
+span.aghtex-cmdleft-sub{position:relative;top:0.5em;margin-top:-0.5em;display:block;}
+
+/*------------------------------------------------------------------*/
+/* 分数表記 */
+tex\:frac{display:inline-block;vertical-align:middle;text-align:center;padding-left:1px;padding-right:1px;}
+tex\:frac tex\:num{display:block;margin-bottom:0;margin-top:0px;padding-top:0px;}
+tex\:frac tex\:den{display:block;margin-top:0;border-top:1px solid ;padding-top:1px;margin-bottom:0px;margin-top:0px;}
+table.aghtex-int tex\:num,
+table.aghtex-int tex\:den,
+tex\:sup tex\:num,
+tex\:sub tex\:num,
+tex\:sup tex\:den,
+tex\:sub tex\:den{padding:0px;font-size:80%;}
+td.aghtex-center{text-align:center;}
+  table.aghtex-frac{display:inline;vertical-align:middle;margin:0px 0.2ex;border-collapse:collapse;}
+  table.aghtex-frac tr td.tex-num,
+  table.aghtex-frac tr td.tex-den{padding:0px!important;border-width:0px!important;text-align:center!important;}
+  table.aghtex-frac tr td.tex-den{border-width:1px 0px 0px 0px!important;border-style:solid!important;}
+  table.aghtex-int table.aghtex-frac tr td,
+  tex\:sup table.aghtex-frac tr td,
+  tex\:sub table.aghtex-frac tr td{padding:0px;font-size:80%;}
+
+tex\:frac2{display:inline-block;vertical-align:-.65em;text-align:center;padding:0px 1px;}
+tex\:frac2>tex\:num{display:block;border-bottom:1px solid ;padding:0px 1px;}
+tex\:frac2>tex\:den{display:inline-block;vertical-align:text-top;margin:0px 1px;padding-top:1px;}
+
+tex\:frac2.aghtex-tag-script{margin-top:-0.2em;margin-bottom:-0.4em}
+tex\:frac2.aghtex-tag-script>tex\:num{font-size:60%;}
+tex\:frac2.aghtex-tag-script>tex\:den{font-size:60%;}
+tex\:frac2.aghtex-tag-script>tex\:num>tex\:i{display:block;margin-bottom:-0.3ex;}
+tex\:frac2.aghtex-tag-script>tex\:den>tex\:i{display:block;margin-top:-0.6ex;}
+tex\:frac2.aghtex-tag-script>tex\:den>tex\:i>table.aghtex-sqrt{margin-top:0.5ex;}
+
+/* class=aghtex-tag-script は、既に数式中の小さい文字の中にある事を表し、
+ * 内部の \tfrac が不必要に文字を小さくしたり余白を削ったりしない為にある。
+ * 付加的な情報として tex:sup 等の要素につけて出力する。
+ */
+.aghtex-tag-script tex\:frac2.aghtex-tag-script{margin-top:0;margin-bottom:0}
+.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:num{font-size:95%;}
+.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:den{font-size:95%;}
+.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:num>tex\:i{display:block;margin-bottom:-0.3ex;}
+.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:den>tex\:i{display:block;margin-top:-0.3ex;}
+.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:den>tex\:i>table.aghtex-sqrt{margin-top:0.2ex;}
+
+/*------------------------------------------------------------------*/
+/* overbrace / underbrace */
+
+/* [version 1] */
+tex\:i.aghtex-underbrace{display:inline-block;vertical-align:baseline;}
+tex\:i.aghtex-underbrace-i{display:block;position:relative;top:0px;left:0px;}
+tex\:i.aghtex-underbrace-i tex\:ud{display:block;width:100%;text-align:center;position:absolute;top:1ex;left:0px;font-size:80%;}
+tex\:i.aghtex-underbrace-i img.aghtex-underbrace{position:absolute;top:0px;left:0px;width:100%;height:1ex;}
+  tex\:i.aghtex-underbrace{vertical-align:-0.25em;}
+  tex\:i.aghtex-underbrace-vphantom1,
+  tex\:i.aghtex-underbrace-vphantom2{width:1px;overflow:hidden;visibility:hidden;margin-right:-1px;}
+  tex\:i.aghtex-underbrace-vphantom1{vertical-align:-1ex;}
+  tex\:i.aghtex-underbrace-vphantom2{vertical-align:-2.6ex;}
+
+	/* IE の標準モードでは何故か上がうまく動かない… */
+	tex\:i.aghtex-underbrace-i tex\:ud,
+	tex\:i.aghtex-underbrace-i img.aghtex-underbrace{width:expression(this.parentElement.parentElement.clientWidth-2);}
+
+/* [version 2] */
+
+table.aghtex-underbrace{
+  /* extended table.aghtex-inline rule */
+  display:inline;vertical-align:middle;
+  margin:0;padding:0;border-collapse:collapse;
+  text-align:center;
+}
+td.aghtex-underbrace-b{padding:0;margin:0;vertical-align:baseline;}
+td.aghtex-underbrace-t{padding:0;margin:0;font-size:80%;}
+td.aghtex-underbrace-i{
+  margin:0px!important;padding:0px!important;border-width:0px!important;
+  position:relative;top:-0.25ex;
+}
+
+tex\:i.aghtex-overbrace  {display:inline-block;vertical-align:baseline;}
+tex\:i.aghtex-overbrace-t{display:block;text-align:center;}
+tex\:i.aghtex-overbrace-u{display:block;margin-right:-1ex;margin-left:-1ex;font-size:80%;}
+tex\:i.aghtex-overbrace-i{display:block;position:relative;top:0;left:0;height:1ex;}
+   img.aghtex-overbrace  {position:absolute;top:0;left:0;width:100%;height:100%;}
+tex\:i.aghtex-overbrace-b{display:inline-block;vertical-align:baseline;}
+	/* IE の後方互換モードでは上が期待通りに動かない */
+  tex\:i.aghtex-overbrace-t,
+  tex\:i.aghtex-overbrace-u,
+  tex\:i.aghtex-overbrace-i{width:expression(this.parentElement.clientWidth-2);} /* -2 にしないと横に広がる */
+     img.aghtex-overbrace  {width:expression(this.parentElement.clientWidth);}
+
+/*------------------------------------------------------------------*/
+/* 根号 */
+table.aghtex-sqrt{border-collapse:collapse;height:1em;vertical-align:baseline;}
+td.aghtex-sqrt-index{
+	border-width:0px!important;
+	padding:0px!important;
+	vertical-align:top;font-size:80%;
+}
+td.aghtex-sqrt-index span{position:relative;top:-3px;left:6px;}
+td.aghtex-sqrt-body{
+	border-width:1px 0px 0px 0px!important;
+  border-style:solid!important;
+	padding:1px 2px 0px 0px!important;
+  vertical-align:baseline;
+}
+
+/*------------------------------------------------------------------*/
+/* 積分記号 */
+tex\:f.aghtex-int{
+  font-family:aghtex_mathbb,aghtex_mincho,aghtex_roman,serif;
+  font-size:250%;line-height:1.05;display:inline-block;
+  vertical-align:-0.18em;
+}
+/* \idotsint, \dotsi */
+tex\:f.aghtex-dotsi{
+  font-family:aghtex_mathrm,aghtex_mincho,aghtex_roman,serif;
+  font-size:150%;margin:0 -0.3ex;}
+tex\:f.aghtex-int>tex\:f.aghtex-dotsi{
+  vertical-align:0.7ex;margin:0 -0.3ex;
+  font-size:60%;margin:0 -0.3ex 0 -0.2ex;}
+
+img.aghtex-int{width:1em;height:2.5em;vertical-align:middle;}
+tex\:sub.aghtex-int{vertical-align:-1.7em;margin-left:-0.6em;}
+tex\:sup.aghtex-int{vertical-align:1.7em;margin-left:0.1em;margin-right:-0.1em;}
+
+table.aghtex-int{height:3.3em;border-collapse:collapse;font:inherit;margin-right:-0.2em;}
+td.aghtex-int-sub{font-size:75%;padding:0px;vertical-align:bottom;text-align:left;}
+td.aghtex-int-sup{font-size:75%;padding:0px;vertical-align:top;text-align:left;}
+tex\:i.aghtex-int-sup{position:relative;left:0ex;top:-0.2em;}
+tex\:i.aghtex-int-sub{position:relative;left:-0.6em;top:0em;margin-right:-0.6em;}
+
+/*------------------------------------------------------------------*/
+/* Σの表記 */
+tex\:mathop{display:inline-block;vertical-align:middle;text-align:center;padding:0px 0.5ex;}
+tex\:mathop tex\:d{font-size:75%;display:block;margin:0;position:relative;top:-0.2ex;}
+tex\:mathop tex\:u{font-size:75%;display:block;margin:0;position:relative;top:0.2ex;}
+
+tex\:sum{display:inline-block;vertical-align:middle;text-align:center;font-size:180%;padding:0px 0.1ex;}
+tex\:sum2{display:inline-block;vertical-align:middle;text-align:center;padding:0px 0.2ex;}
+tex\:sum2u{display:block;margin:0;font-size:80%;}
+tex\:sum2d{display:block;margin:0;font-size:80%;}
+tex\:sum2m{display:block;margin:0;font-size:180%;line-height:0.70em;}
+
+tex\:i.aghtex-sum{display:inline-block;text-align:center;padding:0 0.2ex;}
+tex\:i.aghtex-sum-u{display:block;font-size:80%;position:relative;top:0em;margin-top:-0.05em;}
+table.aghtex-sum{
+  display:inline-table;
+  border-collapse:collapse;margin:0;padding:0;
+  vertical-align:baseline;
+  text-align:center;
+  margin-bottom:-0.25em;
+}
+td.aghtex-sum-m{
+  font-size:125%;vertical-align:baseline;
+  font-family:aghtex_mathrm,aghtex_roman,aghtex_mincho,serif;}
+tex\:i.aghtex-sum-m{display:block;line-height:1;vertical-align:-0.02em;}
+tex\:i.aghtex-sum-m1{
+  display:block;font-size:125%;vertical-align:baseline;
+  font-family:aghtex_mathrm,aghtex_roman,aghtex_mincho,serif;}
+tex\:i.aghtex-sum-m2{line-height:1;vertical-align:-0.02em;}
+td.aghtex-sum-d{font-size:80%;}
+tex\:i.aghtex-sum-d{position:relative;top:-0.1em;}
+tex\:i.aghtex-sum-strut{display:inline-block;overflow:hidden;width:1px;line-height:1em;}
+tex\:i.aghtex-sum-WA1{vertical-align:-0.5em;}
+table.aghtex-sum-WA1{display:inline;vertical-align:middle;}
+
+/*------------------------------------------------------------------*/
+/* 中抜き文字 */
+
+tex\:i.aghtex-mathbb-old{display:inline-block;position:relative;padding:1px;}
+tex\:i.aghtex-mathbb-a,
+tex\:i.aghtex-mathbb-b,
+tex\:i.aghtex-mathbb-c,
+tex\:i.aghtex-mathbb-d,
+tex\:i.aghtex-mathbb-e{position:absolute;background-color:transparent;}
+tex\:i.aghtex-mathbb-a{left:1px;top:0px;}
+tex\:i.aghtex-mathbb-b{left:-1px;top:0px;}
+tex\:i.aghtex-mathbb-c{left:0px;top:1px;}
+tex\:i.aghtex-mathbb-d{left:0px;top:-1px;}
+tex\:i.aghtex-mathbb-e{left:0px;top:0px;color:white;}
+  tex\:i.aghtex-mathbb-glow{
+    height:0px;
+    color:white;font-style:normal;font-weight:bold;
+    filter:'Glow(color=black,strength=1)';
+    -ms-filter:'Glow(color=black,strength=1)';
+  }
+
+  /* IE7-Strict */
+  html:first-child+html tex\:i.aghtex-mathbb-glow,
+  html[xmlns] tex\:i.aghtex-mathbb-glow{
+    *width:auto;
+    *height:auto;
+    *display:inline-block;
+    *filter:Glow(color=black,strength=1);
+  }
+tex\:i.aghtex-mathbb-shadow{
+  color:white;
+  font-weight:900;
+  text-shadow:black -1px -1px 0px, black 1px -1px 0px, black -1px 1px 0px, black 1px 1px 0px;
+}
+
+tex\:math tex\:i.aghtex-mathbb-shadow tex\:f.aghtex-alpha-upper{
+  font-family:aghtex_mathbb;
+  color:black;
+  font-weight:normal;
+  text-shadow:none;
+}
+
+/*------------------------------------------------------------------*/
+/* その他 */
+
+/*----------------------------------------------------------
+		例外
+----------------------------------------------------------*/
+tex\:error{color:crimson;background-color:#fee;font-family:monospace;font-size:80%;}
+tex\:error.aghtex-core-msgbox{text-decoration:underline;cursor:pointer;}
+
+/*----------------------------------------------------------
+		mod_counter
+----------------------------------------------------------*/
+tex\:i.aghtex-counter-ov{border-top:1px solid ;}
+tex\:i.aghtex-counter-ovv{border-top:3px double ;}
+
+/*----------------------------------------------------------
+    mod_array (array 環境 1)
+----------------------------------------------------------*/
+table.aghtex-array{
+  border-collapse:collapse;
+  margin:0px;
+  display:inline;
+}
+col.tex-vline{width:1px;}
+
+table.aghtex-array-valign-t{vertical-align:top;}
+table.aghtex-array-valign-m{vertical-align:middle;}
+table.aghtex-array-valign-b{vertical-align:bottom;}
+table.aghtex-array-lrpad{
+  margin-left:0.15em;margin-right:0.15em;}
+
+/* 罫線 */ /* char */
+table.tex-bd-l{border-left:1px solid ;}
+table.tex-bd-t{border-top:1px solid ;}
+
+td.tex-bd-l{border-left:1px solid ;}
+td.tex-bd-r{border-right:1px solid ;}
+td.tex-bd-t{border-top:1px solid ;}
+/* ↓ for IE 6: 各要素にも tex-bd-b を追加している */ /* char */
+td.tex-bd-b{border-bottom:1px solid ;}
+/* tr.tex-bd-b>td{border-bottom:1px solid ;} ← × IE 6 */
+
+td.tex-vline{border-right:1px solid ;padding:0px;}
+tr.tex-hline td{border-bottom:1px solid ;padding:0px;height:2px;}
+/*----------------------------------------------------------
+		mod_array (array 環境 2)
+----------------------------------------------------------*/
+td.aghtex-array-border-txt,
+td.aghtex-array-border-zw{
+  border:solid ;
+  padding:0px;vertical-align:baseline;
+}
+td.aghtex-array-border-zw{
+  font-size:0px;width:1px;
+}
+
+td.aghtex-array-cell{
+  border-width:0px;border-style:solid!important;border-color:black;
+  padding:0.2ex .9ex;vertical-align:baseline;}
+tr.aghtex-array-first-row>td.aghtex-array-cell{padding-top:0;}
+tr.aghtex-array-last-row>td.aghtex-array-cell{padding-bottom:0;}
+
+td.tex-arr2hlineT{height:1px;border-top:1px solid ;font-size:1px;padding:0px;}
+td.tex-arr2hlineB{height:1px;border-bottom:1px solid ;font-size:1px;padding:0px;}
+tex\:i.aghtex-array-hline-iedummy{
+  display:block;
+  margin:0;padding:0;
+  height:1px;overflow:hidden;}
+
+
+
+/*----------------------------------------------------------
+		mod_ref
+----------------------------------------------------------*/
+  tex\:eqno.right{position:absolute;right:1em;top:50%;margin-top:-0.7em;}
+  tex\:eqno.left{position:absolute;left:1em;top:50%;margin-top:-0.7em;}
+tex\:i.aghtex-eqno{display:inline-block;}
+tex\:i.aghtex-eqno-right{position:absolute;right:1em;}
+tex\:i.aghtex-eqno-left{position:absolute;left:1em;}
+tex\:i.aghtex-table,
+tex\:i.aghtex-figure{display:block;margin:1em;}
+tex\:i.aghtex-table-caption,
+tex\:i.aghtex-figure-caption{display:block;text-align:center;}
+
+tex\:i.aghtex-toc-item{display:block;position:relative;top:0;left:0;padding-left:1em;padding-right:1em;}
+table.aghtex-toc-item{
+  font-size:inherit;color:inherit;background-color:inherit;
+  margin:0;border-collapse:collapse;}
+table.aghtex-toc-part{}
+table.aghtex-toc-section{}
+table.aghtex-toc-subsection{margin-left:2em;}
+table.aghtex-toc-subsubsection{margin-left:4em;}
+td.aghtex-toc-label{white-space:nowrap;padding:0 1em 0 0;}
+td.aghtex-toc-page{white-space:nowrap;padding:0 0 0 1em;vertical-align:bottom;}
+td.aghtex-toc-hfill{width:100%;padding:0;vertical-align:bottom;}
+tex\:i.aghtex-toc-hfill{
+  display:block;position:relative;top:-4px;left:0;font-size:1px;
+  border-bottom:dotted 3px gray;}
+
+a.aghtex-ref{
+  border:1px solid red;color:inherit;text-decoration:none;}
+a.aghtex-ref:hover{color:gray;}
+
+a.aghtex-cite{
+  border:1px solid lime;color:inherit;text-decoration:none;}
+a.aghtex-cite:hover{color:gray;}
+
+a.aghtex-footnotemark{
+  position:relative;top:-1ex;font-size:75%;
+  border:1px solid red;color:inherit;text-decoration:none;}
+a.aghtex-footnotemark:hover{color:gray;}
+tex\:i.aghtex-footnotetext-inline{font-size:80%;color:green;}
+tex\:i.aghtex-footnote{
+  display:block;padding:1em;margin:1em;
+  border-bottom:1px solid ;border-top:1px solid ;
+  font-size:90%;}
+ul.aghtex-footnote{}
+li.aghtex-footnotetext{}
+tex\:i.aghtex-footnotetext-mark{position:relative;top:-1ex;font-size:80%;}
+
+/*----------------------------------------------------------
+		mod_para
+----------------------------------------------------------*/
+tex\:i.aghtex-cmd-line{display:block;text-align:justify;}
+tex\:i.aghtex-cmd-leftline{display:block;text-align:left;}
+tex\:i.aghtex-cmd-rightline{display:block;text-align:right;}
+tex\:i.aghtex-cmd-centerline{display:block;text-align:center;}
+
+h4.aghtex-latex-newtheorem{
+  font-size:120%;font-weight:bold;margin:1em 1ex 1ex;}
+tex\:i.aghtex-latex-theorem-content{
+  font-style:italic;}
+
+/*----------------------------------------------------------
+		\usepackage{url}
+----------------------------------------------------------*/
+a.aghtex-url-tt{
+  font-family:"Courier New",monospace;font-style:normal;}
+a.aghtex-url-rm{
+  font-family:"Times New Roman",serif;font-style:normal;}
+a.aghtex-url-sf{
+  font-family:sans-serif;font-style:normal;}
+
+a.aghtex-url-same{}
+a.aghtex-url-tt,
+a.aghtex-url-rm,
+a.aghtex-url-sf,
+a.aghtex-url-same
+{border:1px solid cyan;color:inherit;text-decoration:none;}
+a.aghtex-url-tt:hover,
+a.aghtex-url-rm:hover,
+a.aghtex-url-sf:hover,
+a.aghtex-url-same:hover{color:gray;}
+
+/* \usepackage{color} */
+tex\:mbox.aghtex-color-box{padding:0.3em;}
+
+/*----------------------------------------------------------
+		documentclass
+----------------------------------------------------------*/
+
+/* article.cls */
+h1.aghtex-article-title{
+  text-align:center;
+  padding-top:0.5em;padding-bottom:0.5em;
+  margin-top:0.5em;margin-bottom:0.5em;
+  font-size:250%;font-weight:normal;}
+tex\:i.aghtex-article-title{display:block;margin-bottom:0.5ex;}
+tex\:i.aghtex-article-author{display:block;font-size:60%;margin-bottom:0.5em;}
+tex\:i.aghtex-article-date{display:block;font-size:60%;}
+h1.aghtex-article-part{
+  margin-top:1em;margin-bottom:1em;text-align:left;
+  font-size:250%;font-weight:bold;}
+tex\:i.aghtex-article-part{
+  display:block;font-size:70%;margin-bottom:1ex;}
+h2.aghtex-article-section{
+  font-size:170%;font-weight:bold;margin:1em 1ex 1ex;}
+h3.aghtex-article-subsection{
+  font-size:150%;font-weight:bold;margin:1em 1ex 1ex;}
+h4.aghtex-article-subsubsection{
+  font-size:140%;font-weight:bold;margin:1em 1ex 1ex;}
+h5.aghtex-article-paragraph{
+  font-size:120%;font-weight:bold;margin:1em 1ex 1ex;}
+h6.aghtex-article-subparagraph{
+  font-size:120%;font-weight:bold;text-indent:1em;margin:1ex 1.2ex 0.3ex 1ex;}
+h2.aghtex-article-abstract{
+  font-size:120%;font-weight:bold;text-align:center;margin:1ex 1ex 1ex;}
+h2.aghtex-article-acknowledgement,
+h2.aghtex-article-toc{
+  font-size:170%;font-weight:bold;margin:1em 1ex 1ex;}
+tex\:i.aghtex-article-toc table.aghtex-toc-part{font-weight:bold;font-size:120%;margin-top:1em;margin-bottom:1ex;}
+tex\:i.aghtex-article-toc table.aghtex-toc-section{font-weight:bold;margin-top:1ex;}
+tex\:i.aghtex-article-toc table.aghtex-toc-part    tex\:i.aghtex-toc-hfill,
+tex\:i.aghtex-article-toc table.aghtex-toc-section tex\:i.aghtex-toc-hfill{
+  border-bottom:solid 0px transparent;position:relative;top:0;left:0;}
+h2.aghtex-article-thebibliography{
+  font-size:170%;font-weight:bold;margin:1em 1ex 1ex;}
+
+/* \documentclass{revtex4} ■未調整 */
+h1.aghtex-revtex-title{
+  text-align:center;
+  padding-top:0.5em;padding-bottom:0.5em;
+  margin-top:0.5em;margin-bottom:0.5em;
+  font-size:100%;font-weight:normal;}
+tex\:i.aghtex-revtex-title{display:block;margin-bottom:0.5ex;font-size:150%;font-weight:bold;}
+tex\:i.aghtex-revtex-author{display:block;margin-bottom:0.5em;font-size:120%;}
+tex\:i.aghtex-revtex-affiliation{display:block;font-style:italic;}
+tex\:i.aghtex-revtex-authorindex,
+tex\:i.aghtex-revtex-affiliationindex{position:relative;top:-1ex;font-size:75%;}
+tex\:i.aghtex-revtex-date{display:block;}
+
+h1.aghtex-revtex-part{
+  margin-top:1em;margin-bottom:1em;text-align:left;
+  font-size:250%;font-weight:bold;}
+tex\:i.aghtex-revtex-part{
+  display:block;font-size:70%;margin-bottom:1ex;}
+h2.aghtex-revtex-section{
+  text-align:center;font-size:110%;font-weight:bold;margin:1em 1ex 1ex;text-transform:uppercase;}
+h3.aghtex-revtex-subsection{
+  text-align:center;font-size:110%;font-weight:bold;margin:1em 1ex 1ex;}
+h4.aghtex-revtex-subsubsection{
+  text-align:center;font-size:100%;font-weight:bold;margin:1em 1ex 1ex;}
+h5.aghtex-revtex-paragraph{
+  font-size:100%;font-weight:bold;margin:1em 1ex 1ex;}
+h6.aghtex-revtex-subparagraph{
+  font-size:120%;font-weight:bold;text-indent:1em;margin:1ex 1.2ex 0.3ex 1ex;}
+h2.aghtex-revtex-abstract{
+  font-size:120%;font-weight:bold;text-align:center;margin:1ex 1ex 1ex;}
+h2.aghtex-revtex-acknowledgement,
+h2.aghtex-revtex-toc{
+  font-size:170%;font-weight:bold;margin:1em 1ex 1ex;}
+tex\:i.aghtex-revtex-toc table.aghtex-toc-part{font-weight:bold;font-size:120%;margin-top:1em;margin-bottom:1ex;}
+tex\:i.aghtex-revtex-toc table.aghtex-toc-section{font-weight:bold;margin-top:1ex;}
+tex\:i.aghtex-revtex-toc table.aghtex-toc-part    tex\:i.aghtex-toc-hfill,
+tex\:i.aghtex-revtex-toc table.aghtex-toc-section tex\:i.aghtex-toc-hfill{
+  border-bottom:solid 0px transparent;position:relative;top:0;left:0;}
+h2.aghtex-revtex-thebibliography{
+  font-size:170%;font-weight:bold;margin:1em 1ex 1ex;}
+
+
+/*----------------------------------------------------------
+		<table> の style 継承
+----------------------------------------------------------*/
+table.aghtex-array,
+table.aghtex-frac,
+table.aghtex-sqrt,
+table.aghtex-int,
+table.aghtex-inline,
+table.aghtex-cmdleft,
+table.aghtex-underbrace,
+table.aghtex-sum{font:inherit;color:inherit;border-color:inherit;}
+
+/*----------------------------------------------------------
+		agh.fly.js:tex で使用する物
+----------------------------------------------------------*/
+div.aghfly-embedded-node{
+  display:inline-block;vertical-align:baseline;
+  margin:1px;font-size:medium;}
+tex\:container{
+  display:inline;vertical-align:baseline;
+  font-size:120%;}

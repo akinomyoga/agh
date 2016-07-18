@@ -1,0 +1,44 @@
+@charset "utf-8";
+
+span.agh-debug-tree-key{font-weight:bold;}
+span.agh-debug-tree-eq{color:blue;}
+span.agh-debug-tree-mark{color:gray;}
+span.agh-debug-tree-mark-class{color:teal;}
+span.agh-debug-tree-mark-type{color:green;}
+span.agh-debug-tree-number{color:orangered;}
+span.agh-debug-tree-string{color:magenta;}
+span.agh-debug-tree-boolean{color:blue;}
+span.agh-debug-tree-keyword{color:blue;}
+
+div.agh-debug-tree-node{margin:0;padding:0px 0px 0px 16px;}
+div.agh-debug-tree-line{margin:0;padding:0;}
+
+/* expanded/closed */
+div.agh-debug-tree-line-expand:before,
+div.agh-debug-tree-line-closed:before{
+  display:inline-block;vertical-align:middle;
+  width:15px;text-align:center;margin-right:-15px;
+  position:relative;left:-15px;
+}
+div.agh-debug-tree-line-expand:before{content:url("agh.forms.minus.png");}
+div.agh-debug-tree-line-closed:before{content:url("agh.forms.plus.png");}
+div.agh-debug-tree-hold-expand{margin:0;padding:0;display:block;}
+div.agh-debug-tree-hold-closed{margin:0;padding:0;display:none;}
+
+pre.agh-debug-tree-source{
+  margin:1px 0px 3px 0px;max-height:50em;overflow-y:auto;
+}
+pre.agh-debug-tree-source-ie8{margin:1px 0px 3px 0px;overflow-y:auto;}
+pre.agh-debug-tree-source-ie8 div{max-height:50em;}
+
+/* DomTreeErrorInfo */
+span.agh-debug-tree-error{background-color:#fee;color:black;}
+div.agh-debug-tree-error{background-color:#fee;color:black;padding:3px;}
+div.agh-debug-tree-error-hold{border:1px solid silver;padding:2px;margin-top:1px;margin-bottom:1px;}
+
+div.agh-debug-console-head{margin:0.5ex;}
+span.agh-debug-console-caller{font-weight:bold;}
+span.agh-debug-console-date{color:green;}
+
+div.agh-debug-console-body{margin:0.5ex;margin-left:1em;}
+hr.agh-debug-console{margin:0.5ex;height:1px;}

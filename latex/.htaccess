@@ -1,0 +1,4 @@
+<Files ~ "\.(ttf|otf|woff|eot)$">
+Header append Access-Control "allow <*>"
+Header append Access-Control-Allow-Origin "*"
+</Files>

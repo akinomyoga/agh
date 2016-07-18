@@ -1,0 +1,283 @@
+﻿@charset "utf-8";
+
+@font-face{
+  font-family:aghfont_code;
+  src:local("Courier New"),local("Courier"),local("MeiryoKe_Gothic"),local("MS Gothic"),local("ＭＳ ゴシック");
+}
+
+/******************************************************************************
+  ソースコード要素 (<pre>s&<code>s)
+------------------------------------------------------------------------------/
+/*
+pre.cs{background-color:#fafff4;}
+pre.cpp{background-color:#fffff4;}
+pre.result{background-color:black;color:silver;}
+*/
+
+pre.result{
+  border:1px solid silver;border-width:1px 0px;padding-top:1ex;padding-bottom:1ex;background-color:white;
+}
+
+
+pre.agh-prog-c,
+pre.agh-prog-cpp,
+pre.agh-prog-cs,
+pre.agh-prog-x86,
+pre.agh-prog-il,
+pre.agh-prog-vb,
+pre.agh-prog-vbs,
+pre.agh-prog-bash,
+pre.agh-prog-ibash,
+pre.agh-prog-el,
+pre.agh-prog-html,
+pre.agh-prog-xml,
+pre.agh-prog-css,
+pre.agh-prog-js,
+pre.cs,
+pre.il,
+pre.x86,
+pre.cpp,
+pre.css,
+pre.html,
+pre.xml,
+pre.js,
+pre.agh-prog-php,
+pre.agh-prog-titled,
+pre.agh-prog-txt{
+  border:1px solid silver;border-width:1px 0px;padding-top:0px;padding-bottom:1ex;background-color:white;
+}
+
+pre.result:before,
+pre.agh-prog-c:before,
+pre.agh-prog-cpp:before,
+pre.agh-prog-cs:before,
+pre.agh-prog-x86:before,
+pre.agh-prog-il:before,
+pre.agh-prog-vb:before,
+pre.agh-prog-vbs:before,
+pre.agh-prog-bash:before,
+pre.agh-prog-ibash:before,
+pre.agh-prog-el:before,
+pre.agh-prog-html:before,
+pre.agh-prog-xml:before,
+pre.agh-prog-css:before,
+pre.agh-prog-js:before,
+pre.cs:before,
+pre.il:before,
+pre.x86:before,
+pre.cpp:before,
+pre.css:before,
+pre.html:before,
+pre.xml:before,
+pre.js:before,
+pre.agh-prog-php:before,
+pre.agh-prog-titled:before,
+pre.agh-prog-txt:before{
+  display:block;margin:0px;margin-bottom:.5ex;
+  padding:0px 3px;
+  background-color:gray;color:white;font-size:small;
+}
+
+pre.agh-prog-c:before{content:"C Language";}
+pre.agh-prog-cpp:before{content:"C++";}
+pre.agh-prog-cs:before{content:"C#";}
+pre.agh-prog-x86:before{content:"x86 Assembly";}
+pre.agh-prog-il:before{content:"Common Inermediate Language";}
+pre.agh-prog-vb:before{content:"Visual Basic";}
+pre.agh-prog-vbs:before{content:"VBScript";}
+pre.agh-prog-bash:before{content:"Bash Script (Bourne-Again Shell)";}
+pre.agh-prog-ibash:before{content:"Bash Interactive (Bourne-Again Shell)";}
+pre.agh-prog-el:before{content:"Emacs Lisp";}
+pre.agh-prog-html:before{content:"HTML";}
+pre.agh-prog-xml:before{content:"XML";}
+pre.agh-prog-css:before{content:"CSS";}
+pre.agh-prog-js:before{content:"JavaScript (ECMAScript)";}
+pre.cs:before{content:"C#";}
+pre.il:before{content:"Common Inermediate Language";}
+pre.x86:before{content:"x86 Assembly";}
+pre.cpp:before{content:"C++";}
+pre.css:before{content:"CSS";}
+pre.html:before{content:"HTML";}
+pre.xml:before{content:"XML";}
+pre.js:before{content:"JavaScript (ECMAScript)";}
+pre.agh-prog-php:before{content:"PHP (Hypertext Preprocessor)";}
+pre.agh-prog-txt:before{content:"text/plain";}
+pre.agh-prog-titled:before{content:"<No Title>";}
+pre.agh-prog-titled[data-title]:before{content:attr(data-title);}
+
+code{font-family:monospace;}
+@media print{
+  code{font-family:aghfont_code,monospace;}
+}
+
+div.preholder{padding:0px;margin-top:1ex;margin-bottom:1ex;}
+div.preholder p{margin:0px;background-color:gray;color:white;padding:2px 1em;text-indent:0px;line-height:1em;}
+div.preholder pre{margin:0px;}
+
+/******************************************************************************
+  プログラム項目リスト (prog-items)
+-----------------------------------------------------------------------------*/
+
+ul.prog-items li,
+dl.prog-items dt{font-family:monospace;}
+@media print{
+  ul.prog-items li,
+  dl.prog-items dt{font-family:aghfont_code,monospace;}
+}
+
+/* program icons */
+
+
+li.prog-decl-meth, dt.prog-decl-meth,
+li.prog-decl-var, dt.prog-decl-var,
+li.prog-decl-op, dt.prog-decl-op,
+li.prog-decl-const, dt.prog-decl-const,
+li.prog-decl-struct, dt.prog-decl-struct,
+li.prog-decl-class, dt.prog-decl-class,
+li.prog-decl-type, dt.prog-decl-type,
+li.prog-decl-header, dt.prog-decl-header,
+li.prog-decl-param, dt.prog-decl-param,
+li.prog-decl-iface, dt.prog-decl-iface,
+li.prog-decl-event, dt.prog-decl-event,
+ul.prog-items li, dl.prog-items dt{padding-left:20px;}
+
+li.prog-decl-meth:before, dt.prog-decl-meth:before,
+li.prog-decl-var:before, dt.prog-decl-var:before,
+li.prog-decl-op:before, dt.prog-decl-op:before,
+li.prog-decl-const:before, dt.prog-decl-const:before,
+li.prog-decl-struct:before, dt.prog-decl-struct:before,
+li.prog-decl-class:before, dt.prog-decl-class:before,
+li.prog-decl-type:before, dt.prog-decl-type:before,
+li.prog-decl-header:before, dt.prog-decl-header:before,
+li.prog-decl-param:before, dt.prog-decl-param:before,
+li.prog-decl-iface:before, dt.prog-decl-iface:before,
+li.prog-decl-event:before, dt.prog-decl-event:before,
+ul.prog-items li:before, dl.prog-items dt:before{
+  display:inline-block;vertical-align:middle;
+  padding:0;margin:0;margin-right:-20px;
+  position:relative;width:20px;left:-20px;
+}
+
+li.prog-decl-meth:before, dt.prog-decl-meth:before, ul.prog-items li.meth:before, dl.prog-items dt.meth:before{content:url('icons/prog-meth.png');}
+li.prog-decl-var:before, dt.prog-decl-var:before, ul.prog-items li.var:before, dl.prog-items dt.var:before{content:url('icons/prog-field.png');}
+li.prog-decl-op:before, dt.prog-decl-op:before, ul.prog-items li.op:before, dl.prog-items dt.op:before{content:url('icons/prog-oper.png');}
+li.prog-decl-const:before, dt.prog-decl-const:before, ul.prog-items li.const:before, dl.prog-items dt.const:before{content:url('icons/prog-const.png');}
+li.prog-decl-struct:before, dt.prog-decl-struct:before, ul.prog-items li.struct:before, dl.prog-items dt.struct:before{content:url('icons/prog-struct.png');}
+li.prog-decl-class:before, dt.prog-decl-class:before, ul.prog-items li.class:before, dl.prog-items dt.class:before{content:url('icons/prog-class.png');}
+li.prog-decl-type:before, dt.prog-decl-type:before, ul.prog-items li.type:before, dl.prog-items dt.type:before{content:url('icons/prog-type.png');}
+li.prog-decl-header:before, dt.prog-decl-header:before, ul.prog-items li.header:before, dl.prog-items dt.header:before{content:url('icons/file-h.png');}
+li.prog-decl-param:before, dt.prog-decl-param:before, ul.prog-items li.param:before, dl.prog-items dt.param:before{content:url('icons/prog-param.png');}
+li.prog-decl-iface:before, dt.prog-decl-iface:before, ul.prog-items li.iface:before, dl.prog-items dt.iface:before{content:url('icons/prog-iface.png');}
+li.prog-decl-event:before, dt.prog-decl-event:before, ul.prog-items li.event:before, dl.prog-items dt.event:before{content:url('icons/prog-event.png');}
+
+/* <!CSSHACK "IE7以下, IE8後方互換" [ */
+  li.prog-decl-meth,
+  li.prog-decl-var,
+  li.prog-decl-op,
+  li.prog-decl-const,
+  li.prog-decl-struct,
+  li.prog-decl-class,
+  li.prog-decl-type,
+  li.prog-decl-header,
+  li.prog-decl-param,
+  li.prog-decl-iface,
+  li.prog-decl-event,
+  ul.prog-items li{*background-position:left 1px;*background-repeat:no-repeat;}
+
+  dt.prog-decl-meth,
+  dt.prog-decl-var,
+  dt.prog-decl-op,
+  dt.prog-decl-const,
+  dt.prog-decl-struct,
+  dt.prog-decl-class,
+  dt.prog-decl-type,
+  dt.prog-decl-header,
+  dt.prog-decl-param,
+  dt.prog-decl-iface,
+  dt.prog-decl-event,
+  dl.prog-items dt{*background-position:left center;*background-repeat:no-repeat;}
+
+  li.prog-decl-meth, dt.prog-decl-meth, ul.prog-items li.meth, dl.prog-items dt.meth{*background-image:url('icons/prog-meth.png');}
+  li.prog-decl-var, dt.prog-decl-var, ul.prog-items li.var, dl.prog-items dt.var{*background-image:url('icons/prog-field.png');}
+  li.prog-decl-op, dt.prog-decl-op, ul.prog-items li.op, dl.prog-items dt.op{*background-image:url('icons/prog-oper.png');}
+  li.prog-decl-const, dt.prog-decl-const, ul.prog-items li.const, dl.prog-items dt.const{*background-image:url('icons/prog-const.png');}
+  li.prog-decl-struct, dt.prog-decl-struct, ul.prog-items li.struct, dl.prog-items dt.struct{*background-image:url('icons/prog-struct.png');}
+  li.prog-decl-class, dt.prog-decl-class, ul.prog-items li.class, dl.prog-items dt.class{*background-image:url('icons/prog-class.png');}
+  li.prog-decl-type, dt.prog-decl-type, ul.prog-items li.type, dl.prog-items dt.type{*background-image:url('icons/prog-type.png');}
+  li.prog-decl-header, dt.prog-decl-header, ul.prog-items li.header, dl.prog-items dt.header{*background-image:url('icons/file-h.png');}
+  li.prog-decl-param, dt.prog-decl-param, ul.prog-items li.param, dl.prog-items dt.param{*background-image:url('icons/prog-param.png');}
+  li.prog-decl-iface, dt.prog-decl-iface, ul.prog-items li.iface, dl.prog-items dt.iface{*background-image:url('icons/prog-iface.png');}
+  li.prog-decl-event, dt.prog-decl-event, ul.prog-items li.event, dl.prog-items dt.event{*background-image:url('icons/prog-event.png');}
+
+  li.prog-decl-meth:before, dt.prog-decl-meth:before,
+  li.prog-decl-var:before, dt.prog-decl-var:before,
+  li.prog-decl-op:before, dt.prog-decl-op:before,
+  li.prog-decl-const:before, dt.prog-decl-const:before,
+  li.prog-decl-struct:before, dt.prog-decl-struct:before,
+  li.prog-decl-class:before, dt.prog-decl-class:before,
+  li.prog-decl-type:before, dt.prog-decl-type:before,
+  li.prog-decl-header:before, dt.prog-decl-header:before,
+  li.prog-decl-param:before, dt.prog-decl-param:before,
+  li.prog-decl-iface:before, dt.prog-decl-iface:before,
+  li.prog-decl-event:before, dt.prog-decl-event:before,
+  ul.prog-items li:before, dl.prog-items dt:before{*content:none;*display:none;}
+/* ]> */
+
+h2.prog-item-hfile,
+h3.prog-item-hfile,
+h4.prog-item-hfile,
+h5.prog-item-hfile,
+h6.prog-item-hfile,
+h2.prog-item-class,
+h3.prog-item-class,
+h4.prog-item-class,
+h5.prog-item-class,
+h6.prog-item-class,
+h2.prog-item-ns,
+h3.prog-item-ns,
+h4.prog-item-ns,
+h5.prog-item-ns,
+h6.prog-item-ns{
+	padding-left:35px;
+	background-position:10px center;background-repeat:no-repeat;
+}
+h2.prog-item-hfile,
+h3.prog-item-hfile,
+h4.prog-item-hfile,
+h5.prog-item-hfile,
+h6.prog-item-hfile{background-image:url('icons/file-h.png');}
+h2.prog-item-class,
+h3.prog-item-class,
+h4.prog-item-class,
+h5.prog-item-class,
+h6.prog-item-class{background-image:url('icons/prog-class.png');}
+h2.prog-item-ns,
+h3.prog-item-ns,
+h4.prog-item-ns,
+h5.prog-item-ns,
+h6.prog-item-ns{background-image:url('icons/prog-ns.png');}
+
+/******************************************************************************
+  他
+-----------------------------------------------------------------------------*/
+
+kbd.agh-keyspec{
+  padding:.5ex;border:2px white groove;background-color:#ddd;
+  display:inline-block;text-indent:0;line-height:1em;
+  font-weight:bold;font-family:monospace;
+}
+@media print{
+  kbd.agh-keyspec{font-family:aghfont_code,monospace;}
+}
+
+/* prog.color.css (obsoleted) */
+/*
+  pg\:t,pg\:k,pg\:v{font-family:monospace;}
+  pg\:t{color:darkcyan;}
+  pg\:k{color:blue;}
+  pg\:v{color:purple;}
+  @media print{
+    pg\:t,pg\:k,pg\:v{font-family:aghfont-code,monospace;}
+  }
+*/
+

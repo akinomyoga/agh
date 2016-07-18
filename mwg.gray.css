@@ -1,0 +1,472 @@
+@charset "utf-8"; /* 日本語 */
+/* Only for IE
+@import: url("style.css"); */
+
+
+/*@@@@ Navigator Panel @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+body{margin:0px;padding:.5ex;}
+div#page_navigator{margin:0px;padding:0px;overflow:visible;display:none;}
+div#page_content{margin:0px;padding:0px;overflow:visible;}
+@media screen{
+  div#page_navigator{width:20%;float:left;display:block;min-width:12em;}
+  div#page_content{width:80%;float:right;min-width:30em;}
+}
+
+@media screen{
+  /* body72 */
+  body.width72{max-width:72em;margin-left:auto;margin-right:auto;}
+
+/* --- [nav][content72] ---------------------------------------------------- */
+  body.nav72{
+    background-color:#ECECEC;
+    padding-left:16em;
+  }
+  body.nav72 div#page_navigator,
+  body.nav72 div#page_content{
+    margin:5px;float:none;
+    background-color:white;
+  }
+  body.nav72 div#page_navigator{
+    position:absolute;
+    position:fixed;left:0px;top:0px;
+
+    margin-left:.5em;margin-right:.5em;
+    width:15em;min-width:10em;
+
+    margin-top:1%;margin-bottom:1%;height:98%;
+    overflow-y:auto;
+  }
+  body.nav72 div#page_content{
+    width:auto;min-width:20em;max-width:72em;
+    margin-top:5px;margin-bottom:5px;min-height:98%;
+    margin-left:0px;margin-right:0px;
+
+    padding-top:1px;
+  }
+
+  /* IE 後方互換 */
+  * html body.nav72 div#page_navigator{position:absolute;}
+
+  /* -- if page_navigator_without_background -- */
+  body.nav72 div#page_navigator{
+    background-color:transparent;padding:0px;
+    margin-top:0%;margin-bottom:0%;height:100%;
+  }
+  body.nav72 div#page_navigator>div,
+  body.nav72 div#page_navigator>p,
+  body.nav72 div#page_navigator>table,
+  body.nav72 div#page_navigator>pre,
+  body.nav72 div#page_navigator>dl,
+  body.nav72 div#page_navigator>ul,
+  body.nav72 div#page_navigator>ol{margin-left:0px;margin-right:0px;}
+  /* -- endif page_navigator_without_background -- */
+
+/* ------------------------------------------------------------------------- */
+}
+
+div.nav_panel{background-color:white;margin:1em;border:1px solid #ddd;}
+div.nav_title{
+  margin:0px;padding:.5ex;font-weight:bold;
+  background-color:gray;color:white;
+  text-align:center;
+}
+ul.nav_tree{margin:1ex;padding-left:0px;}
+ul.nav_tree li{
+  list-style:none;
+  padding:1px 1px 1px 20px;
+  margin-top:2px;
+  margin-bottom:2px;
+  background-repeat:no-repeat;
+  background-position:left center;
+}
+ul.nav_tree li.sup{background-image:url(icons/file-folder.png);}
+ul.nav_tree li.sib{background-image:url(icons/file-htm.png);}
+ul.nav_tree li.sub{
+  background-image:url(icons/nav-sub.png);
+  padding-left:34px;
+}
+ul.nav_tree li.here{font-weight:bold;background-color:#eee;border:1px solid silver;}
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+@font-face{
+  font-family:mwg_font_mincho;
+  src:local("Hiragino Mincho Pro"),
+    local("MS PMincho"),local("ＭＳ Ｐ明朝");
+}
+@font-face{
+  font-family:mwg_font_gothic;
+  /* MeiryoKe_PGothic は Firefox4.0 で文字化けする (Meiryo は OK) */
+  src:local("Hiragino Kaku Gothic Pro"),
+    local("MeiryoKe_PGothic"),local("MS PGothic"),local("ＭＳ Ｐゴシック");
+}
+@font-face{
+  font-family:mwg_font_mono;
+  src:local("MeiryoKe_Gothic"),local("Courier New"),local("Courier"),local("MS Gothic"),local("ＭＳ ゴシック");
+}
+@font-face{
+  font-family:mwg_font_print;
+  src:local("Hiragino Mincho Pro"),local("MS PMincho"),local("ＭＳ Ｐ明朝");
+}
+@font-face{
+  font-family:mwg_font_print;
+  font-weight:bold;
+  src:local("Hiragino Kaku Gothic Pro"),
+    local("MS PGothic"),local("ＭＳ Ｐゴシック");
+}
+@media screen{
+  body{
+    /*font-family:Tahoma,mwg_font_gothic;*/
+    background-color:#f9f9f9;
+  }
+}
+@media print{
+  body{font-family:"Times New Roman",mwg_font_print,serif;}
+}
+
+hr.clearboth{clear:both;}
+
+/* 見出し */
+body>h1:first-child{margin-top:0px;}
+  h1{
+    padding:1ex;
+    text-align:center;font-family:"Times New Roman",mwg_font_mincho;
+  }
+  h2{
+    margin-left:0.5em;margin-right:0.5em;padding:.5em;
+    font-weight:bold;
+  }
+  h3{
+    margin-left:1.0em;margin-right:1.0em;margin-top:2em;padding-left:.5em;
+    font-size:large;font-weight:bold;
+  }
+  h4{
+    margin-left:1.5em;margin-right:1.5em;margin-top:2em;
+    font-size:medium;
+  }
+  h5{
+    margin-left:2em;margin-right:2em;
+    font-size:medium;text-decoration:underline;
+  }
+  h5:before{content:"▽";}
+  h6{margin-left:2em;margin-right:2em;font-size:small;}
+
+  h1{
+    border-top:4px solid #b5b5b5;
+    border-bottom:4px solid #b5b5b5;
+    background-color:white;color:#555;
+  }
+  h2{border:solid 1px silver;background-color:white;}
+  h3{border-bottom:3px double #383838;}
+  h4{color:#5a5a5a;border-bottom:1px solid silver;}
+  h5{color:gray;}
+
+/* --- Margin ------------------------------------------------------------- */
+div,p,dl,table,pre,ul,ol{margin-left:1ex;margin-right:1ex;}
+div,p,dl,table,pre,ul,ol{margin-top:1ex;margin-bottom:1ex;}
+body>div,
+body>p,
+body>table,
+body>pre,
+body>dl,
+body>ul,
+body>ol,
+div#page_content>div,
+div#page_content>p,
+div#page_content>table,
+div#page_content>pre,
+div#page_content>dl,
+div#page_content>ul,
+div#page_content>ol{margin-left:2em;margin-right:2em;}
+div#page_navigator>div,
+div#page_navigator>p,
+div#page_navigator>table,
+div#page_navigator>pre,
+div#page_navigator>dl,
+div#page_navigator>ul,
+div#page_navigator>ol{margin-left:1em;margin-right:1em;}
+
+/* <![CSSHACK "IE6" [ */
+  * html body div,
+  * html body p,
+  * html body table,
+  * html body pre,
+  * html body dl,
+  * html body ul,
+  * html body ol,
+  * html body div#page_content div,
+  * html body div#page_content p,
+  * html body div#page_content table,
+  * html body div#page_content pre,
+  * html body div#page_content dl,
+  * html body div#page_content ul,
+  * html body div#page_content ol
+  {margin-left:2em;margin-right:2em;}
+  * html body div#page_navigator div,
+  * html body div#page_navigator p,
+  * html body div#page_navigator table,
+  * html body div#page_navigator pre,
+  * html body div#page_navigator dl,
+  * html body div#page_navigator ul,
+  * html body div#page_navigator ol
+  {margin-left:1em;margin-right:1em;}
+  * html body * div,
+  * html body * p,
+  * html body * table,
+  * html body * pre,
+  * html body * dl,
+  * html body * ul,
+  * html body * ol,
+  * html body div#page_content * div,
+  * html body div#page_content * p,
+  * html body div#page_content * table,
+  * html body div#page_content * pre,
+  * html body div#page_content * dl,
+  * html body div#page_content * ul,
+  * html body div#page_content * ol,
+  * html body div#page_navigator * div,
+  * html body div#page_navigator * p,
+  * html body div#page_navigator * table,
+  * html body div#page_navigator * pre,
+  * html body div#page_navigator * dl,
+  * html body div#page_navigator * ul,
+  * html body div#page_navigator * ol
+  {margin-left:0px;margin-right:0px;}
+/* ]]> */
+
+/* <![CSSHACK "IE6" [ */
+  * html ul,
+  * html ol{margin-left:4em;}
+  * html body * ul,
+  * html body * ol{margin-left:0px;}
+/* ]]><![CSSHACK "IE7 standard-mode" [ */
+  *:first-child+html ul,
+  *:first-child+html ol{margin-left:0px;}
+  *:first-child+html body>ul,
+  *:first-child+html body>ol,
+  *:first-child+html div#page_content>ul,
+  *:first-child+html div#page_content>ol{margin-left:4em;}
+/* ]]><![CSSHACK "IE7 XML+DOCTYPE" [ */
+  html[xmlns] ul,
+  html[xmlns] ol{*margin-left:0px;}
+  html[xmlns] body>ul,
+  html[xmlns] body>ol,
+  html[xmlns] div#page_content>ul,
+  html[xmlns] div#page_content>ol{*margin-left:4em;}
+/* ]]> */
+
+#fc2_footer{margin:0px!important;}
+/* ------------------------------------------------------------------------ */
+
+/* リスト */
+ul,ol{padding-left:2em;}
+ol>li>ol>li{
+  list-style-type:lower-alpha;
+  padding-bottom:5px;
+}
+ol>li>ol>li>ol>li{
+  list-style-type:lower-roman;
+  padding-bottom:2px;padding-top:2px;
+}
+ol.select{list-style-type:lower-alpha;}
+ul,ol{line-height:1.2em;}
+li,dd,dt{line-height:1.3em;}
+li>*,dd>*,dt>*,
+li>p,dd>p,dt>p{line-height:1.3em;}
+dd{margin-bottom:1.5ex;margin-left:2em;padding-left:0;}
+li p,li ol,li ul,li dl,
+dt p,dt ol,dt ul,dt dl,
+dd p,dd ol,dd ul,dd dl{margin-top:0.3em;margin-bottom:0.3em;}
+li>p:first-child,li>ol:first-child,li>ul:first-child,li>dl:first-child,
+dt>p:first-child,dt>ol:first-child,dt>ul:first-child,dt>dl:first-child,
+dd>p:first-child,dd>ol:first-child,dd>ul:first-child,dd>dl:first-child{margin-top:0.15em;}
+li>p:last-child,li>ol:last-child,li>ul:last-child,li>dl:last-child,
+dt>p:last-child,dt>ol:last-child,dt>ul:last-child,dt>dl:last-child,
+dd>p:last-child,dd>ol:last-child,dd>ul:last-child,dd>dl:last-child{margin-bottom:0.15em;}
+
+p{text-indent:1em;line-height:1.5em;}
+p.resume,p.marked{text-indent:0;} /* 段落の続き (間に別の物が入った時) */
+
+/* 註釈 */
+p.note{border:1px solid gray;padding:.5ex;}
+div.note{
+  border:1px solid gray;
+  margin-top:1em;margin-bottom:1em;
+  padding:.5ex;
+}
+div.note>p{margin:1em;}
+p.rationale{
+  border:1px solid gray;
+  background-color:white;
+  margin-top:1em;margin-bottom:1em;text-indent:0ex;
+  padding:2px;padding-top:0px;
+}
+div.rationale{
+  border:1px solid gray;
+  background-color:white;
+  margin-top:1em;margin-bottom:1em;text-indent:0ex;
+  padding-left:2px;padding-right:2px;
+}
+div.rationale p{margin:1em;}
+div.rationale:first-line,p.rationale:first-line{
+  background-color:#f0f0f0;
+  font-style:italic;
+}
+
+/* インライン */
+em{border-bottom:solid #555 1px;font-weight:normal;font-style:normal;}
+strong{color:#555;font-weight:bold;font-style:normal;}
+a{color:#2a2a2a;}
+a:hover{color:gray;}
+
+a.extern{color:blue;}
+a.extern:active{color:red;}
+a.extern:hover{color:blue;}
+/*a.extern:visited{color:purple;}*/
+a.internal{color:gray;}
+
+/*
+a.invimg img{
+  height:.8em;width:.8em;
+  border-width:0px;filter:mask(color=green);
+}
+a.invimg:hover img{filter:mask(color=gray);}
+*/
+
+
+/* 単純な表 */
+table.normal{
+  margin-left:2em;
+  border-collapse:collapse;
+  border:1px solid gray;
+}
+table.normal>*>tr>td,
+table.normal>*>tr>th{
+  border-color:inherit;
+  border-style:solid;
+  border-width:1px;
+  padding:.5ex;
+}
+  /* [IE6] */
+  * html table.normal td,
+  * html table.normal th{
+    -voice-family:expression(this.ie6tested==null&&(this.ie6tested=true)&&this.parentElement.parentElement.parentElement.className.match(/\bnormal\b/)&&(this.className +=" ie6normal"));
+  }
+  * html table.normal td.ie6normal,
+  * html table.normal th.ie6normal{
+    border-color:inherit;
+    border-style:solid;
+    border-width:1px;
+    padding:.5ex;
+    voice-family:child;
+  }
+
+table.center{margin-right:auto!important;margin-left:auto!important;max-width:90%;}
+  /* [IE6] */
+  * html table.center{-voice-family:expression(this.mwg3ie6center==null&&(this.mwg3ie6center=1)&&(this.align="center"));}
+
+th.markA,td.markA{background-color:silver;}
+th.markB,td.markB{background-color:#fee;}
+th.markC,td.markC{background-color:#efe;}
+th.markD,td.markD{background-color:#eef;}
+th.markE,td.markE{background-color:#eff;}
+th.markF,td.markF{background-color:#fef;}
+th.markG,td.markG{background-color:#ffe;}
+
+hr{height:1px;}
+dfn{font-weight:bold;font-style:normal;}
+
+dl.dt-underline>dt{text-decoration:underline;}
+  /* [IE] */
+  * dl.dt-underline dt{text-decoration:underline;}
+  * dl.dt-underline dl dt{text-decoration:inherit;}
+
+/* Extended for jslib*/
+nobr{white-space:nowrap;}
+
+div.titlenote:first-child{
+  font-weight:bold;
+  background-color:#f0f0f0;
+  border-right:1px solid silver;
+  border-bottom:1px solid silver;
+}
+div.titlenote,
+p.titlenote{
+  border:1px solid silver;
+  background-color:white;
+  margin-top:1em;margin-bottom:1em;text-indent:0ex;
+}
+div.titlenote{padding-left:2px;padding-right:2px;}
+p.titlenote{padding:2px;padding-top:0px;}
+
+/*@@@@ Header/Fotter Holder @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+/* holder */
+div#pagetopholder,
+div#pagebottomholder{
+  background-color:white;border:solid 1px silver;
+  margin-left:0px!important;margin-right:0px!important;margin-bottom:0px!important;
+}
+
+/* contents */
+table.contents{margin-top:1em;clear:both;}
+table.contents td{
+  vertical-align:top;width:20%;
+  padding-left:1ex;
+  border-left:solid 1px silver;border-right:solid 1px silver;
+}
+table.contents td a{display:block;margin-top:5px;margin-bottom:5px;white-space:nowrap;}
+table.contents td a:hover{background-color:#eee;}
+
+/* links */
+div.linkbar2{
+  margin:0px!important;
+  background-color:#eee;
+  white-space:nowrap;
+  text-align:center;
+}
+div.linkbar2 *.left,
+div.linkbar2 *.center,
+div.linkbar2 *.right{padding:0px;margin:0px;display:inline;}
+div.linkbar2 *.left{float:left;margin-left:2px;}
+div.linkbar2 *.right{float:right;margin-right:2px;}
+  /* OLD */
+  div.linkbar{
+    margin:0px!important;
+    background-color:#eee;
+    white-space:nowrap;
+  }
+  div.linkbar *.left,
+  div.linkbar *.center,
+  div.linkbar *.right{padding:0px;margin:0px;display:inline;}
+  div.linkbar *.left{text-align:left;width:25%;}
+  div.linkbar *.center{text-align:center;width:49%;}
+  div.linkbar *.right{text-align:right;width:25%;}
+
+/* address */
+div.address2{
+  margin-left:0px!important;margin-right:0px!important;margin-top:0px!important;
+  white-space:nowrap;
+  border-top:solid 1px silver;
+  font-size:x-small;
+  text-align:right;
+}
+div.address2 *.left,
+div.address2 *.right{padding:0px;margin:0px;display:inline;}
+div.address2 *.left{float:left;}
+  /* OLD */
+  div.address{
+    white-space:nowrap;
+    margin-left:0px;margin-right:0px;
+    font-size:x-small;
+    border-top:solid 1px silver;
+  }
+  div.address *.left,div.address *.right{margin:0px;padding:0px;display:inline;}
+  div.address *.left{width:49.5%;text-align:left;}
+  div.address *.right{width:49.5%;text-align:right;}
+
+/* 他 */
+div#pagebottomholder div.padding{padding-top:1ex;padding-bottom:1ex;}
+p.seal{
+  margin:2px 0px 0px 0px;
+  height:20px;
+  text-align:right;font-style:italic;
+  background-image:url('/myoga.pink.png');background-repeat:no-repeat;background-position:right;
+}
