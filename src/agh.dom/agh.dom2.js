@@ -1225,7 +1225,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
     	    zIndex:1,
     	    backgroundColor:"white",
     	    position:"absolute",left:"0px",top:"0px",
-    	    color:"red",margin:"0px",padding:"1ex",fontFamily:"monospace",fontSize:'10px',
+    	    color:"red",margin:"0px",padding:"1ex",fontFamily:"monospace,serif",fontSize:'10px',
           '-agh-opacity':0.7
         });
         this.panel1[ElementHighlighter.NOT_TARGET]=true;

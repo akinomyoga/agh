@@ -19,7 +19,7 @@ span.agh-text-diff-changed
 span.agh-syntax-line-index{
   border-right:1px dotted #2b91af;
   padding-left:3px;padding-right:3px;margin-right:2ex;
-  /*font-family:'Courier New',monospace;*/
+  /*font-family:'Courier New',monospace,serif;*/
   color:#2B91AF;font-weight:bold;
   background-color:#eee!important;}
 span.agh-syntax-line-index:before{

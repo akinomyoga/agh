@@ -75,9 +75,9 @@ pre.agh-prog-txt:before{content:"text/plain";}
 pre.agh-prog-titled:before{content:"<No Title>";}
 pre.agh-prog-titled[data-title]:before{content:attr(data-title);}
 
-code{font-family:monospace;}
+code{font-family:monospace,serif;}
 @media print{
-  code{font-family:aghfont_code,monospace;}
+  code{font-family:aghfont_code,monospace,serif;}
 }
 
 div.preholder{padding:0px;margin-top:1ex;margin-bottom:1ex;}
@@ -89,10 +89,10 @@ div.preholder pre{margin:0px;}
 -----------------------------------------------------------------------------*/
 
 ul.prog-items li,
-dl.prog-items dt{font-family:monospace;}
+dl.prog-items dt{font-family:monospace,serif;}
 @media print{
   ul.prog-items li,
-  dl.prog-items dt{font-family:aghfont_code,monospace;}
+  dl.prog-items dt{font-family:aghfont_code,monospace,serif;}
 }
 
 /* program icons */
@@ -198,20 +198,20 @@ h6.prog-item-ns{background-image:url('icons/prog-ns.png');}
 kbd.agh-keyspec{
   padding:.5ex;border:2px white groove;background-color:#ddd;
   display:inline-block;text-indent:0;line-height:1em;
-  font-weight:bold;font-family:monospace;
+  font-weight:bold;font-family:monospace,serif;
 }
 @media print{
-  kbd.agh-keyspec{font-family:aghfont_code,monospace;}
+  kbd.agh-keyspec{font-family:aghfont_code,monospace,serif;}
 }
 
 /* prog.color.css (obsoleted) */
 /*
-  pg\:t,pg\:k,pg\:v{font-family:monospace;}
+  pg\:t,pg\:k,pg\:v{font-family:monospace,serif;}
   pg\:t{color:darkcyan;}
   pg\:k{color:blue;}
   pg\:v{color:purple;}
   @media print{
-    pg\:t,pg\:k,pg\:v{font-family:aghfont-code,monospace;}
+    pg\:t,pg\:k,pg\:v{font-family:aghfont-code,monospace,serif;}
   }
 */
 
