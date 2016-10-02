@@ -1,64 +1,71 @@
 # -*- mode:makefile-gmake -*-
 
-#TKYNT2MWG3:=/cygdrive/q/tkynt2/public_html/agh3
-TKYNT2MWG3:=agh@padparadscha
-
-ifeq ($(PREFIX),)
-PREFIX:=$(TKYNT2MWG3)
-endif
-
-.PHONY: all
 all:
+.PHONY: all
 
-Makefile: ../src/Makefile-out.pp
-	mwg_pp.awk $< > $@
+BASE:=..
 
-stamp@myoga.web.fc2.com:
-	mkdir $@
-myogaftpfiles:=stamp@myoga.web.fc2.com
+Makefile: $(BASE)/src/Makefile-out.pp
+	$(MWGPP) $< > $@
+
+MWGPP:=$(BASE)/tools/ext/mwg_pp.awk
+CP:=cp
+
+ifeq ($(USER)@$(HOSTNAME),koichi@gauge)
+  CP:= ~/.mwg/cp+1
+
+  #TKYNT2MWG3:=/cygdrive/q/tkynt2/public_html/agh3
+  TKYNT2MWG3:=agh@padparadscha
+  ifeq ($(PREFIX),)
+    PREFIX:=$(TKYNT2MWG3)
+  endif
+endif
 
 #==============================================================================
 #  definitions
 #==============================================================================
 
+export FTPPASS:=$(shell awk -F: '$$1=="myoga.web.fc2.com"{printf("%s",$$2)}' ~/.ssh/ftppass.txt)
+
+myogaftpfiles:=stamp@myoga.web.fc2.com
+stamp@myoga.web.fc2.com:
+	mkdir $@
+
 myogaftpfiles+=stamp@myoga.web.fc2.com/aghdir.stamp
 stamp@myoga.web.fc2.com/aghdir.stamp:
-	@echo ftpput . "myoga@myoga.web.fc2.com:agh"
-	@ftpput . "myoga@myoga.web.fc2.com:agh" `awk -F: '$$1=="myoga.web.fc2.com"{printf("%s",$$2)}' ~/.ssh/ftppass.txt`
+	ftpput . "myoga@myoga.web.fc2.com:agh" $$FTPPASS
 	touch $@
 
-#%m dir (
+#%m dir
 #------------------------------------------------------------------------------
 uploadfiles+=$(PREFIX)/%path%
 $(PREFIX)/%path%:
 	mkdir -p $@
 #%%[stamp="%path%".replace("/","%")+"%.touch"]
-#%%x (
+#%%x
 myogaftpfiles+=stamp@myoga.web.fc2.com/${stamp}
 stamp@myoga.web.fc2.com/${stamp}:
-	@echo ftpput "%path%" "myoga@myoga.web.fc2.com:agh/%path%"
-	@ftpput "%path%" "myoga@myoga.web.fc2.com:agh/%path%" `awk -F: '$$1=="myoga.web.fc2.com"{printf("%s",$$2)}' ~/.ssh/ftppass.txt`
+	ftpput "%path%" "myoga@myoga.web.fc2.com:agh/%path%" $$FTPPASS
 	touch $@
-#%%).i
-#%)
-#%define file (
+#%%end.i
+#%end
+#%define file
 #------------------------------------------------------------------------------
 uploadfiles+=$(PREFIX)/%file%
 $(PREFIX)/%file%: %file%
-	~/.mwg/cp+1 $< $@
+	$(CP) $< $@
 ##%[stamp="%file%".replace("/","%")+"%.touch"]
-##%x (
+##%x
 myogaftpfiles+=stamp@myoga.web.fc2.com/${stamp}
 stamp@myoga.web.fc2.com/${stamp}: %file%
-	@echo ftpput "%file%" "myoga@myoga.web.fc2.com:agh/%file%"
-	@ftpput "%file%" "myoga@myoga.web.fc2.com:agh/%file%" `awk -F: '$$1=="myoga.web.fc2.com"{printf("%s",$$2)}' ~/.ssh/ftppass.txt`
+	ftpput "%file%" "myoga@myoga.web.fc2.com:agh/%file%" $$FTPPASS
 	touch $@
-##%).i
-#%)
+##%end.i
+#%end
 #------------------------------------------------------------------------------
-#%m directory (
+#%m directory
 ##%expand dir.r|%path%|%name%|
-#%)
+#%end
 #%m jsfile
 files+=$(PREFIX)/%name%.js
 ##%x file.r|%file%|%name%.js|
@@ -272,6 +279,13 @@ addon_dist: $(addon_dist_files)
 
 all: addon_dist
 
-.PHONY: upload myoga
-upload: $(uploadfiles)
-myoga: $(myogaftpfiles)
+ifneq ($(FTPPASS),)
+  .PHONY: myoga
+  myoga: $(myogaftpfiles)
+endif
+
+ifneq ($(PREFIX),)
+  .PHONY: upload install
+  upload: $(uploadfiles)
+  install: upload
+endif

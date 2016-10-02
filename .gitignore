@@ -29,6 +29,8 @@
 
 /tools/out
 
+/gh-pages
+
 # edit
 /COMMIT
 *~
