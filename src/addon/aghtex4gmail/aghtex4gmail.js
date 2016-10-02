@@ -85,7 +85,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
         aghtex.dom_addEventListener(this._document.body,"mousemove",hook_resize,false);
       },
       SetupLinkedScroll:function(){
-        var btnLS=this.prev.CreateButtonToggle('<span style="font-family:monospace;">LS</span>',"Enable/disable Linked Scroll",true);
+        var btnLS=this.prev.CreateButtonToggle('<span style="font-family:monospace,serif;">LS</span>',"Enable/disable Linked Scroll",true);
 
         function set_scroll(edst,esrc){
           if(btnLS.aghtex_value){
@@ -117,9 +117,9 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
 
         var fontSize=100;
         var eprev=this.eprev;
-        var b0=this.prev.CreateButton('<span style="font-family:monospace;">Z0</span>',"Default size");
-        var b1=this.prev.CreateButton('<span style="font-family:monospace;">Z+</span>',"Zoom in");
-        var b2=this.prev.CreateButton('<span style="font-family:monospace;">Z-</span>',"Zoom out");
+        var b0=this.prev.CreateButton('<span style="font-family:monospace,serif;">Z0</span>',"Default size");
+        var b1=this.prev.CreateButton('<span style="font-family:monospace,serif;">Z+</span>',"Zoom in");
+        var b2=this.prev.CreateButton('<span style="font-family:monospace,serif;">Z-</span>',"Zoom out");
         aghtex.dom_addEventListener(b0,"click",function(){fontSize=100;eprev.style.fontSize=fontSize+"%";},false);
         aghtex.dom_addEventListener(b1,"click",function(){fontSize*=1.2;eprev.style.fontSize=fontSize+"%";},false);
         aghtex.dom_addEventListener(b2,"click",function(){fontSize/=1.2;eprev.style.fontSize=fontSize+"%";},false);

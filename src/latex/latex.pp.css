@@ -344,7 +344,7 @@ tex\:fnorm{
 tex\:f.aghtex-textui{font-family:'MS UI Gothic',aghtex_gothic,sans-serif;}
 
 tex\:f.aghtex-textsf{font-family:sans-serif;}
-tex\:f.aghtex-texttt{font-family:"Courier New",monospace;}
+tex\:f.aghtex-texttt{font-family:"Courier New",monospace,serif;}
 /* - Font Series */
 tex\:f.aghtex-textmd{font-weight:normal;}
 tex\:f.aghtex-textbf{font-weight:bold;}
@@ -436,7 +436,7 @@ tex\:math tex\:f.aghtex-mathsf tex\:f.aghtex-alpha{
 /* \mathtt */
 tex\:f.aghtex-mathtt,
 tex\:math tex\:f.aghtex-mathtt tex\:f.aghtex-alpha{
-  font-family:"Courier New",monospace;font-style:normal;font-weight:normal;
+  font-family:"Courier New",monospace,serif;font-style:normal;font-weight:normal;
 }
 /* \mathbf */
 tex\:f.aghtex-mathbf{
@@ -1024,7 +1024,7 @@ tex\:math tex\:i.aghtex-mathbb-shadow tex\:f.aghtex-alpha-upper{
 /*----------------------------------------------------------
 		例外
 ----------------------------------------------------------*/
-tex\:error{color:crimson;background-color:#fee;font-family:monospace;font-size:80%;}
+tex\:error{color:crimson;background-color:#fee;font-family:monospace,serif;font-size:80%;}
 tex\:error.aghtex-core-msgbox{text-decoration:underline;cursor:pointer;}
 
 /*----------------------------------------------------------
@@ -1187,7 +1187,7 @@ tex\:i.aghtex-latex-theorem-content{
 		\usepackage{url}
 ----------------------------------------------------------*/
 a.aghtex-url-tt{
-  font-family:"Courier New",monospace;font-style:normal;}
+  font-family:"Courier New",monospace,serif;font-style:normal;}
 a.aghtex-url-rm{
   font-family:"Times New Roman",serif;font-style:normal;}
 a.aghtex-url-sf{
