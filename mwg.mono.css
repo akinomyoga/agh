@@ -87,6 +87,11 @@ ul.nav_tree li.sub{
 }
 ul.nav_tree li.here{font-weight:bold;border:1px dotted black;}
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+/* Work around for the WebKit small monospace
+ * c.f. http://silight.hatenablog.jp/entry/2015/07/02/214601
+ */
+tt,code,kbd,samp,pre,xmp,plaintext,listing{font-family:monospace,serif;}
+
 @font-face{
   font-family:mwg_font_mincho;
   src:local("Hiragino Mincho Pro"),
