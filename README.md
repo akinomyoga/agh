@@ -1,8 +1,8 @@
-#`agh` - Ageha JavaScript Library -
+# `agh` - Ageha JavaScript Library -
 
-##Build
+## Build
 
-###Requirements
+### Requirements
 
 - `make` (GNU Make)
 - `gawk` (GNU awk)
@@ -12,7 +12,7 @@
 - `ttf2eot` [ttf2eot](https://github.com/metaflop/ttf2eot)
 - `lwiki` (optional) [lwiki](https://github.com/akinomyoga/lwiki)
 
-###Build and setup
+### Build and setup
 
 ```bash
 $ git clone --recursive git@github.com:akinomyoga/agh.git
@@ -28,9 +28,9 @@ The following command shows an example to place the library into the path `/path
 $ cp -a -r out /path/to/webroot/agh
 ```
 
-##Basic usage
+## Basic usage
 
-###Load `agh.js` first
+### Load `agh.js` first
 Basically, the script file `agh/agh.js` is loaded first.
 This file provides a functionality to load other agh scripts as well as basic utilities to create libraries.
 
@@ -79,7 +79,7 @@ To load more than one target, an array can be specified to `scriptName`.
 If an array is specified, `callback` is called when all the files specified in the array are completed.
 
 
-###Use `agh.text.color.js`
+### Use `agh.text.color.js`
 The script `agh/agh.text.color.js` provides the functions to convert some source codes into highlighted html.
 The following example shows a way to highlight contents of `<pre>` elements as a javascript source codes.
 
@@ -94,7 +94,7 @@ agh.scripts.wait(["event:onload", "agh.text.color.js"], function(){
 </script>
 ```
 
-###Use `agh.lang.tex.js`
+### Use `agh.lang.tex.js`
 The script `agh/agh.lang.tex.js` provides conversions of TeX codes into html.
 
 ```html
@@ -116,7 +116,7 @@ Hello, \TeX world!
 </div>
 ```
 
-###Use `agh.lang.ps.js`
+### Use `agh.lang.ps.js`
 The script `agh/agh.lang.tex.js` provides an interpreter of PostScript.
 
 ```html
@@ -153,7 +153,7 @@ moveto B fill}for Y}for showpage
 </div>
 ```
 
-###Other files
+### Other files
 
 - `agh.class.js`
 - `agh.debug.js`
