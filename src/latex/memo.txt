@@ -1,4 +1,4 @@
-﻿
+
 Ageha Javascript Library - agh.LaTeX - memo.txt
 
 
