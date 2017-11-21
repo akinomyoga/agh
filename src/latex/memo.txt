@@ -24,6 +24,32 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 問題点・改善点・新機能の計画などについての議論をここに記述する。
 
+2017-07-19
+
+  * http://swn1.com/fir.tex このファイルで変換できていないものに対応する。
+
+    \usepackage{amstex}
+      http://www.verycomputer.com/18_3517fcaedefc7bf6_1.htm によると、
+      昔は amsmath は amstex というパッケージ名だったらしい。
+
+    \operatorname
+      これは既に operatornamewithlimits というコマンドを実装しているようなので、
+      単にそれを多少修正して登録するだけなのではないか。
+
+    \mod
+      ソースコード中の "mod:common.*" などの文字列と被っていて検索しにくいが、
+      多分対応していない。
+
+    \thispagestyle
+      取り敢えず引数は取る様にする。対応していなくても。
+
+    \hdotsfor
+      これの対応は難しい。
+
+    \\[引数]
+      上記のファイルでは使用されていないが、他のファイルで変な文字列が残る。
+
+
 2015-11-03
 
   * accent t,f だけ特別扱いする?
