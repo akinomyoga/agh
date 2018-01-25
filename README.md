@@ -9,7 +9,7 @@
 - A C# compiler: `csc` (Windows) or `dmcs` (Mono)
 - CLI: .NET Framework (Windows) or `mono` (Mono)
 - [`uglifyjs`](https://github.com/mishoo/UglifyJS2) with Node.js
-- `sfnt2woff` [WOFF fonts!](http://people.mozilla.org/~jkew/woff/)
+- `sfnt2woff` [WOFF fonts!](http://people.mozilla.org/~jkew/woff/) (This link is no longer available. Please use [`agh/tools/ext/woff-code-latest.zip`](https://github.com/akinomyoga/agh/blob/master/tools/ext/woff-code-latest.zip) to make the `sfnt2woff` command)
 - `ttf2eot` [ttf2eot](https://github.com/metaflop/ttf2eot)
 - `lwiki` (optional) [lwiki](https://github.com/akinomyoga/lwiki)
 
