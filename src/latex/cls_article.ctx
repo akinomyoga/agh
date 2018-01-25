@@ -415,6 +415,15 @@ ns.Document.Classes["revtex4"] = function(doc, opt, pkg){
   initialize_article_counters(doc);
   doc.context_cast("global").OverwriteContext(doc.context_cast("cls:revtex/global"));
   doc.context_cast("mode.para").OverwriteContext(doc.context_cast("cls:revtex/mode.para"));
+  var options = opt.split(',');
+  for (var i = 0, iN = options.length; i < iN; i++) {
+    var option = options[i].trim();
+    if (option == 'amsmath')
+      ns.Document.Packages["amsmath"](doc, "", "amsmath");
+    else if (option == 'amssymb')
+      ns.Document.Packages["amssymb"](doc, "", "amssymb");
+    // ■amsfonts
+  }
 };
 ns.Document.Classes["revtex4-1"] = ns.Document.Classes["revtex4"];
 
