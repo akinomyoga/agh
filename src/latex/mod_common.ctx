@@ -211,26 +211,28 @@ context "global"{
   _Ctx.AddCommandHandler("providecommand",_Ctx.handlerC["newcommand"]);
 
   command f\let("#1#2") {
-    var cmd1=argv[1].trim();
-    if (cmd1.substr(0,1)!='\\') {
-      doc.currentCtx.output.error('mod:common.cmd:let.InvalidCommandName',{cmd:cmd1},'mod:common.cmd:let');
+    var cmd1 = argv[1].trim();
+    if (cmd1.substr(0, 1) != '\\') {
+      doc.currentCtx.output.error('mod:common.cmd:let.InvalidCommandName', {cmd: cmd1}, 'mod:common.cmd:let');
       return;
     }
-    cmd1=cmd1.slice(1);
+    cmd1 = cmd1.slice(1);
 
-    var cmd2=argv[2].trim();
-    if (cmd2.substr(0,1)=='\\') {
-      cmd2=cmd2.slice(1);
+    var cmd2 = argv[2].trim();
+    if (cmd2 == '=')
+      cmd2 = doc.ReadArgument('raw', false, null).trim();
+    if (cmd2.substr(0, 1) == '\\') {
+      cmd2 = cmd2.slice(1);
 
-      var h=getExistingCommandHandler(doc,cmd2);
-      if (h==null) {
-        doc.currentCtx.output.error('mod:common.cmd:let.UnknownCommand',{cmd:cmd2},'mod:common.cmd:let');
+      var h = getExistingCommandHandler(doc, cmd2);
+      if (h == null) {
+        doc.currentCtx.output.error('mod:common.cmd:let.UnknownCommand', {cmd: cmd2}, 'mod:common.cmd:let');
         return;
       }
 
-      doc.SetMacroHandler(cmd1,h);
-    }else{
-      doc.SetMacroHandler(cmd1,new ns.Command2("m",null,cmd2));
+      doc.SetMacroHandler(cmd1, h);
+    } else {
+      doc.SetMacroHandler(cmd1, new ns.Command2("m", null, cmd2));
     }
   };
 
