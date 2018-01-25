@@ -74,8 +74,8 @@ agh.memcpy(mod_core.ErrorMessages,{
 });
 
 var _Mod=ns.Modules["mod:common"]={};
-_Mod.CreateCommandTagFollowing=function(htBegin,htEnd){
-  return ns.Command2('f',null,function(doc,argv){
+_Mod.CreateCommandTagFollowing=function(htBegin,htEnd) {
+  return ns.Command2('f',null,function(doc,argv) {
     var output=doc.currentCtx.output;
     output.buff.push(htBegin);
     output.appendPost(htEnd);
@@ -85,67 +85,67 @@ _Mod.CreateCommandTagFollowing=function(htBegin,htEnd){
 context "global"{
   var CTXV_FOOTNOTE='mod_ref/footnote';
   _Ctx.AddEnvironment("document",{
-    prologue:function(doc,ctx){
+    prologue:function(doc,ctx) {
       ctx.SetContextVariable(CTXV_FOOTNOTE,new ns.Writer());
     },
-    epilogue:function(doc,ctx){
+    epilogue:function(doc,ctx) {
       ns.Modules["mod:ref"].WriteFootnote(doc.currentCtx.output,ctx);
     },
     context:"mode.para"
   });
 
   // \documentclass
-  command f\documentclass("#[]1#2"){
+  command f\documentclass("#[]1#2") {
     var opt=argv[1].trim();
     var cls=argv[2].trim();
     var ch=ns.Document.Classes[cls];
-    if(ch==null){
+    if (ch == null) {
       doc.currentCtx.output.error('mod:common.cmd:documentclass.UnknownClass',{cls:cls},'mod:common.cmd:documentclass');
-      ch=ns.Document.Classes["article"]; // default
-      if(ch==null)return;
+      ch = ns.Document.Classes["default"]; // default
+      if (ch == null) return;
     }
     ch(doc,cls,opt);
 
-    doc.currentCtx.AddCommandHandler("documentclass",function(doc){
+    doc.currentCtx.AddCommandHandler("documentclass",function(doc) {
       doc.scanner.Next();
       doc.currentCtx.output.error('mod:common.cmd:documentclass.MultipleDocumentClasses',null,'mod:common.cmd:documentclass');
     });
   };
   _Ctx.AddCommandHandler("documentstyle",_Ctx.handlerC["documentclass"]); // For older version of TeX
 
-  command f\usepackage("#[]@1#@2"){
-    var opt=argv[1];
-    var pkgs=argv[2].split(',');
-    for(var i=0,iN=pkgs.length;i<iN;i++){
-      var pkg=pkgs[i].trim();
-      var handler=ns.Document.Packages[pkg];
-      if(handler==null){
+  command f\usepackage("#[]@1#@2") {
+    var opt = argv[1];
+    var pkgs = argv[2].split(',');
+    for (var i = 0, iN = pkgs.length; i < iN; i++) {
+      var pkg = pkgs[i].trim();
+      var handler = ns.Document.Packages[pkg];
+      if (handler == null) {
         doc.currentCtx.output.error('mod:common.cmd:usepackage.UnknownPackage',{pkg:pkg},'mod:common.cmd:usepackage');
         continue;
       }
 
       // package 初期化
-      try{
-        handler(doc,opt,pkg);
-      }catch(e){
-        var message=e==null?"?": (typeof e=="object")&&("message" in e)?e.message: e.toString();
-        doc.currentCtx.output.error('mod:common.cmd:usepackage.PackageException',{pkg:pkg,message:message},'mod:common.cmd:usepackage');
+      try {
+        handler(doc, opt, pkg);
+      } catch(e) {
+        var message = e == null ? "?" : (typeof e == "object") && ("message" in e) ? e.message : e.toString();
+        doc.currentCtx.output.error('mod:common.cmd:usepackage.PackageException', {pkg: pkg, message: message}, 'mod:common.cmd:usepackage');
       }
     }
   };
 
   // \newcommmand, \renewcommand
   //----------------------------------------------------------------
-  function getExistingCommandHandler(doc,name){
+  function getExistingCommandHandler(doc,name) {
     return doc.currentCtx.GetCommandHandler(doc,name)||
       doc.context_cast("mode.para").GetCommandHandler(doc,name)||
       doc.context_cast("mode.math").GetCommandHandler(doc,name);
   }
 
-  command f\newcommand("#1#[0]!2#[\\@mwgnoarg]3#4"){
+  command f\newcommand("#1#[0]!2#[\\@mwgnoarg]3#4") {
     // コマンド名
     var name=argv[1].trim();
-    if(name.substr(0,1)!="\\"){
+    if (name.substr(0,1)!="\\") {
       doc.currentCtx.output.error(
         'mod:common.cmd:newcommand.InvalidCommandName',{cmd:name},
         '\\newcommand @ mod:common');
@@ -157,7 +157,7 @@ context "global"{
     var argN=0;
     try{
       argN=parseInt(argv[2]);
-    }catch(e){
+    }catch(e) {
       doc.currentCtx.output.error(
         'mod:common.cmd:newcommand.InvalidNumberOfParams',{nparam:argv[2]},
         '\\newcommand @ mod:common');
@@ -167,8 +167,8 @@ context "global"{
     // 既定の引数
     var optional=argv[3];
     var arg_def="";
-    if(argN>0){
-      if(optional!="\\@mwgnoarg"){
+    if (argN>0) {
+      if (optional!="\\@mwgnoarg") {
         arg_def="#["+optional+"]1";
       }else{
         arg_def="#1";
@@ -182,9 +182,9 @@ context "global"{
     var def=argv[4];
 
     // コマンドの上書きをできないようにする
-    switch(argv[0]){
+    switch(argv[0]) {
     case "newcommand":
-      if(doc.currentCtx.GetCommandHandler(doc,name)!=null){
+      if (doc.currentCtx.GetCommandHandler(doc,name)!=null) {
         doc.currentCtx.output.error(
           'mod:common.cmd:newcommand.AlreadyDefined',{cmd:name},
           '\\newcommand @ mod:common');
@@ -192,7 +192,7 @@ context "global"{
       }
       break;
     case "renewcommand":
-      if(getExistingCommandHandler(doc,name)==null){
+      if (getExistingCommandHandler(doc,name)==null) {
         doc.currentCtx.output.error(
           'mod:common.cmd:renewcommand.NotYetDefined',{cmd:name},
           '\\renewcommand @ mod:common');
@@ -200,7 +200,7 @@ context "global"{
       }
       break;
     case "providecommand":
-      if(getExistingCommandHandler(doc,name)!=null)return;
+      if (getExistingCommandHandler(doc,name)!=null)return;
       break;
     }
 
@@ -210,20 +210,20 @@ context "global"{
   _Ctx.AddCommandHandler("renewcommand",_Ctx.handlerC["newcommand"]);
   _Ctx.AddCommandHandler("providecommand",_Ctx.handlerC["newcommand"]);
 
-  command f\let("#1#2"){
+  command f\let("#1#2") {
     var cmd1=argv[1].trim();
-    if(cmd1.substr(0,1)!='\\'){
+    if (cmd1.substr(0,1)!='\\') {
       doc.currentCtx.output.error('mod:common.cmd:let.InvalidCommandName',{cmd:cmd1},'mod:common.cmd:let');
       return;
     }
     cmd1=cmd1.slice(1);
 
     var cmd2=argv[2].trim();
-    if(cmd2.substr(0,1)=='\\'){
+    if (cmd2.substr(0,1)=='\\') {
       cmd2=cmd2.slice(1);
 
       var h=getExistingCommandHandler(doc,cmd2);
-      if(h==null){
+      if (h==null) {
         doc.currentCtx.output.error('mod:common.cmd:let.UnknownCommand',{cmd:cmd2},'mod:common.cmd:let');
         return;
       }
@@ -234,9 +234,9 @@ context "global"{
     }
   };
 
-  function getCommandName(doc,argv){
+  function getCommandName(doc,argv) {
     var name=argv[1].trim();
-    if(name.substr(0,1)!="\\"){
+    if (name.substr(0,1)!="\\") {
       doc.currentCtx.output.error('mod:common.cmd:def.InvalidCommandName',{defcmd:argv[0],cmdname:name},'mod:common.cmd:'+argv[0]);
       return null;
     }else
@@ -244,25 +244,25 @@ context "global"{
     return name;
   }
 
-  function cmd_def(doc,argv,isGlobal){
+  function cmd_def(doc,argv,isGlobal) {
     var name=getCommandName(doc,argv);
-    if(name==null)return;
+    if (name==null)return;
 
     doc.SetMacroHandler(name,new ns.Command2("m",argv[2],argv[3]),isGlobal);
   }
-  function cmd_edef(doc,argv,isGlobal){
+  function cmd_edef(doc,argv,isGlobal) {
     var name=getCommandName(doc,argv);
-    if(name==null)return;
+    if (name==null)return;
 
     doc.SetMacroHandler(name,new ns.Command2("m@",argv[2],argv[3]),isGlobal);
   }
   command f\def (#1#2{#3}) {cmd_def (doc,argv,false);};
   command f\gdef(#1#2{#3}) {cmd_def (doc,argv,true );};
-  command f\edef(#1#2{#>3}){cmd_edef(doc,argv,false);};
-  command f\xdef(#1#2{#>3}){cmd_edef(doc,argv,true );};
+  command f\edef(#1#2{#>3}) {cmd_edef(doc,argv,false);};
+  command f\xdef(#1#2{#>3}) {cmd_edef(doc,argv,true );};
 
   // マクログローバル定義
-  command f\global(){
+  command f\global() {
     doc.pushFlags();
     doc.flags['mod:common/global']=true; // \let, \def, \edef, etc
     //■TODO: \count, \countdef
@@ -274,15 +274,15 @@ context "global"{
     doc.popFlags();
   };
 
-  command f\newenvironment("#!1#[]!2#[\\agh@noarg]3#4#5"){
+  command f\newenvironment("#!1#[]!2#[\\agh@noarg]3#4#5") {
     var envname=argv[1];
 
     // 引数の数
     var nparam=0;
-    if(argv[2]!=""){
+    if (argv[2]!="") {
       try{
         nparam=parseInt(argv[2]);
-      }catch(e){
+      }catch(e) {
         doc.currentCtx.output.error(
           'mod:common.cmd:newcommand.InvalidNumberOfParams',{nparam:argv[2]},
           '\\newenvironment @ mod:common');
@@ -291,7 +291,7 @@ context "global"{
     }
 
     var argdef='';
-    if(nparam>0){
+    if (nparam>0) {
       argdef+=argv[3]=='\\agh@noarg'?'#1':'#[]1';
       for(var i=1;i<nparam;i++)
         argdef+='#'+(i+1);
@@ -301,9 +301,9 @@ context "global"{
 
     // 上書き確認
 
-    switch(argv[0]){
+    switch(argv[0]) {
     case "newenvironment":
-      if(doc.currentCtx.GetEnvironment(envname)!=null){
+      if (doc.currentCtx.GetEnvironment(envname)!=null) {
         doc.currentCtx.output.error(
           'mod:common.cmd:newcommand.AlreadyDefined',{cmd:envname},
           '\\newenvironment @ mod:common');
@@ -311,7 +311,7 @@ context "global"{
       }
       break;
     case "renewenvironment":
-      if(doc.currentCtx.GetEnvironment(envname)==null){
+      if (doc.currentCtx.GetEnvironment(envname)==null) {
         doc.currentCtx.output.error(
           'mod:common.cmd:newcommand.NotYetDefined',{cmd:envname},
           '\\renewenvironment @ mod:common');
@@ -320,7 +320,7 @@ context "global"{
       break;
     }
 
-    if(argv[0]!="renewenvironment"&&doc.currentCtx.GetEnvironment(envname)!=null){
+    if (argv[0]!="renewenvironment"&&doc.currentCtx.GetEnvironment(envname)!=null) {
       doc.currentCtx.output.error(
         'mod:common.cmd:newcommand.AlreadyDefined',{cmd:envname},
         '\\newenvironment @ mod:common');
@@ -425,11 +425,11 @@ context "global"{
   command s@\mbox("#mode.lr>1") '<tex:mbox>#1</tex:mbox>';
   command s@\fbox("#mode.lr>1") '<tex:mbox class="aghtex-latex-fbox">#1</tex:mbox>';
   command s@\frame("#mode.lr>1") '<tex:mbox class="aghtex-latex-frame">#1</tex:mbox>';
-  command f\framebox("#[]!1#[c]!2#mode.lr>3"){
+  command f\framebox("#[]!1#[c]!2#mode.lr>3") {
     // #L1 (dimen)
-    if(argv[1]!=""){
+    if (argv[1]!="") {
       var align={l:'left',r:'right',c:'center'}[argv[2]];
-      if(align==null){
+      if (align==null) {
         doc.currentCtx.output.error('mod:common.cmd:framebox.UnknownAlignment',{align:argv[2]},'\\framebox (mod:common)');
         align=center;
       }
@@ -444,11 +444,11 @@ context "global"{
   // TODO \makebox
   // TODO \parbox
 
-  command f\string(){
+  command f\string() {
     doc.skipSpaceAndComment();
 
     var text="";
-    switch(doc.scanner.wordtype){
+    switch(doc.scanner.wordtype) {
     case mod_core.SCAN_WT_CMD:
       text="\\"+doc.scanner.word;
       doc.scanner.Next();
@@ -461,7 +461,7 @@ context "global"{
       text=doc.scanner.ClipFirstFromTxt();
       break;
     case mod_core.SCAN_WT_LTR:
-      if(doc.scanner.word!=="EOF"){
+      if (doc.scanner.word!=="EOF") {
         text=doc.scanner.word;
         doc.scanner.Next();
         break;
@@ -477,27 +477,27 @@ context "global"{
     doc.currentCtx.output.buff.push(agh.Text.Escape(text,'html'));
   };
 
-  command f\special(#1){
+  command f\special(#1) {
     doc.currentCtx.output.error('mod:common.cmd:special.NotImplemented',{arg:argv[1]},"\\special (mod:common)");
   };
 
   //---------------------------------------------------------------------------
 
-  command f\aghtexInternalHTag("[#!1]#>2"){
+  command f\aghtexInternalHTag("[#!1]#>2") {
     var buff=doc.currentCtx.output.buff;
 
     var tag='tex:i';
     var cls=null;
-    argv[1].replace(/^(\w[\-:_\w]*)?(?:\.([\-:_\w]+))?/,function($0,$1,$2){
-      if($1!=null&&$1!=""&&$1.toLowerCase()!='script')
+    argv[1].replace(/^(\w[\-:_\w]*)?(?:\.([\-:_\w]+))?/,function($0,$1,$2) {
+      if ($1!=null&&$1!=""&&$1.toLowerCase()!='script')
         tag=$1;
-      if($2!=null&&$2!="")
+      if ($2!=null&&$2!="")
         cls=$2;
     });
     var content=argv[2];
 
     buff.push('<',tag);
-    if(cls!=null&&cls.length>0){
+    if (cls!=null&&cls.length>0) {
       buff.push(' class="',cls,'">');
     }else{
       buff.push('>');

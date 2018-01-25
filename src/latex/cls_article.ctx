@@ -353,31 +353,31 @@ context "cls:revtex/mode.para" new(){
 
   var mod_ref=ns.Modules["mod:ref"];
 
-  _Ctx.AddCommandHandler("part",mod_ref.CreateSectionCommand({
-    counter:"part",refname:'\\Roman{part}',toctype:"part",emitnote:true,
-    httag:'h1',htclass:'aghtex-revtex-part',html:'<tex:i class="aghtex-revtex-part">Part #</tex:i> #'
+  _Ctx.AddCommandHandler("part", mod_ref.CreateSectionCommand({
+    counter: "part",refname: '\\Roman{part}',toctype: "part",emitnote: true,
+    httag: 'h1',htclass: 'aghtex-revtex-part',html: '<tex:i class="aghtex-revtex-part">Part #</tex:i> #'
   }));
-  _Ctx.AddCommandHandler("section",mod_ref.CreateSectionCommand({
-    counter:"section",refname:'\\Roman{section}.\\quad',toctype:"section",emitnote:true,
-    httag:'h2',htclass:'aghtex-revtex-section',html:'# #'
+  _Ctx.AddCommandHandler("section", mod_ref.CreateSectionCommand({
+    counter: "section",refname: '\\Roman{section}.\\quad',toctype: "section",emitnote: true,
+    httag: 'h2',htclass: 'aghtex-revtex-section',html: '# #'
   }));
-  _Ctx.AddCommandHandler("subsection",mod_ref.CreateSectionCommand({
-    counter:"subsection",refname:'\\Alph{subsection}.\\quad',toctype:"subsection",emitnote:true,
-    httag:'h3',htclass:'aghtex-revtex-subsection',html:'# #'
+  _Ctx.AddCommandHandler("subsection", mod_ref.CreateSectionCommand({
+    counter: "subsection",refname: '\\Alph{subsection}.\\quad',toctype: "subsection",emitnote: true,
+    httag: 'h3',htclass: 'aghtex-revtex-subsection',html: '# #'
   }));
-  _Ctx.AddCommandHandler("subsubsection",mod_ref.CreateSectionCommand({
-    counter:"subsubsection",refname:'\\arabic{section}.\\arabic{subsection}.\\arabic{subsubsection}',emitnote:true,
-    httag:'h4',htclass:'aghtex-revtex-subsubsection',html:'# #'
+  _Ctx.AddCommandHandler("subsubsection", mod_ref.CreateSectionCommand({
+    counter: "subsubsection",refname: '\\arabic{section}.\\arabic{subsection}.\\arabic{subsubsection}',emitnote: true,
+    httag: 'h4',htclass: 'aghtex-revtex-subsubsection',html: '# #'
   }));
-  _Ctx.AddCommandHandler("paragraph"     ,mod_ref.CreateSectionCommand({counter:"paragraph"   ,httag:'h5',htclass:'aghtex-revtex-paragraph',html:'# #'}));
-  _Ctx.AddCommandHandler("subparagraph"  ,mod_ref.CreateSectionCommand({counter:"subparagraph",httag:'h6',htclass:'aghtex-revtex-subparagraph',html:'# #'}));
+  _Ctx.AddCommandHandler("paragraph"     , mod_ref.CreateSectionCommand({counter: "paragraph"   ,httag: 'h5',htclass: 'aghtex-revtex-paragraph',html: '# #'}));
+  _Ctx.AddCommandHandler("subparagraph"  , mod_ref.CreateSectionCommand({counter: "subparagraph",httag: 'h6',htclass: 'aghtex-revtex-subparagraph',html: '# #'}));
 
-  _Ctx.AddCommandHandler("part*"         ,mod_ref.CreateSectionCommand({emitnote:true,httag:'h1',htclass:'aghtex-revtex-part',html:'#'}));
-  _Ctx.AddCommandHandler("section*"      ,mod_ref.CreateSectionCommand({emitnote:true,httag:'h2',htclass:'aghtex-revtex-section',html:'#'}));
-  _Ctx.AddCommandHandler("subsection*"   ,mod_ref.CreateSectionCommand({emitnote:true,httag:'h3',htclass:'aghtex-revtex-subsection',html:'#'}));
-  _Ctx.AddCommandHandler("subsubsection*",mod_ref.CreateSectionCommand({emitnote:true,httag:'h4',htclass:'aghtex-revtex-subsubsection',html:'#'}));
-  _Ctx.AddCommandHandler("paragraph*"    ,mod_ref.CreateSectionCommand({httag:'h5',htclass:'aghtex-revtex-paragraph',html:'#'}));
-  _Ctx.AddCommandHandler("subparagraph*" ,mod_ref.CreateSectionCommand({httag:'h6',htclass:'aghtex-revtex-subparagraph',html:'#'}));
+  _Ctx.AddCommandHandler("part*"         , mod_ref.CreateSectionCommand({emitnote: true,httag: 'h1',htclass: 'aghtex-revtex-part',html: '#'}));
+  _Ctx.AddCommandHandler("section*"      , mod_ref.CreateSectionCommand({emitnote: true,httag: 'h2',htclass: 'aghtex-revtex-section',html: '#'}));
+  _Ctx.AddCommandHandler("subsection*"   , mod_ref.CreateSectionCommand({emitnote: true,httag: 'h3',htclass: 'aghtex-revtex-subsection',html: '#'}));
+  _Ctx.AddCommandHandler("subsubsection*", mod_ref.CreateSectionCommand({emitnote: true,httag: 'h4',htclass: 'aghtex-revtex-subsubsection',html: '#'}));
+  _Ctx.AddCommandHandler("paragraph*"    , mod_ref.CreateSectionCommand({httag: 'h5',htclass: 'aghtex-revtex-paragraph',html: '#'}));
+  _Ctx.AddCommandHandler("subparagraph*" , mod_ref.CreateSectionCommand({httag: 'h6',htclass: 'aghtex-revtex-subparagraph',html: '#'}));
 
   command f\maketitle(){
     var output=doc.currentCtx.output;
@@ -411,9 +411,20 @@ context "cls:revtex/mode.para" new(){
   };
 }
 
-ns.Document.Classes["revtex4"]=function(doc){
+ns.Document.Classes["revtex4"] = function(doc, opt, pkg){
   initialize_article_counters(doc);
   doc.context_cast("global").OverwriteContext(doc.context_cast("cls:revtex/global"));
   doc.context_cast("mode.para").OverwriteContext(doc.context_cast("cls:revtex/mode.para"));
 };
-ns.Document.Classes["revtex4-1"]=ns.Document.Classes["revtex4"];
+ns.Document.Classes["revtex4-1"] = ns.Document.Classes["revtex4"];
+
+// 対応していない package が指定されたときはここに入る。
+// 多少遅くなるが内部で include されている可能性のある色々の usepackge を実行する。
+ns.Document.Classes["default"] = function(doc, opt, pkg){
+  initialize_article_counters(doc);
+  doc.context_cast("global").OverwriteContext(doc.context_cast("cls:article/global"));
+  doc.context_cast("mode.para").OverwriteContext(doc.context_cast("cls:article/mode.para"));
+  ns.Document.Packages["amsmath"](doc, "", "amsmath");
+  ns.Document.Packages["amssymb"](doc, "", "amssymb");
+  ns.Document.Packages["latexsym"](doc, "", "latexsym");
+};

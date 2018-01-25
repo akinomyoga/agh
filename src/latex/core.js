@@ -616,7 +616,7 @@ agh.memcpy(ns.Context.prototype,{
         a.push(b[i]);
     this.baseCtxs=a;
   },
-  OverwriteContext:function(context){
+  OverwriteContext: function(context){
     // [: "context はこの呼び出し以降、変更されない" :]
 
     // 何でもかんでも AddBaseContext すると、
@@ -624,46 +624,46 @@ agh.memcpy(ns.Context.prototype,{
     // 適宜上書きして base context の肥大化を防ぐ。
     // ■ base context 自体の flatten? versioning による管理
 
-    if(context instanceof ns.Context){
+    if (context instanceof ns.Context) {
       var s=context.baseCtxs;
       var iN=s.length;
       var d=this.baseCtxs;
       var jN=d.length;
 
-      sloop:for(var i=0;i<iN;i++){
-        for(var j=0;j<jN;j++)
-          if(s[i]==d[j])
+      sloop: for(var i = 0; i < iN; i++) {
+        for (var j = 0; j < jN; j++)
+          if (s[i] == d[j])
             continue sloop;
         d.push(s[i]);
       }
-      agh.memcpy(this.handlerL,context.handlerL);
-      agh.memcpy(this.handlerC,context.handlerC);
-      agh.memcpy(this.handlerE,context.handlerE);
+      agh.memcpy(this.handlerL, context.handlerL);
+      agh.memcpy(this.handlerC, context.handlerC);
+      agh.memcpy(this.handlerE, context.handlerE);
     }
   },
   //======================================================================
   //  context initialization before reading
-  Initialize:function(mainctx){
-    if(mainctx==null)mainctx=this;
+  Initialize: function(mainctx) {
+    if (mainctx == null) mainctx = this;
 
-    for(var i=0,iN=this.baseCtxs.length;i<iN;i++){
+    for (var i = 0, iN = this.baseCtxs.length; i < iN; i++) {
       this.baseCtxs[i].Initialize(mainctx);
     }
 
-    if(this.initializer instanceof Function)
+    if (this.initializer instanceof Function)
       this.initializer(mainctx);
   },
   //======================================================================
   //    識別
   //======================================================================
-  toString:function(){
-    return "[object "+nsName+".Context]";
+  toString: function() {
+    return "[object " + nsName + ".Context]";
   },
-  dbgGetContexts:function(){
-    var names=[];
-    function rec(ctx){
-      names.push(ctx.contextName||"?");
-      for(var i=ctx.baseCtxs.length;--i>=0;)
+  dbgGetContexts: function() {
+    var names = [];
+    function rec(ctx) {
+      names.push(ctx.contextName || "?");
+      for(var i = ctx.baseCtxs.length; --i >= 0;)
         rec(ctx.baseCtxs[i]);
     }
     rec(this);
