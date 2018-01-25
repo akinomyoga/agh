@@ -7,7 +7,8 @@
 - `make` (GNU Make)
 - `gawk` (GNU awk)
 - A C# compiler: `csc` (Windows) or `dmcs` (Mono)
-- CLI: .NET Frameworks (Windows) or `mono` (Mono)
+- CLI: .NET Framework (Windows) or `mono` (Mono)
+- [`uglifyjs`](https://github.com/mishoo/UglifyJS2) with Node.js
 - `sfnt2woff` [WOFF fonts!](http://people.mozilla.org/~jkew/woff/)
 - `ttf2eot` [ttf2eot](https://github.com/metaflop/ttf2eot)
 - `lwiki` (optional) [lwiki](https://github.com/akinomyoga/lwiki)
@@ -41,7 +42,7 @@ This file provides a functionality to load other agh scripts as well as basic ut
 <title>Sample</title>
 <script type="text/javascript" src="/path/to/agh/agh.js"></script>
 <script type="text/javascript">
-agh.scripts.wait('event:onload', function(){
+agh.scripts.wait('event:onload', function() {
   var t = document.createTextNode("Hello, world!");
   document.getElementById("hello").appendChild(t);
 });
@@ -64,7 +65,7 @@ The following codes show a template form to use `agh.scripts.wait`:
 ```html
 <script type="text/javascript" src="/path/to/agh/agh.js"></script>
 <script type="text/javascript">
-agh.scripts.wait(["agh.text.js", "agh.dom.js"], function(){
+agh.scripts.wait(["agh.text.js", "agh.dom.js"], function() {
   // do something using the function of agh.text.js / agh.dom.js
 });
 </script>
@@ -86,8 +87,8 @@ The following example shows a way to highlight contents of `<pre>` elements as a
 ```html
 <script type="text/javascript" src="/path/to/agh/agh.js"></script>
 <script type="text/javascript">
-agh.scripts.wait(["event:onload", "agh.text.color.js"], function(){
-  agh.Array.each(document.getElementsByTagName("pre"), function(pre){
+agh.scripts.wait(["event:onload", "agh.text.color.js"], function() {
+  agh.Array.each(document.getElementsByTagName("pre"), function(pre) {
     pre.innerHTML = agh.Text.Color(pre.innerHTML, "js", "/html");
   });
 });
@@ -100,7 +101,7 @@ The script `agh/agh.lang.tex.js` provides conversions of TeX codes into html.
 ```html
 <script type="text/javascript" src="/path/to/agh/agh.js"></script>
 <script type="text/javascript">
-agh.scripts.wait(["event:onload", "agh.lang.tex.js"], function(){
+agh.scripts.wait(["event:onload", "agh.lang.tex.js"], function() {
   var div = document.getElementById("texdoc");
   var source = agh.Text.Unescape(div.innerHTML, "html");
   var doc = new agh.LaTeX.Document(source);
@@ -122,7 +123,7 @@ The script `agh/agh.lang.tex.js` provides an interpreter of PostScript.
 ```html
 <script type="text/javascript" src="/path/to/agh/agh.js"></script>
 <script type="text/javascript">
-agh.scripts.wait(["event:onload", "agh.lang.ps.js"], function(){
+agh.scripts.wait(["event:onload", "agh.lang.ps.js"], function() {
   var psimage = document.getElementById("psimage");
   var source = agh.Text.Unescape(psimage.innerHTML, "html");
   var ps = new agh.PostScript.Processor({
