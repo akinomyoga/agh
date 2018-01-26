@@ -58,15 +58,15 @@ var _Mod=ns.Modules["mod:array"]={};
 
 agh.Namespace("ArrayTable",ns);
 var _at=ns.ArrayTable;
-_at.toAlign=(function(){
+_at.toAlign=(function() {
   var aligns={
     "r":' align="right"',
     "c":' align="center"',
     "l":' align="left"',
     "-":''
   };
-  return function(ltr){
-    if(ltr in aligns)return aligns[ltr];
+  return function(ltr) {
+    if (ltr in aligns) return aligns[ltr];
     return "";
   };
 })();
@@ -75,7 +75,7 @@ _at.toAlign=(function(){
 //    class Cell
 //
 //********************************************************************
-_at.Cell=function(parent,x,y){
+_at.Cell=function(parent,x,y) {
   this.table=parent;
   this.x=x;
   this.y=y;
@@ -95,38 +95,38 @@ agh.memcpy(_at.Cell.prototype,{
   paddingR:null,
   align:null,
   //----------------------------------------------------------------
-  get_col:function(){
+  get_col: function() {
     return this.table.col(this.y);
   },
-  get_bL:function(){
+  get_bL: function() {
     return this.borderL||this.y==0&&this.table.col(0).borderL;//borderV[0];
   },
-  get_bR:function(){
+  get_bR: function() {
     return this.borderR||this.table.col(this.y).borderR;//borderV[this.y+1];
   },
-  get_bT:function(){
-    if(this.x!=0)return false;
-    if(this.borderT!=null)return this.borderT;
+  get_bT: function() {
+    if (this.x!=0) return false;
+    if (this.borderT!=null) return this.borderT;
     return !!this.table.borderH[0];
   },
-  get_bB:function(){
-    if(this.borderB!=null)return this.borderB;
+  get_bB: function() {
+    if (this.borderB!=null) return this.borderB;
     return !!this.table.borderH[this.x+1];
   },
-  get_width:function(){
-    if(this.width!=null)return this.width;
+  get_width: function() {
+    if (this.width!=null) return this.width;
     return this.table.col(this.y).width;
   },
-  get_pL:function(){
-    if(this.paddingL!=null)return this.paddingL;
+  get_pL: function() {
+    if (this.paddingL!=null) return this.paddingL;
     return this.get_col().paddingL;
   },
-  get_pR:function(){
-    if(this.paddingR!=null)return this.paddingR;
+  get_pR: function() {
+    if (this.paddingR!=null) return this.paddingR;
     return this.get_col().paddingR;
   },
-  get_align:function(){
-    if(this.align!=null)return this.align;
+  get_align: function() {
+    if (this.align!=null) return this.align;
     return this.get_col().halign;
   },
   //****************************************************************
@@ -135,44 +135,44 @@ agh.memcpy(_at.Cell.prototype,{
   /// <summary>
   /// この cell を表示するのに要する列数を返します。
   /// </summary>
-  //cols:function(){
+  //cols: function() {
   //  return 1+this.cols_bL()+this.cols_bR();
   //},
-  cols_bL:function(bL){
+  cols_bL: function(bL) {
     // 左 border の取得
     bL=bL||this.get_bL();
-    if(!bL)return 0;
+    if (!bL) return 0;
 
     var r=0;
     var right=true;
-    agh.Array.eachR(bL,function(b){
-      if(!right|(right=b!=1))r++; // (右が線) or (今回升) ⇒ ret++
+    agh.Array.eachR(bL,function(b) {
+      if (!right|(right=b!=1)) r++; // (右が線) or (今回升) ⇒ ret++
     });
 
     return r;
   },
-  cols_bR:function(bR){
+  cols_bR: function(bR) {
     bR=bR||this.get_bR();
-    if(!bR)return 0;
+    if (!bR) return 0;
 
     var r=0;
     var left=true; // 左が升 (新しい td) か否か
-    agh.Array.each(bR,function(b){
-      if(!left|(left=b!=1))r++; // (左が線) or (今回升) ⇒ ret++
+    agh.Array.each(bR,function(b) {
+      if (!left|(left=b!=1)) r++; // (左が線) or (今回升) ⇒ ret++
     });
     return r;
   },
   //****************************************************************
   //    出力
   //****************************************************************
-  write:function(output){
-    if(this.is_spanpad)return;
+  write: function(output) {
+    if (this.is_spanpad) return;
 
     // 総 td@colspan 計算 (multicolumn も考慮)
     var x=this.x;
     var y=this.y;
     var totspan=0;
-    for(var i=0;i<this.colspan;i++)
+    for (var i=0;i<this.colspan;i++)
       totspan+=this.table.col(y+i).tdc;
 
     // 書き出し (multicolumn の場合は最後の cell が担当)
@@ -184,9 +184,9 @@ agh.memcpy(_at.Cell.prototype,{
       totspan
       );
   },
-  write_internal:function(output,bL,bR,tdspan){
+  write_internal: function(output,bL,bR,tdspan) {
   /*
-    if(this.y==8){
+    if (this.y==8) {
       console.log("Now going to write cell.");
       console.log("Cell content is"+this.content+".");
       console.log(this.get_bL());
@@ -211,23 +211,23 @@ agh.memcpy(_at.Cell.prototype,{
     var bbR=agh.Array.first(bR)===1;
     var bbT=this.get_bT();
     var bbB=this.get_bB();
-    if(bbL||bbR||bbT||bbB){
+    if (bbL||bbR||bbT||bbB) {
       sbuff.push('border-width:',bbT?1:0,'px ',bbR?1:0,'px ',bbB?1:0,'px ',bbL?1:0,'px;');
-      if(bbL)bL=bL.slice(0,-1);
-      if(bbR)bR=bR.slice(1);
+      if (bbL) bL=bL.slice(0,-1);
+      if (bbR) bR=bR.slice(1);
     }
 
     var pL=this.get_pL();
-    if(pL!=null){
+    if (pL!=null) {
       sbuff.push('padding-left:',pL,';');
     }
     var pR=this.get_pR();
-    if(pR!=null){
+    if (pR!=null) {
       sbuff.push('padding-right:',pR,';');
     }
 
   /*
-    if(this.y==8){
+    if (this.y==8) {
       console.log("Now going to write cell.");
       console.log("Cell content is"+this.content+".");
       console.log(body_bL);
@@ -240,13 +240,13 @@ agh.memcpy(_at.Cell.prototype,{
     var buff=output.buff;
     buff.push(' <td class="aghtex-array-cell"');
     buff.push(_at.toAlign(this.get_align()));
-    if(tdspan>1){
+    if (tdspan>1) {
       buff.push(' colspan="',tdspan,'"');
     }
 
     // - スタイル
     sty=sty.toHtml();
-    if(sty.length>0){
+    if (sty.length>0) {
       buff.push(' style="',sty,'"');
       // ■ padding
     }
@@ -254,31 +254,31 @@ agh.memcpy(_at.Cell.prototype,{
 
     this.write_bR(output,bR,bbT,bbB);
   },
-  write_bL:function(output,bL,bT,bB){
+  write_bL: function(output,bL,bT,bB) {
     var bw_left  =0;
     var bw_top   =bT?1:0;
     var bw_bottom=bB?1:0;
     var bw_right =0;
 
     var buff=output.buff;
-    for(var i=0,iN=bL.length;i<iN;i++){
+    for (var i=0,iN=bL.length;i<iN;i++) {
       var border=bL[i];
-      if(typeof border=="string"||border instanceof String){
+      if (typeof border=="string"||border instanceof String) {
         buff.push(
           ' <td class="aghtex-array-border-txt" style="border-width:',
           bw_top,'px ',bw_right,'px ',bw_bottom,'px ',bw_left,'px;">',
           border,'</td>\n');
 
         bw_left=0;
-      }else if(border===1){
-        if(bw_left>0){
+      } else if (border===1) {
+        if (bw_left>0) {
           buff.push(
             ' <td class="aghtex-array-border-zw" style="border-width:',
             bw_top,'px ',bw_right,'px ',bw_bottom,'px ',bw_left,'px;"></td>\n');
         }
 
         bw_left=1;
-      }else{
+      } else {
 //#debug
         alert("Fatal @ array2.ctx/write_bL\n予期しない境界線指定子です。");
         throw new Error("unexpected border-spec");
@@ -286,21 +286,21 @@ agh.memcpy(_at.Cell.prototype,{
       }
     }
 
-    if(bw_left>0){
+    if (bw_left>0) {
       buff.push(
         ' <td class="aghtex-array-border-zw" style="border-width:',
         bw_top,'px ',bw_right,'px ',bw_bottom,'px ',bw_left,'px;"></td>\n');
     }
   },
-  write_bR:function(output,bR,bT,bB){
+  write_bR: function(output,bR,bT,bB) {
     var bw_left  =0;
     var bw_top   =bT?1:0;
     var bw_bottom=bB?1:0;
     var bw_right =0;
     var td_content=null;
 
-    function emit_cell(){
-      if(td_content!=null){
+    function emit_cell() {
+      if (td_content!=null) {
         buff.push(
           ' <td class="aghtex-array-border-txt" style="border-width:',
           bw_top,'px ',bw_right,'px ',bw_bottom,'px ',bw_left,'px;">',
@@ -308,7 +308,7 @@ agh.memcpy(_at.Cell.prototype,{
 
         bw_right=0;
         td_content=null;
-      }else{
+      } else {
         buff.push(
           ' <td class="aghtex-array-border-zw" style="border-width:',
           bw_top,'px ',bw_right,'px ',bw_bottom,'px ',bw_left,'px;"></td>\n');
@@ -318,18 +318,18 @@ agh.memcpy(_at.Cell.prototype,{
     }
 
     var buff=output.buff;
-    for(var i=0,iN=bR.length;i<iN;i++){
+    for (var i=0,iN=bR.length;i<iN;i++) {
       var border=bR[i];
-      if(typeof border=="string"||border instanceof String){
-        if(td_content!=null)
+      if (typeof border=="string"||border instanceof String) {
+        if (td_content!=null)
           emit_cell();
 
         td_content=border;
-      }else if(border===1){
+      } else if (border===1) {
         bw_right=1;
         emit_cell();
         // assert(bw_right==0);
-      }else{
+      } else {
 //#debug
         alert("Fatal @ array2.ctx/write_bL\n予期しない境界線指定子です。");
         throw new Error("unexpected border-spec");
@@ -337,7 +337,7 @@ agh.memcpy(_at.Cell.prototype,{
       }
     }
 
-    if(td_content!=null)
+    if (td_content!=null)
       emit_cell();
   },
   "0":0
@@ -347,7 +347,7 @@ agh.memcpy(_at.Cell.prototype,{
 //    class Column
 //
 //********************************************************************
-_at.Column=function(parent,y,copye){
+_at.Column=function(parent,y,copye) {
   this.table=parent;
   this.y=y;
 
@@ -357,7 +357,7 @@ _at.Column=function(parent,y,copye){
   this.tdcL=0;
   this.tdcR=0;
 
-  if(copye instanceof _at.Column){
+  if (copye instanceof _at.Column) {
     this.width=copye.width;
     this.halign=copye.halign;
     this.borderL=copye.borderL;
@@ -379,10 +379,10 @@ agh.memcpy(_at.Column.prototype,{
   //****************************************************************
   //    設定
   //****************************************************************
-  add_bL:function(b){
+  add_bL: function(b) {
     (this.borderL||(this.borderL=[])).push(b);
   },
-  add_bR:function(b){
+  add_bR: function(b) {
     (this.borderR||(this.borderR=[])).push(b);
   },
   //****************************************************************
@@ -391,16 +391,16 @@ agh.memcpy(_at.Column.prototype,{
   /// <summary>
   /// この列を表示するのに必要な td の数を計算します。
   /// </summary>
-  update_tdc:function(){
+  update_tdc: function() {
     var table=this.table;
     var maxL=0;
     var maxR=0;
-    for(var x=0;x<table.xM;x++){
+    for (var x=0;x<table.xM;x++) {
       var c=table.cell(x,this.y);
       var l=c.cols_bL();
-      if(l>maxL)maxL=l;
+      if (l>maxL) maxL=l;
       var r=c.cols_bR();
-      if(r>maxR)maxR=r;
+      if (r>maxR) maxR=r;
     }
     this.tdc=maxL+1+maxR;
     this.tdcL=maxL;
@@ -408,39 +408,39 @@ agh.memcpy(_at.Column.prototype,{
 
     return this.tdc;
   },
-  _isPaddingLeftText:function(){
+  _isPaddingLeftText: function() {
     var b=null;
-    if(this.borderL!=null){
+    if (this.borderL!=null) {
       b=agh.Array.last(this.borderL);
-    }else if(this.y>0){
+    } else if (this.y>0) {
       var prev=this.table.col(this.y-1).borderR;
-      if(prev!=null)b=agh.Array.last(prev);
+      if (prev!=null) b=agh.Array.last(prev);
     }
     return (typeof b=="string"||b instanceof String);
   },
-  _isPaddingRightText:function(){
+  _isPaddingRightText: function() {
     var b=null;
-    if(this.borderR!=null)
+    if (this.borderR!=null)
       b=agh.Array.first(this.borderR);
     return (typeof b=="string"||b instanceof String);
   },
-  update_padding:function(){
+  update_padding: function() {
     var table=this.table;
 
     // paddingL
-    if(this._isPaddingLeftText())
+    if (this._isPaddingLeftText())
       this.paddingL="0px";
-    else if(this.y==0)
+    else if (this.y==0)
       this.paddingL="0.3ex"; // 最左列既定値
 
     // paddingR
-    if(this._isPaddingRightText())
+    if (this._isPaddingRightText())
       this.paddingR="0px";
-    else if(this.y==this.table.yM-1)
+    else if (this.y==this.table.yM-1)
       this.paddingR="0.3ex"; // 最右列既定値
   }
 });
-_at.CreateDummyColumn=function(){
+_at.CreateDummyColumn=function() {
   var table=new _at.Table();
   var y=0;
   return new _at.Column(table,y);
@@ -453,37 +453,37 @@ _at.CreateDummyColumn=function(){
 //    AlignSetter
 //====================================================================
 _at.AlignSetterKey=new Object();
-_at.TableAlignSetter=function(table){
+_at.TableAlignSetter=function(table) {
   this.table=table;
 };
 agh.memcpy(_at.TableAlignSetter.prototype,{
-  setAlign:function(ltr){
+  setAlign: function(ltr) {
     var t=this.table;
-    if(t.col().halign)t.next_col();
+    if (t.col().halign) t.next_col();
     t.col().halign=ltr;
   },
-  setWidth:function(w){
+  setWidth: function(w) {
     this.table.col().width=w;
   },
-  setBorder:function(b){
+  setBorder: function(b) {
     var t=this.table;
-    if(t.cy==0&&!t.col().halign){
+    if (t.cy==0&&!t.col().halign) {
       t.col().add_bL(b); // 一番左の境界線
-    }else{
+    } else {
       t.col().add_bR(b);
     }
   },
   idKey:_at.AlignSetterKey
 });
-_at.MulticolAlignSetter=function(doc,lcell,rcell){
+_at.MulticolAlignSetter=function(doc,lcell,rcell) {
   this.doc=doc;
   this.lcell=lcell;
   this.rcell=rcell;
   this.align_set=false;
 };
 agh.memcpy(_at.MulticolAlignSetter.prototype,{
-  setAlign:function(ltr){
-    if(this.align_set){
+  setAlign: function(ltr) {
+    if (this.align_set) {
       this.doc.currentCtx.output.error(
         "mod:array.cmd:multicolumn.DoubleAlignmentCharacter",{ch:ltr},
         "\\multicolumn.argument#1");
@@ -492,13 +492,13 @@ agh.memcpy(_at.MulticolAlignSetter.prototype,{
     this.rcell.align=ltr;
     this.align_set=true;
   },
-  setWidth:function(w){
+  setWidth: function(w) {
     this.rcell.width=w;
   },
-  setBorder:function(b){
-    if(!this.align_set){
+  setBorder: function(b) {
+    if (!this.align_set) {
       this.lcell.borderL.push(b);
-    }else{
+    } else {
       this.rcell.borderR.push(b);
     }
   },
@@ -509,10 +509,10 @@ agh.memcpy(_at.MulticolAlignSetter.prototype,{
 //====================================================================
 // text_modifier として動作するハンドラ達
 _at.AlignHandlers={
-  getAlignSetter:function(doc,ltr){
+  getAlignSetter: function(doc,ltr) {
     var setter=doc.currentCtx.CTXDATA;
 //#debug
-    if(setter.idKey!==_at.AlignSetterKey){
+    if (setter.idKey!==_at.AlignSetterKey) {
       alert([
         "◆ Fatal Logical Error",
         "場所: array2.ctx/context env.array.align/command '"+ltr+"'",
@@ -526,19 +526,19 @@ _at.AlignHandlers={
 //#end debug
     return setter;
   },
-  processText:function(doc,text){
+  processText: function(doc,text) {
     // 最後の文字以外
     var iLast=text.length-1;
-    for(var i=0;i<iLast;i++){
+    for (var i=0;i<iLast;i++) {
       var c=text.substr(i,1);
-      if(!(c in this))c=0; // 既定のハンドラ
+      if (!(c in this)) c=0; // 既定のハンドラ
       this[c](doc,c);
     }
 
     // 最後の文字は文字ハンドラとして動作
     var c=text.substr(iLast,1);
     var lh=doc.currentCtx.GetLetterHandler(c);
-    if(lh==null){
+    if (lh==null) {
       doc.scanner.Next();
       this[0](doc,c);
       return;
@@ -546,35 +546,35 @@ _at.AlignHandlers={
     lh(doc,c);
   },
   //-- handlers
-  c:function(doc,ltr){
+  c: function(doc,ltr) {
     var setter=_at.AlignHandlers.getAlignSetter(doc,ltr);
-    if(setter!=null)setter.setAlign(ltr);
+    if (setter!=null) setter.setAlign(ltr);
   },
-  p:function(doc,ltr){
+  p: function(doc,ltr) {
     // エラー (之が呼び出される＝text の最後の文字ではない＝引数がない)
     doc.currentCtx.output.error(
       "mod:array.env:array.ctx:align.ltr:p.MissingArgument",null,
       "ltr:p (ctx:env.array.align)");
   },
-  "0":function(doc,ltr){
+  "0": function(doc,ltr) {
     doc.currentCtx.output.error(
       "mod:array.env:array.ctx:align.UnknownAlignmentCharacter",{ch:ltr},
       "letter '"+ltr+"' (ctx:env.array.align)");
   }
 };
 agh.memcpy(_at.AlignHandlers,_at.AlignHandlers,{l:"c",r:"c"});
-context "env.array.align" new("sub.braced"){
+context "env.array.align" new("sub.braced") {
   _Ctx.key="env.array.align";
-  _Ctx.initializer=function(mainctx){
-    if(mainctx[_Ctx.key])return;
+  _Ctx.initializer=function(mainctx) {
+    if (mainctx[_Ctx.key]) return;
     mainctx[_Ctx.key]=true;
 
     // 直接
-    if(!mainctx.ContainsBaseContext(this))return;
+    if (!mainctx.ContainsBaseContext(this)) return;
 
     // (既に text_modifier が登録されていても無視)
-    mainctx.text_modifier=function(doc,text){
-      if(text.length==0){
+    mainctx.text_modifier=function(doc,text) {
+      if (text.length==0) {
         doc.scanner.Next();
         return text;
       }
@@ -587,34 +587,34 @@ context "env.array.align" new("sub.braced"){
   //================================================================
   //>#1 を読み取るのに使用する context は…? 出来るだけ親 ctx が良い
   //→親に対応する context 名 .. を定義した。
-  letter f@\lcr(){
+  letter f@\lcr() {
     doc.scanner.Next();
     _at.AlignHandlers[cmdName](doc,cmdName);
   };
-  letter f@\|(){
+  letter f@\|() {
     doc.scanner.Next();
     var setter=_at.AlignHandlers.getAlignSetter(doc,'|');
-    if(setter!=null)setter.setBorder(1);
+    if (setter!=null) setter.setBorder(1);
   };
-  letter f\p("#..!1"){
+  letter f\p("#..!1") {
     var setter=_at.AlignHandlers.getAlignSetter(doc,'p');
-    if(setter!=null)setter.setWidth(argv[1]);
+    if (setter!=null) setter.setWidth(argv[1]);
   };
-  letter f\@("#..>1"){
+  letter f\@("#..>1") {
     var setter=_at.AlignHandlers.getAlignSetter(doc,'@');
-    if(setter!=null)setter.setBorder(argv[1]);
+    if (setter!=null) setter.setBorder(argv[1]);
   };
-  letter f\*("#..!1#@2"){
+  letter f\*("#..!1#@2") {
     var output=doc.currentCtx.output;
     var i=parseInt(argv[1]);
-    if(isNaN(i)||i<1){
+    if (isNaN(i)||i<1) {
       output.error(
         "mod:array.env:array.ctx:align.ltr:*.InvalidRepeatNumber",null,
         "ltr:* (ctx:env.array.align)");
       i=1;
     }
 
-    if(argv[2]==null){
+    if (argv[2]==null) {
       output.error(
         "mod:array.env:array.ctx:align.ltr:*.EmptyContent",null,
         "ltr:* (ctx:env.array.align)");
@@ -624,12 +624,12 @@ context "env.array.align" new("sub.braced"){
     // 挿入
     doc.scanner.InsertSource(argv[2].toString().repeat(i));
   };
-  letter f@#"!\"#$'()=~-^`{[;:]+,./&<>?_&<>"(){
+  letter f@#"!\"#$'()=~-^`{[;:]+,./&<>?_&<>"() {
     doc.scanner.Next();
     _at.AlignHandlers[0](doc,cmdName);
   };
-  letter f@#"\0\b\t\n\v\f\r 　"(){doc.scanner.Next();};
-  letter f@#"\x01\x02\x03\x04\x05\x06\x07\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f"(){
+  letter f@#"\0\b\t\n\v\f\r 　"() {doc.scanner.Next();};
+  letter f@#"\x01\x02\x03\x04\x05\x06\x07\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f"() {
     doc.scanner.Next();
   };
 }
@@ -640,7 +640,7 @@ context "env.array.align" new("sub.braced"){
 //    class Table
 //
 //********************************************************************
-_at.Table=function(){
+_at.Table=function() {
   this.cells=[];
   this.borderV=[];  // 垂直線既定値
   this.borderH=[];  // 水平線データ
@@ -661,36 +661,36 @@ agh.memcpy(_at.Table.prototype,{
   //****************************************************************
   //    データ
   //****************************************************************
-  cell:function(x,y){
-    if(x==null)x=this.cx;
-    if(y==null)y=this.cy;
-    while(x>=this.xM)
+  cell: function(x,y) {
+    if (x==null) x=this.cx;
+    if (y==null) y=this.cy;
+    while (x>=this.xM)
       this.cells[this.xM++]=[];
-    if(y>=this.yM)this.yM=y+1;
+    if (y>=this.yM) this.yM=y+1;
 
     return this.cells[x][y]||(this.cells[x][y]=new _at.Cell(this,x,y));
   },
-  col:function(y){
-    if(y==null)y=this.cy;
-    if(y>=this.yM)this.yM=y+1;
+  col: function(y) {
+    if (y==null) y=this.cy;
+    if (y>=this.yM) this.yM=y+1;
 
     var column=this.cols[y];
-    if(column)
+    if (column)
       return column;
-    else if(this.m_defaultCol)
+    else if (this.m_defaultCol)
       return this.cols[y]=new _at.Column(this,y,this.m_defaultCol);
     else
       return this.cols[y]=this.col_hookCreateNew(y);
   },
-  col_hookCreateNew:function(y){
+  col_hookCreateNew: function(y) {
     /// <summary>
     /// 列オブジェクトを初期化します。
     /// 新しく作成される列に変更を加えたい場合はこの関数を置き換えて下さい。
     /// </summary>
     return new _at.Column(this,y);
   },
-  default_col:function(){
-    if(!this.m_defaultCol)
+  default_col: function() {
+    if (!this.m_defaultCol)
       this.m_defaultCol=_at.CreateDummyColumn();
     return this.m_defaultCol;
   },
@@ -699,7 +699,7 @@ agh.memcpy(_at.Table.prototype,{
   //****************************************************************
   // next_col() で移動
   //----------------------------------------------------------------
-  clear_pos:function(){
+  clear_pos: function() {
     this.cy=0;
     this.cx=0;
   },
@@ -707,39 +707,39 @@ agh.memcpy(_at.Table.prototype,{
   //    設定
   //****************************************************************
   // 水平線
-  getHorizontalLines:function(row){
+  getHorizontalLines: function(row) {
     return this.borderH[row]||0;
   },
-  addHorizontalLines:function(row,count){
-    if(this.borderH[row]==null)
+  addHorizontalLines: function(row,count) {
+    if (this.borderH[row]==null)
       this.borderH[row]=0;
 
     this.borderH[row]+=count||1;
   },
-  getHtmlRowCount:function(){
+  getHtmlRowCount: function() {
     var r=this.xM;
-    for(var x=0;x<=this.xM;x++){
+    for (var x=0;x<=this.xM;x++) {
       var h=this.getHorizontalLines(x)-1;
-      if(h>0)r+=h;
+      if (h>0) r+=h;
     }
     return r;
   },
   //----------------------------------------------------------------
-  next_col:function(){
+  next_col: function() {
     this.cy++;
   },
-  next_row:function(){
+  next_row: function() {
     this.cx++;
     this.cy=0;
   },
-  set_hline:function(){
+  set_hline: function() {
     this.addHorizontalLines(this.cx,1);
   },
-  set_multicol:function(doc,span,align,content){
+  set_multicol: function(doc,span,align,content) {
     // 連結の設定
     this.cell().colspan=span;
     this.cell().is_multicol=true;
-    for(var i=1;i<span;i++){
+    for (var i=1;i<span;i++) {
       var c=this.cell(this.cx,this.cy+i);
       c.is_spanpad=true;
       c.is_multicol=true;
@@ -760,41 +760,41 @@ agh.memcpy(_at.Table.prototype,{
     doc.scanner.InsertSource("{"+align+"}");
     doc.scanner.Next(); // "{" の次
     var r=doc.Read(ctx_aln);
-    if(r)doc.currentCtx.output.buff.push(r);
+    if (r) doc.currentCtx.output.buff.push(r);
 
-    if(rcell.align==null){
+    if (rcell.align==null) {
       doc.currentCtx.output.error(
         "mod:array.cmd:multicol.EmptyAlignment",null,
         "\\multicolumn (ctx:array)");
     }
   },
-  set_cline:function(start,end){
+  set_cline: function(start,end) {
     start--;
-    if(start<0)start=0;
-    if(this.cx==0)for(var i=start;i<end;i++){
+    if (start<0) start=0;
+    if (this.cx==0) for (var i=start;i<end;i++) {
       this.cell(0,i).borderT=true;
-    }else for(var i=start;i<end;i++){
+    } else for (var i=start;i<end;i++) {
       this.cell(this.cx-1,i).borderB=true;
     }
   },
-  get_current_col:function(){
+  get_current_col: function() {
     return this.cy;
   },
   //****************************************************************
   //    出力
   //****************************************************************
-  write:function(output){
+  write: function(output) {
     // init this.cols
     // 　各 cell 列に使用する td 列数の計算
     var tdc_total=0;
-    for(var y=0;y<this.yM;y++){
+    for (var y=0;y<this.yM;y++) {
       this.col(y).update_padding();
       tdc_total+=this.col(y).update_tdc();
     }
 
     // header
     var buff=output.buff;
-    if(this.param_bracket)
+    if (this.param_bracket)
       buff.push('<table class="aghtex-array aghtex-array-valign-',this.valign,' aghtex-array-lrpad">\r\n');
     else
       buff.push('<table class="aghtex-array aghtex-array-valign-',this.valign,'">\r\n');
@@ -803,7 +803,7 @@ agh.memcpy(_at.Table.prototype,{
     this.write_thead(output);
 
     // enclosing brackets
-    if(this.param_bracket){
+    if (this.param_bracket) {
       var trCount=1+this.getHtmlRowCount();
       buff.push('<tr class="aghtex-cmdleft">');
       mod_base.OutputStretchBracketTd(output,this.param_bracket[0],trCount);
@@ -814,16 +814,16 @@ agh.memcpy(_at.Table.prototype,{
 
     // content
     this.write_bT(output,tdc_total);
-    for(var x=0;x<this.xM;x++){
-      if(x==0)
+    for (var x=0;x<this.xM;x++) {
+      if (x==0)
         buff.push('<tr class="aghtex-array-first-row">\n');
-      else if(x==this.xM-1)
+      else if (x==this.xM-1)
         buff.push('<tr class="aghtex-array-last-row">\n');
       else
         buff.push('<tr>\n');
 
-      for(var y=0;y<this.yM;y++){
-        if(this.cells[x][y])
+      for (var y=0;y<this.yM;y++) {
+        if (this.cells[x][y])
           this.cells[x][y].write(output);
       }
       buff.push('</tr>\n');
@@ -834,53 +834,53 @@ agh.memcpy(_at.Table.prototype,{
 
 //#debug 0
     var a=[];
-    for(var x=0;x<this.xM;x++,a.push("\n"))
-      for(var y=0;y<this.yM;y++)
+    for (var x=0;x<this.xM;x++,a.push("\n"))
+      for (var y=0;y<this.yM;y++)
         a.push(agh.Text.Unescape(this.cell(x,y).content,"html"),", ");
     alert(a.join(""));
 //#end debug
   },
-  write_thead:function(output){
+  write_thead: function(output) {
     var buff=output.buff;
 
-    if(agh.browser.vFx){
+    if (agh.browser.vFx) {
       buff.push('<tr class="aghtex-array-fxdummy">\n');
-      for(var y=0;y<this.yM;y++){
+      for (var y=0;y<this.yM;y++) {
         var col=this.col(y);
         buff.push(' ');
-        for(var i=0;i<col.tdcL;i++)buff.push('<td />');
+        for (var i=0;i<col.tdcL;i++) buff.push('<td />');
         buff.push('<td style="width:auto;"><div>.</div></td>');
-        for(var i=0;i<col.tdcR;i++)buff.push('<td />');
+        for (var i=0;i<col.tdcR;i++) buff.push('<td />');
         buff.push('\n');
       }
       buff.push('</tr>\n');
     }
   },
-  write_bT:agh.browser.vIE?function(output,tdc_total){
+  write_bT:agh.browser.vIE?function(output,tdc_total) {
     var h=this.getHorizontalLines(0)-1;
-    while(h-->0){
+    while (h-->0) {
       output.buff.push(
         '<tr><td class="tex-arr2hlineT" colspan="',tdc_total,
         '"><tex:i class="aghtex-array-hline-iedummy">&nbsp;</tex:i></td></tr>\n');
     }
-  }:function(output,tdc_total){
+  }: function(output,tdc_total) {
     var h=this.getHorizontalLines(0)-1;
-    while(h-->0){
+    while (h-->0) {
       output.buff.push(
         '<tr><td class="tex-arr2hlineT" colspan="',tdc_total,
         '"></td></tr>\n');
     }
   },
-  write_bB:agh.browser.vIE?function(output,tdc_total,x){
+  write_bB:agh.browser.vIE?function(output,tdc_total,x) {
     var h=this.getHorizontalLines(x+1)-1;
-    while(h-->0){
+    while (h-->0) {
       output.buff.push(
         '<tr><td class="tex-arr2hlineB" colspan="',tdc_total,
         '"><tex:i class="aghtex-array-hline-iedummy">&nbsp;</tex:i></td></tr>\n');
     }
-  }:function(output,tdc_total,x){
+  }: function(output,tdc_total,x) {
     var h=this.getHorizontalLines(x+1)-1;
-    while(h-->0){
+    while (h-->0) {
       output.buff.push(
         '<tr><td class="tex-arr2hlineB" colspan="',tdc_total,
         '"></td></tr>\n');
@@ -894,9 +894,9 @@ agh.memcpy(_at.Table.prototype,{
 //
 //********************************************************************
 agh.memcpy(_at.Table,{
-  GetTable:function(doc,cmdName,msg_action){
+  GetTable: function(doc,cmdName,msg_action) {
     var data=doc.currentCtx.ENVDATA;
-    if(!(data instanceof _at.Table)){
+    if (!(data instanceof _at.Table)) {
       doc.currentCtx.output.error(
         "mod:array.env:array.Invalid"+msg_action,{cmdName:cmdName},
         "\\"+cmdName);
@@ -905,15 +905,15 @@ agh.memcpy(_at.Table,{
     return data;
   },
   // &
-  H_NEXT_COL:function(doc,cmdName){
+  H_NEXT_COL: function(doc,cmdName) {
     doc.scanner.Next();
     var output=doc.currentCtx.output;
     var data=_at.Table.GetTable(doc,cmdName,"NextColumn");
-    if(data==null)return;
+    if (data==null) return;
 
-    if(data.cell().is_multicol){
+    if (data.cell().is_multicol) {
       var cont=output.toHtml().trim();
-      if(cont){
+      if (cont) {
         output.error(
           "mod:array.env:array.ExtraContentAfterMulticol",null,
           "ltr:& (env:array)");
@@ -928,33 +928,33 @@ agh.memcpy(_at.Table,{
     output.clear();
     data.next_col();
   },
-  H_NEXT_ROW:function(doc,cmdName){
+  H_NEXT_ROW: function(doc,cmdName) {
     doc.scanner.Next();
     var output=doc.currentCtx.output;
     var data=_at.Table.GetTable(doc,cmdName,"NextLine");
-    if(data==null)return;
+    if (data==null) return;
 
     data.cell().content+=output.toHtml();
     output.clear();
     data.next_row();
   },
-  H_HLINE:function(doc,cmdName){
+  H_HLINE: function(doc,cmdName) {
     doc.scanner.Next();
     var output=doc.currentCtx.output;
     var data=_at.Table.GetTable(doc,cmdName,"HorizontalLine");
-    if(data==null)return;
+    if (data==null) return;
 
     data.set_hline();
   },
   // \cline{1-3}
-  H_CLINE:new ns.Command2("f","#mode.para!1",function(doc,args){
+  H_CLINE:new ns.Command2("f","#mode.para!1",function(doc,args) {
     var output=doc.currentCtx.output;
     var data=_at.Table.GetTable(doc,args[0],"HorizontalLine");
-    if(data==null)return;
+    if (data==null) return;
 
     // chk 引数
     var s=args[1].match(/^\s*(\d)+\s*\-\s*(\d+)/);
-    if(s==null){
+    if (s==null) {
       output.error(
         "mod:array.env:array.cmd:cline.InvalidRange",{cmdName:args[0],range:args[1]},
         "\\"+args[0]);
@@ -965,13 +965,13 @@ agh.memcpy(_at.Table,{
     data.set_cline(parseInt(s[1]),parseInt(s[2]));
   }),
   // \multicolumn{2}{|c|}{content}
-  H_MULTICOL:new ns.Command2("f","#!1#@2#>3",function(doc,args){
+  H_MULTICOL:new ns.Command2("f","#!1#@2#>3",function(doc,args) {
     var output=doc.currentCtx.output;
     var data=_at.Table.GetTable(doc,args[0],"Multicolumn");
-    if(data==null)return;
+    if (data==null) return;
 
     var cnum=parseInt(args[1]);
-    if(isNaN(cnum)||cnum<=0)cnum=1;
+    if (isNaN(cnum)||cnum<=0) cnum=1;
     var csty=args[2];
     var content=args[3];
 
@@ -983,7 +983,7 @@ agh.memcpy(_at.Table,{
 //*****************************************************************************
 //  array 環境
 //-----------------------------------------------------------------------------
-_Mod.ArrayEnvironmentDefaultPrologue=function(doc,ctx){
+_Mod.ArrayEnvironmentDefaultPrologue=function(doc,ctx) {
   var output=doc.currentCtx.output;
   var t=new _at.Table();
   return ctx.ENVDATA=t;
@@ -995,25 +995,25 @@ _Mod.ArrayEnvironmentDefaultPrologue=function(doc,ctx){
    * 等を必要に応じて行う
    */
 };
-_Mod.ArrayEnvironmentDefaultEpilogue=function(doc,ctx){
+_Mod.ArrayEnvironmentDefaultEpilogue=function(doc,ctx) {
   var table=ctx.ENVDATA;
 
   // 最後の出力を拾う
   var last_cont=ctx.output.toHtml();
-  if(last_cont.trim().length>0)
+  if (last_cont.trim().length>0)
     table.cell().content=last_cont;
 
   table.write(doc.currentCtx.output);
 };
-_Mod.ArrayEnvironmentDefaultCatcher=function(doc,ctx){
+_Mod.ArrayEnvironmentDefaultCatcher=function(doc,ctx) {
   this.epilogue(doc,ctx);
 };
 //-----------------------------------------------------------------------------
 
 
-_Mod.ReadVerticalAlign=function(doc){
+_Mod.ReadVerticalAlign=function(doc) {
   var va=doc.GetOptionalArgumentRaw()||"m";
-  if("tbm".indexOf(va.trim().first())<0){
+  if ("tbm".indexOf(va.trim().first())<0) {
     doc.currentCtx.output.error(
       "mod:array.env:array.InvalidVerticalAlign",{valign:va});
     va="m";
@@ -1023,14 +1023,14 @@ _Mod.ReadVerticalAlign=function(doc){
 
 var ENV_PARAMS={
   suppressOutput:true,
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     var t=_Mod.ArrayEnvironmentDefaultPrologue(doc,ctx);
 
     t.valign=_Mod.ReadVerticalAlign(doc); // 第1引数
 
     // 第二引数 : 水平位置合わせ
     //----------------------------------------------------
-    if(doc.scanner.is("ltr","{")){
+    if (doc.scanner.is("ltr","{")) {
       doc.scanner.Next();
       var ctx_aln=doc.context_cast(["sub.braced","env.array.align"]);
       ctx_aln.CTXDATA=new _at.TableAlignSetter(t);
@@ -1038,9 +1038,9 @@ var ENV_PARAMS={
       t.clear_pos(); // (cx,cy) = (0,0)
 
       // エラーがある場合
-      if(err.trim())
+      if (err.trim())
         doc.currentCtx.output.buff.push(err);
-    }else{
+    } else {
       // ■ alignment 指定開始の括弧がなかった場合
     }
 
@@ -1052,7 +1052,7 @@ var ENV_PARAMS={
   catcher:_Mod.ArrayEnvironmentDefaultCatcher
 };
 
-context "env.array" new("mode.math"){
+context "env.array" new("mode.math") {
   _Ctx.AddLetterHandler("&",_at.Table.H_NEXT_COL);
   _Ctx.AddCommandHandler("\\",_at.Table.H_NEXT_ROW);
   _Ctx.AddCommandHandler("hline",_at.Table.H_HLINE);
@@ -1062,7 +1062,7 @@ context "env.array" new("mode.math"){
 ENV_PARAMS.context="env.array";
 ns.ContextFactory["mode.math"].AddEnvironment("array",ENV_PARAMS);
 
-context "env.tabular" new("mode.para"){
+context "env.tabular" new("mode.para") {
   _Ctx.AddLetterHandler("&",_at.Table.H_NEXT_COL);
   _Ctx.AddCommandHandler("\\",_at.Table.H_NEXT_ROW);
   _Ctx.AddCommandHandler("hline",_at.Table.H_HLINE);
@@ -1079,16 +1079,16 @@ var CTXV_LABEL_EQ='mod_ref/label:eq';
 var CTXV_NONUMBER='mod_array/nonumber';
 var CTXV_ARRAYCTX='mod_array/arrayCtx';
 
-_Mod.eqno_output=function(doc,actx,output){
+_Mod.eqno_output=function(doc,actx,output) {
   var counter=doc.GetCounter("equation");
 
   // 式番号
   var buff=output.buff;
-  if(!actx.dataV[CTXV_NONUMBER]){
+  if (!actx.dataV[CTXV_NONUMBER]) {
     buff.push('<tex:i class="aghtex-eqno">&nbsp;<tex:i class="aghtex-eqno-right">');
-    if(counter==null){
+    if (counter==null) {
       buff.push('(?)');
-    }else{
+    } else {
       counter.Step();
       buff.push('(',counter.arabic(),')');
     }
@@ -1097,56 +1097,56 @@ _Mod.eqno_output=function(doc,actx,output){
   actx.dataV[CTXV_NONUMBER]=false;
 
   var labels=actx.GetContextVariable(CTXV_LABEL_EQ);
-  if(labels.length>0){
+  if (labels.length>0) {
     var id="aghtex."+labels[0];
-    for(var i=1;i<labels.length;i++)
+    for (var i=1;i<labels.length;i++)
       doc.references.label_id_map[labels[i]]=id;
 
     buff.push('<a class="aghtex-label" name="',id,'">&nbsp;</a>');
-    if(counter!=null)
+    if (counter!=null)
       doc.references.displayedText['ref@'+labels[0]]=counter.arabic();
 
     labels.length=0;
   }
 };
 
-function isEndingEqnoRequired(ctx){
-  if(ctx.ENVDATA.get_current_col()!=0)
+function isEndingEqnoRequired(ctx) {
+  if (ctx.ENVDATA.get_current_col()!=0)
     return true;
 
   var last_cont=ctx.output.toHtml();
-  if(last_cont.trim().length>0)
+  if (last_cont.trim().length>0)
     return true;
 
   return false;
 }
 
-_Mod.eqno_prologue=function(doc,ctx){
+_Mod.eqno_prologue=function(doc,ctx) {
   ctx.dataV[CTXV_ARRAYCTX]=ctx;
   ctx.dataV[CTXV_NONUMBER]=false;
   ctx.SetContextVariable(CTXV_LABEL_EQ,[]);
   ctx.userC["label"]=ns.Modules["mod:ref"]["cmd:label:eq"];
 };
-_Mod.eqno_epilogue=function(doc,ctx){
-  if(isEndingEqnoRequired(ctx))
+_Mod.eqno_epilogue=function(doc,ctx) {
+  if (isEndingEqnoRequired(ctx))
     _Mod.eqno_output(doc,ctx,ctx.output);
 };
 
-context "env.eqnarray" new("env.array"){
-  command f\nonumber(){
+context "env.eqnarray" new("env.array") {
+  command f\nonumber() {
     var output=doc.currentCtx.output;
     doc.AssignContextVariable(CTXV_NONUMBER,true);
   };
-  command f@#"\\"(){
+  command f@#"\\"() {
     doc.scanner.Next();
     var output=doc.currentCtx.output;
     var data=_at.Table.GetTable(doc,cmdName,"NextLine");
-    if(data==null)return;
+    if (data==null) return;
 
     var actx=doc.GetContextVariable(CTXV_ARRAYCTX);
-    if(actx!=null){
+    if (actx!=null) {
       _Mod.eqno_output(doc,actx,output);
-    }else{
+    } else {
       output.error("mod:array.env:eqnarray.ContextBroken");
     }
 
@@ -1170,7 +1170,7 @@ context "env.eqnarray" new("env.array"){
 
 _Mod["envdef:eqnarray*"]={
   suppressOutput:true,
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     var t=_Mod.ArrayEnvironmentDefaultPrologue(doc,ctx);
 
     // 列の設定
@@ -1183,7 +1183,7 @@ _Mod["envdef:eqnarray*"]={
       "mod:array.env:eqnarray.ExtraColumn",null,
       "env:eqnarray"));
   },
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     doc.currentCtx.output.buff.push('<tex:math class="aghtex-displaymath">');
     _Mod.ArrayEnvironmentDefaultEpilogue(doc,ctx);
     doc.currentCtx.output.buff.push('</tex:math>');
@@ -1193,11 +1193,11 @@ _Mod["envdef:eqnarray*"]={
 };
 _Mod["envdef:eqnarray"]={
   suppressOutput:true,
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     _Mod["envdef:eqnarray*"].prologue(doc,ctx);
     _Mod.eqno_prologue(doc,ctx);
   },
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     _Mod.eqno_epilogue(doc,ctx);
     _Mod["envdef:eqnarray*"].epilogue(doc,ctx);
   },
@@ -1215,16 +1215,16 @@ ns.ContextFactory["mode.para"].AddEnvironment("eqnarray",_Mod["envdef:eqnarray"]
 
 _Mod["envdef:align*"]={
   suppressOutput:true,
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     var t=_Mod.ArrayEnvironmentDefaultPrologue(doc,ctx);
 
     // 列の設定
-    t.col_hookCreateNew=function(y){
+    t.col_hookCreateNew=function(y) {
       var r=_at.Table.prototype.col_hookCreateNew.call(this,y);
-      if(y%2==0){
+      if (y%2==0) {
         r.halign="r";
         r.paddingR="0px";
-      }else{
+      } else {
         r.halign="l";
         r.paddingL="0px";
       }
@@ -1238,11 +1238,11 @@ _Mod["envdef:align*"]={
 
 _Mod["envdef:align"]={
   suppressOutput:true,
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     _Mod["envdef:align*"].prologue(doc,ctx);
     _Mod.eqno_prologue(doc,ctx);
   },
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     _Mod.eqno_epilogue(doc,ctx);
     _Mod["envdef:align*"].epilogue(doc,ctx);
   },
@@ -1265,14 +1265,14 @@ _Mod["envdef:aligned"]={
 
 _Mod["envdef:alignat*"]={
   suppressOutput:true,
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     var t=_Mod.ArrayEnvironmentDefaultPrologue(doc,ctx);
 
     var n_=doc.ReadArgument("txt");
     var n=parseInt(n_);
-    if(!(n>0)){
+    if (!(n>0)) {
       doc.currentCtx.output.error("mod:array.env:alignat.NegativeColumnNumber",{arg1:n_});
-    }else for(var i=0;i<n;i++){
+    } else for (var i=0;i<n;i++) {
       t.col(2*i).halign="r";
       t.col(2*i).paddingR="0px";
       t.col(2*i+1).halign="l";
@@ -1290,11 +1290,11 @@ _Mod["envdef:alignat*"]={
 
 _Mod["envdef:alignat"]={
   suppressOutput:true,
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     _Mod["envdef:alignat*"].prologue(doc,ctx);
     _Mod.eqno_prologue(doc,ctx);
   },
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     _Mod.eqno_epilogue(doc,ctx);
     _Mod["envdef:alignat*"].epilogue(doc,ctx);
   },
@@ -1317,7 +1317,7 @@ _Mod["envdef:alignedat"]={
 _Mod["envdef:flalign*"]={
   suppressOutput:true,
   prologue:_Mod["envdef:align*"].prologue,
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     doc.currentCtx.output.buff.push('<tex:math class="aghtex-flalign">');
     _Mod.ArrayEnvironmentDefaultEpilogue(doc,ctx);
     doc.currentCtx.output.buff.push('</tex:math>');
@@ -1328,11 +1328,11 @@ _Mod["envdef:flalign*"]={
 
 _Mod["envdef:flalign"]={
   suppressOutput:true,
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     _Mod["envdef:flalign*"].prologue(doc,ctx);
     _Mod.eqno_prologue(doc,ctx);
   },
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     _Mod.eqno_epilogue(doc,ctx);
     _Mod["envdef:flalign*"].epilogue(doc,ctx);
   },
@@ -1346,7 +1346,7 @@ _Mod["envdef:flalign"]={
 
 _Mod["envdef:gather*"]={
   suppressOutput:true,
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     var t=_Mod.ArrayEnvironmentDefaultPrologue(doc,ctx);
 
     t.col(0).halign="c";
@@ -1354,7 +1354,7 @@ _Mod["envdef:gather*"]={
       "mod:array.env:gather.ExtraColumn",null,
       "env:gather"));
   },
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     doc.currentCtx.output.buff.push('<tex:math class="aghtex-displaymath">');
     _Mod.ArrayEnvironmentDefaultEpilogue(doc,ctx);
     doc.currentCtx.output.buff.push('</tex:math>');
@@ -1365,11 +1365,11 @@ _Mod["envdef:gather*"]={
 
 _Mod["envdef:gather"]={
   suppressOutput:true,
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     _Mod["envdef:gather*"].prologue(doc,ctx);
     _Mod.eqno_prologue(doc,ctx);
   },
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     _Mod.eqno_epilogue(doc,ctx);
     _Mod["envdef:gather*"].epilogue(doc,ctx);
   },
@@ -1389,8 +1389,8 @@ _Mod["envdef:gathered"]={
 // \begin{multline*} (amsmath)
 // \begin{multline} (amsmath)
 
-context "env.multline" new("env.array"){
-  command f\nonumber(){
+context "env.multline" new("env.array") {
+  command f\nonumber() {
     var output=doc.currentCtx.output;
     doc.AssignContextVariable(CTXV_NONUMBER,true);
   };
@@ -1398,7 +1398,7 @@ context "env.multline" new("env.array"){
 
 _Mod["envdef:multline*"]={
   suppressOutput:true,
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     var t=_Mod.ArrayEnvironmentDefaultPrologue(doc,ctx);
 
     t.col(0).halign="l";
@@ -1406,17 +1406,17 @@ _Mod["envdef:multline*"]={
       "mod:array.env:gather.ExtraColumn",null,
       "env:multline"));
   },
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     var table=ctx.ENVDATA;
 
     // 最後の出力を拾う
     var last_cont=ctx.output.toHtml();
-    if(last_cont.trim().length>0)
+    if (last_cont.trim().length>0)
       table.cell().content=last_cont;
 
     // padding 設定
-    if(table.xM>=2){
-      for(var x=1;x<table.xM-1;x++)
+    if (table.xM>=2) {
+      for (var x=1;x<table.xM-1;x++)
         table.cell(x,0).paddingL="4em";
       table.cell(table.xM-1,0).paddingL="8em";
     }
@@ -1432,11 +1432,11 @@ _Mod["envdef:multline*"]={
 
 _Mod["envdef:multline"]={
   suppressOutput:true,
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     _Mod["envdef:multline*"].prologue(doc,ctx);
     _Mod.eqno_prologue(doc,ctx);
   },
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     _Mod.eqno_output(doc,ctx,ctx.output);
     _Mod["envdef:multline*"].epilogue(doc,ctx);
   },
@@ -1452,10 +1452,10 @@ _Mod["envdef:multline"]={
 // \begin{vmatrix} (amsmath)
 // \begin{Vmatrix} (amsmath)
 
-function define_xmatrix(name,bracket){
+function define_xmatrix(name,bracket) {
   _Mod[name]={
     suppressOutput:true,
-    prologue:function(doc,ctx){
+    prologue: function(doc,ctx) {
       var t=_Mod.ArrayEnvironmentDefaultPrologue(doc,ctx);
       t.valign=_Mod.ReadVerticalAlign(doc);
       t.param_bracket=bracket;

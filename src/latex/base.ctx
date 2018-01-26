@@ -31,43 +31,43 @@ agh.memcpy(mod_core.ErrorMessages,{
 //================================================================
 //      制御文字 / コマンドハンドラ
 //================================================================
-var LH_IGNORE_EXIT_ERROR=function(doc,letter){
+var LH_IGNORE_EXIT_ERROR=function(doc,letter) {
   doc.currentCtx.output.error("UnexpectedEOR",letter);
   doc.scanner.Next();
 };
-var LH_EXIT_WITH_ERROR=function(doc,letter){
+var LH_EXIT_WITH_ERROR=function(doc,letter) {
   doc.currentCtx.output.error("UnexpectedEOR",letter);
   doc.currentCtx.BREAK=true;
 };
-var LH_EXIT=function(doc,letter){
+var LH_EXIT=function(doc,letter) {
   doc.scanner.Next();
   doc.currentCtx.BREAK=true;
 };
-var LH_RAW=function(doc,letter){
+var LH_RAW=function(doc,letter) {
   doc.currentCtx.output.buff.push(letter);
   doc.scanner.Next();
 };
-var LH_ESCAPE_HTML=function(doc,letter){
+var LH_ESCAPE_HTML=function(doc,letter) {
   doc.currentCtx.output.appendText(letter);
   doc.scanner.Next();
 };
 //----------------------------------------------------------------
-var CH_IGNORE_EXIT_ERROR=function(doc,letter){
+var CH_IGNORE_EXIT_ERROR=function(doc,letter) {
   doc.currentCtx.output.error("UnexpectedEOR","\\"+letter);
   doc.scanner.Next();
 };
-var CH_EXIT_WITH_ERROR=function(doc,letter){
+var CH_EXIT_WITH_ERROR=function(doc,letter) {
   doc.currentCtx.output.error("UnexpectedEOR","\\"+letter);
   doc.currentCtx.BREAK=true;
 };
 var CH_EXIT=LH_EXIT;
-var CH_RAW=function(doc,letter){
+var CH_RAW=function(doc,letter) {
   doc.currentCtx.output.buff.push('\\',letter);
   doc.scanner.Next();
 };
-_Mod.CHRelax=function(doc,cmdName){doc.scanner.Next();};
+_Mod.CHRelax=function(doc,cmdName) {doc.scanner.Next();};
 /*
-var CH_ESCAPE_HTML=function(doc,letter){
+var CH_ESCAPE_HTML=function(doc,letter) {
   doc.currentCtx.output.appendText("\\"+letter);
   doc.scanner.Next();
 };
@@ -76,19 +76,19 @@ var CH_ESCAPE_HTML=function(doc,letter){
 // 数式環境では roman alphabets, digits をタグ付けする。
 // 以下はタグ付けに使う為の正規表現および置換子。
 var reg_math_text_modifier=/([a-z]+)|([A-Z]+)|[0-9]+/g;
-var rep_math_text_modifier=function($0,$1,$2){
-  if($1){
+var rep_math_text_modifier=function($0,$1,$2) {
+  if ($1) {
     return '<tex:f class="aghtex-alpha aghtex-alpha-lower">'+$0+'</tex:f>';
-  }else if($2){
+  } else if ($2) {
     return '<tex:f class="aghtex-alpha aghtex-alpha-upper">'+$0+'</tex:f>';
-  }else{
+  } else {
     return '<tex:f class="aghtex-digit">'+$0+'</tex:f>';
   }
 };
 
 //================================================================
 
-ns.ContextFactory.prototype.rawctx_CreateContext=function(doc){
+ns.ContextFactory.prototype.rawctx_CreateContext=function(doc) {
   // 処理せずにソースを読み取る context の為
   var ctx=new ns.Context(
     [],
@@ -97,10 +97,10 @@ ns.ContextFactory.prototype.rawctx_CreateContext=function(doc){
     null,
     this.initializer
   );
-  ctx.GetLetterHandler=function rawctx_GetLetterHandler(letter){
+  ctx.GetLetterHandler=function rawctx_GetLetterHandler(letter) {
     return this.handlerL[letter]||LH_RAW;
   };
-  ctx.ReadCommand=function rawctx_ReadCommand(doc,cmd){
+  ctx.ReadCommand=function rawctx_ReadCommand(doc,cmd) {
     (this.handlerC[cmd]||CH_RAW)(doc,cmd);
   };
   return ctx;
@@ -114,21 +114,21 @@ ns.ContextFactory.prototype.rawctx_CreateContext=function(doc){
 //            context global
 //
 //☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆
-context "global" new(){
-  _Ctx.AddLetterHandler("EOF",function(doc){doc.currentCtx.BREAK=true;});
+context "global" new() {
+  _Ctx.AddLetterHandler("EOF",function(doc) {doc.currentCtx.BREAK=true;});
   _Ctx.AddLetterHandler("!\"#$'()=~|-^`{[;:]+,./&<>?_*",LH_RAW);
   _Ctx.AddLetterHandler("&<>",LH_ESCAPE_HTML);
   _Ctx.AddLetterHandler("\b\t\n\v\f\r 　",LH_RAW);
-  letter f@#"\0\x01\x02\x03\x04\x05\x06\x07\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f"(){
+  letter f@#"\0\x01\x02\x03\x04\x05\x06\x07\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f"() {
     doc.scanner.Next();
     doc.currentCtx.output.buff.push(' ');
   };
 
-  _Ctx.AddCommandHandler('makeatletter',function(doc,cmdName){
+  _Ctx.AddCommandHandler('makeatletter',function(doc,cmdName) {
     doc.scanner.m_makeatletter=true;
     doc.scanner.Next();
   });
-  _Ctx.AddCommandHandler('makeatletter',function(doc,cmdName){
+  _Ctx.AddCommandHandler('makeatletter',function(doc,cmdName) {
     doc.scanner.m_makeatletter=false;
     doc.scanner.Next();
   });
@@ -142,28 +142,28 @@ context "global" new(){
   //------------------------------------------------------------
   //    領域開始
   //------------------------------------------------------------
-  _Ctx.AddLetterHandler("{",function(doc){
+  _Ctx.AddLetterHandler("{",function(doc) {
     doc.scanner.Next();
     var ctx=doc.context_cast([doc.currentCtx,"sub.braced"]);
     doc.currentCtx.output.buff.push(doc.Read(ctx));
   });
-  _Ctx.AddCommandHandler("begin",function(doc){
+  _Ctx.AddCommandHandler("begin",function(doc) {
     doc.scanner.Next();
     var env=doc.GetArgumentRaw().trim();
 
     // 環境名→環境
     var environment=doc.currentCtx.GetEnvironment(env);
-    if(environment!=null){
+    if (environment!=null) {
       environment.Process(doc,env);
       return;
     }
 
     // 環境が見つからなかった場合
     //---------------------------
-    if(doc.currentCtx.GetCommandHandler(doc,env)!=null){
+    if (doc.currentCtx.GetCommandHandler(doc,env)!=null) {
       // 先頭にコマンドを配した代替環境
       doc.scanner.InsertSource("\\"+env+" ");
-    }else{
+    } else {
       // 代替用のコマンドも見つからなかった場合
       doc.currentCtx.output.error(
         "UnknownEnvironment",{env:env,contexts:doc.currentCtx.dbgGetContexts()},
@@ -179,7 +179,7 @@ context "global" new(){
 ///  {} で囲まれた sub-block を読み取ります。
 /// </summary>
 /// <condition>{ の次の語から始めて下さい。</condition>
-context "sub.braced" new(){
+context "sub.braced" new() {
   //_Ctx.AddLetterHandler("]",LH_EXIT_WITH_ERROR);
   _Ctx.AddLetterHandler("}",LH_EXIT);
   _Ctx.AddLetterHandler("EOF",LH_EXIT_WITH_ERROR);
@@ -192,30 +192,30 @@ context "sub.braced" new(){
 //            context 引数関連
 //
 //☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆
-var LH_MISARG_EOF=function(doc,letter){
+var LH_MISARG_EOF=function(doc,letter) {
   doc.currentCtx.output.error('mod:base.BasicHandlers.MissingArgumentEof',null,'mod:base.ltr:EOF');
   doc.currentCtx.BREAK=true;
 };
-var LH_MISARG_BRACE=function(doc,letter){
+var LH_MISARG_BRACE=function(doc,letter) {
   doc.currentCtx.output.error('mod:base.BasicHandlers.MissingArgument',{term:"'}'",term:"'}'"},'mod:base.ltr:\'}\'');
   doc.currentCtx.BREAK=true;
 };
-var CH_MISARG_RIGHT=function(doc,cmd){
+var CH_MISARG_RIGHT=function(doc,cmd) {
   doc.currentCtx.output.error('mod:base.BasicHandlers.MissingArgument',{term:"\\right command",term:"\\right コマンド"},'mod:base.cmd:right');
   doc.currentCtx.BREAK=true;
 };
-var CH_MISARG_END=function(doc,cmd){
+var CH_MISARG_END=function(doc,cmd) {
   doc.currentCtx.output.error('mod:base.BasicHandlers.MissingArgument',{term:"\\end command",term:"\\end コマンド"},'mod:base.cmd:end');
   doc.currentCtx.BREAK=true;
 };
 
 // "raw" 読み取り用: sub.argument.raw, sub.until.raw, sub.env.raw
-function LHR_EXIT_WITH_ERROR(doc,letter){
+function LHR_EXIT_WITH_ERROR(doc,letter) {
   var msg=ns.Writer.get_error("UnexpectedEOR",letter);
   (doc.currentCtx.rawctx_ebuff||doc.currentCtx.output.buff).push(msg);
   doc.currentCtx.BREAK=true;
 }
-function LHR_MISARG_BRACE(doc,letter){
+function LHR_MISARG_BRACE(doc,letter) {
   var msg=ns.Writer.get_error('mod:base.BasicHandlers.MissingArgument',{term:"'}'",term:"'}'"},'mod:base.ltr:\'}\'');
   (doc.currentCtx.rawctx_ebuff||doc.currentCtx.output.buff).push(msg);
   doc.currentCtx.BREAK=true;
@@ -228,15 +228,15 @@ function LHR_MISARG_BRACE(doc,letter){
 /// これを実行しないと、空白が引数になったり、
 /// 或いは引数が空文字列になったりする可能性があります。
 /// </condition>
-(function(){
-  context "sub.argument" new(){
+(function() {
+  context "sub.argument" new() {
     _Ctx.key="initialized:sub.argument"; // with(context)
-    _Ctx.initializer=function(mainctx){
+    _Ctx.initializer=function(mainctx) {
       // filter
       //------------------------------
       // ・sub.argument から直接派生した時だけ
       // ・未だ sub.argument で初期化していない時だけ
-      if(mainctx[_Ctx.key]||!mainctx.ContainsBaseContext(this))return;
+      if (mainctx[_Ctx.key]||!mainctx.ContainsBaseContext(this)) return;
       mainctx[_Ctx.key]=true;
 
       // text_modifier 付け替え
@@ -244,13 +244,13 @@ function LHR_MISARG_BRACE(doc,letter){
       // ※ mode.math の方が先に初期化されている必要あり
       //   ( "mode.math を sub.argument が上書きする形の ctx 継承" なら OK)
       mainctx[_Ctx.key+":orig.txtmod"]=mainctx.text_modifier;
-      if(mainctx["initialized:mode.math"]){
-        mainctx.text_modifier=function(doc,text){
+      if (mainctx["initialized:mode.math"]) {
+        mainctx.text_modifier=function(doc,text) {
           var word=doc.scanner.ClipFirstFromTxt();
           return word.replace(reg_math_text_modifier,rep_math_text_modifier);
         };
-      }else{
-        mainctx.text_modifier=function(doc,text){
+      } else {
+        mainctx.text_modifier=function(doc,text) {
           return doc.scanner.ClipFirstFromTxt();
         };
       }
@@ -260,7 +260,7 @@ function LHR_MISARG_BRACE(doc,letter){
     //--------------------------------------------
     // 1. "一回だけ読み取る mode" を脱す
     // 2. sub.brace に見せかけ
-    _Ctx.AddLetterHandler("{",function(doc,letter){
+    _Ctx.AddLetterHandler("{",function(doc,letter) {
       doc.scanner.Next();
       var ctx=doc.currentCtx;
       ctx.BREAK=false;
@@ -300,41 +300,41 @@ function LHR_MISARG_BRACE(doc,letter){
 ///   ※直前に skipSpaceAndComment() を実行して下さい。
 ///     実行しない場合は、空白またはコメントが一単語として認識されます。
 ///
-context "sub.argument.raw" new(){
+context "sub.argument.raw" new() {
   _Ctx.key="initialized:sub.argument.raw"; // with(context)
-  _Ctx.initializer=function(mainctx){
-    if(mainctx[_Ctx.key])return;
+  _Ctx.initializer=function(mainctx) {
+    if (mainctx[_Ctx.key]) return;
     mainctx[_Ctx.key]=true;
     mainctx.BRACE_LEVEL=0;
 
     //2014-01-28 ■これで正しい(副作用がない)か不明■
     //mainctx[_Ctx.key+":orig.txtmod"]=mainctx.text_modifier;
-    mainctx.text_modifier=function(doc,text){
+    mainctx.text_modifier=function(doc,text) {
       return doc.scanner.ClipFirstFromTxt();
     };
   };
   _Ctx.CreateContext=_Ctx.rawctx_CreateContext;
   _Ctx.DefineLetter({
-    '{':function(doc,letter){
-      if(doc.currentCtx.BRACE_LEVEL++==0){
+    '{': function(doc,letter) {
+      if (doc.currentCtx.BRACE_LEVEL++==0) {
         doc.currentCtx.BREAK=false;
-      }else{
+      } else {
         doc.currentCtx.output.buff.push(letter);
       }
       doc.scanner.Next();
     },
-    '}':function(doc,letter){
-      if(--doc.currentCtx.BRACE_LEVEL==0){
+    '}': function(doc,letter) {
+      if (--doc.currentCtx.BRACE_LEVEL==0) {
         doc.currentCtx.BREAK=true;
-      }else{
+      } else {
         doc.currentCtx.output.buff.push(letter);
       }
       doc.scanner.Next();
     },
-    'EOF':function(doc,letter){
-      if(doc.currentCtx.BRACE_LEVEL==0){
+    'EOF': function(doc,letter) {
+      if (doc.currentCtx.BRACE_LEVEL==0) {
         LHR_MISARG_BRACE(doc,letter);
-      }else{
+      } else {
         LHR_EXIT_WITH_ERROR(doc,letter);
       }
     }
@@ -350,29 +350,29 @@ context "sub.argument.raw" new(){
 /// <condition>直前に skipSpaceAndComment() を実行して下さい。</condition>
 /// <condition>内側に他の context を持つことは想定していません。</condition>
 /// <condition>他の context と同時に継承して使用されることは想定していません。</condition>
-context "sub.env.raw" new(){
+context "sub.env.raw" new() {
   _Ctx.key="initialized:sub.env.raw"; // with(context)
-  _Ctx.initializer=function(mainctx){
-    if(mainctx[_Ctx.key])return;
+  _Ctx.initializer=function(mainctx) {
+    if (mainctx[_Ctx.key]) return;
     mainctx[_Ctx.key]=true;
     mainctx.BRACE_STACK=[];
   };
   _Ctx.CreateContext=_Ctx.rawctx_CreateContext;
   //--------------------------------------------
-  _Ctx.AddLetterHandler('{',function(doc,letter){
+  _Ctx.AddLetterHandler('{',function(doc,letter) {
     doc.currentCtx.BRACE_STACK.push(0);
     doc.currentCtx.output.buff.push(letter);
     doc.scanner.Next();
   });
-  _Ctx.AddLetterHandler('}',function(doc,letter){
+  _Ctx.AddLetterHandler('}',function(doc,letter) {
     var ctx=doc.currentCtx;
     var buff=ctx.output.buff;
-    while(ctx.BRACE_STACK.length>0){
+    while (ctx.BRACE_STACK.length>0) {
       // 0 が出るまでスタックを取り出す
       // 例: { \begin{hoge}\begin{hage} }
       // 　この場合は、最後の } に対応する始まりは { と見做し、
       // 　間の \begin たちは終わりを書き忘れていると解釈する。
-      if(0==ctx.BRACE_STACK.pop()){
+      if (0==ctx.BRACE_STACK.pop()) {
         buff.push(letter);
         doc.scanner.Next();
         return;
@@ -383,24 +383,24 @@ context "sub.env.raw" new(){
     // この直前で環境が終了していると解釈する。
     ctx.BREAK=true;
   });
-  _Ctx.AddLetterHandler('EOF',function(doc,letter){
-    if(doc.currentCtx.BRACE_LEVEL==0){
+  _Ctx.AddLetterHandler('EOF',function(doc,letter) {
+    if (doc.currentCtx.BRACE_LEVEL==0) {
       LHR_MISARG_EOF(doc,letter);
-    }else{
+    } else {
       LHR_EXIT_WITH_ERROR(doc,letter);
     }
   });
-  command f\begin("#@1"){
+  command f\begin("#@1") {
     var envname=argv[1].trim();
     doc.currentCtx.BRACE_STACK.push(envname);
     doc.currentCtx.output.buff.push('\\begin{',envname,'}');
   };
-  command f\end("#@1"){
+  command f\end("#@1") {
     var ctx=doc.currentCtx;
     var envname=argv[1].trim();
-    while(ctx.BRACE_STACK.length>0){
+    while (ctx.BRACE_STACK.length>0) {
       // envname が出るまでスタックを取り出す
-      if(envname==ctx.BRACE_STACK.pop()){
+      if (envname==ctx.BRACE_STACK.pop()) {
         ctx.output.buff.push('\\end{',envname,'}');
         return;
       }
@@ -409,9 +409,9 @@ context "sub.env.raw" new(){
     // 対応する始まりの begin がない場合:
     // 　自身の envname と一致するならばこの end を環境の終了と見做す。
     // 　一致していなければ、この直前で環境が不正終了していると見做す。
-    if(ctx.ENVNAME==envname){
+    if (ctx.ENVNAME==envname) {
       ctx.BREAK=true;
-    }else{
+    } else {
       envname="\\end{"+envname+"}";
       doc.scanner.InsertSource(envname);
       ctx.ERRORED=true;
@@ -424,15 +424,15 @@ context "sub.env.raw" new(){
 //            context [Until]
 //
 //☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆
-(function(){
-  context "sub.until" new(){
+(function() {
+  context "sub.until" new() {
     _Ctx.key="initialized:sub.until"; // with(context)
-    _Ctx.initializer=function(mainctx){
+    _Ctx.initializer=function(mainctx) {
       // filter
       //------------------------------
       // ・sub.until から直接派生した時だけ
       // ・未だ sub.argument で初期化していない時だけ
-      if(mainctx[_Ctx.key]||!mainctx.ContainsBaseContext(this))return;
+      if (mainctx[_Ctx.key]||!mainctx.ContainsBaseContext(this)) return;
       mainctx[_Ctx.key]=true;
 
       // 終了条件の設定
@@ -442,12 +442,12 @@ context "sub.env.raw" new(){
     /// <summary>
     /// sub.until の終了条件を設定します。
     /// </summary>
-    _Ctx.set_Terminator=function(ctx,type,word){ // with(context)
-      switch(type){
+    _Ctx.set_Terminator=function(ctx,type,word) { // with(context)
+      switch (type) {
       case "ltr":ctx.AddLetterHandler(word,LH_EXIT);break;
       case "cmd":ctx.AddCommandHandler(word,CH_EXIT);break;
       case "txt":
-        ctx.text_modifier=function(doc,text){
+        ctx.text_modifier=function(doc,text) {
           doc.scanner.Next();
           doc.currentCtx.BREAK=true;
           return "";
@@ -474,10 +474,10 @@ context "sub.env.raw" new(){
 /// </summary>
 /// <param name="Context#until_type">継承末端の文脈に指定して、終了条件の種類を示します。</param>
 /// <param name="Context#until_word">継承末端の文脈に指定して、終了条件の定義を行います。</param>
-context "sub.until.raw" new(){
+context "sub.until.raw" new() {
   _Ctx.key="initialized:sub.until.raw"; // with(context)
-  _Ctx.initializer=function(mainctx){
-    if(mainctx[_Ctx.key])return;
+  _Ctx.initializer=function(mainctx) {
+    if (mainctx[_Ctx.key]) return;
     mainctx[_Ctx.key]=true;
     mainctx.BRACE_LEVEL=0;
 
@@ -488,37 +488,37 @@ context "sub.until.raw" new(){
   /// <summary>
   /// sub.until の終了条件を設定します。
   /// </summary>
-  _Ctx.set_Terminator=function(ctx,type,word){ // with(context)
-    switch(type){
+  _Ctx.set_Terminator=function(ctx,type,word) { // with(context)
+    switch (type) {
       case "ltr":
-        if(word=="}"){
-          ctx.AddLetterHandler(word,function(doc,letter){
-            if(doc.currentCtx.BRACE_LEVEL==0){
+        if (word=="}") {
+          ctx.AddLetterHandler(word,function(doc,letter) {
+            if (doc.currentCtx.BRACE_LEVEL==0) {
               LH_EXIT(doc,letter);
-            }else{
+            } else {
               doc.currentCtx.BRACE_LEVEL--;
               doc.currentCtx.output.buff.push(letter);
               doc.scanner.Next();
             }
           });
-        }else{
-          ctx.AddLetterHandler(word,function(doc,letter){
+        } else {
+          ctx.AddLetterHandler(word,function(doc,letter) {
             (doc.currentCtx.BRACE_LEVEL==0?LH_EXIT:LH_RAW)(doc,letter);
           });
         }
         break;
       case "cmd":
-        ctx.AddCommandHandler(word,function(doc,letter){
+        ctx.AddCommandHandler(word,function(doc,letter) {
           (doc.currentCtx.BRACE_LEVEL==0?CH_EXIT:CH_RAW)(doc,letter);
         });
         break;
       case "txt":
-        ctx.text_modifier=function(doc,text){
+        ctx.text_modifier=function(doc,text) {
           doc.scanner.Next();
-          if(doc.currentCtx.BRACE_LEVEL==0&&text==word){
+          if (doc.currentCtx.BRACE_LEVEL==0&&text==word) {
             doc.currentCtx.BREAK=true;
             return "";
-          }else return text;
+          } else return text;
         };
         break;
 //#debug
@@ -532,14 +532,14 @@ context "sub.until.raw" new(){
   //--------------------------------------------
   _Ctx.CreateContext=_Ctx.rawctx_CreateContext;
   _Ctx.DefineLetter({
-    '{':function(doc,letter){
+    '{': function(doc,letter) {
       doc.currentCtx.BRACE_LEVEL++;
       doc.currentCtx.output.buff.push(letter);
       doc.scanner.Next();
-    },'}':function(doc,letter){
-      if(doc.currentCtx.BRACE_LEVEL==0){
+    },'}': function(doc,letter) {
+      if (doc.currentCtx.BRACE_LEVEL==0) {
         LHR_EXIT_WITH_ERROR(doc,letter);
-      }else{
+      } else {
         doc.currentCtx.BRACE_LEVEL--;
         doc.currentCtx.output.buff.push(letter);
         doc.scanner.Next();
@@ -548,7 +548,7 @@ context "sub.until.raw" new(){
   });
 };
 //----------------------------------------------------------------
-context "sub.until.]" new(){
+context "sub.until.]" new() {
   _Ctx.AddLetterHandler("]",LH_EXIT);
 
   _Ctx.AddLetterHandler("}",LH_EXIT_WITH_ERROR);
@@ -565,7 +565,7 @@ context "sub.until.]" new(){
 /// [] で囲まれた sub-block を読み取ります。
 /// </summary>
 /// <condition>[ の次の語から始めて下さい。</condition>
-context "sub.bracket" new(){
+context "sub.bracket" new() {
   _Ctx.AddLetterHandler("]",LH_EXIT);
 
   _Ctx.AddLetterHandler("}",LH_EXIT_WITH_ERROR);
@@ -580,7 +580,7 @@ context "sub.bracket" new(){
 /// <condition>
 /// \begin の次の語から始めて下さい。
 /// </condition>
-context "sub.env" new(){
+context "sub.env" new() {
   //_Ctx.AddLetterHandler("]",LH_EXIT_WITH_ERROR);
   _Ctx.AddLetterHandler("}",LH_EXIT_WITH_ERROR);
   _Ctx.AddLetterHandler("EOF",LH_EXIT_WITH_ERROR);
@@ -589,12 +589,12 @@ context "sub.env" new(){
   //    暫定ハンドラ (未知の環境用)
   //      latex.ctor.js ns.Environment 参照
   //------------------------------------------------------------
-  _Ctx.AddCommandHandler("end",function(doc){
+  _Ctx.AddCommandHandler("end",function(doc) {
     doc.scanner.Next();
     var env=doc.GetArgumentRaw().trim();
-    if(doc.currentCtx.ENVNAME==env){
+    if (doc.currentCtx.ENVNAME==env) {
       doc.currentCtx.BREAK=true;
-    }else{
+    } else {
       env="\\end{"+env+"}";
       doc.currentCtx.output.error("UnexpectedEOR",env);
       doc.scanner.InsertSource(env);
@@ -610,13 +610,13 @@ context "sub.env" new(){
 //            context Math
 //
 //☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆
-context "mode.math" new("global"){
+context "mode.math" new("global") {
   _Ctx.key="initialized:mode.math"; // with(context)
-  _Ctx.initializer=function(mainctx){
-    if(mainctx[_Ctx.key])return;
+  _Ctx.initializer=function(mainctx) {
+    if (mainctx[_Ctx.key]) return;
     mainctx[_Ctx.key]=true;
 
-    mainctx.text_modifier=function(doc,text){
+    mainctx.text_modifier=function(doc,text) {
       doc.scanner.Next();
       return text.replace(reg_math_text_modifier,rep_math_text_modifier);
     };
@@ -627,7 +627,7 @@ context "mode.math" new("global"){
   //============================================================
   //    \left ～ \right
   //============================================================
-  var stretchImg=(function(){
+  var stretchImg=(function() {
     var stretchSvgHead='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 1024" preserveAspectRatio="none"><g transform="matrix(1 0 0 -1 0 768)"><path fill="currentColor" d="';
     var stretchSvgTail='" /></g></svg>';
     var stretchSvgPath={
@@ -642,40 +642,40 @@ context "mode.math" new("global"){
       sqrt:'M0 27l130 112l120 -239l237 868h25v-40l-266 -981l-164 327l-75 -66z'
     };
 
-    switch(ns.compatMode){
+    switch (ns.compatMode) {
       case "IE-qks":
       case "Fx-qks":
-        return function(imgsrc,width,alt){
+        return function(imgsrc,width,alt) {
           width=width.toString()+"ex";
           return '<td class="aghtex-stretch" rowspan="2" style="height:0px;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="width:'+width+';height:100%;"/></td>';
         };
       case "IE-std":
-        if(agh.browser.vIE<8){
-          ns.expression_height=function(elem){
+        if (agh.browser.vIE<8) {
+          ns.expression_height=function(elem) {
             var tr=elem.parentElement.parentElement;
             var table=tr.parentElement.parentElement;
             return (table.clientHeight-4)+"px";
           };
-          return function(imgsrc,width,alt){
+          return function(imgsrc,width,alt) {
             width=width.toString()+"ex";
             var style='width:'+width+';height:expression('+ns.namespaceName+'.expression_height(this));';
             //var style='width:'+width+';height:expression(this.parentElement.parentElement.parentElement.parentElement.clientHeight-4);';
             return '<td class="aghtex-stretch" rowspan="2" style="height:0px;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="'+style+'"/></td>';
           };
-        }else{
-          return function(imgsrc,width,alt){
+        } else {
+          return function(imgsrc,width,alt) {
             width=width.toString()+"ex";
             var style='width:'+width+';'
             return '<td class="aghtex-vstretch" rowspan="2" style="'+style+'"><img class="aghtex-stretch" src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="'+style+'"/></td>';
           };
         }
       case "Fx-std":
-        return function(imgsrc,width,alt,className){
-          if(className in stretchSvgPath){
+        return function(imgsrc,width,alt,className) {
+          if (className in stretchSvgPath) {
             // .svg を用いた表示
             var svg=stretchSvgHead+stretchSvgPath[className]+stretchSvgTail;
             return '<td rowspan="2" class="aghtex-stretch-svg aghtex-stretch-svg-'+className+'">'+svg+'</td>';
-          }else{
+          } else {
             // 旧来の .png を用いた表示
             width=width.toString()+"ex";
             //return '<td rowspan="2" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');-moz-background-size:100%;"></td>';
@@ -684,13 +684,13 @@ context "mode.math" new("global"){
         };
       case "Sf-qks":
       case "Sf-std":
-        return function(imgsrc,width,alt,className){
-          if(className in stretchSvgPath){
+        return function(imgsrc,width,alt,className) {
+          if (className in stretchSvgPath) {
             var svg=stretchSvgHead+stretchSvgPath[className]+stretchSvgTail;
             return '<td rowspan="2" class="aghtex-stretch-svg aghtex-stretch-svg-'+className+'">'+svg+'</td>';
-          }else{
+          } else {
             width=(width*0.8).toString()+"ex";
-            if(className)
+            if (className)
               return '<td rowspan="2" class="aghtex-stretch-bg aghtex-stretch-bg-'+className+'"></td>';
             else
               return '<td rowspan="2" class="aghtex-stretch-bg" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');"></td>';
@@ -698,12 +698,12 @@ context "mode.math" new("global"){
         };
       case "Op-qks":
       case "Op-std":
-        return function(imgsrc,width,alt){
+        return function(imgsrc,width,alt) {
           width=(width*0.8).toString()+"ex";
           return '<td rowspan="2" class="aghtex-stretch" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');"></td>';
         };
       default:
-        return function(imgsrc,width,alt){
+        return function(imgsrc,width,alt) {
           width=(width*0.8).toString()+"ex";
           return '<td rowspan="2" class="aghtex-stretch" style="width:'+width+';background-image:url('+ns.BaseUrl+imgsrc+');background-size:100% 100%;"></td>';
         };
@@ -712,7 +712,7 @@ context "mode.math" new("global"){
   //------------------------------------------------------------
   _Mod.GetStretchImageTd=stretchImg;
 
-  _Mod.OutputStretchBracketTd=(function(){
+  _Mod.OutputStretchBracketTd=(function() {
     var bracket_dict={
       // 括弧
       "(":stretchImg("paren1l.png",1.0,"(",'lparen'),
@@ -771,17 +771,17 @@ context "mode.math" new("global"){
       ".":""
     };
 
-    return function _OutputStretchBracketTd(output,content,rowspan){
+    return function _OutputStretchBracketTd(output,content,rowspan) {
       var buff=output.buff;
       var c=agh.Text.Unescape(content,"html");
-      if(c!="."){
-        if(c in bracket_dict){
-          if(rowspan==2)
+      if (c!=".") {
+        if (c in bracket_dict) {
+          if (rowspan==2)
             buff.push(bracket_dict[c]);
           else
             buff.push(bracket_dict[c].replace(/\browspan="2"/,'rowspan="'+rowspan+'"'));
           return true;
-        }else{
+        } else {
           buff.push('<td rowspan="',rowspan,'">');
           output.error('mod:base.cmd:left.NotSupportedSymbol',{ch:c},'mod:base.OutputStretchBracketTd');
           buff.push(content,'</td>');
@@ -792,13 +792,13 @@ context "mode.math" new("global"){
     };
   })();
 
-  _Ctx.AddCommandHandler("left",function(doc){
+  _Ctx.AddCommandHandler("left",function(doc) {
     //==== 補助変数 ==========================
     var output=doc.currentCtx.output;
     var buff=output.buff;
     var bottom_row="";
-    function proc_subsup(){
-      switch((sbsp.sup?1:0)+(sbsp.sub?2:0)){
+    function proc_subsup() {
+      switch ((sbsp.sup?1:0)+(sbsp.sub?2:0)) {
         case 1:// 上付
           buff.push('<td rowspan="2" class="aghtex-cmdleft-sup aghtex-tag-script"><span class="aghtex-cmdleft-sup">',sbsp.sup,'</span></td>');
           break;
@@ -817,11 +817,11 @@ context "mode.math" new("global"){
     var sbsp=doc.GetSubSup();
 
     //-- [prologue]
-    if(agh.browser.vFx)
+    if (agh.browser.vFx)
       // Fx では border-collapse:collapse; にすると border-bottom/right が表示されない
       // 代わりに cellSpacing="0px" を利用
       buff.push('<table class="aghtex-cmdleft" cellSpacing="0px"><tr class="aghtex-cmdleft">');
-    else if(agh.browser.vSf)
+    else if (agh.browser.vSf)
       // Sf5 では CSS2.1 table{vertical-align:baseline;} に対応していない (Cr では OK なのに。。)
       buff.push('<table class="aghtex-cmdleft aghtex-cmdleft-sf"><tr class="aghtex-cmdleft">');
     else
@@ -836,7 +836,7 @@ context "mode.math" new("global"){
 
     // setup context and read under the context
     var ctx=doc.wrap_context(doc.currentCtx);
-    ctx.AddCommandHandler("right",function(doc){
+    ctx.AddCommandHandler("right",function(doc) {
       doc.scanner.Next();
       ltr=doc.GetArgumentHtml();
       sbsp=doc.GetSubSup();
@@ -852,7 +852,7 @@ context "mode.math" new("global"){
     proc_subsup();
 
     //-- [レイアウト用の二行目がある時]
-    if(bottom_row!=""){
+    if (bottom_row!="") {
       buff.push('</tr><tr>',bottom_row);
     }
 
@@ -866,13 +866,13 @@ context "mode.math" new("global"){
 //
 //☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆
 var CTX_MATHENV=["global","sub.env","mode.math"];
-context "mode.para" new("global"){
+context "mode.para" new("global") {
   // 無効化
   _Ctx.AddEnvironment("document",null);
   //============================================================
   //    $ ～ $
   //============================================================
-  _Ctx.AddLetterHandler("$",function(doc){
+  _Ctx.AddLetterHandler("$",function(doc) {
     doc.scanner.Next();
     var buff=doc.currentCtx.output.buff;
 
@@ -881,7 +881,7 @@ context "mode.para" new("global"){
 
     // setup context and read under the context
     var ctx=doc.context_cast(CTX_MATHENV);
-    ctx.AddLetterHandler("$",function(doc){
+    ctx.AddLetterHandler("$",function(doc) {
       doc.scanner.Next();
       doc.currentCtx.BREAK=true;
     });
@@ -893,24 +893,24 @@ context "mode.para" new("global"){
   //============================================================
   //    commands
   //============================================================
-  _Ctx.AddCommandHandler("verb",function(doc){
+  _Ctx.AddCommandHandler("verb",function(doc) {
     var output=doc.currentCtx.output;
     var ret=doc.scanner.NextVerbArgument();
     output.buff.push('<tex:f class="aghtex-texttt">',agh.Text.Escape(doc.scanner.word,"html"),'</tex:f>');
-    if(ret==doc.scanner.NEXT_EOF){
+    if (ret==doc.scanner.NEXT_EOF) {
       output.error('UnexpectedEOR','EOF','mod:base.cmd:verb');
-    }else if(ret==doc.scanner.NEXT_NEWLINE){
+    } else if (ret==doc.scanner.NEXT_NEWLINE) {
       output.error('mod:base.cmd:verb.UnexpectedEOL',null,'mod:base.cmd:verb');
     }
     doc.scanner.Next();
   });
-  _Ctx.AddCommandHandler("verb*",function(doc){
+  _Ctx.AddCommandHandler("verb*",function(doc) {
     var output=doc.currentCtx.output;
     var ret=doc.scanner.NextVerbArgument();
     output.buff.push('<tex:f class="aghtex-texttt">',agh.Text.Escape(doc.scanner.word.replace(/ /g,'\u2423'),"html"),'</tex:f>');
-    if(ret==doc.scanner.NEXT_EOF){
+    if (ret==doc.scanner.NEXT_EOF) {
       output.error('UnexpectedEOR','EOF','mod:base.cmd:verb');
-    }else if(ret==doc.scanner.NEXT_NEWLINE){
+    } else if (ret==doc.scanner.NEXT_NEWLINE) {
       output.error('mod:base.cmd:verb.UnexpectedEOL',null,'mod:base.cmd:verb');
     }
     doc.scanner.Next();
@@ -920,6 +920,6 @@ context "mode.para" new("global"){
   //============================================================
 };
 
-context "mode.lr" new("mode.para"){
+context "mode.lr" new("mode.para") {
   command s@#'\\'() '';
 };

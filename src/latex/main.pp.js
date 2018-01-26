@@ -9,16 +9,16 @@
 //*****************************************************************************
 #%[DEBUG_SCANNER=0]
 #%[DEBUG=1]
-agh.scripts.register("agh.lang.tex.js",[
-  "agh.js","agh.text.js"
-],function(){
+agh.scripts.register("agh.lang.tex.js", [
+  "agh.js", "agh.text.js"
+], function() {
 /*===========================================================================*/
-  var nsName="agh.LaTeX";
-  //var nsName="agh.DHTeXML2";
-  var ns=agh.Namespace(nsName);
+  var nsName = "agh.LaTeX";
+  //var nsName = "agh.DHTeXML2";
+  var ns = agh.Namespace(nsName);
 
 //-----------------------------------------------------------------------------
-(function aghtex_include_core_js(){ /* main.pp.js: included from core.js */
+(function aghtex_include_core_js() { /* main.pp.js: included from core.js */
 #%include core.js
 })();
 
@@ -26,7 +26,7 @@ agh.scripts.register("agh.lang.tex.js",[
 #%%[functionName="_aghtex_include_@".replace("[^a-zA-Z]","_")]
 //-----------------------------------------------------------------------------
 #%%x (
-(function $"functionName"(){ /* main.pp.js: included from .gen/@ */
+(function $"functionName"() { /* main.pp.js: included from .gen/@ */
 #%%).i
 ##%include .gen/@
 })();

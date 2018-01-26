@@ -28,9 +28,9 @@ var _modkey='mod:counter';
 ns.Modules[_modkey]=_Mod;
 
 var roman1,roman5,Roman1,Roman5;
-(function(){
+(function() {
   function ov(html) {return '<tex:i class="aghtex-counter-ov">'+html+'</tex:i>';}
-  function ovv(html){return '<tex:i class="aghtex-counter-ovv">'+html+'</tex:i>';}
+  function ovv(html) {return '<tex:i class="aghtex-counter-ovv">'+html+'</tex:i>';}
   roman1=["i","x","c","m",ov("x"),ov("c"),ov("m"),ovv("x"),ovv("c"),ovv("m")];
   roman5=["v","l","d",ov("v"),ov("l"),ov("d"),ovv("v"),ovv("l"),ovv("d")];
   Roman1=["I","X","C","M",ov("X"),ov("C"),ov("M"),ovv("X"),ovv("C"),ovv("M")];
@@ -42,62 +42,62 @@ var roman1,roman5,Roman1,Roman5;
 /// </summary>
 /// <param name="counterName">新しく作成する Counter の名前を指定します。</param>
 /// <param name="parentCounter">親となる counter を指定します。</param>
-ns.Counter=function(counterName,parentCounter){
+ns.Counter=function(counterName,parentCounter) {
   this.name=counterName;
   this.val=0;
   this.parent=parentCounter;
   this.child=[];
-  if(parentCounter!=null)
+  if (parentCounter!=null)
     parentCounter.child.push(this);
 };
 agh.memcpy(ns.Counter.prototype,{
-  Set:function(val){
+  Set: function(val) {
     this.val=parseInt(val);
   },
-  Add:function(val){
+  Add: function(val) {
     val=parseInt(val);
-    if(isNaN(val))val=1;
+    if (isNaN(val)) val=1;
     this.val+=val;
   },
-  Step:function(){
+  Step: function() {
     this.val++;
-    for(var i=0,iN=this.child.length;i<iN;i++)
+    for (var i=0,iN=this.child.length;i<iN;i++)
       this.child[i].Clear()
   },
-  Clear:function(){
+  Clear: function() {
     this.val=0;
-    for(var i=0,iN=this.child.length;i<iN;i++)
+    for (var i=0,iN=this.child.length;i<iN;i++)
       this.child[i].Clear()
   },
-  alpha:function(){
-    if(this.val<1||26<this.val)
+  alpha: function() {
+    if (this.val<1||26<this.val)
       return ns.Writer.get_error(
         "mod:counter.cmd:alpha.CounterOutOfRange",
         null,"Counter#alpha (mod:counter)");
     else
       return "abcdefghijklmnopqrstuvwxyz".substr(this.val-1,1);
   },
-  Alpha:function(){
-    if(this.val<1||26<this.val)
+  Alpha: function() {
+    if (this.val<1||26<this.val)
       return ns.Writer.get_error(
         "mod:counter.cmd:alpha.CounterOutOfRange",
         null,"Counter#Alpha (mod:counter)");
     else
       return "ABCDEFGHIJKLMNOPQRSTUVWXYZ".substr(this.val-1,1);
   },
-  arabic:function(){
+  arabic: function() {
     return this.val.toString();
   },
-  roman_internal:function(rm1,rm5){
-    if(this.val<0||4999999999<this.val)
+  roman_internal: function(rm1,rm5) {
+    if (this.val<0||4999999999<this.val)
       return ns.Writer.get_error(
         "mod:counter.cmd:roman.CounterOutOfRange",
         null,"Counter#roman (mod:counter)");
 
     var x=this.val.toString();
     var r=[];
-    for(var i=x.length-1;i>=0;i--){
-      switch(x.substr(i,1)){
+    for (var i=x.length-1;i>=0;i--) {
+      switch (x.substr(i,1)) {
         case "0":break;
         case "1":r.push(rm1[i]);break;
         case "2":r.push(rm1[i],rm1[i]);break;
@@ -112,14 +112,14 @@ agh.memcpy(ns.Counter.prototype,{
     }
     return r.join("");
   },
-  roman:function(){
+  roman: function() {
     return this.roman_internal(roman1,roman5);
   },
-  Roman:function(){
+  Roman: function() {
     return this.roman_internal(Roman1,Roman5);
   },
-  fnsymbol:function(){
-    switch(this.val){
+  fnsymbol: function() {
+    switch (this.val) {
     case 1:return "*";
     case 2:return "<tex:fcent>†</tex:fcent>";
     case 3:return "<tex:fcent>‡</tex:fcent>";
@@ -135,126 +135,126 @@ agh.memcpy(ns.Counter.prototype,{
         {name:this.name},"Counter#fnsymbol (mod:counter)");
     }
   },
-  value:function(){
+  value: function() {
     return this.value.toString();
   },
   //----------------------------------------------------------------
   //		他
   //----------------------------------------------------------------
-  toString:function(){
+  toString: function() {
     return "[object "+ns.namespaceName+".Counter]";
   }
 });
 
 agh.memcpy(ns.Document.prototype,{
-  GetCounter:function(name){
-    if(name!=null){
+  GetCounter: function(name) {
+    if (name!=null) {
       var counters=this[_modkey]||(this[_modkey]={});
 
       name=name.trim();
       var counter=counters[name];
-      if(counter==null)
+      if (counter==null)
         this.currentCtx.output.error(
           "mod:counter.cmd:fnsymbol.UnknownCounter",
           {name:name},"Document#GetCounter (mod:counter)");
       return counter;
-    }else{
+    } else {
       return null;
     }
   },
-  NewCounter:function(name,parent){
+  NewCounter: function(name,parent) {
     var counters=this[_modkey]||(this[_modkey]={});
 
-    if(typeof parent=="string"||parent instanceof String)
+    if (typeof parent=="string"||parent instanceof String)
       parent=this.GetCounter(parent);
     counters[name]=new ns.Counter(name,parent);
   }
 });
 
 agh.memcpy(_Mod,{
-  stepcounter:function(doc,name){
+  stepcounter: function(doc,name) {
     var counter=doc.GetCounter(name);
-    if(counter!=null)counter.Step();
+    if (counter!=null) counter.Step();
   },
-  arabic:function(doc,name){
+  arabic: function(doc,name) {
     var counter=doc.GetCounter(name);
     return counter==null?"":counter.arabic();
   },
-  alph:function(doc,name){
+  alph: function(doc,name) {
     var counter=doc.GetCounter(name);
     return counter==null?"":counter.alph();
   },
-  Alph:function(doc,name){
+  Alph: function(doc,name) {
     var counter=doc.GetCounter(name);
     return counter==null?"":counter.Alph();
   },
-  roman:function(doc,name){
+  roman: function(doc,name) {
     var counter=doc.GetCounter(name);
     return counter==null?"":counter.roman();
   },
-  Roman:function(doc,name){
+  Roman: function(doc,name) {
     var counter=doc.GetCounter(name);
     return counter==null?"":counter.Roman();
   },
-  fnsymbol:function(doc,name){
+  fnsymbol: function(doc,name) {
     var counter=doc.GetCounter(name);
     return counter==null?"":counter.fnsymbol();
   },
-  value:function(doc,name){
+  value: function(doc,name) {
     var counter=doc.GetCounter(name);
     return counter==null?"":counter.value();
   }
 });
 
 context "global"{
-  command f\newcounter("#!1#[]!2"){
+  command f\newcounter("#!1#[]!2") {
     var name=argv[1];
     var parent=argv[2];
-    if(parent&&parent!="")
+    if (parent&&parent!="")
       doc.NewCounter(name,parent);
     else
       doc.NewCounter(name);
   };
-  command addtocounter(2){
+  command addtocounter(2) {
     var counter=DOC.GetCounter(ARGS[1]);
-    if(counter!=null)counter.Add(ARGS[2]);
+    if (counter!=null) counter.Add(ARGS[2]);
   };
-  command setcounter(2){
+  command setcounter(2) {
     var counter=DOC.GetCounter(ARGS[1]);
-    if(counter!=null)counter.Set(ARGS[2]);
+    if (counter!=null) counter.Set(ARGS[2]);
   };
-  command stepcounter(1){
+  command stepcounter(1) {
     var counter=DOC.GetCounter(ARGS[1]);
-    if(counter!=null)counter.Step();
+    if (counter!=null) counter.Step();
   };
 
   // counter 表示
-  command arabic(1){
+  command arabic(1) {
     var counter=DOC.GetCounter(ARGS[1]);
-    if(counter!=null)DOC.currentCtx.output.buff.push(counter.arabic());
+    if (counter!=null) DOC.currentCtx.output.buff.push(counter.arabic());
   };
-  command alph(1){
+  command alph(1) {
     var counter=DOC.GetCounter(ARGS[1]);
-    if(counter!=null)DOC.currentCtx.output.buff.push(counter.alpha());
+    if (counter!=null) DOC.currentCtx.output.buff.push(counter.alpha());
   };
-  command Alph(1){
+  command Alph(1) {
     var counter=DOC.GetCounter(ARGS[1]);
-    if(counter!=null)DOC.currentCtx.output.buff.push(counter.Alpha());
+    if (counter!=null) DOC.currentCtx.output.buff.push(counter.Alpha());
   };
-  command roman(1){
+  command roman(1) {
     var counter=DOC.GetCounter(ARGS[1]);
-    if(counter!=null)DOC.currentCtx.output.buff.push(counter.roman());
+    if (counter!=null) DOC.currentCtx.output.buff.push(counter.roman());
   };
-  command Roman(1){
+  command Roman(1) {
     var counter=DOC.GetCounter(ARGS[1]);
-    if(counter!=null)DOC.currentCtx.output.buff.push(counter.Roman());
+    if (counter!=null) DOC.currentCtx.output.buff.push(counter.Roman());
   };
-  command fnsymbol(1){
+  command fnsymbol(1) {
     var counter=DOC.GetCounter(ARGS[1]);
-    if(counter!=null)DOC.currentCtx.output.buff.push(counter.fnsymbol());
+    if (counter!=null) DOC.currentCtx.output.buff.push(counter.fnsymbol());
   };
-  command value(1){
+  command value(1) {
     var counter=DOC.GetCounter(ARGS[1]);
-    if(counter!=null)DOC.currentCtx.output.buff.push(counter.value());
+    if (counter!=null) DOC.currentCtx.output.buff.push(counter.value());
   };
 }

@@ -40,13 +40,13 @@ var UNITDATA={
     outunit:"px"
   }
 };
-ns.Length=function(){
+ns.Length=function() {
   this.val=0;
   this.unit="in";
 };
 agh.memcpy(ns.Length,{
   // 将来的には GetLengthArgument か何かの関数で使用するつもり(現在は使用されていない)
-  ParseDimen:function(text){
+  ParseDimen: function(text) {
     /// <summary>
     /// 指定した文字列から length を読み取ります。
     /// </summary>
@@ -55,9 +55,9 @@ agh.memcpy(ns.Length,{
     /// src_index に、指定した文字列の何処まで読み取ったかの情報を格納します。
     /// </returns>
     var val=parseFloat(text);
-    if(isNaN(val))return null;
+    if (isNaN(val)) return null;
     var u=text.match(/^(?:[\+\-\d\.]|e[+\-\d.])+\s*(in|cm|mm|pt|pc|sp|em|ex|px|zw)\b/i);
-    if(u==null)return null;
+    if (u==null) return null;
 
     var ret=new ns.Length();
     ret.val=val;
@@ -67,31 +67,31 @@ agh.memcpy(ns.Length,{
   }
 });
 agh.memcpy(ns.Length.prototype,{
-  parseNumber:function(text){
+  parseNumber: function(text) {
     var ret=parseFloat(text);
-    if(isNaN(ret))return 0;
+    if (isNaN(ret)) return 0;
     return ret;
   },
-  parseUnit:function(text){
+  parseUnit: function(text) {
     var a=text.match(/(?:in|cm|mm|pt|pc|sp|em|ex|px|zw)\b/i);
     return a!=null?a[0].toLowerCase():"px";
   },
-  changeUnit:function(number,beforeUnit,afterUnit){
-    if(beforeUnit==afterUnit)return number;
+  changeUnit: function(number,beforeUnit,afterUnit) {
+    if (beforeUnit==afterUnit) return number;
     return number*UNITDATA[beforeUnit].mm/UNITDATA[afterUnit].mm;
   },
-  toString:function(){
+  toString: function() {
     var outunit=UNITDATA[this.unit].outunit;
     return this.changeUnit(this.val,this.unit,outunit).toString()+outunit;
   },
-  addValue:function(arg){
-    if(arg==null)return;
+  addValue: function(arg) {
+    if (arg==null) return;
 
     var n=0,u="px";
-    if(arg instanceof ns.Length){
+    if (arg instanceof ns.Length) {
       n=arg.val;
       u=arg.unit;
-    }else{
+    } else {
       arg=arg.toString();
       n=this.parseNumber(arg);
       u=this.parseUnit(arg);
@@ -99,13 +99,13 @@ agh.memcpy(ns.Length.prototype,{
 
     this.val+=this.changeUnit(n,u,this.unit);
   },
-  setValue:function(arg){
-    if(arg==null)return;
+  setValue: function(arg) {
+    if (arg==null) return;
 
-    if(arg instanceof ns.Length){
+    if (arg instanceof ns.Length) {
       this.val=arg.val;
       this.unit=arg.unit;
-    }else{
+    } else {
       arg=arg.toString();
       this.val=this.parseNumber(arg);
       this.unit=this.parseUnit(arg);
@@ -117,37 +117,37 @@ context "global"{
   //    関数達
   //=========================================================================
   /// \ のついた length 名を受け取って、\ を取り除いた部分を返します。
-  function get_lenName(doc,cmdname){
+  function get_lenName(doc,cmdname) {
     var lname=cmdname.trim();
-    if(lname.substr(0,1)!='\\'){
+    if (lname.substr(0,1)!='\\') {
       doc.currentCtx.output.error("mod:length.InvalidLengthName",{lname:lname},"\\"+cmdname);
       return null;
     }
     return lname.substr(1);
   }
-  function setlength(doc,name,value){
-    if(!(name in doc.currentCtx.dataL))
+  function setlength(doc,name,value) {
+    if (!(name in doc.currentCtx.dataL))
       doc.currentCtx.dataL[name]=new ns.Length();
     doc.currentCtx.dataL[name].setValue(value);
   }
-  function addtolength(doc,name,value){
-    if(!(name in doc.currentCtx.dataL)){
+  function addtolength(doc,name,value) {
+    if (!(name in doc.currentCtx.dataL)) {
       doc.currentCtx.dataL[name]=new ns.Length();
       var parent=doc.GetLengthData(name);
-      if(parent!=null)doc.currentCtx.dataL[name].setValue(parent);
+      if (parent!=null) doc.currentCtx.dataL[name].setValue(parent);
     }
     doc.currentCtx.dataL[name].addValue(value);
   }
 
-  var lengthHandler=new ns.Command2("f",null,function(doc,args){
+  var lengthHandler=new ns.Command2("f",null,function(doc,args) {
     var name=args[0];
     doc.skipSpaceAndComment();
-    if(doc.scanner.is("ltr","=")){
+    if (doc.scanner.is("ltr","=")) {
       // setlength mode
       doc.scanner.Next();
       setlength(doc,name,doc.scanner.word);
       doc.scanner.Next();
-    }else{
+    } else {
       // output value mode (拡張)
       doc.currentCtx.output.buff.push((doc.GetLengthData(name)||"0in").toString());
     }
@@ -157,25 +157,25 @@ context "global"{
   //    コマンドの定義
   //=========================================================================
   agh.memcpy(ns.Document.prototype,{
-    NewLength:function(name){
+    NewLength: function(name) {
       // グローバルに定義
       this.SetMacroHandler(name,lengthHandler,/* isGlobal= */ true);
     }
   });
 
-  command f\newlength(#@1){
+  command f\newlength(#@1) {
     var lname=get_lenName(doc,argv[1]);
-    if(lname==null)return;
+    if (lname==null) return;
     doc.NewLength(lname);
   };
-  command f\setlength(#@1#!2){
+  command f\setlength(#@1#!2) {
     var lname=get_lenName(doc,argv[1]);
-    if(lname==null)return;
+    if (lname==null) return;
     setlength(doc,lname,argv[2]);
   };
-  command f\addtolength(#@1#!2){
+  command f\addtolength(#@1#!2) {
     var lname=get_lenName(doc,argv[1]);
-    if(lname==null)return;
+    if (lname==null) return;
     addtolength(doc,lname,argv[2]);
   };
 }

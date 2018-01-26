@@ -28,24 +28,24 @@ context "mode.math"{
   _Mod.MATHSTYLE_TEXT   =1;
   _Mod.MATHSTYLE_SCRIPT =2;
   _Mod.MATHSTYLE_SCRIPT2=3;
-  _Mod.GetMathStyle=function mod_math_GetMathStyle(doc){
+  _Mod.GetMathStyle=function mod_math_GetMathStyle(doc) {
     return doc.GetContextVariable('mathstyle');
   };
 
-  command f\displaystyle(){
+  command f\displaystyle() {
     doc.SetContextVariable("mathstyle",_Mod.MATHSTYLE_DISPLAY);
   };
-  command f\textstyle(){
+  command f\textstyle() {
     doc.SetContextVariable("mathstyle",_Mod.MATHSTYLE_TEXT);
   };
-  command f\scriptstyle(){
+  command f\scriptstyle() {
     doc.SetContextVariable("mathstyle",_Mod.MATHSTYLE_SCRIPT);
 
     var output=doc.currentCtx.output;
     output.buff.push('<tex:fsize class="aghtex-default"><tex:fsize class="aghtex-script">');
     output.appendPost('</tex:fsize></tex:fsize>');
   };
-  command f\scriptscriptstyle(){
+  command f\scriptscriptstyle() {
     doc.SetContextVariable("mathstyle",_Mod.MATHSTYLE_SCRIPT2);
 
     var output=doc.currentCtx.output;
@@ -154,21 +154,21 @@ context "mode.math"{
   letter s@\>() '<tex:f class="aghtex-binop aghtex-symb-roman">&gt;</tex:f>';
   letter s@\<() '<tex:f class="aghtex-binop aghtex-symb-roman">&lt;</tex:f>';
   letter s@\|() '<tex:f class="aghtex-symb-gothic">|</tex:f>';
-  letter f@\:(){
+  letter f@\:() {
     doc.scanner.Next();
-    if(doc.scanner.is("ltr","=")){
+    if (doc.scanner.is("ltr","=")) {
       //doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-gothic">:＝</tex:f>');
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-gothic">&#x2254;</tex:f>');
       doc.scanner.Next();
-    }else{
+    } else {
       doc.currentCtx.output.buff.push(":");
     }
   };
   letter s@\,() '<tex:f class="aghtex-symb-roman aghtex-comma">,</tex:f>';
-  letter f@\.(){
+  letter f@\.() {
     var html=cmdName;
     doc.scanner.Next();
-    if(doc.scanner.wordtype=="ltr"&&" \b\t\v\r\n\f".indexOf(doc.scanner.word)>=0){
+    if (doc.scanner.wordtype=="ltr"&&" \b\t\v\r\n\f".indexOf(doc.scanner.word)>=0) {
       html='<tex:f class="aghtex-comma">'+html+'</tex:f>';
       doc.scanner.Next();
     }
@@ -181,21 +181,21 @@ context "mode.math"{
   command s>\>() @"\hspace{0.60ex}"; // \hspace{1\medmuskip}
   command s>\;() @"\hspace{0.67ex}"; // \hspace{1\thickmuskip}
   letter  s>\~() @"\hspace{1ex}";
-  if(agh.browser.vIE&&agh.browser.vIE<7){
+  if (agh.browser.vIE&&agh.browser.vIE<7) {
     command s@\!() '<tex:negspace class="letter-spacing">&nbsp;&nbsp;</tex:negspace>&nbsp;';
-  }else{
+  } else {
     command s@\!() '<tex:negspace></tex:negspace>';
   }
 
   command s@\allowbreak() '<tex:i class="aghtex-latex-allowbreak"></tex:i>';
 
   // letter
-  if(agh.browser.vIE<=6||ns.compatMode=="IE-qks"){
+  if (agh.browser.vIE<=6||ns.compatMode=="IE-qks") {
     letter s@\^(#>1)  '<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">#1</tex:i></tex:sup>';
     letter s@\_(#>1)  '<tex:sub class="aghtex-tag-script">#1</tex:sub>';
-  }else{
-    function cmd_supsub_output(doc,sup,sub){
-      if(!_Mod.GetMathStyle(doc))
+  } else {
+    function cmd_supsub_output(doc,sup,sub) {
+      if (!_Mod.GetMathStyle(doc))
         doc.currentCtx.output.buff.push(
           '<tex:supsub class="aghtex-tag-script"><tex:supsub-u>',sup,
           '</tex:supsub-u><tex:supsub-d>',sub,
@@ -206,21 +206,21 @@ context "mode.math"{
           '</tex:i></tex:supsub-u><tex:supsub-d><tex:i>',sub,
           '</tex:i></tex:supsub-d></tex:supsub>');
     }
-    letter f\^("#>1"){
+    letter f\^("#>1") {
       doc.skipSpaceAndComment();
-      if(doc.scanner.is("ltr","_")){
+      if (doc.scanner.is("ltr","_")) {
         doc.scanner.Next();
         cmd_supsub_output(doc,argv[1],doc.GetArgumentHtml());
-      }else{
+      } else {
         doc.currentCtx.output.buff.push('<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">',argv[1],'</tex:i></tex:sup>');
       }
     };
-    letter f\_("#>1"){
+    letter f\_("#>1") {
       doc.skipSpaceAndComment();
-      if(doc.scanner.is("ltr","^")){
+      if (doc.scanner.is("ltr","^")) {
         doc.scanner.Next();
         cmd_supsub_output(doc,doc.GetArgumentHtml(),argv[1]);
-      }else{
+      } else {
         doc.currentCtx.output.buff.push('<tex:sub class="aghtex-tag-script">',argv[1],'</tex:sub>');
       }
     };
@@ -228,15 +228,15 @@ context "mode.math"{
 
   // プライム
   // letter s@#"'"() @'<tex:f class="aghtex-textrm">''</tex:f>';
-  var prime_handler=function(doc){
+  var prime_handler=function(doc) {
     doc.scanner.Next();
-    if(!doc.scanner.is("ltr","'")&&!doc.scanner.is("cmd","rq")){
+    if (!doc.scanner.is("ltr","'")&&!doc.scanner.is("cmd","rq")) {
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">′</tex:f>');
       return;
     }
 
     doc.scanner.Next();
-    if(!doc.scanner.is("ltr","'")&&!doc.scanner.is("cmd","rq")){
+    if (!doc.scanner.is("ltr","'")&&!doc.scanner.is("cmd","rq")) {
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">″</tex:f>');
       return;
     }
@@ -251,10 +251,10 @@ context "mode.math"{
   //    他
   //---------------------------------------------------------------
   var HT_SQRT_STRETCH_IMAGE=mod_base.GetStretchImageTd("root.png",2,"√",'sqrt');
-  command f\sqrt(#[]>1#>2){
+  command f\sqrt(#[]>1#>2) {
     var buff=doc.currentCtx.output.buff;
     buff.push('<table cellpadding="0" class="aghtex-inline aghtex-sqrt"><tr style="height:0px;">');
-    if(argv[1].length>0)
+    if (argv[1].length>0)
       buff.push('<td class="aghtex-sqrt-index aghtex-tag-script"><span>',argv[1],'</span></td>');
     buff.push(HT_SQRT_STRETCH_IMAGE,'<td class="aghtex-sqrt-body">',argv[2],'</td></tr></table>');
   };
@@ -262,77 +262,77 @@ context "mode.math"{
   //---------------------------------------------------------------------------
   // \underbrace, \overbrace
 
-  var GenerateHtmlUndertextImage=(function(){
-    switch(ns.compatMode){
+  var GenerateHtmlUndertextImage=(function() {
+    switch (ns.compatMode) {
       case "IE-qks":
       case "Fx-qks":
-        return function(imgsrc,height,alt){
+        return function(imgsrc,height,alt) {
           height=height.toString()+"ex";
           return '<td class="aghtex-underbrace-i" style="width:0px;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="height:'+height+';width:100%;"/></td>';
         };
       case "IE-std":
-        ns.expression_width=function(elem){
+        ns.expression_width=function(elem) {
           var tr=elem.parentElement.parentElement;
           var table=tr.parentElement.parentElement;
           return (table.clientWidth-4)+"px";
         };
-        return function(imgsrc,height,alt){
+        return function(imgsrc,height,alt) {
           height=height.toString()+"ex";
           var style='height:'+height+';width:expression('+ns.namespaceName+'.expression_width(this));';
           //var style='height:'+height+';width:expression(this.parentElement.parentElement.parentElement.parentElement.clientHeight-4);';
           return '<td class="aghtex-underbrace-i" style="width:0px;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="'+style+'"/></td>';
         };
       case "Fx-std":
-        return function(imgsrc,height,alt){
+        return function(imgsrc,height,alt) {
           height=height.toString()+"ex";
           //return '<td style="height:'+height+';background-image:url('+ns.BaseUrl+imgsrc+');-moz-background-size:100%;"></td>';
           return '<td class="aghtex-underbrace-i" style="width:100%;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="height:'+height+';width:100%;"/></td>';
         };
       case "Sf-qks":case "Sf-std": // css による switching あり
       case "Op-qks":case "Op-std": // css による switching あり
-        return function(imgsrc,height,alt){
+        return function(imgsrc,height,alt) {
           height=height.toString()+"ex";
           return '<td class="aghtex-underbrace-i" style="height:'+height+';background-image:url('+ns.BaseUrl+imgsrc+');"></td>';
         };
       default:
-        return function(imgsrc,height,alt){
+        return function(imgsrc,height,alt) {
           height=height.toString()+"ex";
           return '<td class="aghtex-underbrace-i" style="height:'+height+';background-image:url('+ns.BaseUrl+imgsrc+');background-size:100% 100%;"></td>';
         };
     }
   })();
 
-  function output_underbrace(buff,content,image,undertxt){
-    if(agh.browser.vIE||agh.browser.vSf){
-      if(agh.browser.vIE){
-        if(undertxt)
+  function output_underbrace(buff,content,image,undertxt) {
+    if (agh.browser.vIE||agh.browser.vSf) {
+      if (agh.browser.vIE) {
+        if (undertxt)
           buff.push('<tex:i class="aghtex-underbrace-vphantom2">&nbsp;</tex:i><tex:i class="aghtex-underbrace">');
         else
           buff.push('<tex:i class="aghtex-underbrace-vphantom1">&nbsp;</tex:i><tex:i class="aghtex-underbrace">');
-      }else{
+      } else {
         buff.push('<tex:i class="aghtex-underbrace" style="padding-bottom:',undertxt?2.6:1,'ex">');
       }
       buff.push(content);
-      if(image)
+      if (image)
         buff.push('<tex:i class="aghtex-underbrace-i">',image,'</tex:i>');
-      if(undertxt)
+      if (undertxt)
         buff.push('<tex:i class="aghtex-underbrace-i"><tex:ud>',undertxt,'</tex:ud></tex:i>');
       buff.push('</tex:i>');
-    }else{
+    } else {
       // image ~ <td>
       buff.push('<table class="aghtex-underbrace"><tr><td class="aghtex-underbrace-b">',content,'</td></tr>');
-      if(image)
+      if (image)
         buff.push('<tr>',image,'</tr>');
-      if(undertxt)
+      if (undertxt)
         buff.push('<tr><td class="aghtex-underbrace-t">',undertxt,'</td></tr>');
       buff.push('</table>');
     }
   }
-  function output_overbrace(buff,content,image,overtext){
+  function output_overbrace(buff,content,image,overtext) {
     buff.push('<tex:i class="aghtex-overbrace">');
-    if(overtext)
+    if (overtext)
       buff.push('<tex:i class="aghtex-overbrace-t"><tex:i class="aghtex-overbrace-u">',overtext,'</tex:i></tex:i>');
-    if(image)
+    if (image)
       buff.push('<tex:i class="aghtex-overbrace-i">',image,'</tex:i>');
     buff.push('<tex:i class="aghtex-overbrace-b">',content,'</tex:i></tex:i>');
   }
@@ -341,15 +341,15 @@ context "mode.math"{
 
   var ht_img_overbrace='<img alt="\\overbrace" class="aghtex-overbrace" src="'+ns.BaseUrl+'paren2ov.png" />';
   var ht_img_underbrace;
-  if(agh.browser.vIE||agh.browser.vSf)
+  if (agh.browser.vIE||agh.browser.vSf)
     ht_img_underbrace='<img alt="\\underbrace" class="aghtex-underbrace" src="'+ns.BaseUrl+'paren2ud.png" />';
   else
     ht_img_underbrace=GenerateHtmlUndertextImage("paren2ud.png",1,"\\underbrace");
 
-  command f\underbrace(#>1){
+  command f\underbrace(#>1) {
     var undertxt=null;
     doc.skipSpaceAndComment();
-    if(doc.scanner.is("ltr","_")){
+    if (doc.scanner.is("ltr","_")) {
       doc.scanner.Next();
       undertxt=doc.GetArgumentHtml();
     }
@@ -357,10 +357,10 @@ context "mode.math"{
     var buff=doc.currentCtx.output.buff;
     output_underbrace(buff,argv[1],ht_img_underbrace,undertxt);
   };
-  command f\overbrace(#>1){
+  command f\overbrace(#>1) {
     var overtxt=null;
     doc.skipSpaceAndComment();
-    if(doc.scanner.is("ltr","^")){
+    if (doc.scanner.is("ltr","^")) {
       doc.scanner.Next();
       overtxt=doc.GetArgumentHtml();
     }
@@ -369,21 +369,21 @@ context "mode.math"{
     output_overbrace(buff,argv[1],ht_img_overbrace,overtxt);
   };
 
-  _Mod.CreateCommandOverStretch=function(imgsrc,alttxt){
+  _Mod.CreateCommandOverStretch=function(imgsrc,alttxt) {
     var image='<img alt="\\'+alttxt+'" class="aghtex-overbrace" src="'+ns.BaseUrl+imgsrc+'" />';
-    return new ns.Command2("f","#>1",function(doc,argv){
+    return new ns.Command2("f","#>1",function(doc,argv) {
       var buff=doc.currentCtx.output.buff;
       output_overbrace(buff,argv[1],image);
     });
   }
-  _Mod.CreateCommandUnderStretch=function(imgsrc,alttxt){
+  _Mod.CreateCommandUnderStretch=function(imgsrc,alttxt) {
     var image;
-    if(agh.browser.vIE||agh.browser.vSf)
+    if (agh.browser.vIE||agh.browser.vSf)
       image='<img alt="\\'+alttxt+'" class="aghtex-underbrace" src="'+ns.BaseUrl+imgsrc+'" />';
     else
       image=GenerateHtmlUndertextImage(imgsrc,1,'\\'+alttxt);
 
-    return new ns.Command2("f","#>1",function(doc,argv){
+    return new ns.Command2("f","#>1",function(doc,argv) {
       var buff=doc.currentCtx.output.buff;
       output_underbrace(buff,argv[1],image);
     });
@@ -396,19 +396,19 @@ context "mode.math"{
   //---------------------------------------------------------------
   //    分数 / atop
   //---------------------------------------------------------------
-  if(agh.browser.vIE<=8||ns.compatMode=="IE-qks"){
+  if (agh.browser.vIE<=8||ns.compatMode=="IE-qks") {
     command s@\frac(#>1#>2) '<table cellspacing="0" class="aghtex-frac"><tr><td class="tex-num">#1</td></tr><tr><td class="tex-den">#2</td></tr></table>';
-    command f\over(){
+    command f\over() {
       var output=doc.currentCtx.output;
       var former=output.toHtml();
       output.clear();
       output.buff.push('<table cellspacing="0" class="aghtex-frac"><tr><td class="tex-num">',former,'</td></tr><tr><td class="tex-den">');
       output.appendPost('</td></tr></table>');
     };
-  }else{
-    function cmd_frac(doc,argv){
+  } else {
+    function cmd_frac(doc,argv) {
       var buff=doc.currentCtx.output.buff;
-      if(argv[0]=='dfrac'||argv[0]!='tfrac'&&!_Mod.GetMathStyle(doc))
+      if (argv[0]=='dfrac'||argv[0]!='tfrac'&&!_Mod.GetMathStyle(doc))
         buff.push('<tex:frac2><tex:num>',argv[1],'</tex:num><tex:den>',argv[2],'</tex:den></tex:frac2>');
       else
         buff.push(
@@ -418,8 +418,8 @@ context "mode.math"{
     }
     _Mod.CH_FRAC=cmd_frac;
 
-    command f\frac(#>1#>2){cmd_frac(doc,argv)};
-    command f\over(){
+    command f\frac(#>1#>2) {cmd_frac(doc,argv)};
+    command f\over() {
       var output=doc.currentCtx.output;
       var former=output.toHtml();
       output.clear();
@@ -428,48 +428,48 @@ context "mode.math"{
     };
   }
 
-  function Atop(output,left,right,bar){
+  function Atop(output,left,right,bar) {
     var former=output.toHtml();
     output.clear();
 
     var buff=output.buff;
     buff.push('<table cellspacing="0" class="aghtex-inline"><tr style="height:0px;">');
-    if(left)
+    if (left)
       mod_base.OutputStretchBracketTd(output,left,2);
 
     buff.push('<td class="aghtex-center"');
-    if(bar)
+    if (bar)
       buff.push(' style="border-bottom:1px solid black;"');
     buff.push('>',former,'</td>');
 
-    if(right)
+    if (right)
       mod_base.OutputStretchBracketTd(output,right,2);
     buff.push('</tr><tr><td class="aghtex-center">');
     output.appendPost('</td></tr></table>');
   }
-  command f\atopwithdelims("#!1#!2"){
+  command f\atopwithdelims("#!1#!2") {
     Atop(
       doc.currentCtx.output,
       argv[1],argv[2]
       );
   };
-  command f\atop(){
+  command f\atop() {
     Atop(doc.currentCtx.output,null,null);
   };
-  command f\choose(){
+  command f\choose() {
     Atop(doc.currentCtx.output,"(",")");
   };
-  command f\brack(){
+  command f\brack() {
     Atop(doc.currentCtx.output,"[","]");
   };
-  command f\brace(){
+  command f\brace() {
     Atop(doc.currentCtx.output,"{","}");
   };
-  command f@\above(){
+  command f@\above() {
     Atop(doc.currentCtx.output,null,null,true);
     // ■ GetLengthArgument で線の太さを読み取り
   };
-  command f\abovewithdelims("#!1#!2"){
+  command f\abovewithdelims("#!1#!2") {
     Atop(
       doc.currentCtx.output,
       argv[1],argv[2],true
@@ -479,30 +479,30 @@ context "mode.math"{
   //---------------------------------------------------------------
   //    総和 / mathop
   //---------------------------------------------------------------
-  command f\mathop(#>1){
+  command f\mathop(#>1) {
     var buff=doc.currentCtx.output.buff;
-    if(!_Mod.GetMathStyle(doc)){
+    if (!_Mod.GetMathStyle(doc)) {
       var sbsp=doc.GetSubSup();
-      if(sbsp.sub==null&&sbsp.sup==null){
+      if (sbsp.sub==null&&sbsp.sup==null) {
         buff.push(argv[1]);
-      }else{
+      } else {
         buff.push(
           '<tex:mathop><tex:u class="aghtex-tag-script">',sbsp.sup||'&nbsp;',
           '</tex:u>',argv[1],
           '<tex:d class="aghtex-tag-script">',sbsp.sub||'&nbsp;',
           '</tex:d></tex:mathop>');
       }
-    }else{
+    } else {
       buff.push(argv[1]);
     }
   };
 
-  command f\sum@("#>1"){
+  command f\sum@("#>1") {
     var buff=doc.currentCtx.output.buff;
     var sbsp=doc.GetSubSup();
-    if(sbsp.sub==null&&sbsp.sup==null){
+    if (sbsp.sub==null&&sbsp.sup==null) {
       buff.push("<tex:sum>",argv[1],"</tex:sum>");
-    }else{
+    } else {
       buff.push(
         '<tex:sum2><tex:sum2u class="aghtex-tag-script">',sbsp.sup||'&nbsp;',
         '</tex:sum2u><tex:sum2m>',argv[1],
@@ -511,7 +511,7 @@ context "mode.math"{
     }
   };
 
-  _Mod.CreateCommandSummation=(function InitCreateCommandSummation(){
+  _Mod.CreateCommandSummation=(function InitCreateCommandSummation() {
     var _ht_strut='<tex:i class="aghtex-sum-strut">&nbsp;</tex:i>'
     var ht_table_beg='<table class="aghtex-sum"><tr><td class="aghtex-sum-m"><tex:i class="aghtex-sum-m">';
     var ht_table_mid='</tex:i></td></tr><tr><td class="aghtex-sum-d"><tex:i class="aghtex-sum-d aghtex-tag-script">'+_ht_strut;
@@ -519,44 +519,44 @@ context "mode.math"{
     var ht_sum_begin='<tex:i class="aghtex-sum">';
 
     var fWA=false;
-    if(agh.browser.vSf||agh.browser.vIE&&(agh.browser.vIE<8||ns.compatMode=='IE-qks')){
+    if (agh.browser.vSf||agh.browser.vIE&&(agh.browser.vIE<8||ns.compatMode=='IE-qks')) {
       // WorkAround - 'CSS2.1 table{vertical-align:baseline;}'
       var fWA=true;
       var ht_sum_beginWA=ht_sum_begin.replace('"aghtex-sum"','"aghtex-sum aghtex-sum-WA1"');
       ht_table_beg=ht_table_beg.replace('"aghtex-sum"','"aghtex-sum aghtex-sum-WA1"');
-      if(agh.browser.vIE){
+      if (agh.browser.vIE) {
         // 何故か、空文字列がないと vertical-align:-0.02 した分だけ、Σの下端が切れてしまう。
         ht_table_mid=ht_table_mid.replace('</tex:i>','</tex:i>\n');
       }
     }
 
-    return function CreateCommandSummation(content){
-      return new ns.Command2("f","",function(doc,argv){
+    return function CreateCommandSummation(content) {
+      return new ns.Command2("f","",function(doc,argv) {
         var buff=doc.currentCtx.output.buff;
-        if(!_Mod.GetMathStyle(doc)){
+        if (!_Mod.GetMathStyle(doc)) {
           var sbsp=doc.GetSubSup();
           var fI=false;
 
-          if(fWA&&sbsp.sub!=null){
+          if (fWA&&sbsp.sub!=null) {
             fI=true;
             buff.push(ht_sum_beginWA);
-          }else{ // }else if (sbsp.sup!=null){
+          } else { // } else if (sbsp.sup!=null) {
             fI=true;
             buff.push(ht_sum_begin);
           }
 
-          if(sbsp.sup!=null){
+          if (sbsp.sup!=null) {
             buff.push('<tex:i class="aghtex-sum-u aghtex-tag-script">',sbsp.sup,'</tex:i>');
           }
-          if(sbsp.sub!=null){
+          if (sbsp.sub!=null) {
             buff.push(ht_table_beg,content,ht_table_mid,sbsp.sub,ht_table_end);
-          }else{
+          } else {
             buff.push('<tex:i class="aghtex-sum-m1"><tex:i class="aghtex-sum-m2">',content,'</tex:i></tex:i>');
           }
 
-          if(fI)
+          if (fI)
             buff.push('</tex:i>');
-        }else{
+        } else {
           buff.push('<tex:f class="aghtex-symb-mincho">',content,'</tex:f>');
         }
       });
@@ -577,17 +577,17 @@ context "mode.math"{
   //---------------------------------------------------------------
   //    積分
   //---------------------------------------------------------------
-  function cmd_int(doc,ch){
+  function cmd_int(doc,ch) {
     var output=doc.currentCtx.output;
     var buff=output.buff;
 
     // content
-    if(!_Mod.GetMathStyle(doc)){
+    if (!_Mod.GetMathStyle(doc)) {
       // 普通の (大きな) 積分記号
       buff.push('<tex:f class="aghtex-int">',ch,'</tex:f>');
 
       var sbsp=doc.GetSubSup();
-      switch((sbsp.sub?1:0)+(sbsp.sup?2:0)){
+      switch ((sbsp.sub?1:0)+(sbsp.sup?2:0)) {
       case 1:
         buff.push('<tex:sub class="aghtex-int">',sbsp.sub,'</tex:sub>');
         break;
@@ -601,13 +601,13 @@ context "mode.math"{
           '</tex:i></td></tr></table>');
         break;
       }
-    }else{
+    } else {
       // 小さな積分記号
       buff.push('<tex:f class="aghtex-symb-mincho">',ch,'</tex:f>');
     }
   }
   command f\int() {cmd_int(doc,'∫');};
-  command f\oint(){cmd_int(doc,'∮');};
+  command f\oint() {cmd_int(doc,'∮');};
   _Mod["cmd:int"]=cmd_int;
 }
 
@@ -616,49 +616,49 @@ context "mode.math"{
   //  アクセント・重ね記号・積み重ね記号
   //---------------------------------------------------------------
 
-  if(ns.compatMode=="IE-qks"||agh.browser.vIE<8){
+  if (ns.compatMode=="IE-qks"||agh.browser.vIE<8) {
     command s@\not(#>1) '<tex:lap><tex:m>/</tex:m><tex:m>#1</tex:m></tex:lap>';
-  }else{
+  } else {
     command s@\not(#>1) '<tex:i class="aghtex-accent">#1<tex:i class="aghtex-accent-container"><tex:i class="aghtex-accent-symbol-over">/</tex:i></tex:i></tex:i>';
   }
 
-  (function(){
+  (function() {
     var STACKREL_DEFAULT_TOP=agh.browser.select({IE:0,Fx:0,Op:0,Cr:0.2,Sf:0.8,Def:0.2}); // 本当の所 0.1 にしたい
-    function is_single_lower(html){
+    function is_single_lower(html) {
       var text=agh.Text.Unescape(html,"html");
-      if(text.length!=1)return false;
+      if (text.length!=1) return false;
       return "acegijmnopqrsuvwxyzαγεηικμνοπρστυφχψω\u0131".indexOf(text)>=0;
     }
-    function is_slanted(html,ismath){
-      if(ismath)
+    function is_slanted(html,ismath) {
+      if (ismath)
         return !(/^<tex:f class="aghtex-math(?:rm|sf|tt|bf|frak)">/.test(html));
       else
         return false;
     }
-    function is_slanted_fullheight(html,ismath){
+    function is_slanted_fullheight(html,ismath) {
       // \mathrm
-      if(!is_slanted(html,ismath))return false;
+      if (!is_slanted(html,ismath)) return false;
 
       // 中身が複数文字ある場合
       var text=agh.Text.Unescape(html,"html");
-      if(text.length!=1)return false;
+      if (text.length!=1) return false;
 
-      if(/<tex:f class="aghtex-greek">[βδζθλξΑ-Ω]<\/tex:f>/.test(html)){
+      if (/<tex:f class="aghtex-greek">[βδζθλξΑ-Ω]<\/tex:f>/.test(html)) {
         // \beta, \varGamma, etc.
         return true;
       }
 
       return /[bdfhkltA-Z∂]/.test(text);
     }
-    function is_tailed(html){
+    function is_tailed(html) {
       var text=agh.Text.Unescape(html,"html");
-      if(text.length!=1)return false;
+      if (text.length!=1) return false;
       return "gjpqy".indexOf(text)>=0;
     }
 
-    command f\stackrel("#>1#>2"){
+    command f\stackrel("#>1#>2") {
       var t=STACKREL_DEFAULT_TOP-1.3;
-      if(is_single_lower(argv[1]))t+=0.45;
+      if (is_single_lower(argv[1])) t+=0.45;
       t=0.01*Math.round(t*100);
 
       var buff=doc.currentCtx.output.buff;
@@ -668,39 +668,39 @@ context "mode.math"{
     };
 
     // 2012/12/25 17:47:56
-    _Mod.CreateAccentCommand=function(type,htsymb,ismath){
+    _Mod.CreateAccentCommand=function(type,htsymb,ismath) {
       var cls_container='aghtex-accent-container aghtex-accent-container-'+type;
-      if(agh.browser.vSf)
+      if (agh.browser.vSf)
         cls_container+=' aghtex-accent-sf aghtex-accent-sf-'+type;
 
       var ht1='<tex:i class="aghtex-accent aghtex-accent-'+type+'">';
       var ht2='<tex:i class="'+cls_container+'"><tex:i class="aghtex-accent-symbol-';
       var ht3='">'+htsymb+'</tex:i></tex:i></tex:i>';
 
-      if(type=='low'){
-        return ns.Command2("f","#>1",function(doc,argv){
+      if (type=='low') {
+        return ns.Command2("f","#>1",function(doc,argv) {
           var content=argv[1];
           var t=type;
-          if(content.length==0)
+          if (content.length==0)
             content='&nbsp;';
-          else if(is_tailed(content))
+          else if (is_tailed(content))
             t+="T";
 
           var buff=doc.currentCtx.output.buff;
           buff.push(ht1,content,ht2,t,ht3);
         });
-      }else{
-        return ns.Command2("f","#>1",function(doc,argv){
+      } else {
+        return ns.Command2("f","#>1",function(doc,argv) {
           var content=argv[1].trim();
           var t=type;
-          if(content.length===0)
+          if (content.length===0)
             content='&nbsp;';
-          else if(is_single_lower(content)){
-            if(is_slanted(content,ismath))
+          else if (is_single_lower(content)) {
+            if (is_slanted(content,ismath))
               t+="L"; // 数式小文字
             else
               t+="S"; // 直立体小文字
-          }else if(is_slanted_fullheight(content,ismath))
+          } else if (is_slanted_fullheight(content,ismath))
             t+="U"; // 数式大文字
 
           var buff=doc.currentCtx.output.buff;
@@ -722,20 +722,20 @@ context "mode.math"{
       vec  : _Mod.CreateAccentCommand('vec','<tex:f class="aghtex-syma-mincho">&#x2192;</tex:f>',true)
     });
 
-    if(ns.compatMode=="IE-qks"||agh.browser.vIE<8){
-      _Mod.CreateAccentCommandQksB=function(height,htSymbol){
+    if (ns.compatMode=="IE-qks"||agh.browser.vIE<8) {
+      _Mod.CreateAccentCommandQksB=function(height,htSymbol) {
         var TAG_L='<tex:lap><tex:m style="top:';
         var TAG_M='ex;">'+htSymbol+'</tex:m><tex:m>';
         var TAG_R='</tex:m></tex:lap>';
 
         // 00:28 2011/02/23 補正
-        if(agh.browser.vCr)
+        if (agh.browser.vCr)
           TAG_L='<tex:lap style="vertical-align:0.684ex;"><tex:m style="top:';
 
         var style_top=STACKREL_DEFAULT_TOP-height;
-        return new ns.Command2("f","#>1",function(doc,argv){
+        return new ns.Command2("f","#>1",function(doc,argv) {
           var t=style_top;
-          if(is_tailed(argv[1]))t+=0.4;
+          if (is_tailed(argv[1])) t+=0.4;
           t=0.01*Math.round(t*100);
 
           var buff=doc.currentCtx.output.buff;

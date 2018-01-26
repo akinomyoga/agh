@@ -10,7 +10,7 @@
 //   http://en.wikibooks.org/wiki/LaTeX/Colors
 
 
-function NamedColors(){}
+function NamedColors() {}
 agh.memcpy(NamedColors.prototype,{
   // predifined colors
   white         :'#FFFFFF', black         :'#000000', red           :'#FF0000', green         :'#00FF00',
@@ -35,30 +35,30 @@ agh.memcpy(NamedColors.prototype,{
   WildStrawberry:'#EE2967', Yellow        :'#FFF200', YellowGreen   :'#98CC70', YellowOrange  :'#FAA21A'
 });
 
-function parseFloat01(text){
+function parseFloat01(text) {
   var value=parseFloat(text);
   return value<0?0:value>1?1:value;
 }
-function float_to_hex2(value){
+function float_to_hex2(value) {
   var r=Math.round(value*255).toString(16);
   return r.length==1?"0"+r:r;
 }
 
-function get_color_dict(doc){
-  if(doc['pkg:color/colors']==null)
+function get_color_dict(doc) {
+  if (doc['pkg:color/colors']==null)
     doc['pkg:color/colors']={named:new NamedColors(),defined:new NamedColors};
   return doc['pkg:color/colors'];
 }
 
-function get_color(doc,model,spec){
+function get_color(doc,model,spec) {
   var dict=get_color_dict(doc);
-  switch(model.toLowerCase()){
+  switch (model.toLowerCase()) {
   case "":
-    if(dict.defined[spec])
+    if (dict.defined[spec])
       return dict.defined[spec];
     break;
   case 'named':
-    if(dict.named[spec])
+    if (dict.named[spec])
       return dict.named[spec];
     break;
   case 'gray':
@@ -89,11 +89,11 @@ function get_color(doc,model,spec){
   return null;
 }
 
-context "pkg:color/global" new(){
-  command f\DefineNamedColor("#!1#!2#!3#!4"){
+context "pkg:color/global" new() {
+  command f\DefineNamedColor("#!1#!2#!3#!4") {
     // \DefineNamedColor{named}{name}{model}{colour-spec}
 
-    if(argv[1]!='named'){
+    if (argv[1]!='named') {
       doc.currentCtx.output.error(
         'InvalidColorModel',
         '\\DefineNamedColor: "'+argv[1]+'"is specified to first argument. it should be "named"');
@@ -102,66 +102,66 @@ context "pkg:color/global" new(){
 
     var name=argv[2];
     var color=get_color(doc,argv[3].trim(),argv[4].trim());
-    if(color)
+    if (color)
       get_color_dict(doc).named[name]=color;
   };
-  command f\definecolor("#!1#!2#!3"){
+  command f\definecolor("#!1#!2#!3") {
     // \definecolor{name}{model}{colour-spec}
 
     var name=argv[1];
     var color=get_color(doc,argv[2].trim(),argv[3].trim());
-    if(color)
+    if (color)
       get_color_dict(doc).defined[name]=color;
   };
-  command f\color("#[]!1#!2"){
+  command f\color("#[]!1#!2") {
     // \color[model]{colour-spec}
 
     var color=get_color(doc,argv[1].trim(),argv[2].trim());
-    if(color==null)return;
+    if (color==null) return;
 
     doc.currentCtx.output.buff.push('<tex:i class="aghtex-color-textcolor" style="color:',color,'">');
     doc.currentCtx.output.appendPost("</tex:i>");
   };
-  command f\textcolor("#[]!1#!2#>3"){
+  command f\textcolor("#[]!1#!2#>3") {
     var color=get_color(doc,argv[1].trim(),argv[2].trim());
-    if(color==null)return;
+    if (color==null) return;
 
     doc.currentCtx.output.buff.push('<tex:i class="aghtex-color-textcolor" style="color:',color,'">',argv[3],"</tex:i>");
   };
-  command f\colorbox("#[]!1#!2#mode.lr>3"){
+  command f\colorbox("#[]!1#!2#mode.lr>3") {
     // \colorbox[model]{background-colour-spec}{text}
 
     var buff=doc.currentCtx.output.buff;
     var bgc=get_color(doc,argv[1].trim(),argv[2].trim());
-    if(bgc!=null){
+    if (bgc!=null) {
       buff.push('<tex:mbox class="aghtex-color-box" style="background-color:',bgc,'">');
-    }else{
+    } else {
       buff.push('<tex:mbox class="aghtex-color-box">');
     }
     buff.push(argv[3],"</tex:mbox>");
   };
-  command f\fcolorbox("#[]!1#!2#!3#mode.lr>4"){
+  command f\fcolorbox("#[]!1#!2#!3#mode.lr>4") {
     // \fcolorbox[model]{frame-colour-spec}{background-colour-spec}{text}
 
     var buff=doc.currentCtx.output.buff;
     var frc=get_color(doc,argv[1].trim(),argv[2].trim());
     var bgc=get_color(doc,argv[1].trim(),argv[3].trim());
-    if(frc!=null||bgc!=null){
+    if (frc!=null||bgc!=null) {
       buff.push('<tex:mbox class="aghtex-color-box" style="');
-      if(frc!=null){
+      if (frc!=null) {
         buff.push('border:solid 1px ',frc,';');
       }
-      if(bgc!=null){
+      if (bgc!=null) {
         buff.push('background-color:',bgc,';');
       }
       buff.push('">');
-    }else{
+    } else {
       buff.push('<tex:mbox class="aghtex-color-box">');
     }
     buff.push(argv[4],"</tex:mbox>");
   };
 
-  command f\normalcolor(){
+  command f\normalcolor() {
     // \normalcolor
     // 既定色に戻す。
     var dict=get_color_dict(doc);
@@ -169,6 +169,6 @@ context "pkg:color/global" new(){
     dict.defined=new NamedColors();
   };
 }
-ns.Document.Packages["color"]=function(doc,opt,pkgName){
+ns.Document.Packages["color"]=function(doc,opt,pkgName) {
   doc.context_cast("global").OverwriteContext(doc.context_cast("pkg:color/global"));
 };

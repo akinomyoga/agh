@@ -2,10 +2,10 @@
 
 var TAG_UL=null;
 var TAG_OL=null;
-if(agh.browser.vIE){
+if (agh.browser.vIE) {
   TAG_UL='<ul class="aghtex-item aghtex-ie">\r\n';
   TAG_OL='<ol class="aghtex-enum aghtex-ie">\r\n';
-}else{
+} else {
   TAG_UL='<ul class="aghtex-item">\r\n';
   TAG_OL='<ol class="aghtex-enum">\r\n';
 }
@@ -14,94 +14,94 @@ var STR_INVALID_ITEM='環境情報の取得に失敗しました。\\item は環
 var STR_REPLACED_CTX="fatal: environment-context may have been replaced by someone.";
 
 //■TODO カウンタを用いて番号を決定 (<li value="1234"> で設定可能)
-context "env.itemize" new("mode.para"){
-  command f\item("#[@aghtex-default]1"){
+context "env.itemize" new("mode.para") {
+  command f\item("#[@aghtex-default]1") {
     var envdata=doc.currentCtx["env:itemize"];
     var buff=doc.currentCtx.output.buff;
-    if(envdata!=null){
-      if(envdata.hasItem){
+    if (envdata!=null) {
+      if (envdata.hasItem) {
         buff.push('</li>\r\n');
-      }else{
+      } else {
         envdata.hasItem=true;
       }
 
-      if(argv[1]=="@aghtex-default")
+      if (argv[1]=="@aghtex-default")
         buff.push(' <li>');
       else
         buff.push(' <li class="aghtex-itemize-marked"><tex:i class="aghtex-itemize-mark1"><tex:i class="aghtex-itemize-mark2">',argv[1],'</tex:i></tex:i>');
-    }else{
+    } else {
       doc.currentCtx.output.error('env:itemize/missing envdata',STR_INVALID_ITEM);
     }
   };
 }
 ns.ContextFactory["mode.para"].AddEnvironment("itemize",{
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     ctx["env:itemize"]={hasItem:false};
     doc.currentCtx.output.buff.push(TAG_UL);
   },
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     var envdata=ctx["env:itemize"];
-    if(envdata!=null){
-      if(envdata.hasItem)doc.currentCtx.output.buff.push('</li>\r\n');
-    }else{
+    if (envdata!=null) {
+      if (envdata.hasItem) doc.currentCtx.output.buff.push('</li>\r\n');
+    } else {
       throw STR_REPLACED_CTX;
     }
     doc.currentCtx.output.buff.push('</ul>\r\n');
   },
-  catcher:function(doc,ctx){this.epilogue(doc,ctx);},
+  catcher: function(doc,ctx) {this.epilogue(doc,ctx);},
   context:"env.itemize"
 });
 ns.ContextFactory["mode.para"].AddEnvironment("enumerate",{
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     ctx["env:itemize"]={hasItem:false};
     doc.currentCtx.output.buff.push(TAG_OL);
   },
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     var envdata=ctx["env:itemize"];
-    if(envdata!=null){
-      if(envdata.hasItem)doc.currentCtx.output.buff.push('</li>\r\n');
-    }else{
+    if (envdata!=null) {
+      if (envdata.hasItem) doc.currentCtx.output.buff.push('</li>\r\n');
+    } else {
       throw STR_REPLACED_CTX;
     }
     doc.currentCtx.output.buff.push('</ol>\r\n');
   },
-  catcher:function(doc,ctx){this.epilogue(doc,ctx);},
+  catcher: function(doc,ctx) {this.epilogue(doc,ctx);},
   context:"env.itemize"
 });
 
-context "env.description" new("mode.para"){
-  command f\item(#[]1){
+context "env.description" new("mode.para") {
+  command f\item(#[]1) {
     var output=doc.currentCtx.output;
     var buff=doc.currentCtx.output.buff;
     var envdata=doc.currentCtx["env:description"];
-    if(envdata!=null){
-      if(envdata.hasItem){
+    if (envdata!=null) {
+      if (envdata.hasItem) {
         buff.push('</dd>');
-      }else{
+      } else {
         envdata.hasItem=true;
       }
-      if(argv[1]!="")
+      if (argv[1]!="")
         buff.push('<dt><tex:dt>',argv[1],'</tex:dt></dt>');
       buff.push('<dd>');
-    }else{
+    } else {
       output.error('env:itemize/missing envdata',STR_INVALID_ITEM);
     }
   };
 }
 ns.ContextFactory["mode.para"].AddEnvironment("description",{
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     ctx["env:description"]={hasItem:false};
     doc.currentCtx.output.buff.push('<dl class="tex-desc">\r\n');
   },
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     var envdata=ctx["env:description"];
-    if(envdata!=null){
-      if(envdata.hasItem)doc.currentCtx.output.buff.push('</dd>\r\n');
-    }else{
+    if (envdata!=null) {
+      if (envdata.hasItem) doc.currentCtx.output.buff.push('</dd>\r\n');
+    } else {
       throw STR_REPLACED_CTX;
     }
     doc.currentCtx.output.buff.push('</dl>\r\n');
   },
-  catcher:function(doc,ctx){this.epilogue(doc,ctx);},
+  catcher: function(doc,ctx) {this.epilogue(doc,ctx);},
   context:"env.description"
 });

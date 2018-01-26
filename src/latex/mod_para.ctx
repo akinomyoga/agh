@@ -17,9 +17,9 @@ context "mode.para"{
 
   command s>\,()            @'\hspace{0.1667em}';
   command s>\thinspace()    @'\hspace{0.1667em}';
-  if(agh.browser.vIE&&agh.browser.vIE<7){
+  if (agh.browser.vIE&&agh.browser.vIE<7) {
     command s@\negthinspace() '<tex:negspace class="letter-spacing">&nbsp;&nbsp;</tex:negspace>&nbsp;';
-  }else{
+  } else {
     command s@\negthinspace() '<tex:negspace></tex:negspace>';
   }
 
@@ -29,11 +29,11 @@ context "mode.para"{
   command s@#" " () "&nbsp;";
   command s@#"\\"() "<br />";
   command s@#par () "<br />";
-  letter f#'\n'(){
-    if(doc.scanner.wordtype=="ltr"&&doc.scanner.word=='\n'){
+  letter f#'\n'() {
+    if (doc.scanner.wordtype=="ltr"&&doc.scanner.word=='\n') {
       doc.skipSpaceAndComment();
       doc.currentCtx.output.buff.push("<br />");
-    }else
+    } else
       doc.currentCtx.output.buff.push(" ");
   };
 
@@ -112,7 +112,7 @@ context "mode.para"{
     "d":mod_math.CreateAccentCommand('low','<tex:f class="aghtex-syma-mincho">&#x002E;</tex:f>')  // combining = &#x0323;
   });
 
-  if(ns.compatMode=="IE-qks"||agh.browser.vIE<8){
+  if (ns.compatMode=="IE-qks"||agh.browser.vIE<8) {
     _Ctx.DefineCommand({
       "c":mod_math.CreateAccentCommandQksB( 0.2,'<tex:f class="aghtex-textgt">&#x327;</tex:f>'),
       "b":mod_math.CreateAccentCommandQksB( 0.2,"_"),
@@ -148,33 +148,33 @@ context "mode.para"{
   letter s@\>()  '&#x00BF;'; // u00bf "¿", '<tex:f class="aghtex-symb-roman">&#x00BF;</tex:f>'
   letter s@\<()  '&#x00A1;'; // u00a1 "¡", '<tex:f class="aghtex-symb-roman">&#x00A1;</tex:f>'
   letter s@\|()  "―";
-  letter f@\?(){
+  letter f@\?() {
     doc.scanner.Next();
-    if(doc.scanner.is("ltr","`")){
+    if (doc.scanner.is("ltr","`")) {
       doc.currentCtx.output.buff.push('&#x00BF;');
       doc.scanner.Next();
-    }else{
+    } else {
       doc.currentCtx.output.buff.push("?");
     }
   };
-  letter f@\!(){
+  letter f@\!() {
     doc.scanner.Next();
-    if(doc.scanner.is("ltr","`")){
+    if (doc.scanner.is("ltr","`")) {
       doc.currentCtx.output.buff.push('&#x00A1;');
       doc.scanner.Next();
-    }else{
+    } else {
       doc.currentCtx.output.buff.push("!");
     }
   };
-  letter f@\-(){
+  letter f@\-() {
     doc.scanner.Next();
-    if(!doc.scanner.is("ltr","-")){
+    if (!doc.scanner.is("ltr","-")) {
       doc.currentCtx.output.buff.push("-");
       return;
     }
 
     doc.scanner.Next();
-    if(!doc.scanner.is("ltr","-")){
+    if (!doc.scanner.is("ltr","-")) {
       doc.currentCtx.output.buff.push("—");
       // ※ 本来は \u2013 であるべき
       return;
@@ -185,9 +185,9 @@ context "mode.para"{
     // ※ 本来は \u2014 であるべき
   };
   // Quotations
-  function quoteleft(doc){
+  function quoteleft(doc) {
     doc.scanner.Next();
-    if(!doc.scanner.is("ltr","`")&&!doc.scanner.is("cmd","lq")){
+    if (!doc.scanner.is("ltr","`")&&!doc.scanner.is("cmd","lq")) {
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">‘</tex:f>');
       return;
     }
@@ -197,9 +197,9 @@ context "mode.para"{
   }
   _Ctx.AddLetterHandler("`",quoteleft);
   _Ctx.AddCommandHandler("lq",quoteleft);
-  function quoteright(doc){
+  function quoteright(doc) {
     doc.scanner.Next();
-    if(!doc.scanner.is("ltr","'")&&!doc.scanner.is("cmd","rq")){
+    if (!doc.scanner.is("ltr","'")&&!doc.scanner.is("cmd","rq")) {
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">’</tex:f>');
       return;
     }
@@ -221,9 +221,9 @@ context "mode.para"{
   //---------------------------------------------------------------------------
   // 改頁コマンド (この実装では区別はない)
   //---------------------------------------------------------------------------
-  command f\eject(){
+  command f\eject() {
     var c=doc.GetCounter("page");
-    if(c!=null)c.Step();
+    if (c!=null) c.Step();
     doc.currentCtx.output.buff.push('<hr class="aghtex-newpage" />');
   };
   _Ctx.AddCommandHandler("supereject",_Ctx.handlerC["eject"]);
@@ -232,9 +232,9 @@ context "mode.para"{
   _Ctx.AddCommandHandler("clearpage",_Ctx.handlerC["eject"]);
   _Ctx.AddCommandHandler("pagebreak",_Ctx.handlerC["eject"]);
 
-  command f\cleardoublepage(){
+  command f\cleardoublepage() {
     var c=doc.GetCounter("page");
-    if(c!=null){
+    if (c!=null) {
       c.Step();
       c.Step();
     }
@@ -260,19 +260,19 @@ context "mode.para"{
   environment s@:mode.math\math()  '<tex:math>#0</tex:math>';
   command s@#"("("#mode.math>1\\)") '<tex:math>#1</tex:math>';
 
-  _Ctx.AddLetterHandler("$",function(doc){
+  _Ctx.AddLetterHandler("$",function(doc) {
     var buff=doc.currentCtx.output.buff;
     doc.scanner.Next();
-    if(doc.scanner.is("ltr","$")){
+    if (doc.scanner.is("ltr","$")) {
       doc.scanner.Next();
       // $$ - $$
       buff.push('<tex:math class="aghtex-displaymath">');
 
       // setup context and read under the context
       var ctx=doc.context_cast(["mode.math"]);
-      ctx.AddLetterHandler("$",function(doc){
+      ctx.AddLetterHandler("$",function(doc) {
         doc.scanner.Next();
-        if(doc.scanner.is("ltr","$"))
+        if (doc.scanner.is("ltr","$"))
           doc.scanner.Next();
         else
           doc.currentCtx.output.error("UnexpectedEOR","$");
@@ -281,14 +281,14 @@ context "mode.para"{
       });
 
       buff.push(doc.Read(ctx),'</tex:math>');
-    }else{
+    } else {
       // $ - $
       buff.push('<tex:math>');
 
       // setup context and read under the context
       var ctx=doc.context_cast(["mode.math"]);
       ctx.SetContextVariable('mathstyle',mod_math.MATHSTYLE_TEXT);
-      ctx.AddLetterHandler("$",function(doc){
+      ctx.AddLetterHandler("$",function(doc) {
         doc.scanner.Next();
         doc.currentCtx.BREAK=true;
       });
@@ -301,33 +301,33 @@ context "mode.para"{
   var CTXV_LABEL_EQ='mod_ref/label:eq';
 
   _Ctx.AddEnvironment("equation",{
-    prologue:function(doc,ctx){
+    prologue: function(doc,ctx) {
       doc.currentCtx.output.buff.push('<tex:math class="aghtex-displaymath">');
       ctx.SetContextVariable(CTXV_LABEL_EQ,[]);
       ctx.userC["label"]=ns.Modules["mod:ref"]["cmd:label:eq"];
     },
-    epilogue:function(doc,ctx){
+    epilogue: function(doc,ctx) {
       var buff=doc.currentCtx.output.buff;
       var labels=ctx.GetContextVariable(CTXV_LABEL_EQ);
-      if(labels.length>0){
+      if (labels.length>0) {
         var id="aghtex."+labels[0];
         buff.push('<tex:eqno class="right" id="',id,'">');
-        for(var i=1;i<labels.length;i++)
+        for (var i=1;i<labels.length;i++)
           doc.references.label_id_map[labels[i]]=id;
-      }else{
+      } else {
         buff.push('<tex:eqno class="right">');
       }
 
       // 式番号の形式を指定するコマンドを呼び出す様に変更する■
       //  InsertSource & ReadCommand
       var c=doc.GetCounter("equation");
-      if(c==null){
+      if (c==null) {
         buff.push('(?)');
-      }else{
+      } else {
         c.Step();
         var eqno=c.arabic();
         buff.push('(',eqno,')');
-        if(labels.length>0)
+        if (labels.length>0)
           doc.references.displayedText['ref@'+labels[0]]=eqno;
       }
 
@@ -339,11 +339,11 @@ context "mode.para"{
   var CTXV_FOOTNOTE='mod_ref/footnote';
   var CTXV_MPFOOTNOTE='mod_ref/is_mpfootnote';
   _Ctx.AddEnvironment("minipage",{
-    prologue:function(doc,ctx){
+    prologue: function(doc,ctx) {
       var output=doc.currentCtx.output;
 
       var va=(doc.GetOptionalArgumentRaw()||"").trim();
-      switch(va){
+      switch (va) {
       case "t":va="top";break;
       case "b":va="bottom";break;
       case "":
@@ -361,7 +361,7 @@ context "mode.para"{
       ctx.SetContextVariable(CTXV_MPFOOTNOTE,true);
       ctx.SetContextVariable(CTXV_FOOTNOTE,new ns.Writer());
     },
-    epilogue:function(doc,ctx){
+    epilogue: function(doc,ctx) {
       var output=doc.currentCtx.output;
       ns.Modules["mod:ref"].WriteFootnote(output,ctx);
       output.buff.push('</tex:i>');
@@ -370,14 +370,14 @@ context "mode.para"{
   });
 }
 
-function get_mod_data(doc){
+function get_mod_data(doc) {
   return doc['mod:para']||(doc['mod:para']={
     theorems:[]
   });
 }
 
 context "global"{
-  command f\newtheorem(#!1#[]!2#3#[]!4){
+  command f\newtheorem(#!1#[]!2#3#[]!4) {
     var mod_ref=ns.Modules["mod:ref"]; // 読み込み順序の都合
     var thmname=argv[1];
     var refthmName=argv[2];
@@ -385,16 +385,16 @@ context "global"{
     var parentCounterName=argv[4];
 
     var theorems=get_mod_data(doc).theorems;
-    if(theorems[thmname]){
+    if (theorems[thmname]) {
       doc.currentCtx.output.error('mod:para.cmd:newtheorem.AlreadyDefined',{name:thmname},'\\newtheorem (mod:para)');
       return;
     }
 
     // 番号共有の定理環境(あれば)
     var refthm=null;
-    if(refthmName!=""){
+    if (refthmName!="") {
       refthm=theorems[refthmName];
-      if(!refthm){
+      if (!refthm) {
         doc.currentCtx.output.error('mod:para.cmd:newtheorem.UndefinedTheorem',{refthm:refthmName},'\\newtheorem (mod:para)');
         return;
       }
@@ -403,16 +403,16 @@ context "global"{
     var thm={};
 
     // counter and number
-    if(refthm){
+    if (refthm) {
       thm.counterName=refthm.counterName;
       thm.titleNumberSource=refthm.titleNumberSource;
-    }else{
+    } else {
       thm.counterName='mod:para.cmd:newtheorem.'+thmname;
       thm.titleNumberSource='\\arabic{'+thm.counterName+'}';
-      if(parentCounterName&&parentCounterName!=""){
+      if (parentCounterName&&parentCounterName!="") {
         thm.titleNumberSource='\\arabic{'+parentCounterName+'}.'+thm.titleNumberSource;
         doc.NewCounter(thm.counterName,parentCounterName);
-      }else{
+      } else {
         doc.NewCounter(thm.counterName);
       }
     }
@@ -423,13 +423,13 @@ context "global"{
     });
 
     doc.context_cast("mode.para").AddEnvironment(thmname,{
-      prologue:function(doc,ctx){
+      prologue: function(doc,ctx) {
         var subtitle=doc.GetOptionalArgumentRaw()||'';
         doc.scanner.InsertSource('\\relax{'+subtitle+'}');
         thm.sectionCommand(doc,thmname); // h(doc,cmd)
         doc.currentCtx.output.buff.push('<tex:i class="aghtex-latex-theorem-content">');
       },
-      epilogue:function(){
+      epilogue: function() {
         doc.currentCtx.output.buff.push('</tex:i>');
       },
       context:"mode.para"

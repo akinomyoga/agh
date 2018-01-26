@@ -25,7 +25,7 @@ agh.memcpy(ns.Modules["core"].ErrorMessages,{
     "empty \\label","the argument of \\label is empty. specify the non empty name."]
 });
 
-_Mod.CreateSectionCommand=function(param){
+_Mod.CreateSectionCommand=function(param) {
   var arr=param.html.split('#');
   var hasTitleNumber=arr.length==3;
 
@@ -37,7 +37,7 @@ _Mod.CreateSectionCommand=function(param){
   //     一つ目が章番号に変換され、二つ目が章題に変換される。
   // * param.counter セクション番号を数える為のカウンタ
   // ? param.refname
-  //   関数の場合 (function(doc){})
+  //   関数の場合 (function(doc) {})
   //     \ref 用の文字列を生成する関数
   //     省略した時は \ref で参照する事はできない。
   //   文字列の場合
@@ -47,18 +47,18 @@ _Mod.CreateSectionCommand=function(param){
   //     省略した時は代わりに refname の結果が使用される。
   //     この場合 refname 関数が設定されている必要がある。
 
-  return ns.Command2("fA","#[]>1#>2",function(doc,cmdName,aread){
+  return ns.Command2("fA","#[]>1#>2",function(doc,cmdName,aread) {
     // prologue
-    if(param.emitnote)
+    if (param.emitnote)
       _Mod.WriteFootnote(doc.currentCtx.output,doc);
-    if(param.counter)
+    if (param.counter)
       mod_counter.stepcounter(doc,param.counter);
 
     var referenceName="";
-    if(param.refname){
-      if(param.refname instanceof Function)
+    if (param.refname) {
+      if (param.refname instanceof Function)
         referenceName=refname(doc);
-      else{
+      else {
         doc.scanner.InsertSource("{"+param.refname+"}");
         referenceName=doc.GetArgumentHtml();
       }
@@ -71,23 +71,23 @@ _Mod.CreateSectionCommand=function(param){
 
     // content
     var buff=doc.currentCtx.output.buff;
-    if(id)
+    if (id)
       buff.push('<',param.httag,' class="',param.htclass,'" id="',id,'">');
     else
       buff.push('<',param.httag,' class="',param.htclass,'">');
 
-    if(hasTitleNumber){
+    if (hasTitleNumber) {
       var titleNumber=param.get_number?param.get_number(doc):referenceName;
       buff.push(arr[0],titleNumber,arr[1],argv[2],arr[2]);
-    }else{
+    } else {
       buff.push(arr[0],argv[2],arr[1]);
     }
 
-    if(param.toctype){
+    if (param.toctype) {
       var tocline=argv[1].trim();
-      if(tocline=="")
+      if (tocline=="")
         tocline=argv[2];
-      if(referenceName!="")
+      if (referenceName!="")
         tocline=referenceName+" "+tocline;
       doc.AddContentsLine(doc,"toc",param.toctype,tocline,id);
     }
@@ -98,9 +98,9 @@ _Mod.CreateSectionCommand=function(param){
 
 
 context "global"{
-  command f\label("#1"){
+  command f\label("#1") {
     var name=agh.Text.Escape(argv[1].trim(),"html-attr");
-    if(name==""){
+    if (name=="") {
       doc.currentCtx.output.error("mod:ref.cmd:label.EmptyLabel",null,"\\label (mod:ref.section)");
       return;
     }
@@ -110,41 +110,41 @@ context "global"{
 
     // 節番号
     var lastsec=doc.references.lastSection;
-    if(lastsec!="")
+    if (lastsec!="")
       doc.references.displayedText['ref@'+name]=lastsec;
-    if(doc.references.lastSectionId){
+    if (doc.references.lastSectionId) {
       doc.references.label_id_map[name]=doc.references.lastSectionId;
-    }else{
+    } else {
       var buff=doc.currentCtx.output.buff;
       buff.push('<a class="aghtex-label" name="aghtex.',name,'"></a>');
     }
   };
-  command f\ref("#@1"){
+  command f\ref("#@1") {
     var output=doc.currentCtx.output;
     var name=agh.Text.Escape(argv[1].trim(),"html-attr");
     var text=doc.references.displayedText['ref@'+name];
-    if(text!=null){
+    if (text!=null) {
       output.buff.push('<a class="aghtex-ref" href="#aghtex.',name,'">',text,'</a>');
-    }else{
+    } else {
       output.buff.push('<a class="aghtex-ref" href="#aghtex.',name,'"><tex:ref ref="ref.',name,'">?</tex:ref></a>');
     }
   };
-  command f\pageref(#@1){
+  command f\pageref(#@1) {
     var output=doc.currentCtx.output;
     var name=agh.Text.Escape(argv[1].trim(),"html-attr");
     var text=doc.references.label_page_map[name];
-    if(text!=null)
+    if (text!=null)
       output.buff.push('<a class="aghtex-ref" href="#aghtex.',name,'">',text,'</a>');
     else
       output.buff.push('<a class="aghtex-ref" href="#aghtex.',name,'"><tex:ref ref="ref.',name,'">?</tex:ref></a>');
   };
-  command f\cite("#@1"){
+  command f\cite("#@1") {
     var a=argv[1].split(',');
     var buff=doc.currentCtx.output.buff;
     buff.push('[');
-    for(var i=0,iN=a.length;i<iN;i++){
+    for (var i=0,iN=a.length;i<iN;i++) {
       var ref='bib.'+agh.Text.Escape(a[i].trim(),"html-attr");
-      if(i>0)buff.push(', ');
+      if (i>0) buff.push(', ');
       buff.push('<a class="aghtex-cite" href="#aghtex.',ref,'"><tex:ref ref="',ref,'">?</tex:ref></a>');
     }
     buff.push(']');
@@ -157,9 +157,9 @@ context "global"{
 var DOCV_FILE_TOC='mod:ref/toc';
 var DOCV_FILE_LOF='mod:ref/lof';
 var DOCV_FILE_LOT='mod:ref/lot';
-function get_contents_file(doc,key){
+function get_contents_file(doc,key) {
   var ret=doc[key];
-  if(!ret){
+  if (!ret) {
     ret=new ns.Writer();
     ret.data=[];
     doc[key]=ret;
@@ -167,11 +167,11 @@ function get_contents_file(doc,key){
   return ret;
 }
 
-ns.Document.prototype.AddContentsLine=function(doc,file,type,content,id){
+ns.Document.prototype.AddContentsLine=function(doc,file,type,content,id) {
   var counter=doc.GetCounter("page");
   var page=counter!=null?counter.arabic():"?";
 
-  switch(file){
+  switch (file) {
   case "toc":
     var f=get_contents_file(this,DOCV_FILE_TOC);
     f.buff.push(
@@ -179,7 +179,7 @@ ns.Document.prototype.AddContentsLine=function(doc,file,type,content,id){
       '"><tr><td class="aghtex-toc-label">',content,
       '</td><td class="aghtex-toc-hfill"><tex:i class="aghtex-toc-hfill">&nbsp;</tex:i></td><td class="aghtex-toc-page">');
 
-    if(id)
+    if (id)
       f.buff.push('<a class="aghtex-ref" href="#',id,'">',page,'</a>');
     else
       f.buff.push(page);
@@ -200,15 +200,15 @@ ns.Document.prototype.AddContentsLine=function(doc,file,type,content,id){
 };
 
 context "mode.para"{
-  command f\addcontentsline(#1#2#>3){
+  command f\addcontentsline(#1#2#>3) {
     var file=argv[1].trim();
     var type=agh.Text.Escape(argv[2].trim(),"html-attr");
     doc.AddContentsLine(doc,file,type,argv[3]);
   };
-  command f\addtocontents(#1#2){
+  command f\addtocontents(#1#2) {
     var file=argv[1].trim();
     var content=argv[2];
-    switch(file){
+    switch (file) {
     case "toc":
       var f=get_contents_file(this,DOCV_FILE_TOC);
       f.buff.push(content);
@@ -228,9 +228,9 @@ context "mode.para"{
 //------------------------------------------------------------------------------
 //  \begin{figure}, \begin{table}
 
-_Mod["cmd:label:eq"]=ns.Command2("f","#1",function(doc,argv){
+_Mod["cmd:label:eq"]=ns.Command2("f","#1",function(doc,argv) {
   var name=agh.Text.Escape(argv[1].trim(),"html-attr");
-  if(name==""){
+  if (name=="") {
     doc.currentCtx.output.error("mod:ref.cmd:label.EmptyLabel",null,"\\label (mod:ref.eqno)");
     return;
   }
@@ -240,11 +240,11 @@ _Mod["cmd:label:eq"]=ns.Command2("f","#1",function(doc,argv){
 
   // 式番号
   var counter=doc.GetCounter('equation');
-  if(counter!=null)
+  if (counter!=null)
     doc.references.displayedText['ref@'+name]=counter.arabic();
 
   var labels=doc.GetContextVariable(CTXV_LABEL_EQ);
-  if(labels==null){
+  if (labels==null) {
     doc.currentCtx.output.error(
       "mod:ref.env:equation.cmd:label.ContextBroken",null,
       "\\label (mod:ref.eqno)");
@@ -254,10 +254,10 @@ _Mod["cmd:label:eq"]=ns.Command2("f","#1",function(doc,argv){
 });
 
 #%m mod_ref::defineFigureEnvironment (
-var cmd_caption_%figure%=ns.Command2("fA","#>1",function(doc,cmdName,ar){
+var cmd_caption_%figure%=ns.Command2("fA","#>1",function(doc,cmdName,ar) {
   var counter=doc.GetCounter("%figure%");
   var counterNumber='?';
-  if(counter!=null){
+  if (counter!=null) {
     counter.Step();
     counterNumber=counter.arabic();
   }
@@ -270,9 +270,9 @@ var cmd_caption_%figure%=ns.Command2("fA","#>1",function(doc,cmdName,ar){
     argv[1],'</tex:i>');
 });
 
-_Mod["cmd:label:%fig%"]=ns.Command2("f","#1",function(doc,argv){
+_Mod["cmd:label:%fig%"]=ns.Command2("f","#1",function(doc,argv) {
   var name=agh.Text.Escape(argv[1].trim(),"html-attr");
-  if(name==""){
+  if (name=="") {
     doc.currentCtx.output.error("mod:ref.cmd:label.EmptyLabel",null,"\\label (mod:ref.%figure%)");
     return;
   }
@@ -282,11 +282,11 @@ _Mod["cmd:label:%fig%"]=ns.Command2("f","#1",function(doc,argv){
 
   // 図番号, 表番号
   var counter=doc.GetCounter('%figure%');
-  if(counter!=null)
+  if (counter!=null)
     doc.references.displayedText['ref@'+name]=counter.arabic();
 
   var labels=doc.GetContextVariable(CTXV_LABEL_%FIG%);
-  if(labels==null){
+  if (labels==null) {
     doc.currentCtx.output.error(
       "mod:ref.env:%figure%.cmd:label.ContextBroken",null,
       "\\label (mod:ref.env:%figure%)");
@@ -297,22 +297,22 @@ _Mod["cmd:label:%fig%"]=ns.Command2("f","#1",function(doc,argv){
 
 var environment_params_%figure%={
   suppressOutput:true,
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     var va=doc.GetOptionalArgumentRaw(); // currently not used
 
     ctx.SetContextVariable(CTXV_LABEL_%FIG%,[]);
     ctx.userC["caption"]=cmd_caption_%figure%;
     ctx.userC["label"]=_Mod["cmd:label:%fig%"];
   },
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     var buff=doc.currentCtx.output.buff;
     var labels=ctx.GetContextVariable(CTXV_LABEL_%FIG%);
-    if(labels.length==0){
+    if (labels.length==0) {
       buff.push('<tex:i class="aghtex-%figure%">');
-    }else{
+    } else {
       var id="aghtex."+labels[0];
       buff.push('<tex:i class="aghtex-%figure%" id="',id,'">');
-      for(var i=1;i<labels.length;i++)
+      for (var i=1;i<labels.length;i++)
         doc.references.label_id_map[labels[i]]=id;
     }
 
@@ -326,14 +326,14 @@ ns.ContextFactory["mode.para"].AddEnvironment("%figure%",environment_params_%fig
 #%x mod_ref::defineFigureEnvironment.r/%figure%/figure/.r/%Title%/Figure/.r/%FIG%/FIG/.r/%fig%/fig/
 #%x mod_ref::defineFigureEnvironment.r/%figure%/table/ .r/%Title%/Table/ .r/%FIG%/TB/ .r/%fig%/tb/
 
-context "env.thebibliography" new("mode.para"){
-  command f\bibitem("#!1"){
+context "env.thebibliography" new("mode.para") {
+  command f\bibitem("#!1") {
     var buff=doc.currentCtx.output.buff;
     var envdata=doc.currentCtx["env:thebibliography"];
-    if(envdata!=null){
-      if(envdata.hasItem){
+    if (envdata!=null) {
+      if (envdata.hasItem) {
         buff.push('</li>\r\n');
-      }else{
+      } else {
         envdata.hasItem=true;
       }
 
@@ -341,13 +341,13 @@ context "env.thebibliography" new("mode.para"){
       buff.push(' <li id="aghtex.bib.',name,'">');
 
       var counter=doc.GetCounter('enumiv');
-      if(counter!=null){
+      if (counter!=null) {
         counter.Step();
         var c=counter.arabic();
         buff.push("[",c,"] ");
         doc.references.displayedText['bib@'+name]=c;
       }
-    }else{
+    } else {
       doc.currentCtx.output.error(
         "mod:ref.env:thebibliography.cmd:bibitem.MissingEnvData",null,
         "\\bibitem");
@@ -359,7 +359,7 @@ context "env.thebibliography" new("mode.para"){
 //  \begin{thebibliography}
 
 ns.ContextFactory["mode.para"].AddEnvironment("thebibliography",{
-  prologue:function(doc,ctx){
+  prologue: function(doc,ctx) {
     var maxItems=doc.GetArgumentRaw();
 
     ctx["env:thebibliography"]={hasItem:false,maxItems:maxItems};
@@ -367,47 +367,47 @@ ns.ContextFactory["mode.para"].AddEnvironment("thebibliography",{
     doc.currentCtx.output.buff.push('<ul class="aghtex-thebibliography">');
 
     var counter=doc.GetCounter('enumiv');
-    if(counter!=null)counter.Clear();
+    if (counter!=null) counter.Clear();
   },
-  epilogue:function(doc,ctx){
+  epilogue: function(doc,ctx) {
     var envdata=ctx["env:thebibliography"];
-    if(envdata!=null){
-      if(envdata.hasItem)doc.currentCtx.output.buff.push('</li>\r\n');
-    }else{
+    if (envdata!=null) {
+      if (envdata.hasItem) doc.currentCtx.output.buff.push('</li>\r\n');
+    } else {
       throw STR_REPLACED_CTX;
     }
     doc.currentCtx.output.buff.push('</ul>\r\n');
   },
-  catcher:function(doc,ctx){this.epilogue(doc,ctx);},
+  catcher: function(doc,ctx) {this.epilogue(doc,ctx);},
   context:"env.thebibliography"
 });
 
 agh.memcpy(ns.Document.prototype,{
-  ResolveReferences:function(){
-    if(this.html==null)return;
+  ResolveReferences: function() {
+    if (this.html==null) return;
     var self=this;
-    return this.html=this.html.replace(/<tex:ref ref="(\w+)\.([^"<>]+)">\?<\/tex:ref>|<a class="aghtex-ref" href="#aghtex\.([^"]+)">/g,function($0,$1,$2,$B1){ //
-      if($1!=null&&$1!=""){
-        switch($1){
+    return this.html=this.html.replace(/<tex:ref ref="(\w+)\.([^"<>]+)">\?<\/tex:ref>|<a class="aghtex-ref" href="#aghtex\.([^"]+)">/g,function($0,$1,$2,$B1) { //
+      if ($1!=null&&$1!="") {
+        switch ($1) {
         case "ref":
           return self.references.displayedText['ref@'+$2]||$0;
         case "bib":
           return self.references.displayedText['bib@'+$2]||$0;
         case "contents":
-          if($2=="toc"||$2=="lof"||$2=="lot"){
+          if ($2=="toc"||$2=="lof"||$2=="lot") {
             var f=self["mod:ref/"+$2];
-            if(f!=null)return f.toHtml();
+            if (f!=null) return f.toHtml();
           }
           return $0;
         default:
           return $0;
         }
-      }else if($B1!=""&&$B1){
-        if($B1 in self.references.label_id_map)
+      } else if ($B1!=""&&$B1) {
+        if ($B1 in self.references.label_id_map)
           return '<a class="aghtex-ref" href="#'+self.references.label_id_map[$B1]+'">';
         else
           return $0;
-      }else
+      } else
         return $0;
     });
   }
@@ -423,20 +423,20 @@ context "mode.para"{
 
 #%m mod_ref::footnote (
   var %footnote%={
-    get_counter:function(doc){
+    get_counter: function(doc) {
       return doc.GetCounter("%footnote%");
     },
-    write_mark:function(doc,output,label,mark){
+    write_mark: function(doc,output,label,mark) {
       output.buff.push('<a class="aghtex-footnotemark" href="#aghtex-%fn%-',label,'">%C%',mark,'</a>');
     },
-    add_item:function(doc,number,content,label){
+    add_item: function(doc,number,content,label) {
       var output=doc.GetContextVariable(CTXV_FOOTNOTE);
-      if(output!=null){
+      if (output!=null) {
         output.buff.push(
           '<li class="aghtex-footnotetext"><tex:i id="aghtex-%fn%-',label,
           '" class="aghtex-footnotetext-mark">%C%',number,
           '</tex:i> ',content,'</li>');
-      }else{
+      } else {
         output=doc.currentCtx.output;
         output.buff.push(
           ' [%C%',number,' <tex:i class="aghtex-footnotetext-inline">',
@@ -448,38 +448,38 @@ context "mode.para"{
 #%x mod_ref::footnote.r|%footnote%|footnote|  .r|%fn%|fn|  .r|%C%||
 #%x mod_ref::footnote.r|%footnote%|mpfootnote|.r|%fn%|mpfn|.r|%C%|*|
 
-  function get_footnote(doc){
-    if(doc.GetContextVariable(CTXV_MPFOOTNOTE))
+  function get_footnote(doc) {
+    if (doc.GetContextVariable(CTXV_MPFOOTNOTE))
       return mpfootnote;
     else
       return footnote;
   }
 
-  _Mod.WriteFootnote=function(output,ctx){
+  _Mod.WriteFootnote=function(output,ctx) {
     //! @param[out] output output stream : ns.Writer
     //! @param[in]  ctx    context of footnotes : ns.Context or ns.Document
 
     var fn_out=ctx.GetContextVariable(CTXV_FOOTNOTE);
-    if(!fn_out)return;
+    if (!fn_out) return;
 
     var ht=fn_out.toHtml();
-    if(ht=="")return;
+    if (ht=="") return;
 
     fn_out.clear();
     output.buff.push('<tex:i class="aghtex-footnote"><ul class="aghtex-footnote">',ht,'</ul></tex:i>');
   };
 
-  command f\footnotemark("#[]1"){
+  command f\footnotemark("#[]1") {
     var fn=get_footnote(doc);
 
     var output=doc.currentCtx.output;
     var c=agh.Text.Escape(argv[1].trim(),"html-attr");
-    if(c==""){
+    if (c=="") {
       var counter=fn.get_counter(doc);
-      if(counter!=null){
+      if (counter!=null) {
         counter.Step();
         c=counter.arabic();
-      }else{
+      } else {
         c="?";
       }
     }
@@ -487,13 +487,13 @@ context "mode.para"{
     fn.write_mark(doc,output,c,c);
   };
 
-  command f\footnotetext("#[]1#mode.para>2"){
+  command f\footnotetext("#[]1#mode.para>2") {
     var fn=get_footnote(doc);
 
     var c=agh.Text.Escape(argv[1].trim(),"html-attr");
-    if(c==""){
+    if (c=="") {
       var counter=fn.get_counter(doc);
-      if(counter!=null)
+      if (counter!=null)
         c=counter.arabic();
       else
         c="?";
@@ -502,16 +502,16 @@ context "mode.para"{
     fn.add_item(doc,c,argv[2],c);
   };
 
-  command f\footnote("#[]1#mode.para>2"){
+  command f\footnote("#[]1#mode.para>2") {
     var fn=get_footnote(doc);
 
     var c=agh.Text.Escape(argv[1].trim(),"html-attr");
-    if(c==""){
+    if (c=="") {
       var counter=fn.get_counter(doc);
-      if(counter!=null){
+      if (counter!=null) {
         counter.Step();
         c=counter.arabic();
-      }else{
+      } else {
         c="?";
       }
     }
