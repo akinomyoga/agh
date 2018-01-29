@@ -1,4 +1,4 @@
-// -*- mode:js;coding:utf-8 -*-
+// -*- mode: js; coding: utf-8 -*-
 
 // Package
 //   \documentclass{article}
@@ -7,18 +7,18 @@
 //     * documentclass.ctx から名称変更
 // References
 
-// var JBOOK=function(doc) {
-//   doc.NewCounter("part",null);
-//   doc.NewCounter("chapter",null);
-//   doc.NewCounter("section","chapter");
-//   doc.NewCounter("subsection","section");
-//   doc.NewCounter("subsubsection","subsection");
-//   doc.NewCounter("paragraph","subsubsection");
-//   doc.NewCounter("subparagraph","paragraph");
+// var JBOOK = function(doc) {
+//   doc.NewCounter("part", null);
+//   doc.NewCounter("chapter", null);
+//   doc.NewCounter("section", "chapter");
+//   doc.NewCounter("subsection", "section");
+//   doc.NewCounter("subsubsection", "subsection");
+//   doc.NewCounter("paragraph", "subsubsection");
+//   doc.NewCounter("subparagraph", "paragraph");
 
-//   doc.NewCounter("equation","section");
-//   doc.NewCounter("figure","section");
-//   doc.NewCounter("table","section");
+//   doc.NewCounter("equation", "section");
+//   doc.NewCounter("figure", "section");
+//   doc.NewCounter("table", "section");
 
 //   doc.context_cast("mode.para");
 //   with(doc.contexts["mode.para"]) {
@@ -38,17 +38,17 @@
 //     command s\subparagraph*("#1")   @"\vspace{1ex}\textbf{#1}\quad\\";
 //   }
 // };
-// var JARTICLE=function(doc) {
-//   doc.NewCounter("part",null);
-//   doc.NewCounter("section",null);
-//   doc.NewCounter("subsection","section");
-//   doc.NewCounter("subsubsection","subsection");
-//   doc.NewCounter("paragraph","subsubsection");
-//   doc.NewCounter("subparagraph","paragraph");
+// var JARTICLE = function(doc) {
+//   doc.NewCounter("part", null);
+//   doc.NewCounter("section", null);
+//   doc.NewCounter("subsection", "section");
+//   doc.NewCounter("subsubsection", "subsection");
+//   doc.NewCounter("paragraph", "subsubsection");
+//   doc.NewCounter("subparagraph", "paragraph");
 
-//   doc.NewCounter("equation","section");
-//   doc.NewCounter("figure","section");
-//   doc.NewCounter("table","section");
+//   doc.NewCounter("equation", "section");
+//   doc.NewCounter("figure", "section");
+//   doc.NewCounter("table", "section");
 
 //   doc.context_cast("mode.para");
 //   with(doc.contexts["mode.para"]) {
@@ -66,33 +66,33 @@
 //     command s\subparagraph*("#1")   @"\vspace{1ex}\textbf{#1}\quad\\";
 //   }
 // };
-// ns.Document.Classes["jbook"]=JBOOK;
-// ns.Document.Classes["jsbook"]=JBOOK;
-// ns.Document.Classes["jarticle"]=JARTICLE;
-// ns.Document.Classes["jsarticle"]=JARTICLE;
+// ns.Document.Classes["jbook"] = JBOOK;
+// ns.Document.Classes["jsbook"] = JBOOK;
+// ns.Document.Classes["jarticle"] = JARTICLE;
+// ns.Document.Classes["jsarticle"] = JARTICLE;
 
-agh.memcpy(ns.Modules["core"].ErrorMessages,{
-  "cls:article.cmd:author.MultipleAuthor":[
-    "MultipleAuthor","multiple \\author are specified!"],
-  'cls:revtex.cmd:affiliation.NoAssociatedAuthor':[
-    "NoAssociatedAuthor","\\affiliation{{{affiliation}}}: there are no associated author"],
-  'cls:revtex.cmd:email.NoAssociatedAuthor':[
-    "NoAssociatedAuthor","\\email{{{email}}}: there are no associated author"]
+agh.memcpy(ns.Modules["core"].ErrorMessages, {
+  "cls:article.cmd:author.MultipleAuthor": [
+    "MultipleAuthor", "multiple \\author are specified!"],
+  'cls:revtex.cmd:affiliation.NoAssociatedAuthor': [
+    "NoAssociatedAuthor", "\\affiliation{{{affiliation}}}: there are no associated author"],
+  'cls:revtex.cmd:email.NoAssociatedAuthor': [
+    "NoAssociatedAuthor", "\\email{{{email}}}: there are no associated author"]
 });
 
-var monthNames=[
+var monthNames = [
   "January",   "February",  "March",     "April",
   "May",       "June",      "July",      "August",
   "September", "October",   "November",  "December"
 ];
 function get_today_text() {
-  var now=new Date();
-  var y=now.getYear();
-  if (y<1900) y+=1900;
-  y=y.toString();
-  var m=monthNames[now.getMonth()];
-  var d=now.getDate().toString();
-  return m," ",d,", ",y;
+  var now = new Date();
+  var y = now.getYear();
+  if (y < 1900) y += 1900;
+  y = y.toString();
+  var m = monthNames[now.getMonth()];
+  var d = now.getDate().toString();
+  return m + " " + d + " + " + y;
 }
 
 //-----------------------------------------------------------------------------
@@ -100,21 +100,21 @@ function get_today_text() {
 
 context "cls:article/global" new() {
   command f\title("#mode.para>1") {
-    doc.SetContextVariable('cls:article/title',argv[1]);
+    doc.SetContextVariable('cls:article/title', argv[1]);
   };
   command f\author("#mode.para>1") {
-    var author=doc.GetContextVariable('cls:article/author');
-    if (author!=null) {
+    var author = doc.GetContextVariable('cls:article/author');
+    if (author != null) {
       doc.currentCtx.output.error(
-        'cls:article.cmd:author.MultipleAuthor',null,"\\author (cls:article/global)");
-      author+=", "+argv[1];
+        'cls:article.cmd:author.MultipleAuthor', null, "\\author (cls:article/global)");
+      author += ", " + argv[1];
     } else {
-      author=argv[1];
+      author = argv[1];
     }
-    doc.SetContextVariable('cls:article/author',author);
+    doc.SetContextVariable('cls:article/author', author);
   };
   command f\date("#mode.para>1") {
-    doc.SetContextVariable('cls:article/date',argv[1]);
+    doc.SetContextVariable('cls:article/date', argv[1]);
   };
 }
 context "cls:article/mode.para" new() {
@@ -126,59 +126,59 @@ context "cls:article/mode.para" new() {
   // section コマンドに求められる事
   // TODO: \appendix より後の番号の書式の変更
 
-  var mod_ref=ns.Modules["mod:ref"];
+  var mod_ref = ns.Modules["mod:ref"];
 
-  _Ctx.AddCommandHandler("part",mod_ref.CreateSectionCommand({
-    counter:"part",refname:'\\Roman{part}',toctype:"part",emitnote:true,
-    httag:'h1',htclass:'aghtex-article-part',html:'<tex:i class="aghtex-article-part">Part #</tex:i> #'
+  _Ctx.AddCommandHandler("part", mod_ref.CreateSectionCommand({
+    counter: "part", refname: '\\Roman{part}', toctype: "part", emitnote: true,
+    httag: 'h1', htclass: 'aghtex-article-part', html: '<tex:i class="aghtex-article-part">Part #</tex:i> #'
   }));
-  _Ctx.AddCommandHandler("section",mod_ref.CreateSectionCommand({
-    counter:"section",refname:'\\arabic{section}',toctype:"section",emitnote:true,
-    httag:'h2',htclass:'aghtex-article-section',html:'# #'
+  _Ctx.AddCommandHandler("section", mod_ref.CreateSectionCommand({
+    counter: "section", refname: '\\arabic{section}', toctype: "section", emitnote: true,
+    httag: 'h2', htclass: 'aghtex-article-section', html: '# #'
   }));
-  _Ctx.AddCommandHandler("subsection",mod_ref.CreateSectionCommand({
-    counter:"subsection",refname:'\\arabic{section}.\\arabic{subsection}',toctype:"subsection",emitnote:true,
-    httag:'h3',htclass:'aghtex-article-subsection',html:'# #'
+  _Ctx.AddCommandHandler("subsection", mod_ref.CreateSectionCommand({
+    counter: "subsection", refname: '\\arabic{section}.\\arabic{subsection}', toctype: "subsection", emitnote: true,
+    httag: 'h3', htclass: 'aghtex-article-subsection', html: '# #'
   }));
-  _Ctx.AddCommandHandler("subsubsection",mod_ref.CreateSectionCommand({
-    counter:"subsubsection",refname:'\\arabic{section}.\\arabic{subsection}.\\arabic{subsubsection}',emitnote:true,
-    httag:'h4',htclass:'aghtex-article-subsubsection',html:'# #'
+  _Ctx.AddCommandHandler("subsubsection", mod_ref.CreateSectionCommand({
+    counter: "subsubsection", refname: '\\arabic{section}.\\arabic{subsection}.\\arabic{subsubsection}', emitnote: true,
+    httag: 'h4', htclass: 'aghtex-article-subsubsection', html: '# #'
   }));
-  _Ctx.AddCommandHandler("paragraph"     ,mod_ref.CreateSectionCommand({counter:"paragraph"   ,httag:'h5',htclass:'aghtex-article-paragraph',html:'# #'}));
-  _Ctx.AddCommandHandler("subparagraph"  ,mod_ref.CreateSectionCommand({counter:"subparagraph",httag:'h6',htclass:'aghtex-article-subparagraph',html:'# #'}));
+  _Ctx.AddCommandHandler("paragraph"     , mod_ref.CreateSectionCommand({counter: "paragraph"   , httag: 'h5', htclass: 'aghtex-article-paragraph', html: '# #'}));
+  _Ctx.AddCommandHandler("subparagraph"  , mod_ref.CreateSectionCommand({counter: "subparagraph", httag: 'h6', htclass: 'aghtex-article-subparagraph', html: '# #'}));
 
-  _Ctx.AddCommandHandler("part*"         ,mod_ref.CreateSectionCommand({emitnote:true,httag:'h1',htclass:'aghtex-article-part',html:'#'}));
-  _Ctx.AddCommandHandler("section*"      ,mod_ref.CreateSectionCommand({emitnote:true,httag:'h2',htclass:'aghtex-article-section',html:'#'}));
-  _Ctx.AddCommandHandler("subsection*"   ,mod_ref.CreateSectionCommand({emitnote:true,httag:'h3',htclass:'aghtex-article-subsection',html:'#'}));
-  _Ctx.AddCommandHandler("subsubsection*",mod_ref.CreateSectionCommand({emitnote:true,httag:'h4',htclass:'aghtex-article-subsubsection',html:'#'}));
-  _Ctx.AddCommandHandler("paragraph*"    ,mod_ref.CreateSectionCommand({httag:'h5',htclass:'aghtex-article-paragraph',html:'#'}));
-  _Ctx.AddCommandHandler("subparagraph*" ,mod_ref.CreateSectionCommand({httag:'h6',htclass:'aghtex-article-subparagraph',html:'#'}));
+  _Ctx.AddCommandHandler("part*"         , mod_ref.CreateSectionCommand({emitnote: true, httag: 'h1', htclass: 'aghtex-article-part', html: '#'}));
+  _Ctx.AddCommandHandler("section*"      , mod_ref.CreateSectionCommand({emitnote: true, httag: 'h2', htclass: 'aghtex-article-section', html: '#'}));
+  _Ctx.AddCommandHandler("subsection*"   , mod_ref.CreateSectionCommand({emitnote: true, httag: 'h3', htclass: 'aghtex-article-subsection', html: '#'}));
+  _Ctx.AddCommandHandler("subsubsection*", mod_ref.CreateSectionCommand({emitnote: true, httag: 'h4', htclass: 'aghtex-article-subsubsection', html: '#'}));
+  _Ctx.AddCommandHandler("paragraph*"    , mod_ref.CreateSectionCommand({httag: 'h5', htclass: 'aghtex-article-paragraph', html: '#'}));
+  _Ctx.AddCommandHandler("subparagraph*" , mod_ref.CreateSectionCommand({httag: 'h6', htclass: 'aghtex-article-subparagraph', html: '#'}));
 
-  var monthNames=[
+  var monthNames = [
     "January",   "February",  "March",     "April",
     "May",       "June",      "July",      "August",
     "September", "October",   "November",  "December"
   ];
   command f\maketitle() {
-    var output=doc.currentCtx.output;
-    var buff=output.buff;
+    var output = doc.currentCtx.output;
+    var buff = output.buff;
 
     buff.push('<h1 class="aghtex-article-title"><tex:i class="aghtex-article-title">');
-    var title=doc.GetContextVariable('cls:article/title');
+    var title = doc.GetContextVariable('cls:article/title');
     if (title)
       buff.push(title);
     else
-      output.error('\\title not set','\\title is not set.','\\maketitle');
+      output.error('\\title not set', '\\title is not set.', '\\maketitle');
 
     buff.push('</tex:i><tex:i class="aghtex-article-author">');
-    var author=doc.GetContextVariable('cls:article/author');
+    var author = doc.GetContextVariable('cls:article/author');
     if (author)
       buff.push(author);
     else
-      output.error('\\author not set','\\author is not set.','\\maketitle');
+      output.error('\\author not set', '\\author is not set.', '\\maketitle');
 
     buff.push('</tex:i><tex:i class="aghtex-article-date">');
-    var date=doc.GetContextVariable('cls:article/date');
+    var date = doc.GetContextVariable('cls:article/date');
     if (date)
       buff.push(date);
     else
@@ -189,32 +189,32 @@ context "cls:article/mode.para" new() {
 }
 
 function initialize_article_counters(doc) {
-  doc.NewCounter("page",null);
-  doc.NewCounter("equation",null);
-  doc.NewCounter("figure",null);
-  doc.NewCounter("table",null);
+  doc.NewCounter("page", null);
+  doc.NewCounter("equation", null);
+  doc.NewCounter("figure", null);
+  doc.NewCounter("table", null);
 
-  doc.NewCounter("footnote",null);
-  doc.NewCounter("mpfootnote",null);
+  doc.NewCounter("footnote", null);
+  doc.NewCounter("mpfootnote", null);
 
-  doc.NewCounter("enumi",null);
-  doc.NewCounter("enumii","enumi");
-  doc.NewCounter("enumiii","enumii");
-  doc.NewCounter("enumiv","enumiii");
-  doc.NewCounter("itemi",null);
-  doc.NewCounter("itemii","itemi");
-  doc.NewCounter("itemiii","itemii");
-  doc.NewCounter("itemiv","itemiii");
+  doc.NewCounter("enumi", null);
+  doc.NewCounter("enumii", "enumi");
+  doc.NewCounter("enumiii", "enumii");
+  doc.NewCounter("enumiv", "enumiii");
+  doc.NewCounter("itemi", null);
+  doc.NewCounter("itemii", "itemi");
+  doc.NewCounter("itemiii", "itemii");
+  doc.NewCounter("itemiv", "itemiii");
 
-  doc.NewCounter("part",null);
-  doc.NewCounter("section",null);
-  doc.NewCounter("subsection","section");
-  doc.NewCounter("subsubsection","subsection");
-  doc.NewCounter("paragraph","subsubsection");
-  doc.NewCounter("subparagraph","paragraph");
+  doc.NewCounter("part", null);
+  doc.NewCounter("section", null);
+  doc.NewCounter("subsection", "section");
+  doc.NewCounter("subsubsection", "subsection");
+  doc.NewCounter("paragraph", "subsubsection");
+  doc.NewCounter("subparagraph", "paragraph");
 }
 
-ns.Document.Classes["article"]=function(doc) {
+ns.Document.Classes["article"] = function(doc) {
   initialize_article_counters(doc);
   doc.context_cast("global").OverwriteContext(doc.context_cast("cls:article/global"));
   doc.context_cast("mode.para").OverwriteContext(doc.context_cast("cls:article/mode.para"));
@@ -223,87 +223,87 @@ ns.Document.Classes["article"]=function(doc) {
 //-----------------------------------------------------------------------------
 // \documentclass{revtex4}
 
-var _revtex='cls:revtex';
+var _revtex = 'cls:revtex';
 
-var RevtexAuthorData=function(doc) {
+var RevtexAuthorData = function(doc) {
   // 既存
-  var data=doc.GetDocumentVariable(_revtex,'author');
-  if (data!=null) return data;
+  var data = doc.GetDocumentVariable(_revtex, 'author');
+  if (data != null) return data;
 
   // 新規
-  this.doc=doc;
-  this.authors=[];
-  this.affiliations=[];
-  this.aff2ind={};
-  doc.SetDocumentVariable(_revtex,'author',this);
+  this.doc = doc;
+  this.authors = [];
+  this.affiliations = [];
+  this.aff2ind = {};
+  doc.SetDocumentVariable(_revtex, 'author', this);
 };
 
-agh.memcpy(RevtexAuthorData.prototype,{
+agh.memcpy(RevtexAuthorData.prototype, {
   setEmail: function(email) {
-    var author=this.authors[this.authors.length-1];
-    if (author!=null) {
-      author.email=email; // ■複数指定した時
+    var author = this.authors[this.authors.length - 1];
+    if (author != null) {
+      author.email = email; // ■複数指定した時
     } else {
       this.doc.currentCtx.output.error(
         'cls:revtex.cmd:email.NoAssociatedAuthor',
-        {email:email},"\\email (cls:revtex)");
+        {email: email}, "\\email (cls:revtex)");
     }
   },
   setAffiliation: function(affiliation) {
-    var affindex=this.aff2ind[affiliation];
-    if (affindex==null) {
+    var affindex = this.aff2ind[affiliation];
+    if (affindex == null) {
       this.affiliations.push(affiliation);
-      affindex=this.affiliations.length;
-      this.aff2ind[affiliation]=affindex;
+      affindex = this.affiliations.length;
+      this.aff2ind[affiliation] = affindex;
     }
 
-    var author=this.authors[this.authors.length-1];
-    if (author!=null) {
+    var author = this.authors[this.authors.length - 1];
+    if (author != null) {
       author.affindices.push(affindex);
     } else {
       this.doc.currentCtx.output.error(
         'cls:revtex.cmd:affiliation.NoAssociatedAuthor',
-        {affiliation:argv[1]},"\\affiliation (cls:revtex)");
+        {affiliation: argv[1]}, "\\affiliation (cls:revtex)");
     }
   },
   writeAuthors: function() {
-    var buff=this.doc.currentCtx.output.buff;
+    var buff = this.doc.currentCtx.output.buff;
     buff.push('<tex:i class="aghtex-revtex-author">');
 
-    var email=new ns.Counter("<email>",null);
-    for (var i=0;i<this.authors.length;i++) {
-      var a=this.authors[i];
+    var email = new ns.Counter("<email>", null);
+    for (var i = 0; i < this.authors.length; i++) {
+      var a = this.authors[i];
 
       // 人名
       buff.push(a.name);
-      if (i+1<this.authors.length) buff.push(",");
+      if (i + 1 < this.authors.length) buff.push(",");
 
       // 肩
-      var restCount=a.affindices.length;
-      if (a.email!=null) restCount++;
-      if (restCount>0) {
+      var restCount = a.affindices.length;
+      if (a.email != null) restCount++;
+      if (restCount > 0) {
         buff.push('<tex:i class="aghtex-revtex-authorindex">');
-        for (var j=0;j<a.affindices.length;j++) {
-          buff.push('<tex:i class="aghtex-revtex-authorindex-affiliation">',a.affindices[j],'</tex:i>');
-          if (--restCount!=0) buff.push(', ');
+        for (var j = 0; j < a.affindices.length; j++) {
+          buff.push('<tex:i class="aghtex-revtex-authorindex-affiliation">', a.affindices[j], '</tex:i>');
+          if (--restCount != 0) buff.push(', ');
         }
 
-        if (a.email!=null) {
+        if (a.email != null) {
           email.Add(1);
-          buff.push('<tex:i class="aghtex-revtex-authorindex-email">',email.fnsymbol(),'</tex:i>');
+          buff.push('<tex:i class="aghtex-revtex-authorindex-email">', email.fnsymbol(), '</tex:i>');
         }
         buff.push('</tex:i>');
       }
 
-      if (i+1<this.authors.length)
-        buff.push(i+2==this.authors.length?" and ":" ");
+      if (i + 1 < this.authors.length)
+        buff.push(i + 2 == this.authors.length?" and ": " ");
     }
     buff.push('</tex:i>');
 
-    for (var i=0;i<this.affiliations.length;i++) {
-      var aff=this.affiliations[i];
-      var index=this.aff2ind[aff];
-      buff.push('<tex:i class="aghtex-revtex-affiliation"><tex:i class="aghtex-revtex-affiliationindex">',index,'</tex:i>',aff,'</tex:i>');
+    for (var i = 0; i < this.affiliations.length; i++) {
+      var aff = this.affiliations[i];
+      var index = this.aff2ind[aff];
+      buff.push('<tex:i class="aghtex-revtex-affiliation"><tex:i class="aghtex-revtex-affiliationindex">', index, '</tex:i>', aff, '</tex:i>');
     }
   }
 });
@@ -313,33 +313,33 @@ function revtex_get_author_data(doc) {
 
 context "cls:revtex/global" new() {
   command f\title("#mode.para>1") {
-    doc.SetDocumentVariable(_revtex,'title',argv[1]);
+    doc.SetDocumentVariable(_revtex, 'title', argv[1]);
   };
   command f\author("#mode.para>1") {
-    var author=argv[1];
-    var data=revtex_get_author_data(doc);
-    data.authors.push({name:author,affindices:[]});
+    var author = argv[1];
+    var data = revtex_get_author_data(doc);
+    data.authors.push({name: author, affindices: []});
   };
   command f\email("#mode.para>1") {
-    var data=revtex_get_author_data(doc);
+    var data = revtex_get_author_data(doc);
     data.setEmail(argv[1]);
   };
   command f\affiliation("#mode.para>1") {
-    var data=revtex_get_author_data(doc);
+    var data = revtex_get_author_data(doc);
     data.setAffiliation(argv[1]);
   };
   command f\date("#mode.para>1") {
-    doc.SetDocumentVariable(_revtex,'date',argv[1]);
+    doc.SetDocumentVariable(_revtex, 'date', argv[1]);
   };
   // command f\abstract("#mode.para>1") {
-  //   doc.SetDocumentVariable(_revtex,'abstract',argv[1]);
+  //   doc.SetDocumentVariable(_revtex, 'abstract', argv[1]);
   // };
 
-  _Ctx.AddEnvironment("abstract",{
-    context:'mode.para',
-    suppressOutput:true,
-    epilogue: function(doc,ctx) {
-      doc.SetDocumentVariable(_revtex,'abstract',ctx.output.toHtml());
+  _Ctx.AddEnvironment("abstract", {
+    context: 'mode.para',
+    suppressOutput: true,
+    epilogue: function(doc, ctx) {
+      doc.SetDocumentVariable(_revtex, 'abstract', ctx.output.toHtml());
     }
   });
 }
@@ -351,59 +351,59 @@ context "cls:revtex/mode.para" new() {
   // section コマンドに求められる事
   // TODO: \appendix より後の番号の書式の変更
 
-  var mod_ref=ns.Modules["mod:ref"];
+  var mod_ref = ns.Modules["mod:ref"];
 
   _Ctx.AddCommandHandler("part", mod_ref.CreateSectionCommand({
-    counter: "part",refname: '\\Roman{part}',toctype: "part",emitnote: true,
-    httag: 'h1',htclass: 'aghtex-revtex-part',html: '<tex:i class="aghtex-revtex-part">Part #</tex:i> #'
+    counter: "part", refname: '\\Roman{part}', toctype: "part", emitnote: true,
+    httag: 'h1', htclass: 'aghtex-revtex-part', html: '<tex:i class="aghtex-revtex-part">Part #</tex:i> #'
   }));
   _Ctx.AddCommandHandler("section", mod_ref.CreateSectionCommand({
-    counter: "section",refname: '\\Roman{section}.\\quad',toctype: "section",emitnote: true,
-    httag: 'h2',htclass: 'aghtex-revtex-section',html: '# #'
+    counter: "section", refname: '\\Roman{section}.\\quad', toctype: "section", emitnote: true,
+    httag: 'h2', htclass: 'aghtex-revtex-section', html: '# #'
   }));
   _Ctx.AddCommandHandler("subsection", mod_ref.CreateSectionCommand({
-    counter: "subsection",refname: '\\Alph{subsection}.\\quad',toctype: "subsection",emitnote: true,
-    httag: 'h3',htclass: 'aghtex-revtex-subsection',html: '# #'
+    counter: "subsection", refname: '\\Alph{subsection}.\\quad', toctype: "subsection", emitnote: true,
+    httag: 'h3', htclass: 'aghtex-revtex-subsection', html: '# #'
   }));
   _Ctx.AddCommandHandler("subsubsection", mod_ref.CreateSectionCommand({
-    counter: "subsubsection",refname: '\\arabic{section}.\\arabic{subsection}.\\arabic{subsubsection}',emitnote: true,
-    httag: 'h4',htclass: 'aghtex-revtex-subsubsection',html: '# #'
+    counter: "subsubsection", refname: '\\arabic{section}.\\arabic{subsection}.\\arabic{subsubsection}', emitnote: true,
+    httag: 'h4', htclass: 'aghtex-revtex-subsubsection', html: '# #'
   }));
-  _Ctx.AddCommandHandler("paragraph"     , mod_ref.CreateSectionCommand({counter: "paragraph"   ,httag: 'h5',htclass: 'aghtex-revtex-paragraph',html: '# #'}));
-  _Ctx.AddCommandHandler("subparagraph"  , mod_ref.CreateSectionCommand({counter: "subparagraph",httag: 'h6',htclass: 'aghtex-revtex-subparagraph',html: '# #'}));
+  _Ctx.AddCommandHandler("paragraph"     , mod_ref.CreateSectionCommand({counter: "paragraph"   , httag: 'h5', htclass: 'aghtex-revtex-paragraph', html: '# #'}));
+  _Ctx.AddCommandHandler("subparagraph"  , mod_ref.CreateSectionCommand({counter: "subparagraph", httag: 'h6', htclass: 'aghtex-revtex-subparagraph', html: '# #'}));
 
-  _Ctx.AddCommandHandler("part*"         , mod_ref.CreateSectionCommand({emitnote: true,httag: 'h1',htclass: 'aghtex-revtex-part',html: '#'}));
-  _Ctx.AddCommandHandler("section*"      , mod_ref.CreateSectionCommand({emitnote: true,httag: 'h2',htclass: 'aghtex-revtex-section',html: '#'}));
-  _Ctx.AddCommandHandler("subsection*"   , mod_ref.CreateSectionCommand({emitnote: true,httag: 'h3',htclass: 'aghtex-revtex-subsection',html: '#'}));
-  _Ctx.AddCommandHandler("subsubsection*", mod_ref.CreateSectionCommand({emitnote: true,httag: 'h4',htclass: 'aghtex-revtex-subsubsection',html: '#'}));
-  _Ctx.AddCommandHandler("paragraph*"    , mod_ref.CreateSectionCommand({httag: 'h5',htclass: 'aghtex-revtex-paragraph',html: '#'}));
-  _Ctx.AddCommandHandler("subparagraph*" , mod_ref.CreateSectionCommand({httag: 'h6',htclass: 'aghtex-revtex-subparagraph',html: '#'}));
+  _Ctx.AddCommandHandler("part*"         , mod_ref.CreateSectionCommand({emitnote: true, httag: 'h1', htclass: 'aghtex-revtex-part', html: '#'}));
+  _Ctx.AddCommandHandler("section*"      , mod_ref.CreateSectionCommand({emitnote: true, httag: 'h2', htclass: 'aghtex-revtex-section', html: '#'}));
+  _Ctx.AddCommandHandler("subsection*"   , mod_ref.CreateSectionCommand({emitnote: true, httag: 'h3', htclass: 'aghtex-revtex-subsection', html: '#'}));
+  _Ctx.AddCommandHandler("subsubsection*", mod_ref.CreateSectionCommand({emitnote: true, httag: 'h4', htclass: 'aghtex-revtex-subsubsection', html: '#'}));
+  _Ctx.AddCommandHandler("paragraph*"    , mod_ref.CreateSectionCommand({httag: 'h5', htclass: 'aghtex-revtex-paragraph', html: '#'}));
+  _Ctx.AddCommandHandler("subparagraph*" , mod_ref.CreateSectionCommand({httag: 'h6', htclass: 'aghtex-revtex-subparagraph', html: '#'}));
 
   command f\maketitle() {
-    var output=doc.currentCtx.output;
-    var buff=output.buff;
+    var output = doc.currentCtx.output;
+    var buff = output.buff;
 
     buff.push('<h1 class="aghtex-revtex-title"><tex:i class="aghtex-revtex-title">');
-    var title=doc.GetDocumentVariable(_revtex,'title');
+    var title = doc.GetDocumentVariable(_revtex, 'title');
     if (title)
       buff.push(title);
     else
-      output.error('\\title not set','\\title is not set.','\\maketitle');
+      output.error('\\title not set', '\\title is not set.', '\\maketitle');
     buff.push('</tex:i>');
 
-    var authorData=revtex_get_author_data(doc);
+    var authorData = revtex_get_author_data(doc);
     authorData.writeAuthors(doc);
 
     buff.push('<tex:i class="aghtex-revtex-date">(Dated: ');
-    var date=doc.GetDocumentVariable(_revtex,'date');
+    var date = doc.GetDocumentVariable(_revtex, 'date');
     if (date)
       buff.push(date);
     else
       buff.push(get_today_text());
     buff.push(')</tex:i></h1>');
 
-    var abs=doc.GetDocumentVariable(_revtex,'abstract');
-    if (abs!=null) {
+    var abs = doc.GetDocumentVariable(_revtex, 'abstract');
+    if (abs != null) {
       buff.push('<h2 class="aghtex-revtex-abstract">Abstract</h2>');
       buff.push(abs);
     }
