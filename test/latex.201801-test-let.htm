@@ -57,6 +57,19 @@ revtex4-1 にオプションを指定したとき自動的に amsmath, amssymb �
    f &\sim \exp(-\varepsilon/T_{\mathrm{eff}}).
 \end{align}
 
+\section{\verb+\operatorname+ 対応}
+何故か \verb+\operatornamewithlimits+ には対応していたのに、
+何故か \verb+\operatorname+ には対応していなかった。
+同時に \verb+\mathop+ についても修正を行った。
+\verb+\operatorname*+ も対応した。
+\begin{align}
+  a_1 &= \mathrm{div} \boldsymbol{u}, \\
+  a_2 &= \mathop{div} \boldsymbol{v}, \\
+  a_3 &= \operatorname{div} \boldsymbol{w}, \\
+  x_1 &= \operatornamewithlimits{argmax}_x f(x), \\
+  x_2 &= \operatorname*{argmin}_x f(x).
+\end{align}
+
 \end{document}
 </div>
 <div id="texdoc2" class="aghtex-page">

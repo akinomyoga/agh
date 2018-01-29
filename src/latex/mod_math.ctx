@@ -482,15 +482,18 @@ context "mode.math"{
   command f\mathop(#>1) {
     var buff=doc.currentCtx.output.buff;
     if (!_Mod.GetMathStyle(doc)) {
-      var sbsp=doc.GetSubSup();
-      if (sbsp.sub==null&&sbsp.sup==null) {
-        buff.push(argv[1]);
+      var sbsp = doc.GetSubSup();
+      if (sbsp.sub == null && sbsp.sup == null) {
+        buff.push('<tex:i class="aghtex-mathop">', argv[1], '</tex:i>');
       } else {
         buff.push(
-          '<tex:mathop><tex:u class="aghtex-tag-script">',sbsp.sup||'&nbsp;',
-          '</tex:u>',argv[1],
-          '<tex:d class="aghtex-tag-script">',sbsp.sub||'&nbsp;',
-          '</tex:d></tex:mathop>');
+          '<tex:i class="aghtex-mathop-labeled"><tex:u class="aghtex-tag-script">',
+          sbsp.sup || '&nbsp;',
+          '</tex:u>',
+          argv[1],
+          '<tex:d class="aghtex-tag-script">',
+          sbsp.sub || '&nbsp;',
+          '</tex:d></tex:i>');
       }
     } else {
       buff.push(argv[1]);

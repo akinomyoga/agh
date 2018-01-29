@@ -922,12 +922,13 @@ tex\:i.aghtex-int-sub{position:relative;left:-0.6em;top:0em;margin-right:-0.6em;
 
 /*------------------------------------------------------------------*/
 /* Σの表記 */
-tex\:mathop{display:inline-block;vertical-align:middle;text-align:center;padding:0px 0.5ex;}
-tex\:mathop tex\:d{font-size:75%;display:block;margin:0;position:relative;top:-0.2ex;}
-tex\:mathop tex\:u{font-size:75%;display:block;margin:0;position:relative;top:0.2ex;}
+tex\:i.aghtex-mathop{padding:0px 0.3ex;}
+tex\:i.aghtex-mathop-labeled{display:inline-block;vertical-align:middle;text-align:center;padding:0px 0.3ex;}
+tex\:i.aghtex-mathop-labeled tex\:d{font-size:75%;display:block;margin:0;position:relative;top:-0.2ex;}
+tex\:i.aghtex-mathop-labeled tex\:u{font-size:75%;display:block;margin:0;position:relative;top:0.2ex;}
 /*%%if mode=="Gecko" (*/
-  tex\:mathop>tex\:d{top:-0.5ex;}
-  tex\:mathop>tex\:u{top:0.5ex;}
+  tex\:i.aghtex-mathop-labeled>tex\:d{top:-0.5ex;}
+  tex\:i.aghtex-mathop-labeled>tex\:u{top:0.5ex;}
 /*%%)*/
 
 tex\:sum{display:inline-block;vertical-align:middle;text-align:center;font-size:180%;padding:0px 0.1ex;}

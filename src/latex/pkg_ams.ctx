@@ -606,8 +606,11 @@ context "pkg:amsmath/mode.math" new() {
     rvert: ['s@', '<tex:f class="aghtex-symb-mincho">&#x007c;</tex:f>'],
     rVert: ['s@', '<tex:f class="aghtex-symb-mincho">&#x2225;</tex:f>'],
 
-    // \DeclareMathOperator 2014-03-05
-    operatornamewithlimits: ['s;#1', @'{\mathrm{#1}}']
+    // 2014-03-05 \operatornamewithlimits
+    // 2018-01-30 \operatorname, \operatorname*
+    operatorname: ['s@;#mode.para>1','<tex:i class="aghtex-mathop"><tex:f class="aghtex-textrm">#1</tex:f></tex:i>'],
+    'operatorname*'       : ['s;#1', @'\mathop{\textrm{#1}}'],
+    operatornamewithlimits: ['s;#1', @'\mathop{\textrm{#1}}']
   });
 }
 context "pkg:amsmath/global" new() {
