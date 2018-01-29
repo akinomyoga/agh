@@ -10,64 +10,64 @@
 // References
 //   http://ftp.yz.yamagata-u.ac.jp/pub/CTAN/macros/latex/required/tools/bm.pdf
 
-agh.memcpy(ns.Modules["core"].ErrorMessages,{
-  "pkg:bm.DefineBoldSymbol.InvalidMathVersion":[
+agh.memcpy(ns.Modules["core"].ErrorMessages, {
+  "pkg:bm.DefineBoldSymbol.InvalidMathVersion": [
     "InvalidMathVersion",
     "\\DeclareBoldSymbol: {weight} is invalid as an optional argument."],
-  "pkg:bm.DefineBoldSymbol.InvalidCommandName":[
+  "pkg:bm.DefineBoldSymbol.InvalidCommandName": [
     "InvalidCommandName",
     "\\DeclareBoldSymbol: {name} は不適切なコマンド名です。\n"
-      +"新しいコマンドの名前は \\commandname の形式で指定して下さい。"]
+      + "新しいコマンドの名前は \\commandname の形式で指定して下さい。"]
 });
 
 context "pkg:bm/global" new() {
   function DefineBoldSymbol(doc,weight,name,content) {
-    if (weight=='bold') {
-      content='<tex:f class="aghtex-mathbm">'+content+'</tex:f>';
-    } else if (weight=='heavy') {
-      content='<tex:f class="aghtex-mathhm">'+content+'</tex:f>';
+    if (weight == 'bold') {
+      content = '<tex:f class="aghtex-mathbm">' + content + '</tex:f>';
+    } else if (weight == 'heavy') {
+      content = '<tex:f class="aghtex-mathhm">' + content + '</tex:f>';
     } else {
       doc.currentCtx.output.error(
         "pkg:bm.DefineBoldSymbol.InvalidMathVersion",
-        {weight:weight},"\\DefineBoldSymbol#1 (pkg:bm/global)");
+        {weight: weight}, "\\DefineBoldSymbol#1 (pkg:bm/global)");
     }
 
-    if (name.substr(0,1)!="\\") {
+    if (name.substr(0, 1) != "\\") {
       doc.currentCtx.output.error(
         "pkg:bm.DefineBoldSymbol.InvalidCommandName",
-        {name:name},"DefineBoldSymbol (pkg:bm/global)");
+        {name: name}, "DefineBoldSymbol (pkg:bm/global)");
       return;
     } else
-      name=name.substr(1);
+      name = name.substr(1);
 
-    doc.SetMacroHandler(name,new ns.Command2("s@","",content));
+    doc.SetMacroHandler(name, new ns.Command2("s@", "", content));
   }
   _Ctx.DefineCommand({
-    DeclareBoldSymbol:['f;#[bold]!1#2#mode.math>3',function(doc,argv) {
-      DefineBoldSymbol(doc,argv[1].trim(),argv[2].trim(),argv[3]);
+    DeclareBoldSymbol: ['f;#[bold]!1#2#mode.math>3', function(doc, argv) {
+      DefineBoldSymbol(doc, argv[1].trim(), argv[2].trim(), argv[3]);
     }],
-    bmdefine:['f;#1#mode.math>3',function(doc,argv) {
-      DefineBoldSymbol(doc,'bold',argv[1].trim(),argv[2]);
+    bmdefine: ['f;#1#mode.math>3', function(doc, argv) {
+      DefineBoldSymbol(doc, 'bold', argv[1].trim(), argv[2]);
     }],
-    hmdefine:['f;#1#mode.math>3',function(doc,argv) {
-      DefineBoldSymbol(doc,'heavy',argv[1].trim(),argv[2]);
+    hmdefine: ['f;#1#mode.math>3', function(doc, argv) {
+      DefineBoldSymbol(doc, 'heavy', argv[1].trim(), argv[2]);
     }]
   });
 
 }
 context "pkg:bm/mode.math" new() {
   _Ctx.DefineCommand({
-    bm         : ['s@;#>1','<tex:f class="aghtex-mathbm">#1</tex:f>'],
-    hm         : ['s@;#>1','<tex:f class="aghtex-mathhm">#1</tex:f>'],
-    boldsymbol : ['s@;#>1','<tex:f class="aghtex-mathbm">#1</tex:f>'],
-    heavysymbol: ['s@;#>1','<tex:f class="aghtex-mathhm">#1</tex:f>']
+    bm         : ['s@;#>1', '<tex:f class="aghtex-mathbm">#1</tex:f>'],
+    hm         : ['s@;#>1', '<tex:f class="aghtex-mathhm">#1</tex:f>'],
+    boldsymbol : ['s@;#>1', '<tex:f class="aghtex-mathbm">#1</tex:f>'],
+    heavysymbol: ['s@;#>1', '<tex:f class="aghtex-mathhm">#1</tex:f>']
   });
 
   // \bmmax, \hmmax
   //   これはユーザが指定する変数で、
   //   キャッシュの大きさを指定する。この実装では関係ない。
 }
-ns.Document.Packages["bm"]=function(doc,opt,pkgName) {
+ns.Document.Packages["bm"] = function(doc, opt, pkgName) {
   doc.context_cast("global").OverwriteContext(doc.context_cast("pkg:bm/global"));
   doc.context_cast("mode.math").OverwriteContext(doc.context_cast("pkg:bm/mode.math"));
 };
