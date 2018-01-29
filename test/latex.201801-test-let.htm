@@ -70,6 +70,14 @@ revtex4-1 にオプションを指定したとき自動的に amsmath, amssymb �
   x_2 &= \operatorname*{argmin}_x f(x).
 \end{align}
 
+\verb+\mathop+ のレイアウト方法にも変更を加える事にした。
+上付きまたは下付きの片方しか無い場合には、片方だけ表示する。
+\begin{align}
+  a_1 &= \mathrm{hello} + \mathop{\rm hello}_{x/2}, \\
+  a_1 &= \mathrm{hello} + \mathop{\rm hello}^y, \\
+  a_1 &= \mathrm{hello} + \mathop{\rm hello}_{x/2+\frac12}^y + \frac1{1+\frac12}.
+\end{align}
+
 \end{document}
 </div>
 <div id="texdoc2" class="aghtex-page">

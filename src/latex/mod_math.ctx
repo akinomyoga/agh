@@ -191,7 +191,7 @@ context "mode.math"{
   command s@\allowbreak() '<tex:i class="aghtex-latex-allowbreak"></tex:i>';
 
   // letter
-  
+
   if (agh.browser.vIE <= 6 || ns.compatMode == "IE-qks") {
     letter s@\^(#>1)  '<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">#1</tex:i></tex:sup>';
     letter s@\_(#>1)  '<tex:sub class="aghtex-tag-script">#1</tex:sub>';
@@ -497,22 +497,40 @@ context "mode.math"{
   //    総和 / mathop
   //---------------------------------------------------------------
   command f\mathop(#>1) {
-    var buff=doc.currentCtx.output.buff;
+    var buff = doc.currentCtx.output.buff;
     var sbsp = doc.GetSubSup();
-    if (sbsp.sub == null && sbsp.sup == null) {
-      buff.push('<tex:i class="aghtex-mathop">', argv[1], '</tex:i>');
+    var sub = sbsp.sub, sup = sbsp.sup, text = argv[1];
+    if (sub == null && sup == null) {
+      buff.push('<tex:i class="aghtex-mathop">', text, '</tex:i>');
     } else if (!_Mod.GetMathStyle(doc)) {
-      buff.push(
-        '<tex:i class="aghtex-mathop-labeled"><tex:u class="aghtex-tag-script">',
-        sbsp.sup || '&nbsp;',
-        '</tex:u>',
-        argv[1],
-        '<tex:d class="aghtex-tag-script">',
-        sbsp.sub || '&nbsp;',
-        '</tex:d></tex:i>');
+      buff.push('<tex:i class="aghtex-mathop">');
+      if (agh.browser.vIE < 8 || ns.compatMode == "IE-qks") {
+        // Note: inline-table は IE 8 以降
+        buff.push('<tex:i class="aghtex-mathop-ie6container">');
+        buff.push('<tex:i class="aghtex-mathop-sup aghtex-tag-script">', sup || '&nbsp;', '</tex:i>');
+        buff.push(text);
+        buff.push('<tex:i class="aghtex-mathop-sub aghtex-tag-script">', sub || '&nbsp;', '</tex:i>');
+        buff.push('</tex:i>')
+      } else {
+        if (sub !== null)
+          buff.push('<tex:i class="aghtex-mathop-subcontainer">');
+
+        if (sup !== null) {
+          buff.push('<tex:i class="aghtex-mathop-supcontainer">');
+          buff.push('<tex:i class="aghtex-mathop-sup aghtex-tag-script">', sup, '</tex:i>');
+          buff.push(text);
+          buff.push('</tex:i>');
+        } else {
+          buff.push('<tex:i class="aghtex-mathop-text">', text, '</tex:i>');
+        }
+
+        if (sub !== null)
+          buff.push('<tex:i class="aghtex-mathop-sub aghtex-tag-script">', sub, '</tex:i></tex:i>');
+      }
+      buff.push('</tex:i>');
     } else {
-      buff.push('<tex:i class="aghtex-mathop">', argv[1]);
-      _Mod.OutputSupSubScripts(buff, sbsp.sup, sbsp.sub);
+      buff.push('<tex:i class="aghtex-mathop">', text);
+      _Mod.OutputSupSubScripts(buff, sup, sub);
       buff.push('</tex:i>');
     }
   };

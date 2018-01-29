@@ -922,13 +922,28 @@ tex\:i.aghtex-int-sub{position:relative;left:-0.6em;top:0em;margin-right:-0.6em;
 
 /*------------------------------------------------------------------*/
 /* Σの表記 */
+
+/* \mathop に対する DOM 構造
+ *   sup だけの時
+ *     <mathop><supcontainer><sup>sup</sup>text</supcontainer></mathop>
+ *   sub だけの時
+ *     <mathop><subcontainer><text>text</text><sub>sub</sub></subcontainer></mathop>
+ *   sub/sup が両方ある時
+ *     <mathop><subcontainer>
+ *        <supcontainer><sup>sup</sup>text</supcontainer>
+ *        <sub>sub</sub>
+ *     </subcontainer></mathop>
+ */
 tex\:i.aghtex-mathop{padding:0px 0.3ex;}
-tex\:i.aghtex-mathop-labeled{display:inline-block;vertical-align:middle;text-align:center;padding:0px 0.3ex;}
-tex\:i.aghtex-mathop-labeled tex\:d{font-size:75%;display:block;margin:0;position:relative;top:-0.2ex;}
-tex\:i.aghtex-mathop-labeled tex\:u{font-size:75%;display:block;margin:0;position:relative;top:0.2ex;}
+tex\:i.aghtex-mathop-ie6container{display:inline-block;vertical-align:middle;text-align:center;}
+tex\:i.aghtex-mathop-subcontainer{display:inline-table;vertical-align:baseline;text-align:center;}
+tex\:i.aghtex-mathop-supcontainer{display:inline-block;vertical-align:baseline;text-align:center;}
+tex\:i.aghtex-mathop-text{display:inline-block;vertical-align:baseline;}
+tex\:i.aghtex-mathop-sub{font-size:75%;display:block;margin:0;position:relative;top:-0.2ex;}
+tex\:i.aghtex-mathop-sup{font-size:75%;display:block;margin:0;position:relative;top:0.2ex;}
 /*%%if mode=="Gecko" (*/
-  tex\:i.aghtex-mathop-labeled>tex\:d{top:-0.5ex;}
-  tex\:i.aghtex-mathop-labeled>tex\:u{top:0.5ex;}
+  tex\:i.aghtex-mathop-sub{top:-0.5ex;}
+  tex\:i.aghtex-mathop-sup{top:0.5ex;}
 /*%%)*/
 
 tex\:sum{display:inline-block;vertical-align:middle;text-align:center;font-size:180%;padding:0px 0.1ex;}
