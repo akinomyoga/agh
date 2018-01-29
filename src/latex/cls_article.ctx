@@ -92,7 +92,7 @@ function get_today_text() {
   y = y.toString();
   var m = monthNames[now.getMonth()];
   var d = now.getDate().toString();
-  return m + " " + d + " + " + y;
+  return m + " " + d + " " + y;
 }
 
 //-----------------------------------------------------------------------------
@@ -411,7 +411,7 @@ context "cls:revtex/mode.para" new() {
   };
 }
 
-ns.Document.Classes["revtex4"] = function(doc, opt, pkg) {
+ns.Document.Classes["revtex4"] = function(doc, opt, cls) {
   initialize_article_counters(doc);
   doc.context_cast("global").OverwriteContext(doc.context_cast("cls:revtex/global"));
   doc.context_cast("mode.para").OverwriteContext(doc.context_cast("cls:revtex/mode.para"));
@@ -429,7 +429,7 @@ ns.Document.Classes["revtex4-1"] = ns.Document.Classes["revtex4"];
 
 // 対応していない package が指定されたときはここに入る。
 // 多少遅くなるが内部で include されている可能性のある色々の usepackge を実行する。
-ns.Document.Classes["default"] = function(doc, opt, pkg) {
+ns.Document.Classes["default"] = function(doc, opt, cls) {
   initialize_article_counters(doc);
   doc.context_cast("global").OverwriteContext(doc.context_cast("cls:article/global"));
   doc.context_cast("mode.para").OverwriteContext(doc.context_cast("cls:article/mode.para"));
