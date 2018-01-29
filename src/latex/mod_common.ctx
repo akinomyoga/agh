@@ -74,7 +74,7 @@ agh.memcpy(mod_core.ErrorMessages, {
 });
 
 var _Mod=ns.Modules["mod:common"] = {};
-_Mod.CreateCommandTagFollowing = function(htBegin,htEnd) {
+_Mod.CreateCommandTagFollowing = function(htBegin, htEnd) {
   return ns.Command2('f', null, function(doc, argv) {
     var output = doc.currentCtx.output;
     output.buff.push(htBegin);

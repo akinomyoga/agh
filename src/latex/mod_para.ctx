@@ -75,7 +75,7 @@ context "mode.para"{
     itshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textit">','</tex:f>'),
     scshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsc">','</tex:f>'),
     slshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsl">','</tex:f>'),
-    em: mod_common.CreateCommandTagFollowing('<tex:i class="aghtex-emphasize">','<tex:i>'),
+    em: mod_common.CreateCommandTagFollowing('<tex:i class="aghtex-emphasize">','</tex:i>'),
     rm: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textrm">','</tex:f>'),
     sl: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsl">','</tex:f>'),
     it: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textit">','</tex:f>'),
