@@ -13,11 +13,12 @@
  *    @fn mod_math.CreateAccentCommand(type,htsymb,ismath);
  *    @fn mod_math.OutputOverbrace(buff,content,image,undertxt)
  *    @fn mod_math.OutputUnderbrace(buff,content,image,undertxt)
+ *    @fn mod_math.OutputSupSubScripts(buff, sup, sub)
  */
 
-var mod_base=ns.Modules["mod:base"];
-var mod_common=ns.Modules["mod:common"];
-var _Mod=ns.Modules["mod:math"]={};
+var mod_base = ns.Modules["mod:base"];
+var mod_common = ns.Modules["mod:common"];
+var _Mod = ns.Modules["mod:math"]={};
 
 context "mode.math"{
 
@@ -190,41 +191,57 @@ context "mode.math"{
   command s@\allowbreak() '<tex:i class="aghtex-latex-allowbreak"></tex:i>';
 
   // letter
-  if (agh.browser.vIE<=6||ns.compatMode=="IE-qks") {
+  
+  if (agh.browser.vIE <= 6 || ns.compatMode == "IE-qks") {
     letter s@\^(#>1)  '<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">#1</tex:i></tex:sup>';
     letter s@\_(#>1)  '<tex:sub class="aghtex-tag-script">#1</tex:sub>';
+    var output_supsub_scripts = function(buff, sup, sub) {
+      if (sub !== null)
+        buff.push('<tex:sub class="aghtex-tag-script">', sub, '</tex:sub>');
+      if (sup !== null)
+        buff.push('<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">', sup, '</tex:i></tex:sup>');
+    };
   } else {
-    function cmd_supsub_output(doc,sup,sub) {
+    var output_supsub_scripts = function(buff, sup, sub) {
+      if (sup === null || sub === null) {
+        if (sup !== null)
+          buff.push('<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">', sup, '</tex:i></tex:sup>');
+        else if (sub !== null)
+          buff.push('<tex:sub class="aghtex-tag-script">', sub, '</tex:sub>');
+        return;
+      }
+
       if (!_Mod.GetMathStyle(doc))
-        doc.currentCtx.output.buff.push(
-          '<tex:supsub class="aghtex-tag-script"><tex:supsub-u>',sup,
-          '</tex:supsub-u><tex:supsub-d>',sub,
+        buff.push(
+          '<tex:supsub class="aghtex-tag-script"><tex:supsub-u>', sup,
+          '</tex:supsub-u><tex:supsub-d>', sub,
           '</tex:supsub-d></tex:supsub>');
       else
-        doc.currentCtx.output.buff.push(
-          '<tex:supsub class="aghtex-textstyle aghtex-tag-script"><tex:supsub-u><tex:i>',sup,
-          '</tex:i></tex:supsub-u><tex:supsub-d><tex:i>',sub,
+        buff.push(
+          '<tex:supsub class="aghtex-textstyle aghtex-tag-script"><tex:supsub-u><tex:i>', sup,
+          '</tex:i></tex:supsub-u><tex:supsub-d><tex:i>', sub,
           '</tex:i></tex:supsub-d></tex:supsub>');
-    }
+    };
     letter f\^("#>1") {
       doc.skipSpaceAndComment();
+      var sub = null;
       if (doc.scanner.is("ltr","_")) {
         doc.scanner.Next();
-        cmd_supsub_output(doc,argv[1],doc.GetArgumentHtml());
-      } else {
-        doc.currentCtx.output.buff.push('<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">',argv[1],'</tex:i></tex:sup>');
+        sub = doc.GetArgumentHtml();
       }
+      output_supsub_scripts(doc.currentCtx.output.buff, argv[1], sub);
     };
     letter f\_("#>1") {
       doc.skipSpaceAndComment();
+      var sup = null;
       if (doc.scanner.is("ltr","^")) {
         doc.scanner.Next();
-        cmd_supsub_output(doc,doc.GetArgumentHtml(),argv[1]);
-      } else {
-        doc.currentCtx.output.buff.push('<tex:sub class="aghtex-tag-script">',argv[1],'</tex:sub>');
+        sup = doc.GetArgumentHtml();
       }
+      output_supsub_scripts(doc.currentCtx.output.buff, sup, argv[1]);
     };
   }
+  _Mod.OutputSupSubScripts = output_supsub_scripts;
 
   // プライム
   // letter s@#"'"() @'<tex:f class="aghtex-textrm">''</tex:f>';
@@ -481,22 +498,22 @@ context "mode.math"{
   //---------------------------------------------------------------
   command f\mathop(#>1) {
     var buff=doc.currentCtx.output.buff;
-    if (!_Mod.GetMathStyle(doc)) {
-      var sbsp = doc.GetSubSup();
-      if (sbsp.sub == null && sbsp.sup == null) {
-        buff.push('<tex:i class="aghtex-mathop">', argv[1], '</tex:i>');
-      } else {
-        buff.push(
-          '<tex:i class="aghtex-mathop-labeled"><tex:u class="aghtex-tag-script">',
-          sbsp.sup || '&nbsp;',
-          '</tex:u>',
-          argv[1],
-          '<tex:d class="aghtex-tag-script">',
-          sbsp.sub || '&nbsp;',
-          '</tex:d></tex:i>');
-      }
+    var sbsp = doc.GetSubSup();
+    if (sbsp.sub == null && sbsp.sup == null) {
+      buff.push('<tex:i class="aghtex-mathop">', argv[1], '</tex:i>');
+    } else if (!_Mod.GetMathStyle(doc)) {
+      buff.push(
+        '<tex:i class="aghtex-mathop-labeled"><tex:u class="aghtex-tag-script">',
+        sbsp.sup || '&nbsp;',
+        '</tex:u>',
+        argv[1],
+        '<tex:d class="aghtex-tag-script">',
+        sbsp.sub || '&nbsp;',
+        '</tex:d></tex:i>');
     } else {
-      buff.push(argv[1]);
+      buff.push('<tex:i class="aghtex-mathop">', argv[1]);
+      _Mod.OutputSupSubScripts(buff, sbsp.sup, sbsp.sub);
+      buff.push('</tex:i>');
     }
   };
 

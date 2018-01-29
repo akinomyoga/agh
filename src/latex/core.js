@@ -1332,7 +1332,7 @@ agh.memcpy(ns.Document.prototype, {
   //======================================================================
   GetSubSup: function() {
     var ret = {sub: null, sup: null};
-    while (true) {
+    for (;;) {
       // ■ "二重改行 == 新しい段落" をも飛ばしてしまう可能性
       // ※ 因みに GetArguments 系では、
       // 　そこに必ず引数がある事が分かっているので
