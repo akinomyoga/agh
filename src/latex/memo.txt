@@ -36,6 +36,8 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
       これは既に operatornamewithlimits というコマンドを実装しているようなので、
       単にそれを多少修正して登録するだけなのではないか。
 
+      2018-01-30 \operatorname, \operatorname* に対応した。
+
     \mod
       ソースコード中の "mod:common.*" などの文字列と被っていて検索しにくいが、
       多分対応していない。
@@ -70,6 +72,10 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     しかしながら既に似たような事を \mathop や \stackrel でも行っている。
     個別に実装を行って個別にテストを行うのは非効率である。
     これらの実装を統一する事を考えたい。
+
+    2018-01-30 \mathop については対応した。
+
+    todo: \stackrel
 
   * 根号・伸縮括弧の表示方法について
 

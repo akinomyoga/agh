@@ -195,14 +195,16 @@ context "mode.math" {
   if (agh.browser.vIE <= 6 || ns.compatMode == "IE-qks") {
     letter s@\^(#>1)  '<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">#1</tex:i></tex:sup>';
     letter s@\_(#>1)  '<tex:sub class="aghtex-tag-script">#1</tex:sub>';
-    var output_supsub_scripts = function(buff, sup, sub) {
+    var output_supsub_scripts = function(doc, sup, sub) {
+      var buff = doc.currentCtx.output.buff;
       if (sub !== null)
         buff.push('<tex:sub class="aghtex-tag-script">', sub, '</tex:sub>');
       if (sup !== null)
         buff.push('<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">', sup, '</tex:i></tex:sup>');
     };
   } else {
-    var output_supsub_scripts = function(buff, sup, sub) {
+    var output_supsub_scripts = function(doc, sup, sub) {
+      var buff = doc.currentCtx.output.buff;
       if (sup === null || sub === null) {
         if (sup !== null)
           buff.push('<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">', sup, '</tex:i></tex:sup>');
@@ -229,7 +231,7 @@ context "mode.math" {
         doc.scanner.Next();
         sub = doc.GetArgumentHtml();
       }
-      output_supsub_scripts(doc.currentCtx.output.buff, argv[1], sub);
+      output_supsub_scripts(doc, argv[1], sub);
     };
     letter f\_("#>1") {
       doc.skipSpaceAndComment();
@@ -238,7 +240,7 @@ context "mode.math" {
         doc.scanner.Next();
         sup = doc.GetArgumentHtml();
       }
-      output_supsub_scripts(doc.currentCtx.output.buff, sup, argv[1]);
+      output_supsub_scripts(doc, sup, argv[1]);
     };
   }
   _Mod.OutputSupSubScripts = output_supsub_scripts;
@@ -524,7 +526,7 @@ context "mode.math" {
       buff.push('</tex:i>');
     } else {
       buff.push('<tex:i class="aghtex-mathop">', text);
-      _Mod.OutputSupSubScripts(buff, sup, sub);
+      _Mod.OutputSupSubScripts(doc, sup, sub);
       buff.push('</tex:i>');
     }
   };

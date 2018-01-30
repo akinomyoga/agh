@@ -72,11 +72,19 @@ revtex4-1 にオプションを指定したとき自動的に amsmath, amssymb �
 
 \verb+\mathop+ のレイアウト方法にも変更を加える事にした。
 上付きまたは下付きの片方しか無い場合には、片方だけ表示する。
+因みに \verb+\sum+ に関しては既にこの方法が実装されていた。
 \begin{align}
-  a_1 &= \mathrm{hello} + \mathop{\rm hello}_{x/2}, \\
-  a_1 &= \mathrm{hello} + \mathop{\rm hello}^y, \\
-  a_1 &= \mathrm{hello} + \mathop{\rm hello}_{x/2+\frac12}^y + \frac1{1+\frac12}.
+  a_1 &= \mathrm{hello} z + \mathop{\rm hello}_{x/2} z, \\
+  a_1 &= \mathrm{hello} z + \mathop{\rm hello}^y z, \\
+  a_1 &= \mathrm{hello} z + \mathop{\rm hello}_{x/2+\frac12}^y z + \frac1{1+\frac12}.
 \end{align}
+
+\section{他}
+amsclass (amsart, amsbook, etc.) では \verb+\title+ はオプショナル引き数を取る。
+伸縮チルダが変になっている: $\widetilde{C[T]}$。
+revtex で章への参照に不要な空白が入っている。
+$\lim_{N\to\infty}$ が下付きでなくなっている?
+\verb+\hbox+, \verb+\noindent+, \verb+\newblock+
 
 \end{document}
 </div>

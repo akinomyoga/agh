@@ -614,7 +614,7 @@ context "pkg:amsmath/mode.math" new() {
       var buff = doc.currentCtx.output.buff;
       var sbsp = doc.GetSubSup();
       buff.push('<tex:i class="aghtex-mathop">', argv[1]);
-      mod_math.OutputSupSubScripts(buff, sbsp.sup, sbsp.sub);
+      mod_math.OutputSupSubScripts(doc, sbsp.sup, sbsp.sub);
       buff.push('</tex:i>');
     }]
   });

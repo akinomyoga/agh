@@ -60,6 +60,7 @@
     "agh/latex/aghtex_mathrm.ttf",
     "agh/latex/aghtex_mathcal.ttf",
     "agh/latex/aghtex_mathbb.ttf",
+    "agh/latex/aghtex_mathbf.ttf",
     "agh/latex/aghtex_mathfrak.ttf",
     // "agh.icon.agh_128x128.png",
     "agh.icon.agh_16x16.png"
