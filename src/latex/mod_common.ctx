@@ -73,7 +73,7 @@ agh.memcpy(mod_core.ErrorMessages, {
   'mod:common.cmd:def.InvalidCommandName': ["\\{defcmd} InvalidCommandName","{cmdname} は不適切なコマンド名です。\r\n新しいコマンドの名前は \\commandname の形式で指定して下さい。"]
 });
 
-var _Mod=ns.Modules["mod:common"] = {};
+var _Mod = ns.Modules["mod:common"] = {};
 _Mod.CreateCommandTagFollowing = function(htBegin, htEnd) {
   return ns.Command2('f', null, function(doc, argv) {
     var output = doc.currentCtx.output;
@@ -96,9 +96,9 @@ context "global" {
 
   // \documentclass
   command f\documentclass("#[]1#2") {
-    var opt=argv[1].trim();
-    var cls=argv[2].trim();
-    var ch=ns.Document.Classes[cls];
+    var opt = argv[1].trim();
+    var cls = argv[2].trim();
+    var ch = ns.Document.Classes[cls];
     if (ch == null) {
       doc.currentCtx.output.error('mod:common.cmd:documentclass.UnknownClass', {cls: cls}, 'mod:common.cmd:documentclass');
       ch = ns.Document.Classes["default"]; // default

@@ -18,36 +18,36 @@
 
 var mod_base = ns.Modules["mod:base"];
 var mod_common = ns.Modules["mod:common"];
-var _Mod = ns.Modules["mod:math"]={};
+var _Mod = ns.Modules["mod:math"] = {};
 
-context "mode.math"{
+context "mode.math" {
 
   //---------------------------------------------------------------
   // 数式スタイル
 
-  _Mod.MATHSTYLE_DISPLAY=0;
-  _Mod.MATHSTYLE_TEXT   =1;
-  _Mod.MATHSTYLE_SCRIPT =2;
-  _Mod.MATHSTYLE_SCRIPT2=3;
-  _Mod.GetMathStyle=function mod_math_GetMathStyle(doc) {
+  _Mod.MATHSTYLE_DISPLAY = 0;
+  _Mod.MATHSTYLE_TEXT    = 1;
+  _Mod.MATHSTYLE_SCRIPT  = 2;
+  _Mod.MATHSTYLE_SCRIPT2 = 3;
+  _Mod.GetMathStyle = function mod_math_GetMathStyle(doc) {
     return doc.GetContextVariable('mathstyle');
   };
 
   command f\displaystyle() {
-    doc.SetContextVariable("mathstyle",_Mod.MATHSTYLE_DISPLAY);
+    doc.SetContextVariable("mathstyle", _Mod.MATHSTYLE_DISPLAY);
   };
   command f\textstyle() {
-    doc.SetContextVariable("mathstyle",_Mod.MATHSTYLE_TEXT);
+    doc.SetContextVariable("mathstyle", _Mod.MATHSTYLE_TEXT);
   };
   command f\scriptstyle() {
-    doc.SetContextVariable("mathstyle",_Mod.MATHSTYLE_SCRIPT);
+    doc.SetContextVariable("mathstyle", _Mod.MATHSTYLE_SCRIPT);
 
-    var output=doc.currentCtx.output;
+    var output = doc.currentCtx.output;
     output.buff.push('<tex:fsize class="aghtex-default"><tex:fsize class="aghtex-script">');
     output.appendPost('</tex:fsize></tex:fsize>');
   };
   command f\scriptscriptstyle() {
-    doc.SetContextVariable("mathstyle",_Mod.MATHSTYLE_SCRIPT2);
+    doc.SetContextVariable("mathstyle", _Mod.MATHSTYLE_SCRIPT2);
 
     var output=doc.currentCtx.output;
     output.buff.push('<tex:fsize class="aghtex-default"><tex:fsize class="aghtex-scriptscript">');
@@ -82,44 +82,44 @@ context "mode.math"{
     Huge        : mod_base.CHRelax,
 
     // - 以下は文章モードに移行して評価
-    text  : ['s@;#mode.para>1','<tex:f class="aghtex-textrm">#1</tex:f>'], // 文章モードはデフォルトで roman で良いか?
-    textrm: ['s@;#mode.para>1','<tex:f class="aghtex-textrm">#1</tex:f>'],
-    textsf: ['s@;#mode.para>1','<tex:f class="aghtex-textsf">#1</tex:f>'],
-    texttt: ['s@;#mode.para>1','<tex:f class="aghtex-texttt">#1</tex:f>'],
-    textmc: ['s@;#mode.para>1','<tex:f class="aghtex-textrm">#1</tex:f>'],
-    textgt: ['s@;#mode.para>1','<tex:f class="aghtex-textgt">#1</tex:f>'],
-    textmd: ['s@;#mode.para>1','<tex:f class="aghtex-textmd">#1</tex:f>'],
-    textbf: ['s@;#mode.para>1','<tex:f class="aghtex-textbf">#1</tex:f>'],
-    textup: ['s@;#mode.para>1','<tex:f class="aghtex-textup">#1</tex:f>'],
-    textit: ['s@;#mode.para>1','<tex:f class="aghtex-textit">#1</tex:f>'],
-    textsc: ['s@;#mode.para>1','<tex:f class="aghtex-textsc">#1</tex:f>'],
-    textsl: ['s@;#mode.para>1','<tex:f class="aghtex-textsl">#1</tex:f>'],
+    text  : ['s@;#mode.para>1', '<tex:f class="aghtex-textrm">#1</tex:f>'], // 文章モードはデフォルトで roman で良いか?
+    textrm: ['s@;#mode.para>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
+    textsf: ['s@;#mode.para>1', '<tex:f class="aghtex-textsf">#1</tex:f>'],
+    texttt: ['s@;#mode.para>1', '<tex:f class="aghtex-texttt">#1</tex:f>'],
+    textmc: ['s@;#mode.para>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
+    textgt: ['s@;#mode.para>1', '<tex:f class="aghtex-textgt">#1</tex:f>'],
+    textmd: ['s@;#mode.para>1', '<tex:f class="aghtex-textmd">#1</tex:f>'],
+    textbf: ['s@;#mode.para>1', '<tex:f class="aghtex-textbf">#1</tex:f>'],
+    textup: ['s@;#mode.para>1', '<tex:f class="aghtex-textup">#1</tex:f>'],
+    textit: ['s@;#mode.para>1', '<tex:f class="aghtex-textit">#1</tex:f>'],
+    textsc: ['s@;#mode.para>1', '<tex:f class="aghtex-textsc">#1</tex:f>'],
+    textsl: ['s@;#mode.para>1', '<tex:f class="aghtex-textsl">#1</tex:f>'],
 
-    mathbf    : ['s@;#>1','<tex:f class="aghtex-mathbf">#1</tex:f>'],
-    mathit    : ['s@;#>1','<tex:f class="aghtex-mathit">#1</tex:f>'],
-    mathrm    : ['s@;#>1','<tex:f class="aghtex-mathrm">#1</tex:f>'],
-    mathsf    : ['s@;#>1','<tex:f class="aghtex-mathsf">#1</tex:f>'],
-    mathtt    : ['s@;#>1','<tex:f class="aghtex-mathtt">#1</tex:f>'],
-    mathnormal: ['s@;#>1','<tex:f class="aghtex-mathit">#1</tex:f>'],
-    mathcal   : ['s@;#>1','<tex:f class="aghtex-mathcal">#1</tex:f>'],
+    mathbf    : ['s@;#>1', '<tex:f class="aghtex-mathbf">#1</tex:f>'],
+    mathit    : ['s@;#>1', '<tex:f class="aghtex-mathit">#1</tex:f>'],
+    mathrm    : ['s@;#>1', '<tex:f class="aghtex-mathrm">#1</tex:f>'],
+    mathsf    : ['s@;#>1', '<tex:f class="aghtex-mathsf">#1</tex:f>'],
+    mathtt    : ['s@;#>1', '<tex:f class="aghtex-mathtt">#1</tex:f>'],
+    mathnormal: ['s@;#>1', '<tex:f class="aghtex-mathit">#1</tex:f>'],
+    mathcal   : ['s@;#>1', '<tex:f class="aghtex-mathcal">#1</tex:f>'],
 
     // 括弧の大きさ
-    big       : ['s@;#>1','<tex:big class="aghtex-big1">#1</tex:big>'],
-    Big       : ['s@;#>1','<tex:big class="aghtex-big2">#1</tex:big>'],
-    bigg      : ['s@;#>1','<tex:big class="aghtex-big3">#1</tex:big>'],
-    Bigg      : ['s@;#>1','<tex:big class="aghtex-big4">#1</tex:big>'],
-    bigl      : ['s@;#>1','<tex:big class="aghtex-bigl"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
-    Bigl      : ['s@;#>1','<tex:big class="aghtex-bigl"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
-    biggl     : ['s@;#>1','<tex:big class="aghtex-bigl"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
-    Biggl     : ['s@;#>1','<tex:big class="aghtex-bigl"><tex:big class="aghtex-big4">#1</tex:big></tex:big>'],
-    bigr      : ['s@;#>1','<tex:big class="aghtex-bigr"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
-    Bigr      : ['s@;#>1','<tex:big class="aghtex-bigr"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
-    biggr     : ['s@;#>1','<tex:big class="aghtex-bigr"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
-    Biggr     : ['s@;#>1','<tex:big class="aghtex-bigr"><tex:big class="aghtex-big4">#1</tex:big></tex:big>'],
-    bigm      : ['s@;#>1','<tex:big class="aghtex-bigm"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
-    Bigm      : ['s@;#>1','<tex:big class="aghtex-bigm"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
-    biggm     : ['s@;#>1','<tex:big class="aghtex-bigm"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
-    Biggm     : ['s@;#>1','<tex:big class="aghtex-bigm"><tex:big class="aghtex-big4">#1</tex:big></tex:big>']
+    big       : ['s@;#>1', '<tex:big class="aghtex-big1">#1</tex:big>'],
+    Big       : ['s@;#>1', '<tex:big class="aghtex-big2">#1</tex:big>'],
+    bigg      : ['s@;#>1', '<tex:big class="aghtex-big3">#1</tex:big>'],
+    Bigg      : ['s@;#>1', '<tex:big class="aghtex-big4">#1</tex:big>'],
+    bigl      : ['s@;#>1', '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
+    Bigl      : ['s@;#>1', '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
+    biggl     : ['s@;#>1', '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
+    Biggl     : ['s@;#>1', '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big4">#1</tex:big></tex:big>'],
+    bigr      : ['s@;#>1', '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
+    Bigr      : ['s@;#>1', '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
+    biggr     : ['s@;#>1', '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
+    Biggr     : ['s@;#>1', '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big4">#1</tex:big></tex:big>'],
+    bigm      : ['s@;#>1', '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
+    Bigm      : ['s@;#>1', '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
+    biggm     : ['s@;#>1', '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
+    Biggm     : ['s@;#>1', '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big4">#1</tex:big></tex:big>']
   });
 
   //---------------------------------------------------------------
@@ -167,9 +167,9 @@ context "mode.math"{
   };
   letter s@\,() '<tex:f class="aghtex-symb-roman aghtex-comma">,</tex:f>';
   letter f@\.() {
-    var html=cmdName;
+    var html = cmdName;
     doc.scanner.Next();
-    if (doc.scanner.wordtype=="ltr"&&" \b\t\v\r\n\f".indexOf(doc.scanner.word)>=0) {
+    if (doc.scanner.wordtype == "ltr" && " \b\t\v\r\n\f".indexOf(doc.scanner.word) >= 0) {
       html='<tex:f class="aghtex-comma">'+html+'</tex:f>';
       doc.scanner.Next();
     }
@@ -182,7 +182,7 @@ context "mode.math"{
   command s>\>() @"\hspace{0.60ex}"; // \hspace{1\medmuskip}
   command s>\;() @"\hspace{0.67ex}"; // \hspace{1\thickmuskip}
   letter  s>\~() @"\hspace{1ex}";
-  if (agh.browser.vIE&&agh.browser.vIE<7) {
+  if (agh.browser.vIE < 7) {
     command s@\!() '<tex:negspace class="letter-spacing">&nbsp;&nbsp;</tex:negspace>&nbsp;';
   } else {
     command s@\!() '<tex:negspace></tex:negspace>';
@@ -245,15 +245,15 @@ context "mode.math"{
 
   // プライム
   // letter s@#"'"() @'<tex:f class="aghtex-textrm">''</tex:f>';
-  var prime_handler=function(doc) {
+  var prime_handler = function(doc) {
     doc.scanner.Next();
-    if (!doc.scanner.is("ltr","'")&&!doc.scanner.is("cmd","rq")) {
+    if (!doc.scanner.is("ltr", "'") && !doc.scanner.is("cmd", "rq")) {
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">′</tex:f>');
       return;
     }
 
     doc.scanner.Next();
-    if (!doc.scanner.is("ltr","'")&&!doc.scanner.is("cmd","rq")) {
+    if (!doc.scanner.is("ltr", "'") && !doc.scanner.is("cmd", "rq")) {
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">″</tex:f>');
       return;
     }
@@ -261,236 +261,230 @@ context "mode.math"{
     doc.scanner.Next();
     doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">‴</tex:f>');
   };
-  _Ctx.AddLetterHandler("'",prime_handler);
-  _Ctx.AddCommandHandler("rq",prime_handler);
+  _Ctx.AddLetterHandler("'", prime_handler);
+  _Ctx.AddCommandHandler("rq", prime_handler);
 
   //---------------------------------------------------------------
   //    他
   //---------------------------------------------------------------
-  var HT_SQRT_STRETCH_IMAGE=mod_base.GetStretchImageTd("root.png",2,"√",'sqrt');
+  var HT_SQRT_STRETCH_IMAGE = mod_base.GetStretchImageTd("root.png", 2, "√", 'sqrt');
   command f\sqrt(#[]>1#>2) {
-    var buff=doc.currentCtx.output.buff;
+    var buff = doc.currentCtx.output.buff;
     buff.push('<table cellpadding="0" class="aghtex-inline aghtex-sqrt"><tr style="height:0px;">');
-    if (argv[1].length>0)
-      buff.push('<td class="aghtex-sqrt-index aghtex-tag-script"><span>',argv[1],'</span></td>');
-    buff.push(HT_SQRT_STRETCH_IMAGE,'<td class="aghtex-sqrt-body">',argv[2],'</td></tr></table>');
+    if (argv[1].length > 0)
+      buff.push('<td class="aghtex-sqrt-index aghtex-tag-script"><span>', argv[1], '</span></td>');
+    buff.push(HT_SQRT_STRETCH_IMAGE, '<td class="aghtex-sqrt-body">', argv[2], '</td></tr></table>');
   };
 
   //---------------------------------------------------------------------------
   // \underbrace, \overbrace
 
-  var GenerateHtmlUndertextImage=(function() {
+  var GenerateHtmlUndertextImage = (function() {
     switch (ns.compatMode) {
       case "IE-qks":
       case "Fx-qks":
-        return function(imgsrc,height,alt) {
-          height=height.toString()+"ex";
-          return '<td class="aghtex-underbrace-i" style="width:0px;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="height:'+height+';width:100%;"/></td>';
+        return function(imgsrc, height, alt) {
+          height = height.toString() + "ex";
+          return '<td class="aghtex-underbrace-i" style="width:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="height:' + height + ';width:100%;"/></td>';
         };
       case "IE-std":
-        ns.expression_width=function(elem) {
-          var tr=elem.parentElement.parentElement;
-          var table=tr.parentElement.parentElement;
-          return (table.clientWidth-4)+"px";
+        ns.expression_width = function(elem) {
+          var tr = elem.parentElement.parentElement;
+          var table = tr.parentElement.parentElement;
+          return (table.clientWidth - 4) + "px";
         };
-        return function(imgsrc,height,alt) {
-          height=height.toString()+"ex";
-          var style='height:'+height+';width:expression('+ns.namespaceName+'.expression_width(this));';
-          //var style='height:'+height+';width:expression(this.parentElement.parentElement.parentElement.parentElement.clientHeight-4);';
-          return '<td class="aghtex-underbrace-i" style="width:0px;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="'+style+'"/></td>';
+        return function(imgsrc, height, alt) {
+          height = height.toString() + "ex";
+          var style = 'height:' + height + ';width:expression(' + ns.namespaceName + '.expression_width(this));';
+          //var style = 'height:' + height + ';width:expression(this.parentElement.parentElement.parentElement.parentElement.clientHeight-4);';
+          return '<td class="aghtex-underbrace-i" style="width:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></td>';
         };
       case "Fx-std":
-        return function(imgsrc,height,alt) {
-          height=height.toString()+"ex";
-          //return '<td style="height:'+height+';background-image:url('+ns.BaseUrl+imgsrc+');-moz-background-size:100%;"></td>';
-          return '<td class="aghtex-underbrace-i" style="width:100%;"><img src="'+ns.BaseUrl+imgsrc+'" alt="'+alt+'" style="height:'+height+';width:100%;"/></td>';
+        return function(imgsrc, height, alt) {
+          height = height.toString() + "ex";
+          //return '<td style="height:' + height + ';background-image:url('+ns.BaseUrl+imgsrc+');-moz-background-size:100%;"></td>';
+          return '<td class="aghtex-underbrace-i" style="width:100%;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="height:' + height + ';width:100%;"/></td>';
         };
-      case "Sf-qks":case "Sf-std": // css による switching あり
-      case "Op-qks":case "Op-std": // css による switching あり
-        return function(imgsrc,height,alt) {
-          height=height.toString()+"ex";
-          return '<td class="aghtex-underbrace-i" style="height:'+height+';background-image:url('+ns.BaseUrl+imgsrc+');"></td>';
+      case "Sf-qks": case "Sf-std": // css による switching あり
+      case "Op-qks": case "Op-std": // css による switching あり
+        return function(imgsrc, height, alt) {
+          height = height.toString() + "ex";
+          return '<td class="aghtex-underbrace-i" style="height:' + height + ';background-image:url(' + ns.BaseUrl + imgsrc + ');"></td>';
         };
       default:
         return function(imgsrc,height,alt) {
-          height=height.toString()+"ex";
-          return '<td class="aghtex-underbrace-i" style="height:'+height+';background-image:url('+ns.BaseUrl+imgsrc+');background-size:100% 100%;"></td>';
+          height = height.toString() + "ex";
+          return '<td class="aghtex-underbrace-i" style="height:' + height + ';background-image:url(' + ns.BaseUrl + imgsrc + ');background-size:100% 100%;"></td>';
         };
     }
   })();
 
-  function output_underbrace(buff,content,image,undertxt) {
-    if (agh.browser.vIE||agh.browser.vSf) {
+  function output_underbrace(buff, content, image, undertxt) {
+    if (agh.browser.vIE || agh.browser.vSf) {
       if (agh.browser.vIE) {
         if (undertxt)
           buff.push('<tex:i class="aghtex-underbrace-vphantom2">&nbsp;</tex:i><tex:i class="aghtex-underbrace">');
         else
           buff.push('<tex:i class="aghtex-underbrace-vphantom1">&nbsp;</tex:i><tex:i class="aghtex-underbrace">');
       } else {
-        buff.push('<tex:i class="aghtex-underbrace" style="padding-bottom:',undertxt?2.6:1,'ex">');
+        buff.push('<tex:i class="aghtex-underbrace" style="padding-bottom:', undertxt ? 2.6 : 1, 'ex">');
       }
       buff.push(content);
       if (image)
-        buff.push('<tex:i class="aghtex-underbrace-i">',image,'</tex:i>');
+        buff.push('<tex:i class="aghtex-underbrace-i">', image, '</tex:i>');
       if (undertxt)
-        buff.push('<tex:i class="aghtex-underbrace-i"><tex:ud>',undertxt,'</tex:ud></tex:i>');
+        buff.push('<tex:i class="aghtex-underbrace-i"><tex:ud>', undertxt, '</tex:ud></tex:i>');
       buff.push('</tex:i>');
     } else {
       // image ~ <td>
-      buff.push('<table class="aghtex-underbrace"><tr><td class="aghtex-underbrace-b">',content,'</td></tr>');
+      buff.push('<table class="aghtex-underbrace"><tr><td class="aghtex-underbrace-b">', content, '</td></tr>');
       if (image)
-        buff.push('<tr>',image,'</tr>');
+        buff.push('<tr>', image, '</tr>');
       if (undertxt)
-        buff.push('<tr><td class="aghtex-underbrace-t">',undertxt,'</td></tr>');
+        buff.push('<tr><td class="aghtex-underbrace-t">', undertxt, '</td></tr>');
       buff.push('</table>');
     }
   }
-  function output_overbrace(buff,content,image,overtext) {
+  function output_overbrace(buff, content, image, overtext) {
     buff.push('<tex:i class="aghtex-overbrace">');
     if (overtext)
-      buff.push('<tex:i class="aghtex-overbrace-t"><tex:i class="aghtex-overbrace-u">',overtext,'</tex:i></tex:i>');
+      buff.push('<tex:i class="aghtex-overbrace-t"><tex:i class="aghtex-overbrace-u">', overtext, '</tex:i></tex:i>');
     if (image)
-      buff.push('<tex:i class="aghtex-overbrace-i">',image,'</tex:i>');
-    buff.push('<tex:i class="aghtex-overbrace-b">',content,'</tex:i></tex:i>');
+      buff.push('<tex:i class="aghtex-overbrace-i">', image, '</tex:i>');
+    buff.push('<tex:i class="aghtex-overbrace-b">', content, '</tex:i></tex:i>');
   }
-  _Mod.OutputUnderbrace=output_underbrace;
-  _Mod.OutputOverbrace=output_overbrace;
+  _Mod.OutputUnderbrace = output_underbrace;
+  _Mod.OutputOverbrace = output_overbrace;
 
-  var ht_img_overbrace='<img alt="\\overbrace" class="aghtex-overbrace" src="'+ns.BaseUrl+'paren2ov.png" />';
+  var ht_img_overbrace = '<img alt="\\overbrace" class="aghtex-overbrace" src="' + ns.BaseUrl + 'paren2ov.png" />';
   var ht_img_underbrace;
-  if (agh.browser.vIE||agh.browser.vSf)
-    ht_img_underbrace='<img alt="\\underbrace" class="aghtex-underbrace" src="'+ns.BaseUrl+'paren2ud.png" />';
+  if (agh.browser.vIE || agh.browser.vSf)
+    ht_img_underbrace = '<img alt="\\underbrace" class="aghtex-underbrace" src="' + ns.BaseUrl + 'paren2ud.png" />';
   else
-    ht_img_underbrace=GenerateHtmlUndertextImage("paren2ud.png",1,"\\underbrace");
+    ht_img_underbrace = GenerateHtmlUndertextImage("paren2ud.png", 1, "\\underbrace");
 
   command f\underbrace(#>1) {
-    var undertxt=null;
+    var undertxt = null;
     doc.skipSpaceAndComment();
-    if (doc.scanner.is("ltr","_")) {
+    if (doc.scanner.is("ltr", "_")) {
       doc.scanner.Next();
       undertxt=doc.GetArgumentHtml();
     }
 
-    var buff=doc.currentCtx.output.buff;
-    output_underbrace(buff,argv[1],ht_img_underbrace,undertxt);
+    var buff = doc.currentCtx.output.buff;
+    output_underbrace(buff, argv[1], ht_img_underbrace, undertxt);
   };
   command f\overbrace(#>1) {
-    var overtxt=null;
+    var overtxt = null;
     doc.skipSpaceAndComment();
-    if (doc.scanner.is("ltr","^")) {
+    if (doc.scanner.is("ltr", "^")) {
       doc.scanner.Next();
-      overtxt=doc.GetArgumentHtml();
+      overtxt = doc.GetArgumentHtml();
     }
 
-    var buff=doc.currentCtx.output.buff;
-    output_overbrace(buff,argv[1],ht_img_overbrace,overtxt);
+    var buff = doc.currentCtx.output.buff;
+    output_overbrace(buff, argv[1], ht_img_overbrace, overtxt);
   };
 
-  _Mod.CreateCommandOverStretch=function(imgsrc,alttxt) {
-    var image='<img alt="\\'+alttxt+'" class="aghtex-overbrace" src="'+ns.BaseUrl+imgsrc+'" />';
-    return new ns.Command2("f","#>1",function(doc,argv) {
-      var buff=doc.currentCtx.output.buff;
-      output_overbrace(buff,argv[1],image);
+  _Mod.CreateCommandOverStretch = function(imgsrc, alttxt) {
+    var image = '<img alt="\\' + alttxt + '" class="aghtex-overbrace" src="' + ns.BaseUrl + imgsrc + '" />';
+    return new ns.Command2("f", "#>1", function(doc, argv) {
+      var buff = doc.currentCtx.output.buff;
+      output_overbrace(buff, argv[1], image);
     });
   }
-  _Mod.CreateCommandUnderStretch=function(imgsrc,alttxt) {
+  _Mod.CreateCommandUnderStretch = function(imgsrc, alttxt) {
     var image;
-    if (agh.browser.vIE||agh.browser.vSf)
-      image='<img alt="\\'+alttxt+'" class="aghtex-underbrace" src="'+ns.BaseUrl+imgsrc+'" />';
+    if (agh.browser.vIE || agh.browser.vSf)
+      image = '<img alt="\\' + alttxt + '" class="aghtex-underbrace" src="' + ns.BaseUrl + imgsrc + '" />';
     else
-      image=GenerateHtmlUndertextImage(imgsrc,1,'\\'+alttxt);
+      image = GenerateHtmlUndertextImage(imgsrc, 1, '\\' + alttxt);
 
-    return new ns.Command2("f","#>1",function(doc,argv) {
-      var buff=doc.currentCtx.output.buff;
-      output_underbrace(buff,argv[1],image);
+    return new ns.Command2("f", "#>1", function(doc, argv) {
+      var buff = doc.currentCtx.output.buff;
+      output_underbrace(buff, argv[1], image);
     });
   }
 
-  _Ctx.AddCommandHandler("widehat",_Mod.CreateCommandOverStretch("stretch_hat.png","widehat"));
-  _Ctx.AddCommandHandler("widetilde",_Mod.CreateCommandOverStretch("stretch_tilde.png","widetilde"));
-  _Ctx.AddCommandHandler("overrightarrow",_Mod.CreateCommandOverStretch("stretch_rarr.png","overrightarrow"));
-  _Ctx.AddCommandHandler("overleftarrow",_Mod.CreateCommandOverStretch("stretch_larr.png","overleftarrow"));
+  _Ctx.AddCommandHandler("widehat", _Mod.CreateCommandOverStretch("stretch_hat.png", "widehat"));
+  _Ctx.AddCommandHandler("widetilde", _Mod.CreateCommandOverStretch("stretch_tilde.png", "widetilde"));
+  _Ctx.AddCommandHandler("overrightarrow", _Mod.CreateCommandOverStretch("stretch_rarr.png", "overrightarrow"));
+  _Ctx.AddCommandHandler("overleftarrow", _Mod.CreateCommandOverStretch("stretch_larr.png", "overleftarrow"));
   //---------------------------------------------------------------
   //    分数 / atop
   //---------------------------------------------------------------
-  if (agh.browser.vIE<=8||ns.compatMode=="IE-qks") {
+  if (agh.browser.vIE <= 8 || ns.compatMode == "IE-qks") {
     command s@\frac(#>1#>2) '<table cellspacing="0" class="aghtex-frac"><tr><td class="tex-num">#1</td></tr><tr><td class="tex-den">#2</td></tr></table>';
     command f\over() {
-      var output=doc.currentCtx.output;
-      var former=output.toHtml();
+      var output = doc.currentCtx.output;
+      var former = output.toHtml();
       output.clear();
-      output.buff.push('<table cellspacing="0" class="aghtex-frac"><tr><td class="tex-num">',former,'</td></tr><tr><td class="tex-den">');
+      output.buff.push('<table cellspacing="0" class="aghtex-frac"><tr><td class="tex-num">', former, '</td></tr><tr><td class="tex-den">');
       output.appendPost('</td></tr></table>');
     };
   } else {
-    function cmd_frac(doc,argv) {
-      var buff=doc.currentCtx.output.buff;
-      if (argv[0]=='dfrac'||argv[0]!='tfrac'&&!_Mod.GetMathStyle(doc))
-        buff.push('<tex:frac2><tex:num>',argv[1],'</tex:num><tex:den>',argv[2],'</tex:den></tex:frac2>');
+    function cmd_frac(doc, argv) {
+      var buff = doc.currentCtx.output.buff;
+      if (argv[0] == 'dfrac' || argv[0] != 'tfrac' && !_Mod.GetMathStyle(doc))
+        buff.push('<tex:frac2><tex:num>', argv[1], '</tex:num><tex:den>', argv[2], '</tex:den></tex:frac2>');
       else
         buff.push(
-          '<tex:frac2 class="aghtex-tag-script"><tex:num><tex:i>',argv[1],
-          '</tex:i></tex:num><tex:den><tex:i>',argv[2],
+          '<tex:frac2 class="aghtex-tag-script"><tex:num><tex:i>', argv[1],
+          '</tex:i></tex:num><tex:den><tex:i>', argv[2],
           '</tex:i></tex:den></tex:frac2>');
     }
-    _Mod.CH_FRAC=cmd_frac;
+    _Mod.CH_FRAC = cmd_frac;
 
-    command f\frac(#>1#>2) {cmd_frac(doc,argv)};
+    command f\frac(#>1#>2) { cmd_frac(doc,argv); };
     command f\over() {
-      var output=doc.currentCtx.output;
-      var former=output.toHtml();
+      var output = doc.currentCtx.output;
+      var former = output.toHtml();
       output.clear();
-      output.buff.push('<tex:frac2><tex:num>',former,'</tex:num><tex:den>');
+      output.buff.push('<tex:frac2><tex:num>', former, '</tex:num><tex:den>');
       output.appendPost('</tex:den></tex:frac2>');
     };
   }
 
-  function Atop(output,left,right,bar) {
-    var former=output.toHtml();
+  function Atop(output, left, right, bar) {
+    var former = output.toHtml();
     output.clear();
 
-    var buff=output.buff;
+    var buff = output.buff;
     buff.push('<table cellspacing="0" class="aghtex-inline"><tr style="height:0px;">');
     if (left)
-      mod_base.OutputStretchBracketTd(output,left,2);
+      mod_base.OutputStretchBracketTd(output, left, 2);
 
     buff.push('<td class="aghtex-center"');
     if (bar)
       buff.push(' style="border-bottom:1px solid black;"');
-    buff.push('>',former,'</td>');
+    buff.push('>', former, '</td>');
 
     if (right)
-      mod_base.OutputStretchBracketTd(output,right,2);
+      mod_base.OutputStretchBracketTd(output, right, 2);
     buff.push('</tr><tr><td class="aghtex-center">');
     output.appendPost('</td></tr></table>');
   }
   command f\atopwithdelims("#!1#!2") {
-    Atop(
-      doc.currentCtx.output,
-      argv[1],argv[2]
-      );
+    Atop(doc.currentCtx.output, argv[1], argv[2]);
   };
   command f\atop() {
-    Atop(doc.currentCtx.output,null,null);
+    Atop(doc.currentCtx.output, null, null);
   };
   command f\choose() {
-    Atop(doc.currentCtx.output,"(",")");
+    Atop(doc.currentCtx.output, "(", ")");
   };
   command f\brack() {
-    Atop(doc.currentCtx.output,"[","]");
+    Atop(doc.currentCtx.output, "[", "]");
   };
   command f\brace() {
-    Atop(doc.currentCtx.output,"{","}");
+    Atop(doc.currentCtx.output, "{", "}");
   };
   command f@\above() {
-    Atop(doc.currentCtx.output,null,null,true);
+    Atop(doc.currentCtx.output, null, null, true);
     // ■ GetLengthArgument で線の太さを読み取り
   };
   command f\abovewithdelims("#!1#!2") {
-    Atop(
-      doc.currentCtx.output,
-      argv[1],argv[2],true
-      );
+    Atop(doc.currentCtx.output, argv[1], argv[2], true);
     // ■ GetLengthArgument で線の太さを読み取り
   };
   //---------------------------------------------------------------
@@ -536,136 +530,136 @@ context "mode.math"{
   };
 
   command f\sum@("#>1") {
-    var buff=doc.currentCtx.output.buff;
-    var sbsp=doc.GetSubSup();
-    if (sbsp.sub==null&&sbsp.sup==null) {
-      buff.push("<tex:sum>",argv[1],"</tex:sum>");
+    var buff = doc.currentCtx.output.buff;
+    var sbsp = doc.GetSubSup();
+    if (sbsp.sub == null && sbsp.sup == null) {
+      buff.push("<tex:sum>", argv[1], "</tex:sum>");
     } else {
       buff.push(
-        '<tex:sum2><tex:sum2u class="aghtex-tag-script">',sbsp.sup||'&nbsp;',
-        '</tex:sum2u><tex:sum2m>',argv[1],
-        '</tex:sum2m><tex:sum2d class="aghtex-tag-script">',sbsp.sub||'&nbsp;',
+        '<tex:sum2><tex:sum2u class="aghtex-tag-script">', sbsp.sup || '&nbsp;',
+        '</tex:sum2u><tex:sum2m>', argv[1],
+        '</tex:sum2m><tex:sum2d class="aghtex-tag-script">', sbsp.sub || '&nbsp;',
         '</tex:sum2d></tex:sum2>');
     }
   };
 
-  _Mod.CreateCommandSummation=(function InitCreateCommandSummation() {
-    var _ht_strut='<tex:i class="aghtex-sum-strut">&nbsp;</tex:i>'
-    var ht_table_beg='<table class="aghtex-sum"><tr><td class="aghtex-sum-m"><tex:i class="aghtex-sum-m">';
-    var ht_table_mid='</tex:i></td></tr><tr><td class="aghtex-sum-d"><tex:i class="aghtex-sum-d aghtex-tag-script">'+_ht_strut;
-    var ht_table_end=_ht_strut+'</tex:i></td></tr></table>';
-    var ht_sum_begin='<tex:i class="aghtex-sum">';
+  _Mod.CreateCommandSummation = (function InitCreateCommandSummation() {
+    var _ht_strut = '<tex:i class="aghtex-sum-strut">&nbsp;</tex:i>'
+    var ht_table_beg = '<table class="aghtex-sum"><tr><td class="aghtex-sum-m"><tex:i class="aghtex-sum-m">';
+    var ht_table_mid = '</tex:i></td></tr><tr><td class="aghtex-sum-d"><tex:i class="aghtex-sum-d aghtex-tag-script">'+_ht_strut;
+    var ht_table_end = _ht_strut+'</tex:i></td></tr></table>';
+    var ht_sum_begin = '<tex:i class="aghtex-sum">';
 
-    var fWA=false;
-    if (agh.browser.vSf||agh.browser.vIE&&(agh.browser.vIE<8||ns.compatMode=='IE-qks')) {
+    var fWA = false;
+    if (agh.browser.vSf || agh.browser.vIE && (agh.browser.vIE < 8 || ns.compatMode == 'IE-qks')) {
       // WorkAround - 'CSS2.1 table{vertical-align:baseline;}'
-      var fWA=true;
-      var ht_sum_beginWA=ht_sum_begin.replace('"aghtex-sum"','"aghtex-sum aghtex-sum-WA1"');
-      ht_table_beg=ht_table_beg.replace('"aghtex-sum"','"aghtex-sum aghtex-sum-WA1"');
+      var fWA = true;
+      var ht_sum_beginWA = ht_sum_begin.replace('"aghtex-sum"','"aghtex-sum aghtex-sum-WA1"');
+      ht_table_beg = ht_table_beg.replace('"aghtex-sum"', '"aghtex-sum aghtex-sum-WA1"');
       if (agh.browser.vIE) {
         // 何故か、空文字列がないと vertical-align:-0.02 した分だけ、Σの下端が切れてしまう。
-        ht_table_mid=ht_table_mid.replace('</tex:i>','</tex:i>\n');
+        ht_table_mid = ht_table_mid.replace('</tex:i>', '</tex:i>\n');
       }
     }
 
     return function CreateCommandSummation(content) {
-      return new ns.Command2("f","",function(doc,argv) {
-        var buff=doc.currentCtx.output.buff;
+      return new ns.Command2("f", "", function(doc, argv) {
+        var buff = doc.currentCtx.output.buff;
         if (!_Mod.GetMathStyle(doc)) {
-          var sbsp=doc.GetSubSup();
-          var fI=false;
+          var sbsp = doc.GetSubSup();
+          var fI = false;
 
-          if (fWA&&sbsp.sub!=null) {
-            fI=true;
+          if (fWA && sbsp.sub != null) {
+            fI = true;
             buff.push(ht_sum_beginWA);
           } else { // } else if (sbsp.sup!=null) {
-            fI=true;
+            fI = true;
             buff.push(ht_sum_begin);
           }
 
-          if (sbsp.sup!=null) {
+          if (sbsp.sup != null) {
             buff.push('<tex:i class="aghtex-sum-u aghtex-tag-script">',sbsp.sup,'</tex:i>');
           }
-          if (sbsp.sub!=null) {
+          if (sbsp.sub != null) {
             buff.push(ht_table_beg,content,ht_table_mid,sbsp.sub,ht_table_end);
           } else {
-            buff.push('<tex:i class="aghtex-sum-m1"><tex:i class="aghtex-sum-m2">',content,'</tex:i></tex:i>');
+            buff.push('<tex:i class="aghtex-sum-m1"><tex:i class="aghtex-sum-m2">', content, '</tex:i></tex:i>');
           }
 
           if (fI)
             buff.push('</tex:i>');
         } else {
-          buff.push('<tex:f class="aghtex-symb-mincho">',content,'</tex:f>');
+          buff.push('<tex:f class="aghtex-symb-mincho">', content, '</tex:f>');
         }
       });
     };
   })();
-  _Ctx.AddCommandHandler("sum",_Mod.CreateCommandSummation('&#x2211;'));
-  _Ctx.AddCommandHandler("prod",_Mod.CreateCommandSummation('&#x220f;'));
-  _Ctx.AddCommandHandler("coprod",_Mod.CreateCommandSummation('&#x2210;'));
-  _Ctx.AddCommandHandler("bigcap",_Mod.CreateCommandSummation('&#x22C2;'));
-  _Ctx.AddCommandHandler("bigcup",_Mod.CreateCommandSummation('&#x22C3;'));
-  _Ctx.AddCommandHandler("bigvee",_Mod.CreateCommandSummation('&#x22C1;'));
-  _Ctx.AddCommandHandler("bigwedge",_Mod.CreateCommandSummation('&#x22C0;'));
-  _Ctx.AddCommandHandler("bigodot",_Mod.CreateCommandSummation('&#x2A00;'));
-  _Ctx.AddCommandHandler("bigoplus",_Mod.CreateCommandSummation('&#x2A01;'));
-  _Ctx.AddCommandHandler("bigotimes",_Mod.CreateCommandSummation('&#x2A02;'));
-  _Ctx.AddCommandHandler("biguplus",_Mod.CreateCommandSummation('&#x2A04;'));
+  _Ctx.AddCommandHandler("sum", _Mod.CreateCommandSummation('&#x2211;'));
+  _Ctx.AddCommandHandler("prod", _Mod.CreateCommandSummation('&#x220f;'));
+  _Ctx.AddCommandHandler("coprod", _Mod.CreateCommandSummation('&#x2210;'));
+  _Ctx.AddCommandHandler("bigcap", _Mod.CreateCommandSummation('&#x22C2;'));
+  _Ctx.AddCommandHandler("bigcup", _Mod.CreateCommandSummation('&#x22C3;'));
+  _Ctx.AddCommandHandler("bigvee", _Mod.CreateCommandSummation('&#x22C1;'));
+  _Ctx.AddCommandHandler("bigwedge", _Mod.CreateCommandSummation('&#x22C0;'));
+  _Ctx.AddCommandHandler("bigodot", _Mod.CreateCommandSummation('&#x2A00;'));
+  _Ctx.AddCommandHandler("bigoplus", _Mod.CreateCommandSummation('&#x2A01;'));
+  _Ctx.AddCommandHandler("bigotimes", _Mod.CreateCommandSummation('&#x2A02;'));
+  _Ctx.AddCommandHandler("biguplus", _Mod.CreateCommandSummation('&#x2A04;'));
 
   //---------------------------------------------------------------
   //    積分
   //---------------------------------------------------------------
-  function cmd_int(doc,ch) {
-    var output=doc.currentCtx.output;
-    var buff=output.buff;
+  function cmd_int(doc, ch) {
+    var output = doc.currentCtx.output;
+    var buff = output.buff;
 
     // content
     if (!_Mod.GetMathStyle(doc)) {
       // 普通の (大きな) 積分記号
       buff.push('<tex:f class="aghtex-int">',ch,'</tex:f>');
 
-      var sbsp=doc.GetSubSup();
-      switch ((sbsp.sub?1:0)+(sbsp.sup?2:0)) {
+      var sbsp = doc.GetSubSup();
+      switch ((sbsp.sub ? 1 : 0) + (sbsp.sup ? 2 : 0)) {
       case 1:
-        buff.push('<tex:sub class="aghtex-int">',sbsp.sub,'</tex:sub>');
+        buff.push('<tex:sub class="aghtex-int">', sbsp.sub, '</tex:sub>');
         break;
       case 2:
-        buff.push('<tex:sup class="aghtex-int">',sbsp.sup,'</tex:sup>');
+        buff.push('<tex:sup class="aghtex-int">', sbsp.sup, '</tex:sup>');
         break;
       case 3:
         buff.push(
-          '<table class="aghtex-inline aghtex-int"><tr><td class="aghtex-int-sup aghtex-tag-script"><tex:i class="aghtex-int-sup">',sbsp.sup,
-          '</tex:i></td></tr><tr><td class="aghtex-int-sub aghtex-tag-script"><tex:i class="aghtex-int-sub">',sbsp.sub,
+          '<table class="aghtex-inline aghtex-int"><tr><td class="aghtex-int-sup aghtex-tag-script"><tex:i class="aghtex-int-sup">', sbsp.sup,
+          '</tex:i></td></tr><tr><td class="aghtex-int-sub aghtex-tag-script"><tex:i class="aghtex-int-sub">', sbsp.sub,
           '</tex:i></td></tr></table>');
         break;
       }
     } else {
       // 小さな積分記号
-      buff.push('<tex:f class="aghtex-symb-mincho">',ch,'</tex:f>');
+      buff.push('<tex:f class="aghtex-symb-mincho">', ch, '</tex:f>');
     }
   }
-  command f\int() {cmd_int(doc,'∫');};
-  command f\oint() {cmd_int(doc,'∮');};
-  _Mod["cmd:int"]=cmd_int;
+  command f\int() { cmd_int(doc,'∫'); };
+  command f\oint() { cmd_int(doc,'∮'); };
+  _Mod["cmd:int"] = cmd_int;
 }
 
-context "mode.math"{
+context "mode.math" {
   //---------------------------------------------------------------
   //  アクセント・重ね記号・積み重ね記号
   //---------------------------------------------------------------
 
-  if (ns.compatMode=="IE-qks"||agh.browser.vIE<8) {
+  if (ns.compatMode == "IE-qks" || agh.browser.vIE < 8) {
     command s@\not(#>1) '<tex:lap><tex:m>/</tex:m><tex:m>#1</tex:m></tex:lap>';
   } else {
     command s@\not(#>1) '<tex:i class="aghtex-accent">#1<tex:i class="aghtex-accent-container"><tex:i class="aghtex-accent-symbol-over">/</tex:i></tex:i></tex:i>';
   }
 
   (function() {
-    var STACKREL_DEFAULT_TOP=agh.browser.select({IE:0,Fx:0,Op:0,Cr:0.2,Sf:0.8,Def:0.2}); // 本当の所 0.1 にしたい
+    var STACKREL_DEFAULT_TOP = agh.browser.select({IE: 0, Fx: 0, Op: 0, Cr: 0.2, Sf: 0.8, Def: 0.2}); // 本当の所 0.1 にしたい
     function is_single_lower(html) {
-      var text=agh.Text.Unescape(html,"html");
-      if (text.length!=1) return false;
-      return "acegijmnopqrsuvwxyzαγεηικμνοπρστυφχψω\u0131".indexOf(text)>=0;
+      var text = agh.Text.Unescape(html, "html");
+      if (text.length != 1) return false;
+      return "acegijmnopqrsuvwxyzαγεηικμνοπρστυφχψω\u0131".indexOf(text) >= 0;
     }
     function is_slanted(html,ismath) {
       if (ismath)
@@ -673,13 +667,13 @@ context "mode.math"{
       else
         return false;
     }
-    function is_slanted_fullheight(html,ismath) {
+    function is_slanted_fullheight(html, ismath) {
       // \mathrm
-      if (!is_slanted(html,ismath)) return false;
+      if (!is_slanted(html, ismath)) return false;
 
       // 中身が複数文字ある場合
-      var text=agh.Text.Unescape(html,"html");
-      if (text.length!=1) return false;
+      var text = agh.Text.Unescape(html, "html");
+      if (text.length != 1) return false;
 
       if (/<tex:f class="aghtex-greek">[βδζθλξΑ-Ω]<\/tex:f>/.test(html)) {
         // \beta, \varGamma, etc.
@@ -689,95 +683,95 @@ context "mode.math"{
       return /[bdfhkltA-Z∂]/.test(text);
     }
     function is_tailed(html) {
-      var text=agh.Text.Unescape(html,"html");
-      if (text.length!=1) return false;
-      return "gjpqy".indexOf(text)>=0;
+      var text = agh.Text.Unescape(html, "html");
+      if (text.length != 1) return false;
+      return "gjpqy".indexOf(text) >= 0;
     }
 
     command f\stackrel("#>1#>2") {
-      var t=STACKREL_DEFAULT_TOP-1.3;
-      if (is_single_lower(argv[1])) t+=0.45;
-      t=0.01*Math.round(t*100);
+      var t = STACKREL_DEFAULT_TOP - 1.3;
+      if (is_single_lower(argv[1])) t += 0.45;
+      t = 0.01 * Math.round(t * 100);
 
-      var buff=doc.currentCtx.output.buff;
+      var buff = doc.currentCtx.output.buff;
       buff.push(
-        '<tex:lap><tex:m style="top:',t,'ex;"><tex:small3>',argv[1],
-        '</tex:small3></tex:m><tex:m>',argv[2],'</tex:m></tex:lap>');
+        '<tex:lap><tex:m style="top:', t, 'ex;"><tex:small3>', argv[1],
+        '</tex:small3></tex:m><tex:m>', argv[2], '</tex:m></tex:lap>');
     };
 
     // 2012/12/25 17:47:56
-    _Mod.CreateAccentCommand=function(type,htsymb,ismath) {
-      var cls_container='aghtex-accent-container aghtex-accent-container-'+type;
+    _Mod.CreateAccentCommand = function(type, htsymb, ismath) {
+      var cls_container = 'aghtex-accent-container aghtex-accent-container-' + type;
       if (agh.browser.vSf)
-        cls_container+=' aghtex-accent-sf aghtex-accent-sf-'+type;
+        cls_container += ' aghtex-accent-sf aghtex-accent-sf-' + type;
 
-      var ht1='<tex:i class="aghtex-accent aghtex-accent-'+type+'">';
-      var ht2='<tex:i class="'+cls_container+'"><tex:i class="aghtex-accent-symbol-';
-      var ht3='">'+htsymb+'</tex:i></tex:i></tex:i>';
+      var ht1 = '<tex:i class="aghtex-accent aghtex-accent-' + type + '">';
+      var ht2 = '<tex:i class="' + cls_container + '"><tex:i class="aghtex-accent-symbol-';
+      var ht3 = '">' + htsymb + '</tex:i></tex:i></tex:i>';
 
-      if (type=='low') {
-        return ns.Command2("f","#>1",function(doc,argv) {
-          var content=argv[1];
-          var t=type;
-          if (content.length==0)
-            content='&nbsp;';
+      if (type == 'low') {
+        return ns.Command2("f", "#>1", function(doc, argv) {
+          var content = argv[1];
+          var t = type;
+          if (content.length == 0)
+            content = '&nbsp;';
           else if (is_tailed(content))
-            t+="T";
+            t += "T";
 
-          var buff=doc.currentCtx.output.buff;
-          buff.push(ht1,content,ht2,t,ht3);
+          var buff = doc.currentCtx.output.buff;
+          buff.push(ht1, content, ht2, t, ht3);
         });
       } else {
-        return ns.Command2("f","#>1",function(doc,argv) {
-          var content=argv[1].trim();
-          var t=type;
-          if (content.length===0)
-            content='&nbsp;';
+        return ns.Command2("f", "#>1", function(doc, argv) {
+          var content = argv[1].trim();
+          var t = type;
+          if (content.length === 0)
+            content = '&nbsp;';
           else if (is_single_lower(content)) {
-            if (is_slanted(content,ismath))
-              t+="L"; // 数式小文字
+            if (is_slanted(content, ismath))
+              t += "L"; // 数式小文字
             else
-              t+="S"; // 直立体小文字
+              t += "S"; // 直立体小文字
           } else if (is_slanted_fullheight(content,ismath))
-            t+="U"; // 数式大文字
+            t += "U"; // 数式大文字
 
-          var buff=doc.currentCtx.output.buff;
-          buff.push(ht1,content,ht2,t,ht3);
+          var buff = doc.currentCtx.output.buff;
+          buff.push(ht1, content, ht2, t, ht3);
         });
       }
     };
 
     _Ctx.DefineCommand({
-      acute: _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x00B4;</tex:f>',true), // &#x02CA;
-      bar  : _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x00AF;</tex:f>',true), // &#x02C9;
-      breve: _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02D8;</tex:f>',true),
-      check: _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02C7;</tex:f>',true),
-      dot  : _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02D9;</tex:f>',true),
-      ddot : _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x00A8;</tex:f>',true),
-      grave: _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02CB;</tex:f>',true),
-      hat  : _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02C6;</tex:f>',true),
-      tilde: _Mod.CreateAccentCommand('acc','<tex:f class="aghtex-symb-mincho">&#x02DC;</tex:f>',true),
-      vec  : _Mod.CreateAccentCommand('vec','<tex:f class="aghtex-syma-mincho">&#x2192;</tex:f>',true)
+      acute: _Mod.CreateAccentCommand('acc', '<tex:f class="aghtex-symb-mincho">&#x00B4;</tex:f>', true), // &#x02CA;
+      bar  : _Mod.CreateAccentCommand('acc', '<tex:f class="aghtex-symb-mincho">&#x00AF;</tex:f>', true), // &#x02C9;
+      breve: _Mod.CreateAccentCommand('acc', '<tex:f class="aghtex-symb-mincho">&#x02D8;</tex:f>', true),
+      check: _Mod.CreateAccentCommand('acc', '<tex:f class="aghtex-symb-mincho">&#x02C7;</tex:f>', true),
+      dot  : _Mod.CreateAccentCommand('acc', '<tex:f class="aghtex-symb-mincho">&#x02D9;</tex:f>', true),
+      ddot : _Mod.CreateAccentCommand('acc', '<tex:f class="aghtex-symb-mincho">&#x00A8;</tex:f>', true),
+      grave: _Mod.CreateAccentCommand('acc', '<tex:f class="aghtex-symb-mincho">&#x02CB;</tex:f>', true),
+      hat  : _Mod.CreateAccentCommand('acc', '<tex:f class="aghtex-symb-mincho">&#x02C6;</tex:f>', true),
+      tilde: _Mod.CreateAccentCommand('acc', '<tex:f class="aghtex-symb-mincho">&#x02DC;</tex:f>', true),
+      vec  : _Mod.CreateAccentCommand('vec', '<tex:f class="aghtex-syma-mincho">&#x2192;</tex:f>', true)
     });
 
-    if (ns.compatMode=="IE-qks"||agh.browser.vIE<8) {
-      _Mod.CreateAccentCommandQksB=function(height,htSymbol) {
-        var TAG_L='<tex:lap><tex:m style="top:';
-        var TAG_M='ex;">'+htSymbol+'</tex:m><tex:m>';
-        var TAG_R='</tex:m></tex:lap>';
+    if (ns.compatMode == "IE-qks" || agh.browser.vIE < 8) {
+      _Mod.CreateAccentCommandQksB = function(height, htSymbol) {
+        var TAG_L = '<tex:lap><tex:m style="top:';
+        var TAG_M = 'ex;">'+htSymbol+'</tex:m><tex:m>';
+        var TAG_R = '</tex:m></tex:lap>';
 
         // 00:28 2011/02/23 補正
         if (agh.browser.vCr)
-          TAG_L='<tex:lap style="vertical-align:0.684ex;"><tex:m style="top:';
+          TAG_L = '<tex:lap style="vertical-align:0.684ex;"><tex:m style="top:';
 
-        var style_top=STACKREL_DEFAULT_TOP-height;
-        return new ns.Command2("f","#>1",function(doc,argv) {
-          var t=style_top;
-          if (is_tailed(argv[1])) t+=0.4;
-          t=0.01*Math.round(t*100);
+        var style_top = STACKREL_DEFAULT_TOP - height;
+        return new ns.Command2("f", "#>1", function(doc, argv) {
+          var t = style_top;
+          if (is_tailed(argv[1])) t += 0.4;
+          t = 0.01 * Math.round(t * 100);
 
-          var buff=doc.currentCtx.output.buff;
-          buff.push(TAG_L,t,TAG_M,argv[1],TAG_R);
+          var buff = doc.currentCtx.output.buff;
+          buff.push(TAG_L, t, TAG_M, argv[1], TAG_R);
         });
       };
     }
