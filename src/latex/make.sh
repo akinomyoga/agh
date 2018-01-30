@@ -1,20 +1,20 @@
 #!/bin/bash
 
 function addsetting {
-	local target=$1
-	local key=$2
-	local file=$3
+  local target=$1
+  local key=$2
+  local file=$3
 
-	if [[ -e $target ]] && grep -Fq "$key" "$target"; then
+  if [[ -e $target ]] && grep -Fq "$key" "$target"; then
     # 登録済み
     return
   fi
 
   {
-	  echo "# $key"
-	  cat  "${@:3:1}"
+    echo "# $key"
+    cat  "${@:3:1}"
   } >> "$target"
-	return 0
+  return 0
 }
 
 function dispatch:htaccess {
