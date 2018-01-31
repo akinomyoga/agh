@@ -1,11 +1,11 @@
 // -*- coding:utf-8 -*-
 #define REPL_INTEG
-using Rgx=System.Text.RegularExpressions;
-using Diag=System.Diagnostics;
-using Gen=System.Collections.Generic;
-using _=RexJS;
+using Rgx = System.Text.RegularExpressions;
+using Diag = System.Diagnostics;
+using Gen = System.Collections.Generic;
+using _ = RexJS;
 
-using Interop=System.Runtime.InteropServices;
+using Interop = System.Runtime.InteropServices;
 
 public static class Program{
   public static int Main(string[] argv){
@@ -239,7 +239,7 @@ public class Argument{
   public bool IsHelp{get{return this.ishelp;}}
   private int index;
   private string[] args;
-  
+
   private void printArgumentError(string message){
     this.status=false;
     System.Console.Error.WriteLine(
@@ -269,7 +269,7 @@ public class Argument{
           continue;
         }
       }
-      
+
       if(arg[0]=='/'||arg[0]=='-')
         ReadOption(arg.Substring(1));
       else{
@@ -318,7 +318,7 @@ public class Argument{
           this.printArgumentError("missing argument for the option.");
           return false;
         }
-        
+
         this.index++;
         if(this.args[this.index].Length==0){
           this.printArgumentError("empty output file '' is specified");
@@ -354,7 +354,7 @@ public class Argument{
         value=false;
       }else goto unrecognized;
 
-      
+
       op=op[2]==':'?op.Substring(3):op.Substring(2);
       return setArgumentFlag(op,value);
     }
@@ -384,7 +384,7 @@ public class Argument{
 Options
     -oFILE    specify default output file.
 
-    -WFLAG    enable the specified flag. 
+    -WFLAG    enable the specified flag.
     -Wno-FLAG disable the specified flag.
         FLAG gz      [1] gzip the result
              sfx     [0] generate self extraction code (deflate+base64)
@@ -398,7 +398,7 @@ Options
 Older style options
     -c+FLAG   enable the flag (old style)
     -c-FLAG   disable the flag (old style)
-    /?           
+    /?
     /help
     /test     execute test
 
@@ -431,31 +431,29 @@ public static class Trans{
   }
 
   public static string ProcessSource(string input,Argument _args){
-    string output=input;
-    Argument args=_args;
-    string dirname=System.IO.Path.GetDirectoryName(args.OutputFile);
+    string output = input;
+    Argument args = _args;
 
     // directives の読み取り
     Gen::Dictionary<string,string> tokenmap=new Gen::Dictionary<string,string>();
     Gen::List<ReplaceData> replaces=new Gen::List<ReplaceData>();
 
-    output=reg_gzjs_directive.Replace(output,delegate(Rgx::Match m){
+    output = reg_gzjs_directive.Replace(output, delegate(Rgx::Match m) {
       // 先頭以外に改行が入っている物は無効
-      if(0<m.Value.IndexOfAny("\r\n".ToCharArray()))return m.Value;
-      
-      switch(m.Groups["dir"].Value){
-      case "outfile":
-        args.OutputFile=System.IO.Path.Combine(
-          System.IO.Path.GetDirectoryName(args.OutputFile),
-          ReadArg(m.Groups["arg1"])
-        );
-        if(args.Verbose)
-          args.WriteLine("#> output-file was set to '"+args.OutputFile+"'");
+      if (0 < m.Value.IndexOfAny("\r\n".ToCharArray())) return m.Value;
+
+      switch (m.Groups["dir"].Value) {
+      case "outfile": {
+        string dirname = System.IO.Path.GetDirectoryName(args.OutputFile);
+        args.OutputFile = System.IO.Path.Combine(dirname, ReadArg(m.Groups["arg1"]));
+        if (args.Verbose)
+          args.WriteLine("#> output-file was set to '" + args.OutputFile + "'");
         return "\n";
-      case "tokenmap":{
-        string before=ReadArg(m.Groups["arg1"]);
-        string after=ReadArg(m.Groups["arg2"]);
-        tokenmap[before]=after;
+      }
+      case "tokenmap": {
+        string before = ReadArg(m.Groups["arg1"]);
+        string after = ReadArg(m.Groups["arg2"]);
+        tokenmap[before] = after;
         if(args.Verbose)
           args.WriteLine("#> token-mapping registered: "+before+" -> "+after+"");
         return "\n";
@@ -646,7 +644,7 @@ public static class Trans{
         // 不変な整数値の場合
         //   整数値で符号と自身の長さが同じ場合は符号表に登録する必要はない
         //   自分自身に対して mapping すれば良い。
-        
+
         if(icand<code){
           // 自分自身の番号に既に別の単語が割り当てられている場合は待避
           mapCodeToWord[code++]=mapCodeToWord[icand];
@@ -938,27 +936,42 @@ eval(s.replace(/\b_(\d+)\b/g,function($0,$1){return r[$1];}));
 
     return b.ToString();
   }
+  private static System.IO.Stream getManifestResource(string resourceFilename) {
+    System.Reflection.Assembly assembly = System.Reflection.Assembly.GetCallingAssembly();
+    foreach (string resourceName in assembly.GetManifestResourceNames()) {
+      if (resourceName == resourceFilename || resourceName.EndsWith("/sfxframe85.js"))
+        return assembly.GetManifestResourceStream(resourceName);
+    }
+    System.Console.WriteLine("gzjs: failed to load resource %s", resourceFilename);
+    return null;
+  }
   public static string CreateSfx(string input){
+    // prepare resource
+    System.IO.Stream sFrame = getManifestResource("sfxframe.js");
+    if (sFrame == null) return input;
+
     // source
-    string compressed=Deflator.DeflateToBase64String(input,9);
+    string compressed = Deflator.DeflateToBase64String(input,9);
 
     // inflate
-    System.IO.Stream sFrame=System.Reflection.Assembly.GetCallingAssembly().GetManifestResourceStream("res/sfxframe.js");
-    System.IO.StreamReader sr=new System.IO.StreamReader(sFrame,System.Text.Encoding.UTF8);
-    string frame=sr.ReadToEnd();
+    System.IO.StreamReader sr = new System.IO.StreamReader(sFrame, System.Text.Encoding.UTF8);
+    string frame = sr.ReadToEnd();
     sr.Close();
-    return CreateSfx_embed(frame,compressed);
+    return CreateSfx_embed(frame, compressed);
   }
   public static string CreateSfx85(string input){
+    // prepare resource
+    System.IO.Stream sFrame = getManifestResource("sfxframe85.js");
+    if (sFrame == null) return input;
+
     // source
-    string compressed=Deflator.DeflateToJ85String(input,9);
+    string compressed = Deflator.DeflateToJ85String(input, 9);
 
     // inflate
-    System.IO.Stream sFrame=System.Reflection.Assembly.GetCallingAssembly().GetManifestResourceStream("res/sfxframe85.js");
-    System.IO.StreamReader sr=new System.IO.StreamReader(sFrame,System.Text.Encoding.UTF8);
-    string frame=sr.ReadToEnd();
+    System.IO.StreamReader sr = new System.IO.StreamReader(sFrame, System.Text.Encoding.UTF8);
+    string frame = sr.ReadToEnd();
     sr.Close();
-    return CreateSfx_embed(frame,compressed);
+    return CreateSfx_embed(frame, compressed);
   }
 
   //**************************************************************************
@@ -1013,7 +1026,7 @@ public static class IO{
   );
 
   private static readonly System.DateTime UNIX_EPOCH=new System.DateTime(1970,1,1,0,0,0,System.DateTimeKind.Utc);
- 
+
   public static void SaveAsGzipFile(System.IO.Stream s,string content){
     byte[] data=System.Text.Encoding.UTF8.GetBytes(content);
     byte[] deflate=Deflator.DeflateToByteArray(data,9);
