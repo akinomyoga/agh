@@ -16,6 +16,7 @@
  *    @fn mod_math.OutputSupSubScripts(buff, sup, sub)
  */
 
+var mod_core = ns.Modules["core"];
 var mod_base = ns.Modules["mod:base"];
 var mod_common = ns.Modules["mod:common"];
 var _Mod = ns.Modules["mod:math"] = {};
@@ -157,7 +158,7 @@ context "mode.math" {
   letter s@\|() '<tex:f class="aghtex-symb-gothic">|</tex:f>';
   letter f@\:() {
     doc.scanner.Next();
-    if (doc.scanner.is("ltr","=")) {
+    if (doc.scanner.is(mod_core.SCAN_WT_LTR,"=")) {
       //doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-gothic">:＝</tex:f>');
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-gothic">&#x2254;</tex:f>');
       doc.scanner.Next();
@@ -169,7 +170,7 @@ context "mode.math" {
   letter f@\.() {
     var html = cmdName;
     doc.scanner.Next();
-    if (doc.scanner.wordtype == "ltr" && " \b\t\v\r\n\f".indexOf(doc.scanner.word) >= 0) {
+    if (doc.scanner.wordtype == mod_core.SCAN_WT_LTR && " \b\t\v\r\n\f".indexOf(doc.scanner.word) >= 0) {
       html='<tex:f class="aghtex-comma">'+html+'</tex:f>';
       doc.scanner.Next();
     }
@@ -227,7 +228,7 @@ context "mode.math" {
     letter f\^("#>1") {
       doc.skipSpaceAndComment();
       var sub = null;
-      if (doc.scanner.is("ltr","_")) {
+      if (doc.scanner.is(mod_core.SCAN_WT_LTR,"_")) {
         doc.scanner.Next();
         sub = doc.GetArgumentHtml();
       }
@@ -236,7 +237,7 @@ context "mode.math" {
     letter f\_("#>1") {
       doc.skipSpaceAndComment();
       var sup = null;
-      if (doc.scanner.is("ltr","^")) {
+      if (doc.scanner.is(mod_core.SCAN_WT_LTR,"^")) {
         doc.scanner.Next();
         sup = doc.GetArgumentHtml();
       }
@@ -249,13 +250,13 @@ context "mode.math" {
   // letter s@#"'"() @'<tex:f class="aghtex-textrm">''</tex:f>';
   var prime_handler = function(doc) {
     doc.scanner.Next();
-    if (!doc.scanner.is("ltr", "'") && !doc.scanner.is("cmd", "rq")) {
+    if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "'") && !doc.scanner.is(mod_core.SCAN_WT_CMD, "rq")) {
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">′</tex:f>');
       return;
     }
 
     doc.scanner.Next();
-    if (!doc.scanner.is("ltr", "'") && !doc.scanner.is("cmd", "rq")) {
+    if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "'") && !doc.scanner.is(mod_core.SCAN_WT_CMD, "rq")) {
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">″</tex:f>');
       return;
     }
@@ -368,7 +369,7 @@ context "mode.math" {
   command f\underbrace(#>1) {
     var undertxt = null;
     doc.skipSpaceAndComment();
-    if (doc.scanner.is("ltr", "_")) {
+    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "_")) {
       doc.scanner.Next();
       undertxt=doc.GetArgumentHtml();
     }
@@ -379,7 +380,7 @@ context "mode.math" {
   command f\overbrace(#>1) {
     var overtxt = null;
     doc.skipSpaceAndComment();
-    if (doc.scanner.is("ltr", "^")) {
+    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "^")) {
       doc.scanner.Next();
       overtxt = doc.GetArgumentHtml();
     }

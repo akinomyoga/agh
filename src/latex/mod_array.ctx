@@ -53,6 +53,7 @@ agh.memcpy(ns.Modules["core"].ErrorMessages, {
     "environment alignat: '{arg1}' は不正な列数です。列数には正の整数を指定して下さい。"]
 });
 
+var mod_core = ns.Modules["core"];
 var mod_base = ns.Modules["mod:base"];
 var _Mod = ns.Modules["mod:array"] = {};
 
@@ -1030,7 +1031,7 @@ var ENV_PARAMS = {
 
     // 第二引数 : 水平位置合わせ
     //----------------------------------------------------
-    if (doc.scanner.is("ltr", "{")) {
+    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "{")) {
       doc.scanner.Next();
       var ctx_aln = doc.context_cast(["sub.braced", "env.array.align"]);
       ctx_aln.CTXDATA = new _at.TableAlignSetter(t);

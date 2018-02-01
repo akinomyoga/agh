@@ -9,6 +9,8 @@
 //   http://www.ctan.org/tex-archive/macros/latex/contrib/url/
 //     ftp://ftp.u-aizu.ac.jp/pub/tex/CTAN/macros/latex/contrib/url/url.pdf
 
+var mod_core = ns.Modules["core"];
+
 agh.memcpy(ns.Modules["core"].ErrorMessages,{
   "pkg:url.InitializationFailed": [
     "PackageFailed",
@@ -87,7 +89,7 @@ function initialize_pkg_url() {
     doc.skipSpaceAndComment();
     var wordtype = doc.scanner.wordtype;
     var word     = doc.scanner.word;
-    if (wordtype != "ltr") {
+    if (wordtype != mod_core.SCAN_WT_LTR) {
       output.error(
         "pkg:url.UrlCommand.VerbMissingPunct",
         {cmdName: cmdName}, "url command (pkg:url)");

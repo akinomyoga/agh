@@ -128,11 +128,11 @@ agh.scripts.wait(["event:onload", "agh.lang.ps.js"], function() {
   var source = agh.Text.Unescape(psimage.innerHTML, "html");
   var ps = new agh.PostScript.Processor({
     target: psimage,
-    bb: [0,0,610,790],
-    size: ['500px','500px']
+    bb: [0, 0, 610, 790],
+    size: ['500px', '500px']
   });
-  ps.graphics.SetBoundingBox(0,0,610,790);
-  ps.outstream=console.log;
+  ps.graphics.SetBoundingBox(0, 0, 610, 790);
+  ps.outstream = console.log;
   ps.Run(source);
 });
 </script>

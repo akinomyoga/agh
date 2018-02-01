@@ -444,9 +444,9 @@ context "sub.env.raw" new() {
     /// </summary>
     _Ctx.set_Terminator = function(ctx, type, word) { // with(context)
       switch (type) {
-      case "ltr": ctx.AddLetterHandler(word, LH_EXIT); break;
-      case "cmd": ctx.AddCommandHandler(word, CH_EXIT); break;
-      case "txt":
+      case mod_core.SCAN_WT_LTR: ctx.AddLetterHandler(word, LH_EXIT); break;
+      case mod_core.SCAN_WT_CMD: ctx.AddCommandHandler(word, CH_EXIT); break;
+      case mod_core.SCAN_WT_TXT:
         ctx.text_modifier = function(doc, text) {
           doc.scanner.Next();
           doc.currentCtx.BREAK = true;
@@ -490,7 +490,7 @@ context "sub.until.raw" new() {
   /// </summary>
   _Ctx.set_Terminator = function(ctx, type, word) { // with(context)
     switch (type) {
-      case "ltr":
+      case mod_core.SCAN_WT_LTR:
         if (word == "}") {
           ctx.AddLetterHandler(word, function(doc, letter) {
             if (doc.currentCtx.BRACE_LEVEL == 0) {
@@ -507,12 +507,12 @@ context "sub.until.raw" new() {
           });
         }
         break;
-      case "cmd":
+      case mod_core.SCAN_WT_CMD:
         ctx.AddCommandHandler(word, function(doc, letter) {
           (doc.currentCtx.BRACE_LEVEL == 0 ? CH_EXIT : CH_RAW)(doc, letter);
         });
         break;
-      case "txt":
+      case mod_core.SCAN_WT_TXT:
         ctx.text_modifier = function(doc, text) {
           doc.scanner.Next();
           if (doc.currentCtx.BRACE_LEVEL == 0 && text == word) {

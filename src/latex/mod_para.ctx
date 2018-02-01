@@ -30,7 +30,7 @@ context "mode.para"{
   command s@#"\\"() "<br />";
   command s@#par () "<br />";
   letter f#'\n'() {
-    if (doc.scanner.wordtype == "ltr" && doc.scanner.word == '\n') {
+    if (doc.scanner.is(mod_core.SCAN_WT_LTR, '\n')) {
       doc.skipSpaceAndComment();
       doc.currentCtx.output.buff.push("<br />");
     } else
@@ -150,7 +150,7 @@ context "mode.para"{
   letter s@\|()  "―";
   letter f@\?() {
     doc.scanner.Next();
-    if (doc.scanner.is("ltr", "`")) {
+    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "`")) {
       doc.currentCtx.output.buff.push('&#x00BF;');
       doc.scanner.Next();
     } else {
@@ -159,7 +159,7 @@ context "mode.para"{
   };
   letter f@\!() {
     doc.scanner.Next();
-    if (doc.scanner.is("ltr", "`")) {
+    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "`")) {
       doc.currentCtx.output.buff.push('&#x00A1;');
       doc.scanner.Next();
     } else {
@@ -168,13 +168,13 @@ context "mode.para"{
   };
   letter f@\-() {
     doc.scanner.Next();
-    if (!doc.scanner.is("ltr", "-")) {
+    if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "-")) {
       doc.currentCtx.output.buff.push("-");
       return;
     }
 
     doc.scanner.Next();
-    if (!doc.scanner.is("ltr", "-")) {
+    if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "-")) {
       doc.currentCtx.output.buff.push("—");
       // ※ 本来は \u2013 であるべき
       return;
@@ -187,7 +187,7 @@ context "mode.para"{
   // Quotations
   function quoteleft(doc) {
     doc.scanner.Next();
-    if (!doc.scanner.is("ltr", "`") && !doc.scanner.is("cmd", "lq")) {
+    if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "`") && !doc.scanner.is(mod_core.SCAN_WT_CMD, "lq")) {
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">‘</tex:f>');
       return;
     }
@@ -199,7 +199,7 @@ context "mode.para"{
   _Ctx.AddCommandHandler("lq", quoteleft);
   function quoteright(doc) {
     doc.scanner.Next();
-    if (!doc.scanner.is("ltr", "'") && !doc.scanner.is("cmd", "rq")) {
+    if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "'") && !doc.scanner.is(mod_core.SCAN_WT_CMD, "rq")) {
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">’</tex:f>');
       return;
     }
@@ -263,7 +263,7 @@ context "mode.para"{
   _Ctx.AddLetterHandler("$", function(doc) {
     var buff = doc.currentCtx.output.buff;
     doc.scanner.Next();
-    if (doc.scanner.is("ltr", "$")) {
+    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "$")) {
       doc.scanner.Next();
       // $$ - $$
       buff.push('<tex:math class="aghtex-displaymath">');
@@ -272,7 +272,7 @@ context "mode.para"{
       var ctx = doc.context_cast(["mode.math"]);
       ctx.AddLetterHandler("$", function(doc) {
         doc.scanner.Next();
-        if (doc.scanner.is("ltr", "$"))
+        if (doc.scanner.is(mod_core.SCAN_WT_LTR, "$"))
           doc.scanner.Next();
         else
           doc.currentCtx.output.error("UnexpectedEOR", "$");
