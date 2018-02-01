@@ -6,6 +6,13 @@ var _Mod = ns.Modules["mod:length"] = {};
 agh.memcpy(ns.Modules["core"].ErrorMessages, {
   "mod:length.InvalidLengthName": ["invalid length name", "'{lname}' は有効な length 名ではありません。\nlength 名は \\ で始まる必要があります。"]
 });
+
+/* 注意: 利用できる単位については以下でハードコーディングされている事に注意する。
+ * 単位を追加するためにはこれらも一緒に更新する必要がある。
+ *
+ *   - このファイルに含まれる正規表現
+ *   - core.js:ns.Document.prototype.ReadDimension の正規表現
+ */
 var UNITDATA = {
   // reference: http://tex.stackexchange.com/questions/41370/what-are-the-possible-dimensions-sizes-units-latex-understands
 
@@ -42,6 +49,16 @@ var UNITDATA = {
 
 ns.Length = function(value, unit) {
   if (value) {
+    if (value instanceof ns.Length) {
+      this.val = value.val;
+      this.unit = value.unit;
+      if (value.plus instanceof ns.Length)
+        this.plus = new ns.Length(value.plus);
+      if (value.minus instanceof ns.Length)
+        this.minus = new ns.Length(value.minus);
+      return;
+    }
+
     value = this.parseNumber(value);
     if (unit instanceof ns.Length) {
       // 例: new ns.Length(0.5, textwidth);
@@ -60,7 +77,7 @@ ns.Length = function(value, unit) {
 };
 agh.memcpy(ns.Length, {
   // 将来的には GetLengthArgument か何かの関数で使用するつもり(現在は使用されていない)
-  ParseDimen: function(text) {
+  ParseDimension: function(text) {
     /// <summary>
     /// 指定した文字列から length を読み取ります。
     /// </summary>
@@ -68,15 +85,17 @@ agh.memcpy(ns.Length, {
     /// 読み取った情報を元に作成した Length インスタンスを返します。
     /// src_index に、指定した文字列の何処まで読み取ったかの情報を格納します。
     /// </returns>
-    var val = parseFloat(text);
-    if (isNaN(val)) return null;
-    var u = text.match(/^(?:[\+\-\d\.]|e[+\-\d.])+\s*(in|bp|cm|mm|pt|pc|sp|dd|cc|em|ex|zw|zh|mu|px)\b/i);
-    if (u == null) return null;
+    var m = text.match(/^\s*([\-+]?)\s*([\d\.]+)\s*(in|bp|cm|mm|pt|pc|sp|dd|cc|em|ex|zw|zh|mu|px)/i);
+    if (!m) return null;
+    var value = parseFloat(m[1] + m[2]);
+    if (isNaN(value)) value = 0;
+    var unit = m[3].toLowerCase();
+    var index = m[0].length;
 
     var ret = new ns.Length();
-    ret.val = val;
-    ret.unit = u[1];
-    ret.src_index = u[0].length;
+    ret.val = value;
+    ret.unit = unit;
+    ret.src_index = index;
     return ret;
   }
 });
@@ -96,16 +115,35 @@ agh.memcpy(ns.Length.prototype, {
     var afterData = UNITDATA[afterUnit] || UNITDATA["pt"];
     return number * beforeData.mm / afterData.mm;
   },
-  toString: function() {
+  toString: function(showStretch) {
     var data = UNITDATA[this.unit] || UNITDATA["pt"];
     var outunit = data.outunit;
-    return this.changeUnit(this.val, this.unit, outunit).toString() + outunit;
+    var body = this.changeUnit(this.val, this.unit, outunit).toString() + outunit;
+    if (showStretch) {
+      if (this.plus instanceof ns.Length)
+        body += " plus " + this.plus.toString(false);
+      if (this.minus instanceof ns.Length)
+        body += " minus " + this.minus.toString(false);
+    }
+    return body;
   },
-  addValue: function(arg) {
+  addValue: function(arg, subtracts) {
     if (arg == null) return;
 
     var n = 0, u = "px";
     if (arg instanceof ns.Length) {
+      if (arg.plus instanceof ns.Length) {
+        if (this.plus instanceof ns.Length)
+          this.plus.addValue(arg.plus);
+        else
+          this.plus = new ns.Length(arg.plus);
+      }
+      if (arg.minus instanceof ns.Length) {
+        if (this.minus instanceof ns.Length)
+          this.minus.addValue(arg.minus);
+        else
+          this.minus = new ns.Length(arg.minus);
+      }
       n = arg.val;
       u = arg.unit;
     } else {
@@ -113,8 +151,14 @@ agh.memcpy(ns.Length.prototype, {
       n = this.parseNumber(arg);
       u = this.parseUnit(arg);
     }
-
-    this.val += this.changeUnit(n, u, this.unit);
+    var delta = this.changeUnit(n, u, this.unit);
+    if (subtracts)
+      this.val -= delta;
+    else
+      this.val += delta;
+  },
+  subtractValue: function(arg) {
+    this.addValue(arg, true);
   },
   setValue: function(arg) {
     if (arg == null) return;
@@ -156,23 +200,26 @@ context "global" {
     doc.currentCtx.dataL[name].addValue(value);
   }
 
-  var lengthHandler = new ns.Command2("f", null, function(doc, args) {
-    var name = args[0];
-    doc.skipSpaceAndComment();
-    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "=")) {
-      // setlength mode
-      doc.scanner.Next();
-      setlength(doc, name, doc.scanner.word); //■現状だと数字一個しか解釈しない? ReadLengthを使う
-      doc.scanner.Next();
-    } else {
-      // output value mode (拡張)
-      doc.currentCtx.output.buff.push((doc.GetLengthData(name) || "0in").toString());
-    }
-  });
+  function CreateLengthHandler(readMethodName) {
+    var result = new ns.Command2("f", null, function(doc, args) {
+      var name = args[0];
+      doc.skipSpaceAndComment();
+      if (doc.scanner.is(mod_core.SCAN_WT_LTR, "=")) {
+        doc.scanner.Next();
+        // setlength mode
+        var dimen = doc[readMethodName]();
+        if (dimen) setlength(doc, name, dimen);
+      } else {
+        // output value mode (拡張)
+        doc.currentCtx.output.buff.push((doc.GetLengthData(name) || "0in").toString());
+      }
+    });
+    result.isDimensionHandler = true;
+    return result;
+  }
 
-  _Mod.IsLengthHandler = function(commandHandler) {
-    return commandHandler === lengthHandler;
-  };
+  var dimensionHandler = CreateLengthHandler('ReadDimension');
+  var lengthHandler = CreateLengthHandler('ReadLength');
 
   //=========================================================================
   //    コマンドの定義
@@ -189,12 +236,14 @@ context "global" {
     if (lname == null) return;
     doc.NewLength(lname);
   };
-  command f\setlength(#@1#!2) {
+  command f\setlength(#@1#L) {
+    if (argv[2] == null) return;
     var lname = get_lenName(doc, argv[1]);
     if (lname == null) return;
     setlength(doc, lname, argv[2]);
   };
-  command f\addtolength(#@1#!2) {
+  command f\addtolength(#@1#L) {
+    if (argv[2] == null) return;
     var lname = get_lenName(doc, argv[1]);
     if (lname == null) return;
     addtolength(doc, lname, argv[2]);

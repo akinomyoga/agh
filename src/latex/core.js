@@ -148,7 +148,7 @@ agh.memcpy(ns.Scanner4.prototype, {
 //%end
 //%m Scanner::popSource
     if (this.sourceStack.length > 0) {
-      this.source=this.sourceStack.pop();
+      this.source = this.sourceStack.pop();
     }
 //%end
     /// <summary>
@@ -157,6 +157,17 @@ agh.memcpy(ns.Scanner4.prototype, {
 //%x Scanner::pushSource
     this.source = new ns.Source(instext);
     this.Next();
+  },
+  ConsumePartialTxt: function(length) {
+//%if DEBUG_SCANNER
+    aghtex_assert(this.wordtype == SCAN_WT_TXT, "Scanner4#ClipFirstFromTxt assert(Scanner4.wordtype=='txt')");
+//%end
+    if (this.word.length > length) {
+      this.source.wstart += length;
+      this.word = this.word.slice(length);
+    } else {
+      this.Next();
+    }
   },
   ClipFirstFromTxt: function() {
     /// <summary>
@@ -843,13 +854,7 @@ agh.memcpy(ns.Writer, {
       //    "・環境が定義されているか"].join("\n")],
       "aghtex.Document.references.createSectionId.unknownCounter": [
         "unknown counter '{counterName}'",
-        "the counter referenced from some sectioning command is not defined."],
-      'aghtex.Command2.MacroInfiniteLoop': [
-        "MacroInfiniteLoop",
-        "ユーザマクロ '\\{cmdName}' の過剰なネスト、または、無限ループの可能性があります。"],
-      'aghtex.Environment.MacroInfiniteLoop': [
-        "MacroInfiniteLoop",
-        "The nesting of the user defined environement {envname} is too deep or in an infinite loop."]
+        "the counter referenced from some sectioning command is not defined."]
     };
 
     //var newLine = agh.browser.vIE ? "\r\n" : "\n"; // 誰も使っていない
@@ -1425,7 +1430,7 @@ agh.memcpy(_Mod.ErrorMessages, {
     "the unit name of the dimension, '{unit}', is unrecognized."],
   "aghtex.Document.ReadDimension.InvalidDimension": [
     "invalid dimension",
-    "a command '\\{cmd}' was given for the unit of the dimension, but the command does not give a valid dimension/length."],
+    "a command '\\{cmd}' was given for the unit of the dimension, but the command does not give a valid dimension/length."]
 });
 function error_missing_dimension(doc) {
   doc.currentCtx.output.error(
@@ -1452,129 +1457,46 @@ function error_invalid_dimension(doc, cmd) {
     "aghtex.Document.ReadDimension.InvalidDimension", {cmd: name},
     nsName + ".Document#ReadDimension");
 }
-agh.memcpy(ns.Document.prototype, {
-  ReadDimension: function() {
-    /// 以下の形式の文字列を読み取って ns.Length オブジェクトを返します。
-    /// この形式の文字列が読み取れない場合は null を返します。
-    ///
-    ///   <dimension> :
-    ///     - <sign>? <number> <unit>
-    ///     | <sign>? <number>? <\dimension>
-    ///
-    ///   <sign> :- '-' | '+'
-    ///   <number> :- /[\d.]+/
-    ///   <unit> :- /in|bp|cm|mm|pt|pc|sp|dd|cc|em|ex|zw|zh|mu|px/i
-    ///
+ns.Document.prototype.ReadDimension = function() {
+  /// 以下の形式の文字列を読み取って ns.Length オブジェクトを返します。
+  /// この形式の文字列が読み取れない場合は null を返します。
+  ///
+  ///   <dimension> :
+  ///     - <sign>? <number> <unit>
+  ///     | <sign>? <number>? <\dimension>
+  ///
+  ///   <sign> :- '-' | '+'
+  ///   <number> :- /[\d.]+/
+  ///   <unit> :- /in|bp|cm|mm|pt|pc|sp|dd|cc|em|ex|zw|zh|mu|px/i
+  ///
 
-    /* 実装上の注意:
-     *   <number> を構成する文字の内、小数点は SCAN_WT_LTR で 1 つずつ読み取られる。
-     *   英字は SCAN_WT_TXT でまとめて読み取られる。
-     *   <unit> と連続して記述されている場合、<unit> も一緒に読み取られる。
-     *   途中でマクロの展開があるときは分断して読み取られる。
-     *
-     *   <unit> は SCAN_WT_TXT でまとめて読み取られる。
-     *   但し、<number> と同様に途中でマクロの展開があると分断して読み取られる。
-     */
+  /* 実装上の注意:
+   *
+   *   <number> を構成する文字の内、小数点は SCAN_WT_LTR で 1 つずつ読み取られる。
+   *   英字は SCAN_WT_TXT でまとめて読み取られる。
+   *   <unit> と連続して記述されている場合、<unit> も一緒に読み取られる。
+   *   途中でマクロの展開があるときは分断して読み取られる。
+   *
+   *   <unit> は SCAN_WT_TXT でまとめて読み取られる。
+   *   但し、<number> と同様に途中でマクロの展開があると分断して読み取られる。
+   */
 
-    var digits = [];
-    var incompleteUnit = null;
+  var digits = [];
+  var incompleteUnit = null;
 
-    var mode = 0; // 0: 符号待ち, 1: 数値待ち, 2: 数値読み取り中, 3: 単位待ち, 4: 単位読み取り中
-    for (;;) {
-console.log(this.scanner.wordtype + ":" + this.scanner.word);
-      this.expandMacro();
-console.log("-> " + this.scanner.wordtype + ":" + this.scanner.word);
-      if (this.scanner.wordtype === SCAN_WT_LTR) {
-        if (mode === 0 && /^[-+]$/.test(this.scanner.word)) {
-          digits.push(this.scanner.word);
-          mode = 1;
-          this.scanner.Next();
-        } else if (mode <= 2 && /^\.$/.test(this.scanner.word)) {
-          digits.push(this.scanner.word);
-          mode = 2;
-          this.scanner.Next();
-        } else if (texctype_isspace(this.scanner.word)) {
-          if (mode === 4) {
-            error_invalid_unit(this, incompleteUnit);
-            return null;
-          }
-
-          this.scanner.Next();
-          if (mode === 2) mode = 3;
-        } else {
-          if (mode <= 1)
-            error_missing_dimension(this);
-          else if (mode <= 3)
-            error_missing_unit(this);
-          else
-            error_invalid_unit(this, incompleteUnit);
-          return null;
-        }
-      } else if (this.scanner.wordtype === SCAN_WT_TXT) {
-
-        // 数字を読み取る
-        var m = null;
-        if (mode <= 2 && (m = /^\d+/.exec(this.scanner.word))) {
-          digits.push(m[0]);
-          mode = 2;
-          this.scanner.word = this.scanner.word.slice(m[0].length);
-          if (this.scanner.word.length === 0) {
-            this.scanner.Next();
-            continue;
-          }
-        }
-
-        // 単位を読み取る
-        if (mode <= 1) {
-          error_missing_number(this);
-          return null;
-        }
-
-        var text = this.scanner.word;
-        if (incompleteUnit) text = incompleteUnit + text;
-
-        var m = /^(?:in|bp|cm|mm|pt|pc|sp|dd|cc|em|ex|zw|zh|mu|px)/i.exec(text);
-        if (!m) {
-          if ((m = /^[bcdimpsz]$/i.exec(text))) {
-            // 不完全な単位の場合 (未だ単位になる可能性がある)
-            incompleteUnit = m[0];
-            this.scanner.Next();
-            mode = 4;
-            continue;
-          } else {
-            // 既知の単位名にはなりえない場合
-            error_invalid_unit(doc, text);
-            return null;
-          }
-        }
-
-        var unit = m[0];
-        this.scanner.word = text.slice(m[0].length);
-        if (this.scanner.word.length === 0) this.scanner.Next();
-        var value = digits.join("");
-console.log("ns.Length(" + value + ", " + unit + ")");
-        return new ns.Length(value, unit);
-      } else if (this.scanner.wordtype === SCAN_WT_CMD) {
-        if (mode === 4) {
-          error_invalid_unit(doc, incompleteUnit);
-          return null;
-        }
-
-        // ■dimen
-        var name = this.scanner.word;
-        var handler = this.currentCtx.GetCommandHandler(this, name);
-        if (handler && ns.Modules["mod:length"].IsLengthHandler(handler)) {
-          this.scanner.Next();
-          if (mode <= 1) digits.push("1");
-          var value = digits.join("");
-          var unit = this.GetLengthData(name) || new ns.Length;
-console.log("ns.Length(" + value + ", " + unit + ")");
-          return new ns.Length(value, unit);
-        } else {
-          error_invalid_dimension(this, name);
-          return null;
-        }
-      } else if (this.scanner.wordtype === SCAN_WT_COM) {
+  var mode = 0; // 0: 符号待ち, 1: 数値待ち, 2: 数値読み取り中, 3: 単位待ち, 4: 単位読み取り中
+  for (;;) {
+    this.expandMacro();
+    if (this.scanner.wordtype === SCAN_WT_LTR) {
+      if (mode === 0 && /^[-+]$/.test(this.scanner.word)) {
+        digits.push(this.scanner.word);
+        mode = 1;
+        this.scanner.Next();
+      } else if (mode <= 2 && /^\.$/.test(this.scanner.word)) {
+        digits.push(this.scanner.word);
+        mode = 2;
+        this.scanner.Next();
+      } else if (texctype_isspace(this.scanner.word)) {
         if (mode === 4) {
           error_invalid_unit(this, incompleteUnit);
           return null;
@@ -1583,12 +1505,110 @@ console.log("ns.Length(" + value + ", " + unit + ")");
         this.scanner.Next();
         if (mode === 2) mode = 3;
       } else {
-        throw new Error("LOGIC_ERROR: invalid scanner status");
+        if (mode <= 1)
+          error_missing_dimension(this);
+        else if (mode <= 3)
+          error_missing_unit(this);
+        else
+          error_invalid_unit(this, incompleteUnit);
+        return null;
       }
+    } else if (this.scanner.wordtype === SCAN_WT_TXT) {
+
+      // 数字を読み取る
+      var m = null;
+      if (mode <= 2 && (m = /^\d+/.exec(this.scanner.word))) {
+        digits.push(m[0]);
+        mode = 2;
+        this.scanner.ConsumePartialTxt(m[0].length);
+        continue;
+      }
+
+      // 単位を読み取る
+      if (mode <= 1) {
+        error_missing_number(this);
+        return null;
+      }
+
+      var text = this.scanner.word;
+      if (incompleteUnit) text = incompleteUnit + text;
+
+      var m = /^(?:in|bp|cm|mm|pt|pc|sp|dd|cc|em|ex|zw|zh|mu|px)/i.exec(text);
+      if (!m) {
+        if ((m = /^[bcdimpsz]$/i.exec(text))) {
+          // 不完全な単位の場合 (未だ単位になる可能性がある)
+          incompleteUnit = m[0];
+          this.scanner.Next();
+          mode = 4;
+          continue;
+        } else {
+          // 既知の単位名にはなりえない場合
+          error_invalid_unit(doc, text);
+          return null;
+        }
+      }
+
+      var unit = m[0];
+      this.scanner.ConsumePartialTxt(m[0].length);
+      var value = digits.join("");
+      return new ns.Length(value, unit);
+    } else if (this.scanner.wordtype === SCAN_WT_CMD) {
+      if (mode === 4) {
+        error_invalid_unit(doc, incompleteUnit);
+        return null;
+      }
+
+      // ■\dimen123 には未対応
+      var name = this.scanner.word;
+      var handler = this.currentCtx.GetCommandHandler(this, name);
+      if (handler && handler.isDimensionHandler) {
+        this.scanner.Next();
+        if (mode <= 1) digits.push("1");
+        var value = digits.join("");
+        var unit = this.GetLengthData(name) || new ns.Length;
+        return new ns.Length(value, unit);
+      } else {
+        error_invalid_dimension(this, name);
+        return null;
+      }
+    } else if (this.scanner.wordtype === SCAN_WT_COM) {
+      if (mode === 4) {
+        error_invalid_unit(this, incompleteUnit);
+        return null;
+      }
+
+      this.scanner.Next();
+      if (mode === 2) mode = 3;
+    } else {
+      throw new Error("LOGIC_ERROR: invalid scanner status");
     }
   }
-});
+};
 
+//-----------------------------------------------------------------------------
+// ns.Document#ReadLength
+
+ns.Document.prototype.ReadLength = function() {
+  var dimen = this.ReadDimension();
+  if (!dimen) return null;
+
+  var plus = null, minus = null;
+  this.skipSpaceAndCommentExpandingMacro();
+  if (this.scanner.wordtype == SCAN_WT_TXT && /^plus/.test(this.scanner.word)) {
+    this.scanner.ConsumePartialTxt(4);
+    var plus = this.ReadDimension();
+    if (plus) dimen.plus = plus;
+    this.skipSpaceAndCommentExpandingMacro();
+  }
+
+  if (this.scanner.wordtype == SCAN_WT_TXT && /^minus/.test(this.scanner.word)) {
+    this.scanner.ConsumePartialTxt(5);
+    var minus = this.ReadDimension();
+    if (minus) dimen.minus = minus;
+  }
+
+  return dimen;
+};
 //◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 //
 //            class Command
@@ -1763,14 +1783,38 @@ agh.memcpy(ns.Command, {
 //            class Command2
 //
 //◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
+agh.memcpy(_Mod.ErrorMessages, {
+  'aghtex.Command2.MacroInfiniteLoop': [
+    "MacroInfiniteLoop",
+    "ユーザマクロ '\\{cmdName}' の過剰なネスト、または、無限ループの可能性があります。"],
+  'aghtex.Environment.MacroInfiniteLoop': [
+    "MacroInfiniteLoop",
+    "The nesting of the user defined environement {envname} is too deep or in an infinite loop."],
+  'aghtex.Command2.DimensionReader.Garbages': [
+    "garbages after dimension",
+    "There are unrecognized garbages '{garbage}' after the optional dimension argument."]
+});
+/* 引き数指定について。
+ *
+ * #1 ... #2
+ *   通常の引き数読み取りを行う。
+ *   [...] を指定すると省略可能引き数となる。省略された時の値は ... になる。
+ *   フラグ !, @, > (既定) によって読み取った文字列をどう処理するかを選択する。
+ *
+ * #D, #L
+ *   それぞれ <dimension> 及び <length> の引き数を読み取る。
+ *   {} で囲まれていることを許す。
+ *   [...] を指定すると省略可能引き数となる。
+ *   フラグ !, @, > は無視される。
+ */
 var COMMAND2_REG_ARGDEF = new RegExp(
   // $H = [^\#]*          // 地の文
   // $1 = \[ ... \]       // 省略可能引数
   // $2 = ctx! | ctx> | @ // context+処理方法
-  // $3 = 0               // @
-  // $4 = [1-9]           // 引数番号
+  // $3 = 0               // @ (旧形式)
+  // $4 = [1-9DL]         // 引数番号 or D = <dimension>, L = <length>
   // $Tc | $Tt | $Tl      // 後続のコマンド/文字列/記号
-  "([^\\#]*)\\#({0})?({1})?(0)?([1-9])(?:\\\\({2}+|.)|({3}+)|([^#\\\\]))?".format(
+  "([^\\#]*)\\#({0})?({1})?(0)?([1-9DL])(?:\\\\({2}+|.)|({3}+)|([^#\\\\]))?".format(
     /\[(?:[^\]]*|\{[^\{\}]*\})\]/.source,
     /[^\!\>\#]*[\!\>]|\@/.source,
     REG_ISCMDCHAR.source,
@@ -1914,7 +1958,7 @@ agh.memcpy(ns.Command2, {
       var readtype = COMMAND2_READTYPE[$2.last()];
       var context = $2.length > 1 ? $2.substring(0, $2. length - 1) : null;
       var htescape = $3 == "0";
-      var arg_num = $4; // 現時点では使用していない
+      var arg_num = $4; // 数字の場合は意味を持たない (引き数番号は現れた順に割り当てられるので)
 
       // \edef の場合は raw 読み取り (#1) は禁止。
       // 代わりに htm 読み取り (#>1) を強制する。
@@ -1937,7 +1981,54 @@ agh.memcpy(ns.Command2, {
       if ($H != null && $H != "")
         prefix_checker = ns.Command2.CreatePrefixChecker($H);
 
-      if (until_type == null) {
+      if (arg_num === "D" || arg_num === "L") {
+        // #D, #L
+        var reader = arg_num === "L" ? 'ReadLength' : 'ReadDimension';
+        var ar = function Command2ArgReadDimension(doc, cmdName) {
+          if (prefix_checker != null && !prefix_checker(doc, cmdName))
+            return doc.currentCtx.output.error('?');
+
+          var dimen = null, garbage = null;
+          if (optional) {
+            // #[defvalue]D
+
+            doc.skipSpaceAndComment();
+            if (doc.scanner.is(SCAN_WT_LTR, '[')) {
+              // 引き数が指定されているときは、それを読み取る。
+              doc.scanner.Next();
+            } else if (defvalue !== "") {
+              // 引き数が指定されていないときは、
+              // その場で defvalue を解析する為に InsertSource する。
+              doc.scanner.InsertSource(defvalue + ']');
+            } else {
+              // 既定の引き数が空なら ns.Length として null を返す。
+              return null;
+            }
+
+            dimen = doc[reader]();
+            garbage = doc.GetArgRUntil(null, SCAN_WT_LTR, ']').trim();
+          } else {
+            doc.skipSpaceAndComment();
+            if (doc.scanner.is(SCAN_WT_LTR, '{')) {
+              // {} に囲まれて <dimension> がある場合
+              doc.scanner.Next();
+              dimen = doc[reader]();
+              doc.scanner.InsertSource('{');
+              garbage = doc.GetArgumentRaw().replace(/^\{|\}$/g, "").trim();
+            } else {
+              // 裸で <dimension> がある場合
+              dimen = doc[reader]();
+            }
+          }
+
+          if (garbage && garbage.length) {
+            doc.currentCtx.output.error(
+              'aghtex.Command2.DimensionReader.Garbages',
+              {garbage: garbage}, nsName + 'Command2.ArgumentReader(#[...]D)');
+          }
+          return dimen;
+        };
+      } else if (until_type == null) {
         // 一引数読み取り関数の定義
         var ar = function Command2ArgRead(doc, cmdName) {
           if (prefix_checker == null || prefix_checker(doc, cmdName)) {

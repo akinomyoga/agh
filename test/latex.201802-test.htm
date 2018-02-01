@@ -55,6 +55,14 @@ body {
 \def\A{.1} [\hbox to 1\A\mywidth {C}]
 \def\A{m} [\hbox to 1.2c\A {D}]
 
+\section{length の対応}
+
+\newlength{\mylength}
+\mylength = 1cm plus 1mm minus 2mm
+[\hbox to \mylength {A}]
+\setlength{\mylength}{2cm plus 1mm minus 2mm}
+[\hbox to \mylength {B}]
+
 \end{document}
 </div>
 </body>
