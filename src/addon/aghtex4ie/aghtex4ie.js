@@ -51,7 +51,7 @@
         return;
       }
 
-      try{
+      try {
         var aghtex=agh.LaTeX.Utils;
         load_css(_window.document,"aghtex.css");
         load_css(_window.document,"agh/latex/latex.ie.css");
@@ -74,7 +74,7 @@
     window.setInterval(function(){
       var frames=document.frames;
       for(var i=0,iN=frames.length;i<iN;i++){
-        try{
+        try {
           var f=frames(i);
 
           // 20121215

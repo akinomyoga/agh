@@ -163,7 +163,7 @@
       clear:function(){
         for(var i=Thunk.instanceCount-1;i>=0;i--){
           var thunk=Thunk.instances[i];
-          try{if(thunk)thunk.detach();}catch(ex){}
+          try {if(thunk)thunk.detach();}catch(ex){}
         }
         Thunk.instanceCount=0;
         Thunk.instances.length=0;

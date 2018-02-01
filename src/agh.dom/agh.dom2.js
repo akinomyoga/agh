@@ -154,7 +154,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
     };
   }else if(agh.browser.vIE){
     agh.dom.setInnerText=function(elem,value){
-      try{
+      try {
         elem.innerText=value;
       }catch(ex){
         // 手持ちの IE6 環境の所為だと思うが
@@ -229,7 +229,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
 
     // this.m_style
     if(agh.browser.vIE&&_document.createStyleSheet){
-      try{
+      try {
         this.m_sheet=_document.createStyleSheet();
       }catch(ex){}
     }
@@ -554,7 +554,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
         margin:'0',padding:'0'
       });
 
-      try{
+      try {
         tmp0.appendChild(tmp);
         document.body.appendChild(tmp0);
         function measure(unit){
@@ -1489,7 +1489,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
       // * preventDefault, stopPropagation しても同じ所に登録された handler は常に実行する。
       params.currentTarget=target;
       for(var i=0,iN=hlist.length;i<iN;i++){
-        try{
+        try {
           hlist[i].call(target,agh.wrap(params));
         }catch(ex){
           if(!agh.scripts.invoke_onerror(hlist[i],ex))

@@ -57,7 +57,7 @@
   window.setInterval(function(){
     var frames=document.frames;
     for(var i=0,iN=frames.length;i<iN;i++){
-      try{
+      try {
         var f=frames(i);
         if(!register_frame(f))continue;
 

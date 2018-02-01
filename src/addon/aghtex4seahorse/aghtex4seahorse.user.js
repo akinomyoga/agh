@@ -55,7 +55,7 @@ var window=_window;
     //   return buff[0].join("\n");
     // },
     ReadFileAllText:function(filename,charset){
-      try{
+      try {
         var f=sleipnir.CreateObject("ADODB.Stream");
         f.Charset=charset||"UTF-8";
         f.Open();

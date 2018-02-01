@@ -95,7 +95,7 @@ void STDMETHODCALLTYPE CMwgtex4IeBho::OnDocumentComplete(IDispatch *pDisp,VARIAN
 
 void RemoveImages(IHTMLDocument2* pDocument){
   mwg::MshtmlDom::HTMLDocument document(pDocument);
-  try{
+  try {
     mwg::MshtmlDom::HTMLElementCollection images=document.images;
     if(!images)return;
 
@@ -126,7 +126,7 @@ void CMwgtex4IeBho::document_onload(IHTMLDocument2* pdocument){
   //  //IHTMLElement4* hello4;
   //}
 
-  try{
+  try {
 
     mwg::MshtmlDom::HTMLDocument document(pdocument);
     //document.parentWindow.execScript(CComBSTR("alert(123);"),NULL);

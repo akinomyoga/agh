@@ -155,7 +155,7 @@ agh.scripts.register("addon/aghtex.js",[
         var resource=[];
         var window_onunload=function(){
           for(var i=0,iN=resource.length;i<iN;i++){
-            try{
+            try {
               var elem=resource[i][0];
               var eventName=resource[i][1];
               var listener=resource[i][2];

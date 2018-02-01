@@ -48,7 +48,7 @@ agh.scripts.register("agh.debug.js",[
 
   // utility functions
   function in_s(name,obj){
-    try{
+    try {
       return name in obj
     }catch(ex){
       return false;
@@ -81,7 +81,7 @@ agh.scripts.register("agh.debug.js",[
     var getOwnPropertyNames=function(obj){
       var a=agh.ownkeys(obj);
 
-      try{
+      try {
         if(obj.hasOwnProperty)
           for(var i=0;i<DontEnumProperties.length;i++){
             var prop=DontEnumProperties[i];
@@ -129,7 +129,7 @@ agh.scripts.register("agh.debug.js",[
 
     // 自身の上で定義された toString で試す。
     // - 配列の場合「中身」の toString() を連結した物になるので除外
-    try{
+    try {
       if(!(obj instanceof Array)){
         var m;
         var s=obj.toString();
@@ -140,7 +140,7 @@ agh.scripts.register("agh.debug.js",[
     // IE7 以前は HTML ノードは JavaScript オブジェクトではない。
     // IE8 以降も Object.prototype.toString では判定できない。
     if(agh.browser.vIE)
-      try{
+      try {
         /* Fx が obj.nodeType でエラーを吐く:
          *   TypeError: Value does not implement interface Node.
          */
@@ -164,13 +164,13 @@ agh.scripts.register("agh.debug.js",[
       }catch(ex){}
 
     // Object.prototype.toString で試す。
-    try{
+    try {
       var m;
       var s=Object.prototype.toString.apply(obj);
       if((m=/^\s*\[object\s+([^\s\[\]]+)\]/.exec(s)))return m[1];
     }catch(ex){}
 
-    try{
+    try {
       if(typeof obj.constructor==="function"){
         var s=Function.prototype.get_name.call(obj.constructor);
         if(s.length>0)return s;
@@ -241,16 +241,16 @@ agh.scripts.register("agh.debug.js",[
   };
   function getFunctionSource(obj){
     if(obj!=null){
-      try{
+      try {
         return Function.prototype.toString.call(obj);
       }catch(ex){}
 
-      try{
+      try {
         if(Function.prototype.toSource)
           Function.prototype.toSource.call(obj);
       }catch(ex){}
 
-      try{
+      try {
         return obj.toString();
       }catch(ex){}
     }
@@ -493,7 +493,7 @@ agh.scripts.register("agh.debug.js",[
     _initializeNode_object:function(){
       var htline=this._html_keyeq()+this._htmlObjectInstance(this.typeName);
 
-      try{
+      try {
         var __proto__=getPrototypeOf(this.obj);
         if(__proto__===Number.prototype){
           var s=Number.prototype.toString.call(this.obj);
@@ -557,7 +557,7 @@ agh.scripts.register("agh.debug.js",[
       }
 
       for(var i=0;i<keys.length;i++){
-        try{
+        try {
           var child=obj[keys[i]];
         }catch(ex){
           var child=new ObjectTreeErrorInfo("プロパティの取得に失敗しました",ex);
@@ -600,7 +600,7 @@ agh.scripts.register("agh.debug.js",[
     //---------------------------------
     // object
     _initializeNode_string:function(){
-      try{
+      try {
         var s=String.prototype.toString.call(this.obj);
       }catch(ex){
         this._initializeNode_object();
@@ -627,7 +627,7 @@ agh.scripts.register("agh.debug.js",[
       if(this.value)
         var s=this.value;
       else{
-        try{
+        try {
           var s=this.value=String.prototype.toString.call(this.obj);
         }catch(ex){
           this.ehold.appendChild(this._document.createTextNode("[error on converting to string]"));
@@ -662,7 +662,7 @@ agh.scripts.register("agh.debug.js",[
         var elem=prompt("変更後の値を入力して下さい",obj0[key0]);
         if(elem!=null){
           elem=elem.toString();
-          try{obj0[key0]=elem;this.innerHTML='"'+String.Escape.HTML(elem)+'"';}
+          try {obj0[key0]=elem;this.innerHTML='"'+String.Escape.HTML(elem)+'"';}
           catch(e){alert("書き込み出来ませんでした");}
         }
       }
@@ -676,7 +676,7 @@ agh.scripts.register("agh.debug.js",[
           //}else if(obj instanceof Array){
         }else if(!(obj instanceof Object)){
           //Detect HTMLElement
-          try{
+          try {
             if(obj.nodeType!=null&&obj.tagName!=null&&typeof(obj.tagName)=="string"){
               return this.Element2Node(key,obj);
             }
@@ -720,14 +720,14 @@ agh.scripts.register("agh.debug.js",[
       var this0=this;
       var this_tree=this;
       x.makeMember=function(){
-        try{
+        try {
           this_tree.Object2Node("prototype",func.prototype).$each(this.holder.appendChild);
         }catch(e){}
 
         if(func.caller instanceof Function)
           this_tree.Function2Node("caller",func.caller).$each(holderAppender);
         if(func.arguments!=null){
-          try{
+          try {
             var a=this_tree.Arguments2Node("arguments",func.arguments,func.getArgumentList());
             a.$each(holderAppender);
           }catch(e){alert("err");}
@@ -746,7 +746,7 @@ agh.scripts.register("agh.debug.js",[
       var i=0;
       while(typeof(args[i])!="undefined"&&args[i]!=null){
         var f_key=(Function.IsInstance(args[i]))?"Function2NodeBase":"Some2Node";
-        try{
+        try {
           var key1=i<arglist.length?arglist[i]:i.toString();
           this[f_key](key1,args[i]).$each(r[1].appendChild);
         }catch(e){}
@@ -924,7 +924,7 @@ agh.scripts.register("agh.debug.js",[
 
       var title='inspect() from <span class="agh-debug-console-caller">'+function_name(arguments.callee.caller)+'</span>';
       this._puthead(title);
-      try{
+      try {
         var e=agh.debug.createObjectTree(name,obj);
       }catch(ex){log(ex.stack);}
       this._puthtml("").appendChild(agh.debug.createObjectTree(name,obj));
@@ -977,7 +977,7 @@ agh.scripts.register("agh.debug.js",[
     //   return new NativeError(message,file,line);
     // };
     function getErrorStack(){
-      try{
+      try {
         throw new NativeError("");
       }catch(ex){
         return ex.stack||ex.stacktrace;
@@ -1068,7 +1068,7 @@ agh.scripts.register("agh.debug.js",[
         if(level==null)level=0;
         var data=[];
         var originalPrepareStackTrace=Error.prepareStackTrace;
-        try{
+        try {
           // http://qiita.com/halhide/items/caf81a7166d92dcfdcd1
           Error.prepareStackTrace=function(err,stack){
             // https://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
