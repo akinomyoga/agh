@@ -106,9 +106,10 @@ blockquote.tex-quote{text-indent:0px;}
 blockquote.tex-quota{text-indent:1em;}
 tex\:verse{display:block;margin-left:2em;margin-right:2em;}
 
-tex\:mbox{display:inline-block;vertical-align:baseline;white-space:nowrap;}
-tex\:mbox.aghtex-latex-fbox{border:1px solid $"borderColor";padding:.3em;}
-tex\:mbox.aghtex-latex-frame{border:1px solid $"borderColor";padding:0em;}
+tex\:i.aghtex-hbox{display:inline-block;vertical-align:baseline;white-space:nowrap;}
+tex\:i.aghtex-hbox-width{width:0;overflow:visible;margin-right:1cm /* default value */;}
+tex\:i.aghtex-hbox-fbox{border:1px solid $"borderColor";padding:.3em;}
+tex\:i.aghtex-hbox-frame{border:1px solid $"borderColor";padding:0em;}
 
 /* \begin{enumerate}, \begin{itemize} */
 ul.aghtex-ie,
@@ -1221,7 +1222,7 @@ a.aghtex-url-sf:hover,
 a.aghtex-url-same:hover{color:gray;}
 
 /* \usepackage{color} */
-tex\:mbox.aghtex-color-box{padding:0.3em;}
+tex\:i.aghtex-color-box{padding:0.3em;}
 
 /*----------------------------------------------------------
 		documentclass

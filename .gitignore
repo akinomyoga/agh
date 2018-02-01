@@ -29,6 +29,13 @@
 
 /tools/out
 
+# experimental files
+/src/latex/test/*.log
+/src/latex/test/*.aux
+/src/latex/test/*.pdf
+/src/latex/test/*.dvi
+
+
 /gh-pages
 
 # edit

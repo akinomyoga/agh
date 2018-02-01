@@ -101,7 +101,7 @@ ns.Source = function(text) {
 agh.memcpy(ns.Source.prototype, {
   next: function() {
     this.index++;
-#%m Source::read_char (
+#%m Source::read_char
     if (this.index < this.length) {
       this.ch = this.text.substr(this.index, 1);
       return true;
@@ -109,7 +109,7 @@ agh.memcpy(ns.Source.prototype, {
       this.ch = "EOF"; // ■TODO: "EOF" を別の物に。SCAN_CH_EOF={}; 等。
       return false;
     }
-#%)
+#%end
 #%x Source::read_char
   },
   wbegin: function aghtex_Source_wbegin() {
@@ -142,15 +142,15 @@ agh.memcpy(ns.Scanner4.prototype, {
   //======================================================================
   // Source
   InsertSource: function(instext) {
-//%m Scanner::pushSource (
+//%m Scanner::pushSource
     if (this.source != null) //&& this.source.index < this.source.length) // ■■
       this.sourceStack.push(this.source);
-//%)
-//%m Scanner::popSource (
+//%end
+//%m Scanner::popSource
     if (this.sourceStack.length > 0) {
       this.source=this.sourceStack.pop();
     }
-//%)
+//%end
     /// <summary>
     /// 現在の単語開始位置に文字列を挿入します。
     /// </summary>
@@ -163,9 +163,9 @@ agh.memcpy(ns.Scanner4.prototype, {
     /// 現在の txt から初めの一文字だけ取得し、残りは次の読み出しに回します。
     /// </summary>
     /// <condition>wordtype==SCAN_WT_TXT である事が呼び出し条件です。</condition>
-//%if DEBUG_SCANNER (
+//%if DEBUG_SCANNER
     aghtex_assert(this.wordtype == SCAN_WT_TXT, "Scanner4#ClipFirstFromTxt assert(Scanner4.wordtype=='txt')");
-//%)
+//%end
     var txt = this.word;
     if (this.word.length > 1) {
       this.source.wstart++;
@@ -237,9 +237,9 @@ agh.memcpy(ns.Scanner4.prototype, {
     }
     // </inline-expansion>
 
-//%if DEBUG_SCANNER (
+//%if DEBUG_SCANNER
     aghtex_assert(src.index < src.length, "Scanner4#Next: assert(src.index<src.length)");
-//%)
+//%end
     var c = src.text.charCodeAt(src.index);
 
 //%[is_special_character="c < 64 && !(48 <= c && c < 58) && 0 <= c || 91 <= c && c < 97 || 123 <= c && c<127 || c == 0x3000"]
@@ -253,9 +253,9 @@ agh.memcpy(ns.Scanner4.prototype, {
         else
           var reg = /\\(?:[^!"#$&'()=~|\-\^`{\[;:\]+},.\/<>?_ \n\t\r\v\f\b　\\%*\x1F0-9@]+\*?|[^*]\*?|\*|$)/g;
 
-//%m Scanner4::reg_match_word (
+//%m Scanner4::reg_match_word
         reg.lastIndex = src.index;
-//%  if DEBUG_SCANNER (
+//%  if DEBUG_SCANNER
         if (!reg.test(src.text)) {
           this.word = null;
           this.wordtype = SCAN_WT_INV;
@@ -263,8 +263,8 @@ agh.memcpy(ns.Scanner4.prototype, {
         }
 //%  else
         reg.test(src.text);
-//%  )
-//%)
+//%  end
+//%end
 //%x Scanner4::reg_match_word
 
         this.wordtype = SCAN_WT_CMD;
@@ -404,7 +404,7 @@ agh.memcpy(ns.Scanner4.prototype, {
   //======================================================================
   // 現在の単語
   is: function(type, word) {
-    return this.wordtype == type && this.word == word;
+    return this.wordtype === type && this.word === word;
   },
   //======================================================================
   // 自己記述
@@ -459,12 +459,12 @@ agh.memcpy(ns.ContextFactory.prototype, {
       // 異なる base-Context を保持していると言うことになる。
       this.baseFcts.push(factory);
     }
-#%if DEBUG (
+#%if DEBUG
     else {
       // ContextFactory 丈でなく Context を直接指定できるようにするべきか?
-      throw new Error("Unknown type of ContextFactory-base");
+      throw new Error("LOGIC_ERROR: Unknown type of ContextFactory-base");
     }
-#%)
+#%end
   },
   _instantiateHandler: function(definition) {
     if (typeof definition === "function") {
@@ -482,7 +482,7 @@ agh.memcpy(ns.ContextFactory.prototype, {
 
       return new ns.Command2(cmdtype, argdef, cmddef);
     } else {
-      throw new Error("FATAL: Unexptected type of command handler!");
+      throw new Error("LOGIC_ERROR: Unexptected type of command handler!");
     }
   },
   AddLetterHandler: function(letter, definition) {
@@ -499,11 +499,11 @@ agh.memcpy(ns.ContextFactory.prototype, {
       for (var i = 0; i < letter.length; i++)
         this.handlerL[letter.substr(i, 1)] = definition;
     }
-#%if DEBUG (
+#%if DEBUG
     else {
-      throw new Error("AddLetterHandler の第一引数には登録する文字を指定して下さい");
+      throw new Error("LOGIC_ERROR: AddLetterHandler の第一引数には登録する文字を指定して下さい");
     }
-#%)
+#%end
   },
   AddCommandHandler: function(letter, definition) {
     this.handlerC[letter] = this._instantiateHandler(definition);
@@ -703,7 +703,7 @@ agh.memcpy(ns.Context.prototype, {
     if (h) {
       h(doc, cmd);
       //doc.skipSpaceAndComment(); // 20121206
-      return !!h.fInsertMacro;
+      return !!h.isInsertMacro;
     } else {
       doc.scanner.Next();
       //doc.skipSpaceAndComment(); // 20121206
@@ -965,9 +965,12 @@ agh.memcpy(ns.Document.prototype, {
       var key = keys[i];
       ret.contexts[key] = this.contexts[key].Clone();
     }
-    // TODO 未完成
+    // ■TODO 未完成
 
     return ret;
+  },
+  toString: function() {
+    return "[object " + nsName + ".Document]";
   }
 });
 agh.memcpy(ns.Document.prototype, {
@@ -1000,20 +1003,20 @@ agh.memcpy(ns.Document.prototype, {
       }
       return new ns.Context(baseCtxs);
     }
-#%if DEBUG(
+#%if DEBUG
     else if (val) {
-      throw new Error("Document#context_cast ArgumentUnexpectedType");
+      throw new Error("LOGIC_ERROR: Document#context_cast ArgumentUnexpectedType");
     }
-#%)
+#%end
     return null;
   },
   wrap_context: function(context) {
-#%if DEBUG(
+#%if DEBUG
     if (context == null)
-      throw new Error("Document#context_cast ArgumentNull");
+      throw new Error("LOGIC_ERROR: Document#context_cast ArgumentNull");
     if (!(context instanceof ns.Context))
-      throw new Error("Document#context_cast ArgumentUnexpectedType");
-#%)
+      throw new Error("LOGIC_ERROR: Document#context_cast ArgumentUnexpectedType");
+#%end
     return new ns.Context([context]);
   }
 });
@@ -1034,9 +1037,42 @@ agh.memcpy(ns.Document.prototype, {
     return ret;
   },
   skipSpaceAndComment: function() {
-    //■二回以上の連続改行を検出 → return true
-    while (this.scanner.wordtype == "comment" || this.scanner.wordtype == "ltr" && texctype_isspace(this.scanner.word))
+    //■二回以上の連続改行を検出 → return true?
+    while (this.scanner.wordtype == SCAN_WT_COM || this.scanner.wordtype == SCAN_WT_LTR && texctype_isspace(this.scanner.word))
       this.scanner.Next();
+  },
+  /// @fn expandMacro
+  ///   現在の単語がマクロである場合、それを展開して次の非マクロの単語を取得します。
+  expandMacro: function() {
+    while (this.scanner.wordtype === SCAN_WT_CMD) {
+      var commandName = this.scanner.word;
+      var handler = this.GetMacroHandler(commandName);
+      if (handler && handler.isUserMacro)
+        handler(this, commandName);
+      else
+        return;
+    }
+  },
+  skipSpaceAndCommentExpandingMacro: function() {
+    for (;;) {
+      switch (this.scanner.wordtype) {
+      case SCAN_WT_COM:
+        this.scanner.Next();
+        break;
+      case SCAN_WT_LTR:
+        if (!texctype_isspace(this.scanner.word)) return;
+        this.scanner.Next();
+        break;
+      case SCAN_WT_CMD:
+        var commandName = this.scanner.word;
+        var handler = this.GetMacroHandler(commandName);
+        if (!handler) return;
+        handler(this, commandName);
+        break;
+      default:
+        return;
+      }
+    }
   },
   //======================================================================
   //  Flags:
@@ -1044,7 +1080,7 @@ agh.memcpy(ns.Document.prototype, {
   //    pushFlags, popFlags を手動で呼び出して階層を作る。
   //----------------------------------------------------------------------
   pushFlags: function() {
-    this.flags = agh.wrap(this. flags, {'core/oldflags': this.flags});
+    this.flags = agh.wrap(this.flags, {'core/oldflags': this.flags});
   },
   popFlags: function() {
     var parent = this.flags['core/oldflags']
@@ -1129,30 +1165,30 @@ agh.memcpy(ns.Document.prototype, {
   /// <param name="baseContext">読み取りに使用する context の元となる context を指定します。</param>
   Read: function(baseContext) {
     //-----------------------------------------------------------------------
-#%m Document::Read::switch (
+#%m Document::Read::switch
       var word = this.scanner.word;
       switch (this.scanner.wordtype) {
-        case "ltr":
+        case SCAN_WT_LTR:
           this.ReadLetter(word);
           break;
-        case "cmd":
+        case SCAN_WT_CMD:
           this.currentCtx.ReadCommand(this, word);
           break;
-        case "txt":
+        case SCAN_WT_TXT:
           this.ReadText(word);
           break;
-        case "comment":
+        case SCAN_WT_COM:
           this.scanner.Next();
           break;
-#%if DEBUG (
+#% if DEBUG
         default:
-        case "invalid":
+        case SCAN_WT_INV:
           output.error("無効な語", "無効な語です。パーサ自体のバグである可能性が高いです。");
           this.currentCtx.BREAK = true;
           break;
-#%)
+#% end
       }
-#%)
+#%end
     //-----------------------------------------------------------------------
 
     var output = new ns.Writer();
@@ -1216,11 +1252,10 @@ agh.memcpy(ns.Document.prototype, {
       return optional
         ? this.GetOptionalArgumentRaw()
         : this.GetArgumentRaw();
-#%if DEBUG(
+#%if DEBUG
     default:
-      throw new Error("Document#ReadArgument: ArgumentInvalid 'Specified command type is unexpected.'");
-      break;
-#%)
+      throw new Error("LOGIC_ERROR: Document#ReadArgument (arg#1): the specified command type is unrecognized.");
+#%end
     }
     //baseContext.BREAK = true;
     //return this.Read(baseContext);
@@ -1238,12 +1273,12 @@ agh.memcpy(ns.Document.prototype, {
     var fmacro = false;
     {
       this.skipSpaceAndComment();
-      this.pushContext(this.context_cast(direct?basectx: [basectx, "sub.argument"]));
+      this.pushContext(this.context_cast(direct ? basectx : [basectx, "sub.argument"]));
       this.currentCtx.output = output;
       this.currentCtx.Initialize();
       this.currentCtx.BREAK = true;
       for (;;) {
-#%x Document::Read::switch.r|case "cmd":|case "cmd":fmacro=|
+#%x Document::Read::switch.r|case SCAN_WT_CMD:|case SCAN_WT_CMD: fmacro=|
         if (this.currentCtx.BREAK) {
           this.currentCtx.BREAK = false;
           break;
@@ -1292,7 +1327,7 @@ agh.memcpy(ns.Document.prototype, {
   /// </returns>
   GetOptionalArgumentHtml: function(basectx) {
     this.skipSpaceAndComment();
-    if (this.scanner.is("ltr", "[")) {
+    if (this.scanner.is(SCAN_WT_LTR, "[")) {
       this.scanner.Next();
       var ctx = this.context_cast([basectx || this.currentCtx, "sub.bracket"]);
       return this.Read(ctx);
@@ -1302,9 +1337,9 @@ agh.memcpy(ns.Document.prototype, {
   },
   GetOptionalArgumentRaw: function() {
     this.skipSpaceAndComment();
-    if (this.scanner.is("ltr", "[")) {
+    if (this.scanner.is(SCAN_WT_LTR, "[")) {
       this.scanner.Next();
-      return this.GetArgRUntil(null, "ltr", "]");
+      return this.GetArgRUntil(null, SCAN_WT_LTR, "]");
     } else {
       return null;
     }
@@ -1340,7 +1375,7 @@ agh.memcpy(ns.Document.prototype, {
       // ・改行の数を数える?
       this.skipSpaceAndComment();
 
-      if (this.scanner.wordtype == "ltr") {
+      if (this.scanner.wordtype === SCAN_WT_LTR) {
         if (this.scanner.word == "^") {
           if (ret.sup == null) {
             this.scanner.Next();
@@ -1358,14 +1393,11 @@ agh.memcpy(ns.Document.prototype, {
       break;
     }
     return ret;
-  },
-  toString: function() {
-    return "[object " + nsName + ".Document]";
   }
 });
 ns.Document.Classes = {};
 ns.Document.Packages = {};
-#%if DEBUG(
+#%if DEBUG
 ns.Document.Test = function(text) {
   var doc = new ns.Document(text, "global");
   window.test_doc = doc;
@@ -1373,7 +1405,190 @@ ns.Document.Test = function(text) {
   doc.Parse();
   return doc.html;
 };
-#%)
+#%end
+
+//-----------------------------------------------------------------------------
+// ns.Document#ReadDimension
+
+agh.memcpy(_Mod.ErrorMessages, {
+  "aghtex.Document.ReadDimension.MissingDimension": [
+    "missing dimension",
+    "a number followed by a unit or a dimension/length command is expected."],
+  "aghtex.Document.ReadDimension.MissingUnit": [
+    "missing unit",
+    "a unit of the dimension, which may be a unit name or a dimension/length command, is expected."],
+  "aghtex.Document.ReadDimension.MissingNumber": [
+    "missing number",
+    "a unit is specified without any number while reading a dimension."],
+  "aghtex.Document.ReadDimension.InvalidUnit": [
+    "invalid unit",
+    "the unit name of the dimension, '{unit}', is unrecognized."],
+  "aghtex.Document.ReadDimension.InvalidDimension": [
+    "invalid dimension",
+    "a command '\\{cmd}' was given for the unit of the dimension, but the command does not give a valid dimension/length."],
+});
+function error_missing_dimension(doc) {
+  doc.currentCtx.output.error(
+    "aghtex.Document.ReadDimension.MissingDimension", null,
+    nsName + ".Document#ReadDimension");
+}
+function error_missing_number(doc) {
+  doc.currentCtx.output.error(
+    "aghtex.Document.ReadDimension.MissingNumber", null,
+    nsName + ".Document#ReadDimension");
+}
+function error_missing_unit(doc) {
+  doc.currentCtx.output.error(
+    "aghtex.Document.ReadDimension.MissingUnit", null,
+    nsName + ".Document#ReadDimension");
+}
+function error_invalid_unit(doc, unit) {
+  doc.currentCtx.output.error(
+    "aghtex.Document.ReadDimension.InvalidUnit", {unit: unit},
+    nsName + ".Document#ReadDimension");
+}
+function error_invalid_dimension(doc, cmd) {
+  doc.currentCtx.output.error(
+    "aghtex.Document.ReadDimension.InvalidDimension", {cmd: name},
+    nsName + ".Document#ReadDimension");
+}
+agh.memcpy(ns.Document.prototype, {
+  ReadDimension: function() {
+    /// 以下の形式の文字列を読み取って ns.Length オブジェクトを返します。
+    /// この形式の文字列が読み取れない場合は null を返します。
+    ///
+    ///   <dimension> :
+    ///     - <sign>? <number> <unit>
+    ///     | <sign>? <number>? <\dimension>
+    ///
+    ///   <sign> :- '-' | '+'
+    ///   <number> :- /[\d.]+/
+    ///   <unit> :- /in|bp|cm|mm|pt|pc|sp|dd|cc|em|ex|zw|zh|mu|px/i
+    ///
+
+    /* 実装上の注意:
+     *   <number> を構成する文字の内、小数点は SCAN_WT_LTR で 1 つずつ読み取られる。
+     *   英字は SCAN_WT_TXT でまとめて読み取られる。
+     *   <unit> と連続して記述されている場合、<unit> も一緒に読み取られる。
+     *   途中でマクロの展開があるときは分断して読み取られる。
+     *
+     *   <unit> は SCAN_WT_TXT でまとめて読み取られる。
+     *   但し、<number> と同様に途中でマクロの展開があると分断して読み取られる。
+     */
+
+    var digits = [];
+    var incompleteUnit = null;
+
+    var mode = 0; // 0: 符号待ち, 1: 数値待ち, 2: 数値読み取り中, 3: 単位待ち, 4: 単位読み取り中
+    for (;;) {
+console.log(this.scanner.wordtype + ":" + this.scanner.word);
+      this.expandMacro();
+console.log("-> " + this.scanner.wordtype + ":" + this.scanner.word);
+      if (this.scanner.wordtype === SCAN_WT_LTR) {
+        if (mode === 0 && /^[-+]$/.test(this.scanner.word)) {
+          digits.push(this.scanner.word);
+          mode = 1;
+          this.scanner.Next();
+        } else if (mode <= 2 && /^\.$/.test(this.scanner.word)) {
+          digits.push(this.scanner.word);
+          mode = 2;
+          this.scanner.Next();
+        } else if (texctype_isspace(this.scanner.word)) {
+          if (mode === 4) {
+            error_invalid_unit(this, incompleteUnit);
+            return null;
+          }
+
+          this.scanner.Next();
+          if (mode === 2) mode = 3;
+        } else {
+          if (mode <= 1)
+            error_missing_dimension(this);
+          else if (mode <= 3)
+            error_missing_unit(this);
+          else
+            error_invalid_unit(this, incompleteUnit);
+          return null;
+        }
+      } else if (this.scanner.wordtype === SCAN_WT_TXT) {
+
+        // 数字を読み取る
+        var m = null;
+        if (mode <= 2 && (m = /^\d+/.exec(this.scanner.word))) {
+          digits.push(m[0]);
+          mode = 2;
+          this.scanner.word = this.scanner.word.slice(m[0].length);
+          if (this.scanner.word.length === 0) {
+            this.scanner.Next();
+            continue;
+          }
+        }
+
+        // 単位を読み取る
+        if (mode <= 1) {
+          error_missing_number(this);
+          return null;
+        }
+
+        var text = this.scanner.word;
+        if (incompleteUnit) text = incompleteUnit + text;
+
+        var m = /^(?:in|bp|cm|mm|pt|pc|sp|dd|cc|em|ex|zw|zh|mu|px)/i.exec(text);
+        if (!m) {
+          if ((m = /^[bcdimpsz]$/i.exec(text))) {
+            // 不完全な単位の場合 (未だ単位になる可能性がある)
+            incompleteUnit = m[0];
+            this.scanner.Next();
+            mode = 4;
+            continue;
+          } else {
+            // 既知の単位名にはなりえない場合
+            error_invalid_unit(doc, text);
+            return null;
+          }
+        }
+
+        var unit = m[0];
+        this.scanner.word = text.slice(m[0].length);
+        if (this.scanner.word.length === 0) this.scanner.Next();
+        var value = digits.join("");
+console.log("ns.Length(" + value + ", " + unit + ")");
+        return new ns.Length(value, unit);
+      } else if (this.scanner.wordtype === SCAN_WT_CMD) {
+        if (mode === 4) {
+          error_invalid_unit(doc, incompleteUnit);
+          return null;
+        }
+
+        // ■dimen
+        var name = this.scanner.word;
+        var handler = this.currentCtx.GetCommandHandler(this, name);
+        if (handler && ns.Modules["mod:length"].IsLengthHandler(handler)) {
+          this.scanner.Next();
+          if (mode <= 1) digits.push("1");
+          var value = digits.join("");
+          var unit = this.GetLengthData(name) || new ns.Length;
+console.log("ns.Length(" + value + ", " + unit + ")");
+          return new ns.Length(value, unit);
+        } else {
+          error_invalid_dimension(this, name);
+          return null;
+        }
+      } else if (this.scanner.wordtype === SCAN_WT_COM) {
+        if (mode === 4) {
+          error_invalid_unit(this, incompleteUnit);
+          return null;
+        }
+
+        this.scanner.Next();
+        if (mode === 2) mode = 3;
+      } else {
+        throw new Error("LOGIC_ERROR: invalid scanner status");
+      }
+    }
+  }
+});
+
 //◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 //
 //            class Command
@@ -1586,7 +1801,7 @@ ns.Command2 = function(type, argdef, definition) {
         var ins = definition;
         doc.scanner.InsertSource(ins);
       };
-      self.fInsertMacro = true;
+      self.isInsertMacro = true;
       return self;
     } else {
       var self = function(doc, cmdName) {
@@ -1594,7 +1809,7 @@ ns.Command2 = function(type, argdef, definition) {
         var ins = argreaders.apply_read_args(definition, doc, cmdName, false);
         doc.scanner.InsertSource(ins);
       };
-      self.fInsertMacro = true;
+      self.isInsertMacro = true;
       return self;
     }
   case "m": // \def, ユーザマクロ (循環検出機能付き)
@@ -1608,7 +1823,8 @@ ns.Command2 = function(type, argdef, definition) {
         var ins = definition;
         doc.scanner.InsertSource(ins)
       };
-      self.fInsertMacro = true;
+      self.isInsertMacro = true;
+      self.isUserMacro = true;
       return self;
     } else {
       var self = function(doc, cmdName) {
@@ -1620,7 +1836,8 @@ ns.Command2 = function(type, argdef, definition) {
         var ins = argreaders.apply_read_args(definition, doc, cmdName, false);
         doc.scanner.InsertSource(ins);
       };
-      self.fInsertMacro = true;
+      self.isInsertMacro = true;
+      self.isUserMacro = true;
       return self;
     }
   case "s>":
@@ -1706,13 +1923,13 @@ agh.memcpy(ns.Command2, {
       var until_type = null;
       var until_word = null;
       if ($Tc != null && $Tc != "") {
-        until_type = "cmd";
+        until_type = SCAN_WT_CMD;
         until_word = $Tc;
       } else if ($Tt != null && $Tt != "") {
-        until_type = "txt";
+        until_type = SCAN_WT_TXT;
         until_word = $Tt;
       } else if ($Tl != null && $Tl != "") {
-        until_type = "ltr";
+        until_type = SCAN_WT_LTR;
         until_word = $Tl;
       }
 
@@ -1804,7 +2021,7 @@ agh.memcpy(ns.Command2, {
         break;
       default:
       case SCAN_WT_INV:
-        throw new Error("CreatePrefixChecker: BUG: invalid Scanner status!");
+        throw new Error("LOGIC_ERROR: CreatePrefixChecker: invalid Scanner status");
       }
     }
 

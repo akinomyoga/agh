@@ -1,0 +1,119 @@
+\documentclass{revtex4-1}
+\usepackage{color}
+\definecolor{darkgreen}{rgb}{0,0.5,0.0}
+\def\Supported{{\color{darkgreen} [supported]}}
+\def\Unsupported{{\color{red} [unsupported]}}
+\begin{document}
+
+\Supported This is a test: [\hbox to 1cm {hello}].
+
+\Supported This is a test: [\hbox {hello}].
+
+%% This is a test: [\hbox 1cm {hello}]. %% Error on ``1''
+
+%% This is a test: [\hbox A]. %% Error on ``A''
+
+%% This is a test: [\hbox to 1cm A]. %% Error on ``A''
+
+%% This is a test: [\hbox to 1cm3mm {hello}]. %% Error on ``3''
+
+\Supported This is a test: [\hbox to 1 cm {hello}]. %% OK
+%% This is a test: [\hbox to cm {hello}]. %% Error on ``3''
+%% This is a test: [\hbox to 1 c m {hello}]. %% Error on ``c''
+
+\Supported This is a test: [\hbox to \textwidth {hello}]. %% OK
+
+\Supported This is a test: [\hbox to 0.5\textwidth {hello}]. %% OK
+
+%% This is a test: [\hbox to 1cm plus 1cm minus 1cm {hello}]. %% Error on the first ``p''
+%% This is a test: [\hbox to \relax0.5cm {hello}]. %% Error on ``\relax''
+%% This is a test: [\hbox to 0 . 5 cm {hello}]. %% Error on ``.''
+%% This is a test: [\hbox to 0.5 am {hello}]. %% Error on ``am''
+
+\Supported This is a test: [\hbox to - 0.5 cm {hello}]. %% OK
+
+\Supported This is a test: [\hbox to + 0.5 cm {hello}]. %% OK
+
+%% This is a test: [\hbox to -cm {hello}]. %% Error on ``cm''
+
+\Supported This is a test: [\hbox to -\textwidth {hello}]. %% OK
+
+\Supported This is a test: [\hbox to0.5cm {hello}]. %% OK
+
+\Supported This is a test: [\hbox to 1.2CM {hello}] with macro. %% 大文字でも OK
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{With user macros}
+
+\def\textw{\textwidth}
+\Supported This is a test: [\hbox to \textw {hello}] with macro. %% OK
+
+\def\phrase{to 0.5\textwidth}
+\Supported This is a test: [\hbox \phrase {hello}] with macro. %% OK
+
+\def\A{o}
+\Unsupported This is a test: [\hbox t\A 1cm {hello}] with macro. %% OK
+
+\def\A{.1}
+\Supported This is a test: [\hbox to 1\A\textwidth {hello}] with macro. %% 数値の途中がマクロでも OK
+
+\def\A{m}
+\Supported This is a test: [\hbox to 1.2c\A {hello}] with macro. %% 単位の途中がマクロでも OK
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Difference of dimension and length}
+
+\newlength\myheight
+\myheight=1cm plus 1mm minus 2mm %% こちらは解釈される
+This is a test: [\hbox to \myheight {hello}] with macro. %% OK
+
+\textwidth=\textwidth plus 1mm minus 2mm %% これは解釈されない
+This is a test: [\hbox to 0.2\textwidth {hello}] with macro. %% OK
+
+\myheight=1cmm %% なんと OK である。つまり、先頭で一致していれば問題ない。
+This is a test: [\hbox to \myheight {hello}] with macro. %% OK
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{With \texttt{\textbackslash dimen}}
+
+This is a test: [\hbox to \dimen100 {hello}]. %% OK
+
+%% This is a test: [\hbox to \textwidth100 {hello}]. %% Error on ``100''
+
+This is a test: [\hbox to \dimen 100 {hello}] with space. %% OK
+
+\def\hello{100}
+This is a test: [\hbox to \dimen \hello {hello}] with macro. %% OK
+
+%% This is a test: [\hbox to \dimen{100} {hello}]. %% Error on ``{100}''
+%% \the\dimen{100} %% The same error
+
+\def\dimenx{\dimen}
+This is a test: [\hbox to \dimenx \hello {hello}] with macro. %% OK
+
+\dimen100=1cm plus 1mm minus 2mm %% plus ... minus ... は解釈されない
+This is a test: [\hbox to \dimen100 {hello}] with macro. %% OK
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{plus/minus in setlength}
+
+\newlength{\mylen}
+\setlength{\mylen}{1cm plus 1cm minus 1cm} %% OK
+This is a \verb+\mylen+ test: [\hbox to \mylen {hello}]. %% OK
+
+\setlength{\mylen}{1cm plus 2cm plus 3cm} %% Odd behavior: ``plus 3cm'' is printed
+This is a \verb+\mylen+ test: [\hbox to \mylen {hello}].
+
+\setlength{\mylen}{1cm minus 2mm plus 3mm} %% Odd behavior: ``plus 3mm'' is printed
+This is a \verb+\mylen+ test: [\hbox to \mylen {hello}].
+
+\setlength{\mylen}{1cm plus 0.02\textwidth minus 0.01\textwidth} %% Odd behavior: ``plus 3mm'' is printed
+This is a \verb+\mylen+ test: [\hbox to \mylen {hello}].
+
+Hello\\[1mm plus 1cm] World.
+
+\end{document}

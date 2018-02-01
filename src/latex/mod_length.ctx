@@ -1,9 +1,8 @@
 ﻿// -*- mode: js -*-
-//◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
-//
-//            class Length
-//
-//◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
+
+var mod_core = ns.Modules["core"];
+var _Mod = ns.Modules["mod:length"] = {};
+
 agh.memcpy(ns.Modules["core"].ErrorMessages, {
   "mod:length.InvalidLengthName": ["invalid length name", "'{lname}' は有効な length 名ではありません。\nlength 名は \\ で始まる必要があります。"]
 });
@@ -40,9 +39,24 @@ var UNITDATA = {
     outunit: "px"
   }
 };
-ns.Length = function() {
-  this.val = 0;
-  this.unit = "in";
+
+ns.Length = function(value, unit) {
+  if (value) {
+    value = this.parseNumber(value);
+    if (unit instanceof ns.Length) {
+      // 例: new ns.Length(0.5, textwidth);
+      this.val = unit.val * value;
+      this.unit = unit.unit;
+    } else {
+      // 例: new ns.Length(2.0, "cm");
+      this.val = value;
+      this.unit = this.parseUnit(unit || "pt");
+    }
+  } else {
+    // 例: new ns.Length;
+    this.val = 0;
+    this.unit = "in";
+  }
 };
 agh.memcpy(ns.Length, {
   // 将来的には GetLengthArgument か何かの関数で使用するつもり(現在は使用されていない)
@@ -56,7 +70,7 @@ agh.memcpy(ns.Length, {
     /// </returns>
     var val = parseFloat(text);
     if (isNaN(val)) return null;
-    var u = text.match(/^(?:[\+\-\d\.]|e[+\-\d.])+\s*(in|cm|mm|pt|pc|sp|em|ex|px|zw)\b/i);
+    var u = text.match(/^(?:[\+\-\d\.]|e[+\-\d.])+\s*(in|bp|cm|mm|pt|pc|sp|dd|cc|em|ex|zw|zh|mu|px)\b/i);
     if (u == null) return null;
 
     var ret = new ns.Length();
@@ -73,15 +87,18 @@ agh.memcpy(ns.Length.prototype, {
     return ret;
   },
   parseUnit: function(text) {
-    var a = text.match(/(?:in|cm|mm|pt|pc|sp|em|ex|px|zw)\b/i);
+    var a = text.match(/(?:in|bp|cm|mm|pt|pc|sp|dd|cc|em|ex|zw|zh|mu|px)\b/i);
     return a != null ? a[0].toLowerCase() : "px";
   },
   changeUnit: function(number, beforeUnit, afterUnit) {
     if (beforeUnit == afterUnit) return number;
-    return number * UNITDATA[beforeUnit].mm / UNITDATA[afterUnit].mm;
+    var beforeData = UNITDATA[beforeUnit] || UNITDATA["pt"];
+    var afterData = UNITDATA[afterUnit] || UNITDATA["pt"];
+    return number * beforeData.mm / afterData.mm;
   },
   toString: function() {
-    var outunit = UNITDATA[this.unit].outunit;
+    var data = UNITDATA[this.unit] || UNITDATA["pt"];
+    var outunit = data.outunit;
     return this.changeUnit(this.val, this.unit, outunit).toString() + outunit;
   },
   addValue: function(arg) {
@@ -142,16 +159,20 @@ context "global" {
   var lengthHandler = new ns.Command2("f", null, function(doc, args) {
     var name = args[0];
     doc.skipSpaceAndComment();
-    if (doc.scanner.is("ltr", "=")) {
+    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "=")) {
       // setlength mode
       doc.scanner.Next();
-      setlength(doc, name, doc.scanner.word);
+      setlength(doc, name, doc.scanner.word); //■現状だと数字一個しか解釈しない? ReadLengthを使う
       doc.scanner.Next();
     } else {
       // output value mode (拡張)
       doc.currentCtx.output.buff.push((doc.GetLengthData(name) || "0in").toString());
     }
   });
+
+  _Mod.IsLengthHandler = function(commandHandler) {
+    return commandHandler === lengthHandler;
+  };
 
   //=========================================================================
   //    コマンドの定義
@@ -179,3 +200,4 @@ context "global" {
     addtolength(doc, lname, argv[2]);
   };
 }
+

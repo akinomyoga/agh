@@ -134,11 +134,11 @@ context "pkg:color/global" new() {
     var buff = doc.currentCtx.output.buff;
     var bgc = get_color(doc, argv[1].trim(), argv[2].trim());
     if (bgc != null) {
-      buff.push('<tex:mbox class="aghtex-color-box" style="background-color:', bgc, '">');
+      buff.push('<tex:i class="aghtex-hbox aghtex-color-box" style="background-color:', bgc, '">');
     } else {
-      buff.push('<tex:mbox class="aghtex-color-box">');
+      buff.push('<tex:i class="aghtex-hbox aghtex-color-box">');
     }
-    buff.push(argv[3], "</tex:mbox>");
+    buff.push(argv[3], "</tex:i>");
   };
   command f\fcolorbox("#[]!1#!2#!3#mode.lr>4") {
     // \fcolorbox[model]{frame-colour-spec}{background-colour-spec}{text}
@@ -147,7 +147,7 @@ context "pkg:color/global" new() {
     var frc = get_color(doc, argv[1].trim(), argv[2].trim());
     var bgc = get_color(doc, argv[1].trim(), argv[3].trim());
     if (frc != null || bgc != null) {
-      buff.push('<tex:mbox class="aghtex-color-box" style="');
+      buff.push('<tex:i class="aghtex-hbox aghtex-color-box" style="');
       if (frc != null) {
         buff.push('border:solid 1px ', frc, ';');
       }
@@ -156,9 +156,9 @@ context "pkg:color/global" new() {
       }
       buff.push('">');
     } else {
-      buff.push('<tex:mbox class="aghtex-color-box">');
+      buff.push('<tex:i class="aghtex-hbox aghtex-color-box">');
     }
-    buff.push(argv[4], "</tex:mbox>");
+    buff.push(argv[4], "</tex:i>");
   };
 
   command f\normalcolor() {

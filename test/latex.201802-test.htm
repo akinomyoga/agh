@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" charset="utf-8" src="../out/agh.js"></script>
+<script type="text/javascript">
+agh.scripts.wait(["event:onload", "agh.lang.tex.js"], function() {
+  function convertDocument(id) {
+    var div = document.getElementById(id);
+    var source = agh.Text.Unescape(div.innerHTML, "html");
+    var doc = new agh.LaTeX.Document(source);
+    var result = doc.Parse();
+    div.innerHTML = result;
+  }
+  convertDocument("texdoc1");
+});
+</script>
+<style type="text/css">
+.aghtex-page {
+  width: 50em; margin-left: auto; margin-right: auto; min-height: 100%;
+  padding: 1em; border: 1px solid silver; background-color: white;
+}
+body {
+  background-color: gray;
+}
+</style>
+</head>
+<body>
+<div id="texdoc1" class="aghtex-page">
+\documentclass[amsmath,amssymb]{revtex4-1}
+\begin{document}
+\title{Test agh.lang.latex 201802}
+\author{\verb+@akinomyoga+}
+\maketitle
+
+\section{\verb+\hbox+ 対応}
+\newlength{\mywidth}
+\setlength{\mywidth}{1cm}
+
+[\hbox {A}]
+[\hbox to 1cm {B}]
+[\hbox to 2 cm {C}]
+[\hbox to \mywidth {D}]
+[\hbox to 2.0\mywidth {E}]
+[\hbox to2cm {F}]
+[\hbox to 1CM {G}]
+
+[\hbox to - 0.3 cm{A}]
+[\hbox to + 0.7 cm{B}]
+[\hbox to -\mywidth {C}]
+[\hbox to +\mywidth {D}]
+
+\def\myw{\mywidth} [\hbox to +\myw {A}]
+\def\phrase{to 0.5\mywidth} [\hbox \phrase {B}]
+\def\A{.1} [\hbox to 1\A\mywidth {C}]
+\def\A{m} [\hbox to 1.2c\A {D}]
+
+\end{document}
+</div>
+</body>
+</html>

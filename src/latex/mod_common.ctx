@@ -70,7 +70,8 @@ agh.memcpy(mod_core.ErrorMessages, {
     "pkg:{pkg} error","package '{pkg}' の初期化中に例外が発生しました。\r\n例外説明: {message}\r\n詳細に関しては aghtex 版 package の作成者に問い合わせて下さい。"],
   'mod:common.cmd:let.InvalidCommandName': ["\\let#1 invalid","'{cmd}' is not a valid command name."],
   'mod:common.cmd:let.UnknownCommand': ["\\let#2 undefined","A definition of the second argument, '\\{cmd}', cannot be found."],
-  'mod:common.cmd:def.InvalidCommandName': ["\\{defcmd} InvalidCommandName","{cmdname} は不適切なコマンド名です。\r\n新しいコマンドの名前は \\commandname の形式で指定して下さい。"]
+  'mod:common.cmd:def.InvalidCommandName': ["\\{defcmd} InvalidCommandName","{cmdname} は不適切なコマンド名です。\r\n新しいコマンドの名前は \\commandname の形式で指定して下さい。"],
+  'mod:common.cmd:hbox.MissingContent': ["\\hbox","the content of \\hbox, which should begin with '{', is missing."]
 });
 
 var _Mod = ns.Modules["mod:common"] = {};
@@ -424,9 +425,9 @@ context "global" {
 
   //---------------------------------------------------------------------------
   // \mbox
-  command s@\mbox("#mode.lr>1") '<tex:mbox>#1</tex:mbox>';
-  command s@\fbox("#mode.lr>1") '<tex:mbox class="aghtex-latex-fbox">#1</tex:mbox>';
-  command s@\frame("#mode.lr>1") '<tex:mbox class="aghtex-latex-frame">#1</tex:mbox>';
+  command s@\mbox("#mode.lr>1") '<tex:i class="aghtex-hbox">#1</tex:i>';
+  command s@\fbox("#mode.lr>1") '<tex:i class="aghtex-hbox aghtex-latex-fbox">#1</tex:i>';
+  command s@\frame("#mode.lr>1") '<tex:i class="aghtex-hbox aghtex-hbox-frame">#1</tex:i>';
   command f\framebox("#[]!1#[c]!2#mode.lr>3") {
     // #L1 (dimen)
     if (argv[1] != "") {
@@ -437,47 +438,87 @@ context "global" {
       }
 
       doc.currentCtx.output.buff.push(
-        '<tex:mbox class="aghtex-latex-frame" style="width:',
+        '<tex:i class="aghtex-hbox aghtex-hbox-frame" style="width:',
         agh.Text.Escape(argv[1], "html-attr"),
-        ';text-align:', align, '">', argv[3], '</tex:mbox>');
+        ';text-align:', align, '">', argv[3], '</tex:i>');
     } else
-      doc.currentCtx.output.buff.push('<tex:mbox class="aghtex-latex-frame">', argv[3], '</tex:mbox>');
+      doc.currentCtx.output.buff.push('<tex:i class="aghtex-hbox aghtex-hbox-frame">', argv[3], '</tex:i>');
   };
   // TODO \makebox
   // TODO \parbox
 
-  command f\string() {
-    doc.skipSpaceAndComment();
+  _Ctx.DefineCommand({
+    hbox: ['f', function(doc, argv){
+      // 以下の二つの形式の内の何れか ({} は必要である)。
+      //   \hbox { content }
+      //   \hbox to dimension { content }
 
-    var text = "";
-    switch (doc.scanner.wordtype) {
-    case mod_core.SCAN_WT_CMD:
-      text = "\\" + doc.scanner.word;
-      doc.scanner.Next();
-      break;
-    case mod_core.SCAN_WT_LTR:
-      text = doc.scanner.word;
-      doc.scanner.Next();
-      break;
-    case mod_core.SCAN_WT_TXT:
-      text = doc.scanner.ClipFirstFromTxt();
-      break;
-    case mod_core.SCAN_WT_LTR:
-      if (doc.scanner.word !== "EOF") {
+      /*
+       * 制限: この実装では to がマクロで分断されている場合には対応していない。
+       * 例えば、\def\O{o} \hbox t\O 1cm {content} は to をひとまとまりとして認識できない。
+       */
+
+      var buff = doc.currentCtx.output.buff;
+
+      // \hbox の次の単語が to のとき、dimension を読み取って幅とする。
+      var dimen = null;
+      doc.skipSpaceAndCommentExpandingMacro();
+      if (doc.scanner.wordtype === mod_core.SCAN_WT_TXT && /^to/.test(doc.scanner.word)) {
+        if (doc.scanner.word === "to")
+          doc.scanner.Next();
+        else
+          doc.scanner.word = doc.scanner.word.slice(2);
+        dimen = doc.ReadDimension();
+        doc.skipSpaceAndCommentExpandingMacro();
+      }
+      if (dimen)
+        buff.push('<tex:i class="aghtex-hbox aghtex-hbox-width" style="margin-right: ', dimen.toString(), ';">');
+      else
+        buff.push('<tex:i class="aghtex-hbox">');
+
+      if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "{")) {
+        doc.currentCtx.output.error('mod:common.cmd:hbox.MissingContent', null, '\\hbox (mod:common)');
+      } else {
+        var content = doc.GetArgumentHtml("mode.lr");
+        buff.push(content);
+      }
+
+      buff.push('</tex:i>');
+    }],
+
+    string: ['f', function(doc, argv) {
+      doc.skipSpaceAndComment();
+
+      var text = "";
+      switch (doc.scanner.wordtype) {
+      case mod_core.SCAN_WT_CMD:
+        text = "\\" + doc.scanner.word;
+        doc.scanner.Next();
+        break;
+      case mod_core.SCAN_WT_LTR:
         text = doc.scanner.word;
         doc.scanner.Next();
         break;
+      case mod_core.SCAN_WT_TXT:
+        text = doc.scanner.ClipFirstFromTxt();
+        break;
+      case mod_core.SCAN_WT_LTR:
+        if (doc.scanner.word !== "EOF") {
+          text = doc.scanner.word;
+          doc.scanner.Next();
+          break;
+        }
+        /* FALL-THROUGH */
+      default:
+        doc.currentCtx.output.error(
+          "mod:common.cmd:string.EndOfDocument",
+          null, "\\string (mod:common/global)");
+        return;
       }
-      /* FALL-THROUGH */
-    default:
-      doc.currentCtx.output.error(
-        "mod:common.cmd:string.EndOfDocument",
-        null, "\\string (mod:common/global)");
-      return;
-    }
 
-    doc.currentCtx.output.buff.push(agh.Text.Escape(text, 'html'));
-  };
+      doc.currentCtx.output.buff.push(agh.Text.Escape(text, 'html'));
+    }]
+  });
 
   command f\special(#1) {
     doc.currentCtx.output.error('mod:common.cmd:special.NotImplemented', {arg: argv[1]}, "\\special (mod:common)");
