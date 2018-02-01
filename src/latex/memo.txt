@@ -33,6 +33,10 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     "\hbox to <dimension>" の "to"
     "\length = <dimension> plus <dimension> minus <dimension>" の "plus" と "minus"
 
+  * http://memopad.bitter.jp/web/mathjax/TeXSyntax.html
+    http://www.onemathematicalcat.org/MathJaxDocumentation/TeXSyntax.htm
+    ここに MathJax の対応しているコマンドの一覧が載っている。
+
   * https://en.wikibooks.org/wiki/LaTeX/Lengths
     Lengths
 
@@ -79,6 +83,28 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
     \hdotsfor
       これの対応は難しい。
+
+      td{vertical-align:middle;}
+      td>tex\:i{display:block;border:0.3em dotted black;height:0;}
+
+      などにすれば良いのでは。
+      しかし、左右で点が密集した感じになる。
+      また、点の間隔を制御する方法は与えられているのだろうか。
+      と思って検索してみたら何か出てきた。
+
+      http://blog.funxion.jp/139/
+      https://stackoverflow.com/questions/6250394/how-to-increase-space-between-dotted-border-dots
+      https://jsfiddle.net/yyp67pbg/
+
+      ここに載っている方法だと点は四角くなってしまう。少しいじってみたら丸くするのも簡単だった。
+
+      td{
+        background-image: radial-gradient(0.3em, black 50%, transparent 50%);
+        background-position: center;
+        background-size: 0.6em 0.3em;
+        background-repeat: repeat-x;
+      }
+
 
     \\[引数]
       上記のファイルでは使用されていないが、他のファイルで変な文字列が残る。

@@ -28,6 +28,14 @@ var mod_array = ns.Modules["mod:array"];
 var mod_math = ns.Modules["mod:math"];
 var _Mod = ns.Modules["pkg:ams"] = {};
 
+agh.memcpy(mod_core.ErrorMessages, {
+  'pkg:ams.cmd:cfrac.InvalidAlignment': [
+    "\\cfrac[alignment]",
+    "The alignment '{align}' is unrecognized. Specify one of l, c, r."],
+  'pkg:ams.pkg:amsmath.ObsoleteName': [
+    "old name: {pkgName}", "The package name '{pkgName}' is obsoleted. Please use 'amsmath'."]
+});
+
 //******************************************************************************
 //  \usepackage{latexsym}
 //==============================================================================
@@ -376,11 +384,8 @@ context "pkg:amsmath/mode.math" new() {
         "";
     if (align == "") {
       output.error(
-        "\\cfrac[alignment]..",
-        "alignment の指定が誤っています。\n"
-          + "'" + argv[1] + "' は認識出来ない alignment です。\n"
-          + "lcr の何れかを指定して下さい。"
-      );
+        'pkg:ams.cmd:cfrac.InvalidAlignment',
+        {align: argv[1]}, '\\cfrac (pkg:ams)');
       align = "center";
     }
     output.buff.push(
@@ -632,8 +637,14 @@ context "pkg:amsmath/global" new() {
   });
 }
 ns.Document.Packages["amsmath"] = function(doc, opt, pkgName) {
+  if (pkgName === "amstex") {
+    doc.currentCtx.output.error(
+      'pkg:ams.pkg:amsmath.ObsoleteName',
+      {pkgName: pkgName}, '\\usepackage{' + pkgName + '} (pkg:ams)');
+  }
   doc.context_cast("mode.para").OverwriteContext(doc.context_cast("pkg:amsmath/mode.para"));
   doc.context_cast("mode.math").AddBaseContext(doc.context_cast("pkg:amsmath/mode.math"));
   doc.context_cast("global").OverwriteContext(doc.context_cast("pkg:amsmath/global"));
 };
+ns.Document.Packages["amstex"] = ns.Document.Packages["amsmath"];
 //******************************************************************************
