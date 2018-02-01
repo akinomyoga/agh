@@ -159,6 +159,7 @@ i prog-type.png
 # agh.dom
 #-------------------------------------------------------------------------------
 #%x agh::js_from.r|%name%|agh.dom|.r|%from%|agh.dom/agh.dom2.js|
+#%x agh::js_from.r|%name%|agh.sprintf|.r|%from%|agh.sprintf/agh.sprintf.js|
 
 #-------------------------------------------------------------------------------
 # resources for forms.js

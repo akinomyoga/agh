@@ -4,3 +4,6 @@
 [submodule "tools/ext/unidata"]
 	path = tools/ext/unidata
 	url = git@github.com:akinomyoga/unidata.git
+[submodule "src/agh.sprintf"]
+	path = src/agh.sprintf
+	url = git@github.com:akinomyoga/agh.sprintf.js
