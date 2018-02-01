@@ -217,7 +217,6 @@ context "global" {
     result.isDimensionHandler = true;
     return result;
   }
-
   var dimensionHandler = CreateLengthHandler('ReadDimension');
   var lengthHandler = CreateLengthHandler('ReadLength');
 
@@ -228,25 +227,36 @@ context "global" {
     NewLength: function(name) {
       // グローバルに定義
       this.SetMacroHandler(name, lengthHandler, /* isGlobal= */ true);
+    },
+    NewDimension: function(name) {
+      // グローバルに定義
+      this.SetMacroHandler(name, dimensionHandler, /* isGlobal= */ true);
     }
   });
 
-  command f\newlength(#@1) {
-    var lname = get_lenName(doc, argv[1]);
-    if (lname == null) return;
-    doc.NewLength(lname);
-  };
-  command f\setlength(#@1#L) {
-    if (argv[2] == null) return;
-    var lname = get_lenName(doc, argv[1]);
-    if (lname == null) return;
-    setlength(doc, lname, argv[2]);
-  };
-  command f\addtolength(#@1#L) {
-    if (argv[2] == null) return;
-    var lname = get_lenName(doc, argv[1]);
-    if (lname == null) return;
-    addtolength(doc, lname, argv[2]);
-  };
+  _Ctx.DefineCommand({
+    newdimen: ['f;#@1', function(doc, argv) {
+      var lname = get_lenName(doc, argv[1]);
+      if (lname == null) return;
+      doc.NewDimension(lname);
+    }],
+    newlength: ['f;#@1', function(doc, argv) {
+      var lname = get_lenName(doc, argv[1]);
+      if (lname == null) return;
+      doc.NewLength(lname);
+    }],
+    setlength: ['f;#@1#L', function(doc, argv) {
+      if (argv[2] == null) return;
+      var lname = get_lenName(doc, argv[1]);
+      if (lname == null) return;
+      setlength(doc, lname, argv[2]);
+    }],
+    addtolength: ['f;#@1#L', function(doc, argv) {
+      if (argv[2] == null) return;
+      var lname = get_lenName(doc, argv[1]);
+      if (lname == null) return;
+      addtolength(doc, lname, argv[2]);
+    }]
+  });
 }
 

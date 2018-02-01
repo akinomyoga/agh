@@ -658,11 +658,9 @@ context "mode.math" {
   }
 
   (function() {
-    var STACKREL_DEFAULT_TOP = agh.browser.select({IE: 0, Fx: 0, Op: 0, Cr: 0.2, Sf: 0.8, Def: 0.2}); // 本当の所 0.1 にしたい
     function is_single_lower(html) {
       var text = agh.Text.Unescape(html, "html");
-      if (text.length != 1) return false;
-      return "acegijmnopqrsuvwxyzαγεηικμνοπρστυφχψω\u0131".indexOf(text) >= 0;
+      return /^[acegijmnopqrsuvwxyzαγεηικμνοπρστυφχψω\u0131＝－]*$/.test(text);
     }
     function is_slanted(html,ismath) {
       if (ismath)
@@ -691,16 +689,21 @@ context "mode.math" {
       return "gjpqy".indexOf(text) >= 0;
     }
 
-    command f\stackrel("#>1#>2") {
-      var t = STACKREL_DEFAULT_TOP - 1.3;
-      if (is_single_lower(argv[1])) t += 0.45;
-      t = 0.01 * Math.round(t * 100);
-
+    _Ctx.DefineCommand('stackrel', ['f;#>1#>2', function(doc, argv) {
+      var suffix = is_single_lower(argv[2]) ? "-lower" : "";
       var buff = doc.currentCtx.output.buff;
-      buff.push(
-        '<tex:lap><tex:m style="top:', t, 'ex;"><tex:small3>', argv[1],
-        '</tex:small3></tex:m><tex:m>', argv[2], '</tex:m></tex:lap>');
-    };
+      if (ns.compatMode == "IE-qks" || agh.browser.vIE < 8) {
+        buff.push(
+          '<tex:i class="aghtex-ie6stackrel">',
+          '<tex:i class="aghtex-ie6stackrel-top', suffix, '">', argv[1], '</tex:i>',
+          '<tex:i class="aghtex-ie6stackrel-body">', argv[2], '</tex:i></tex:i>');
+      } else {
+        buff.push(
+          '<tex:i class="aghtex-stackrel', suffix, '">',
+          '<tex:i class="aghtex-stackrel-top', suffix, '">',
+          argv[1], '</tex:i>', argv[2], '</tex:i>');
+      }
+    }]);
 
     // 2012/12/25 17:47:56
     _Mod.CreateAccentCommand = function(type, htsymb, ismath) {
@@ -760,14 +763,10 @@ context "mode.math" {
     if (ns.compatMode == "IE-qks" || agh.browser.vIE < 8) {
       _Mod.CreateAccentCommandQksB = function(height, htSymbol) {
         var TAG_L = '<tex:lap><tex:m style="top:';
-        var TAG_M = 'ex;">'+htSymbol+'</tex:m><tex:m>';
+        var TAG_M = 'ex;">' + htSymbol + '</tex:m><tex:m>';
         var TAG_R = '</tex:m></tex:lap>';
 
-        // 00:28 2011/02/23 補正
-        if (agh.browser.vCr)
-          TAG_L = '<tex:lap style="vertical-align:0.684ex;"><tex:m style="top:';
-
-        var style_top = STACKREL_DEFAULT_TOP - height;
+        var style_top = -height; // for IE
         return new ns.Command2("f", "#>1", function(doc, argv) {
           var t = style_top;
           if (is_tailed(argv[1])) t += 0.4;

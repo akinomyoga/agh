@@ -141,14 +141,29 @@ tex\:i.aghtex-underline{border-bottom-width:1px;border-bottom-style:solid;}
 		重ね合わせ・アクセント等 (mod:math)
 ----------------------------------------------------------*/
 /* 重ね合わせ */
+tex\:i.aghtex-stackrel,
+tex\:i.aghtex-stackrel-lower{display:inline-block;vertical-align:baseline;text-align:center;}
+tex\:i.aghtex-stackrel-top,
+tex\:i.aghtex-stackrel-top-lower{font-size:75%;display:block;margin:0;position:relative;}
+tex\:i.aghtex-stackrel{margin-top:-0.52em;}
+tex\:i.aghtex-stackrel-lower{margin-top:-0.87em;}
+tex\:i.aghtex-stackrel-top{top:0.52em;}
+tex\:i.aghtex-stackrel-top-lower{top:0.87em;}
+/*%%if mode=="Trident"*/
+tex\:i.aghtex-ie6stackrel{display:inline-block;text-align:center;line-height:0px;}
+tex\:i.aghtex-ie6stackrel-top,
+tex\:i.aghtex-ie6stackrel-top-lower,
+tex\:i.aghtex-ie6stackrel-body{display:block;position:relative;top:0;line-height:0px;}
+tex\:i.aghtex-ie6stackrel-top{font-size:75%;top:-1.8ex;}
+tex\:i.aghtex-ie6stackrel-top-lower{font-size:75%;top:-1.35ex;}
+tex\:i.aghtex-ie6stackrel tex\:math{line-height:0px;}
+/*%%end*/
+
+/*%%if mode=="Trident"*/
 tex\:lap{display:inline-block;text-align:center;line-height:0px;}
 tex\:lap tex\:m{display:block;position:relative;top:0;line-height:0px;}
-tex\:lap tex\:u{font-size:80%;display:block;position:relative;top:-0.6em;line-height:0px;}
-tex\:lap tex\:d{font-size:80%;display:block;position:relative;top:0.6em;line-height:0px;}
 tex\:lap tex\:math{line-height:0px;}
-
-tex\:lap tex\:lapm{display:block;position:relative;top:0px;left:0px;}
-tex\:lap tex\:lapm img.tex-lapm-cover{position:absolute;top:0px;left:0px;width:100%;height:100%;}
+/*%%end*/
 
 tex\:i.aghtex-accent{position:relative;top:0;left:0;}
 tex\:i.aghtex-accent-acc{display:inline-block;margin-top:0.10em;}

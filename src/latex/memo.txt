@@ -33,6 +33,13 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     "\hbox to <dimension>" の "to"
     "\length = <dimension> plus <dimension> minus <dimension>" の "plus" と "minus"
 
+  * https://en.wikibooks.org/wiki/LaTeX/Lengths
+    Lengths
+
+  * http://www.math.kobe-u.ac.jp/HOME/kodama/tips-latex-math-margin.html
+    http://surgery.matrix.jp/comp/tex/plain/plain09.html
+    レイアウト関連のコマンド
+
   * length に関連して \the コマンドというものもある。
 
     https://tex.stackexchange.com/questions/38674/the-the-command
@@ -92,17 +99,6 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
     位置調整・左右余白の調整。
 
-  * \mathop, \stackrel, \overbrace, \underset 統一。
-
-    \underset, \overset を \overbrace, \underbrace の仕組みで実装した。
-    しかしながら既に似たような事を \mathop や \stackrel でも行っている。
-    個別に実装を行って個別にテストを行うのは非効率である。
-    これらの実装を統一する事を考えたい。
-
-    2018-01-30 \mathop については対応した。
-
-    todo: \stackrel
-
   * 根号・伸縮括弧の表示方法について
 
     他の記号についても svg 化を行う。
@@ -121,14 +117,6 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     0. 問題が生じるかどうか確認する。
     1. CreateAccentCommand の実装に移行して問題が生じないかテストする。
     2. CreateAccentCommand に切り替える。
-
-  * \stackrel 実装見直し。
-
-    現在の実装だと CreateAccentCommandQksT と同様に
-    sqrt/frac の中に於いた時に高さが変になる(特に IE6 で)などの問題が起こると予想される。
-    CreateAccentCommand と同じ実装方法に変更する必要がある。
-
-    0. 問題が生じるかどうか確認する。
 
   * [保留] Opera の既定の印刷設定で、伸縮括弧が印刷されない。
 
@@ -185,9 +173,32 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2018-02-01
 
-  * mod:length: \\[...]
+  * 2015-11-01 \stackrel 実装見直し。 [#D0021]
 
-  * mod:length: Length の対応
+    | 現在の実装だと CreateAccentCommandQksT と同様に
+    | sqrt/frac の中に於いた時に高さが変になる(特に IE6 で)などの問題が起こると予想される。
+    | CreateAccentCommand と同じ実装方法に変更する必要がある。
+    |
+    | 0. 問題が生じるかどうか確認する。
+
+    これは #D0020 の対応で再実装した。
+    IE8 未満については一応昔の実装を残したが、
+    現状において IE7 の様な古いブラウザでどうなっても知らないので気にしない事にする。
+
+  * 2015-11-02 \mathop, \stackrel, \overbrace, \underset 統一。 [#D0020]
+
+    \underset, \overset を \overbrace, \underbrace の仕組みで実装した。
+    しかしながら既に似たような事を \mathop や \stackrel でも行っている。
+    個別に実装を行って個別にテストを行うのは非効率である。
+    これらの実装を統一する事を考えたい。
+
+    2018-01-30 \mathop については対応した。
+
+    2018-02-01 \stackrel も inline-block を使った実装に切り替えた。
+
+  * mod:length: \\[...] [#D0019]
+
+  * mod:length: Length の対応 [#D0018]
 
     \hbox に対応する前に先ずは Length の読み取りに対応することにする。
     取り敢えず Document#ReadDimension 関数を実装した。
@@ -225,7 +236,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
     取り敢えず \hbox で必要な範囲で対応した。動いている。
 
-  * \hbox に対応する。
+  * \hbox に対応する。 [#D0017]
 
     \hbox の仕様について調べる必要がある。
     少なくとも \hbox to length {} と \hbox {} の二つの形式がある。
@@ -283,7 +294,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2016-01-19
 
-  * tex-xmlns.txt の内容
+  * tex-xmlns.txt の内容 [#D0016]
 
     > tex:abc   数式中のアルファベット (イタリック)
     >   .l        英小文字
@@ -303,28 +314,28 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2015-11-03
 
-  * aghfonts (mathbb-1.1.26): u25b3 (bigtriangleup), u25bd (bigtriangledown), u25cb (bigcirc) (3x3 glyphs).
+  * aghfonts (mathbb-1.1.26): u25b3 (bigtriangleup), u25bd (bigtriangledown), u25cb (bigcirc) (3x3 glyphs). [#D0015]
 
-  * 数字のフォント
+  * 数字のフォント [#D0014]
 
     数字の斜体は cmti10 に入っている様だ。
     数字及び記号の類を cmti10 から mathit に移植した。
 
-  * pkg_ams.ctx (pkg:latexsym): symb フォントを使用する。
+  * pkg_ams.ctx (pkg:latexsym): symb フォントを使用する。 [#D0013]
 
     恐らく多くの記号は既に aghfont に含まれている。確認をしてただフォントの指定を切り替えるだけのはずである。
     →確認をした全て基本的な図形は含まれていた。aghfonts を多少弄った。
 
     同時に \cdot のフォントについても対応した。
 
-  * aghfonts (pkg:latexsym): Box Join の文字を mathbb に入れる事にした。
+  * aghfonts (pkg:latexsym): Box Join の文字を mathbb に入れる事にした。 [#D0012]
 
     Box Join 等の文字は type1/bluesky/lasy10.pfb に含まれていた。
     これらのフォントのライセンスは SIL Open Font License (OFL) である。曰く:
     Effective with the AMSFonts 3.0 distribution, all Type 1 fonts are released under
     the SIL Open Font License [http://scripts.sil.org/OFL].
 
-  * aghfonts: mathrm hinting 修正。mathbb-1.1.25: Modify u25a1 (Box). Add u22c8 (Join) u25c7 (Diamond)
+  * aghfonts: mathrm hinting 修正。mathbb-1.1.25: Modify u25a1 (Box). Add u22c8 (Join) u25c7 (Diamond) [#D0011]
 
     mathrm, mathbb: hinting 修正について
 
@@ -341,7 +352,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2015-11-02
 
-  * 根号・伸縮括弧の表示方法について[<svg> による方法を Cr にも適用]
+  * 根号・伸縮括弧の表示方法について[<svg> による方法を Cr にも適用] [#D0010]
 
     % 現在 svg を用いる方法を Fx で試験的に利用している。
     % もしこの方法が安定して使えると判断できるのであれば Cr でもこの方法の採用を検討する。
@@ -355,7 +366,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2015-11-01
 
-  * 根号などの伸縮記号についても color を反映させる方法について。
+  * 根号などの伸縮記号についても color を反映させる方法について。 [#D0009]
 
     過去の考察については情報や知識が古いが、多少参照する。
 
@@ -462,13 +473,13 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
     取り敢えず svg 要素を直接埋め込む方法で Fx において良好に動作しているので一旦整理する事にする。
 
-  * IE8 で上付アクセントの位置が変である。
+  * IE8 で上付アクセントの位置が変である。 [#D0008]
 
     改めて見てみるが変という事はないように見える。
     何かの拍子で変になって見えたのか、色々修正している内に直ったのか。
     取り敢えず解決済という事にする。
 
-  * 現在伸縮括弧(\left \right \sqrt)の模様を一部のブラウザで背景画像として表示している。
+  * 現在伸縮括弧(\left \right \sqrt)の模様を一部のブラウザで背景画像として表示している。 [#D0007]
     背景画像として表示する場合 CSS だけで切替が可能なので、ブラウザ毎に構造を変更しなくて済む。
     一方で、多くのブラウザでは印刷時に背景は既定で省略する設定になっているので、
     わざわざ手で背景を on にしないと期待通りの印刷をする事ができない。
@@ -484,7 +495,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     "その他のブラウザ" はそもそも現在は存在していないはずである。
     →これらの問題点は保留として残す事にする。
 
-  * 実は border-color の指定を省略した時はその要素の color (文字色) を用いて描画される筈だとか。
+  * 実は border-color の指定を省略した時はその要素の color (文字色) を用いて描画される筈だとか。 [#D0006]
 
     →Fx Cr IE8 IE6 で確認。何れに於いても期待通りに文字色が採用される様だ。
 
@@ -512,7 +523,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
       sqrt の棒の色がそれに追随しない事があるという事になる。
       これは Chrome の問題であるし、また、この様な状況は余りないと思われるので保留でよい。
 
-  * latex/latex.pp.css (accents): IE7 workaround, IE7 以下では display:inline-block を用いた空白付加を行わない。
+  * latex/latex.pp.css (accents): IE7 workaround, IE7 以下では display:inline-block を用いた空白付加を行わない。 [#D0005]
 
     実際に試してみた所、全然効果がない。CSS がそもそも適用されていない様だ…。
     と思っていたらそもそもアクセントの実現方法が IE6 では異なるのであった。
@@ -529,7 +540,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2015-10-31
 
-  * アクセント上部のスペース
+  * アクセント上部のスペース [#D0004]
 
     現在アクセントは position:absolute で表示しているのでその高さは配置に全く影響を与えない。
     これは例えば inline での配置において行の高さを変えないという点に置いては利点であるが、
@@ -574,9 +585,9 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
     b の方法で安定的に (既存部分に大きな影響を与えずに) 対応可能な様なので、
 
-  * \int_{...} の位置調整。
+  * \int_{...} の位置調整。 [#D0003]
 
-  * \overline の線の位置が変である。
+  * \overline の線の位置が変である。 [#D0002]
 
     → \overline, \underline の線は text-decoration ではなく border として描画する様に変更。
 
@@ -618,7 +629,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2015-10-31
 
-  * 古い memo.txt の内容について概観と整理を行う。
+  * 古い memo.txt の内容について概観と整理を行う。 [#D0001]
 
     古い memo.txt では ToDo に関してカテゴリー分けして管理していた。
     また、完了済の項目についてもそのカテゴリー内に記述を残していた。
