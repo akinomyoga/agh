@@ -1,5 +1,6 @@
 \documentclass{revtex4-1}
 \usepackage{color}
+\usepackage{amsmath}
 \definecolor{darkgreen}{rgb}{0,0.5,0.0}
 \def\Supported{{\color{darkgreen} [supported]}}
 \def\Unsupported{{\color{red} [unsupported]}}
@@ -60,6 +61,18 @@
 
 \def\A{m}
 \Supported This is a test: [\hbox to 1.2c\A {hello}] with macro. %% 単位の途中がマクロでも OK
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{In math mode}
+This is a test: [\hbox to \textw {hello}]. %% OK (in paragraph mode)
+
+%% This is a test: [\hbox to \textw {h\!e\!l\!l\!o}]. %% Error on ``\!''
+
+%% With amsmath \! can be used in paragraph mode
+h\!e\!l\!l\!o
+This is a test: [\hbox to \textw {h\!e\!l\!l\!o}].
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

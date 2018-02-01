@@ -12,16 +12,17 @@ agh.memcpy(mod_core.ErrorMessages, {
     '\\newtheorem: the specified number-sharing theorem "{refthm}" is not defined.']
 });
 
-context "mode.para"{
+context "mode.para" {
   command s>#"@"()  @"\hspace{1.2ex}";
 
   command s>\,()            @'\hspace{0.1667em}';
   command s>\thinspace()    @'\hspace{0.1667em}';
   if (agh.browser.vIE < 7) {
-    command s@\negthinspace() '<tex:negspace class="letter-spacing">&nbsp;&nbsp;</tex:negspace>&nbsp;';
+    command s@\negthinspace() '<tex:i class="aghtex-negative-space-ie6">&nbsp;&nbsp;</tex:i>&nbsp;';
   } else {
-    command s@\negthinspace() '<tex:negspace></tex:negspace>';
+    command s@\negthinspace() '<tex:i class="aghtex-negative-space"></tex:i>';
   }
+
 
   command s@\-() "&#xAD;"; // soft hyphen
 

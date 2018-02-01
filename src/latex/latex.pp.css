@@ -537,12 +537,12 @@ tex\:i.aghtex-latex-allowbreak{whit-espace:normal;}
 
 /* -- 負の空白 -- */
 /*%%if mode=="Trident" (*/
-  tex\:negspace{margin-left:-0.4ex;}
-  tex\:negspace.letter-spacing{letter-spacing:-2.0ex;margin-left:0px;}
+  tex\:i.aghtex-negative-space{margin-left:-0.4ex;}
+  tex\:i.aghtex-negative-space-ie6{letter-spacing:-2.0ex;margin-left:0px;}
 /*%%elif mode=="Opera"||mode=="WebKit"*/
-  tex\:negspace{margin-left:-0.4ex;}
+  tex\:i.aghtex-negative-space{margin-left:-0.4ex;}
 /*%%elif mode=="Gecko"*/
-  tex\:negspace{margin-left:-0.3ex;}
+  tex\:i.aghtex-negative-space{margin-left:-0.3ex;}
 /*%%)*/
 
 tex\:i.aghtex-nobr{white-space:nowrap;}

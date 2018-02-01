@@ -184,9 +184,9 @@ context "mode.math" {
   command s>\;() @"\hspace{0.67ex}"; // \hspace{1\thickmuskip}
   letter  s>\~() @"\hspace{1ex}";
   if (agh.browser.vIE < 7) {
-    command s@\!() '<tex:negspace class="letter-spacing">&nbsp;&nbsp;</tex:negspace>&nbsp;';
+    command s@\!() '<tex:i class="aghtex-negative-space-ie6">&nbsp;&nbsp;</tex:i>&nbsp;';
   } else {
-    command s@\!() '<tex:negspace></tex:negspace>';
+    command s@\!() '<tex:i class="aghtex-negative-space"></tex:i>';
   }
 
   command s@\allowbreak() '<tex:i class="aghtex-latex-allowbreak"></tex:i>';

@@ -505,8 +505,8 @@ agh.memcpy(ns.ContextFactory.prototype, {
     }
 #%end
   },
-  AddCommandHandler: function(letter, definition) {
-    this.handlerC[letter] = this._instantiateHandler(definition);
+  AddCommandHandler: function(command, definition) {
+    this.handlerC[command] = this._instantiateHandler(definition);
   },
   AddEnvironment: function(name, arg) {
     if (arg == null) {

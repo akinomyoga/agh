@@ -337,6 +337,8 @@ context "pkg:amsmath/mode.para" new() {
     "multline*": mod_array["envdef:multline*"],
     "multline" : mod_array["envdef:multline"]
   });
+
+  _Ctx.handlerC['!'] = ns.ContextFactory.GetInstance("mode.para").handlerC['negthinspace'];
 }
 context "pkg:amsmath/mode.math" new() {
 
