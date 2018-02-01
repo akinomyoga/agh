@@ -1,0 +1,84 @@
+%% -*- coding:sjis -*-
+\documentclass{article}
+
+\usepackage{color}
+\DefineNamedColor{named}{r}{rgb}{1,0,0}
+%% \DefineNamedColor{hoge}{Blue}{rgb}{0,0,1} %% undefined color model
+
+\title{TestDocumentTitle}
+\author{TestAuthor}
+\author{TestAuthor2}
+\begin{document}
+\maketitle
+
+\abstract{Hello}
+This is abstract.
+That is abstract.
+It is abstract.
+This is abstract.
+That is abstract.
+It is abstract.
+This is abstract.
+That is abstract.
+It is abstract.
+This is abstract.
+That is abstract.
+It is abstract.
+
+\tableofcontents
+
+\part{Part}
+Here, part 1 starts.
+Here, part 1 starts.
+Here, part 1 starts.
+Here, part 1 starts.
+Here, part 1 starts.
+Here, part 1 starts.
+Here, part 1 starts.
+Here, part 1 starts.
+Here, part 1 starts.
+Here, part 1 starts.
+\section{Section} section.
+\subsection{SubSection} this is subsection.
+\subsubsection{SubSubSection} this is subsubsection.
+\paragraph{Paragraph} this is paragraph.
+\subparagraph{SubParagraph} subparagraph can also be used.
+
+\part*{Part}
+Here, part 1 starts.
+\section*{Section} section.
+\subsection*{SubSection} this is subsection.
+\subsubsection*{SubSubSection} this is subsubsection.
+\paragraph*{Paragraph} this is paragraph.
+\subparagraph*{SubParagraph} subparagraph can also be used.
+
+\textcolor[named]{Blue}{hello}
+\textcolor[named]{JungleGreen}{hello}
+\fcolorbox[named]{Red}{JungleGreen}{
+  Hello world!
+  \begin{tabular}{c|c|c}
+  a & b & c\\ \hline
+  a & b & c\\ \hline
+  a & b & c
+  \end{tabular}
+  Hello world!\\
+  Hello world!
+}
+•¶Í’†‚É footnote ‚ğ–„‚ß‚Ş–‚ªo—ˆ‚é\footnote{—á‚¦‚Î‚±‚ñ‚È•—‚ÉB}‚Æ‚¢‚¤–‚ğŒä‘¶’m‚Å‚µ‚½‚©?
+\begin{figure}
+  \caption{This is Table Environment}
+  \begin{tabular}{c|c|c|c}
+  t & ‰Ä & H & “~ \\ \hline
+  spring & summer & fall & winter\\
+  spring & summer & autumn & winter
+  \end{tabular}
+\end{figure}
+
+\begin{figure}
+  \caption{This is second figure}
+  \caption{This is third figure}
+  \caption{This is fourth figure}
+\end{figure}
+
+
+\end{document}

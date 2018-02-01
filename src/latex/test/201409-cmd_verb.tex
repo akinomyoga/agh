@@ -1,0 +1,84 @@
+%% -*- coding:sjis -*-
+\documentclass{article}
+\begin{document}
+
+\section{check verb behaviors}
+1. \verb+\verb+
+
+\noindent
+2. \verb{+\begin{%document}\end{document}+}
+
+\noindent
+3.1. \verb+%+
+verb は内部にコメント文字 \verb+%+ を含む事ができる。
+
+\noindent
+3.2. \verb|\verb+A|\\
+\verb|A+| → Error
+verb は内部に改行を含む事はできない。
+
+\noindent
+4.1. \verb{+A+{ end\\
+文字 \verb+{+ であっても区切り文字になる様だ。
+
+\noindent
+4.2. \verb A x A \\
+この場合、初めの「空白」が区切り文字として働く。
+
+\noindent
+4.3. \verb\A+\A \\
+この場合、初めの \verb+\+ の文字が区切り文字になる。
+
+\noindent
+4.4. \verb%hello% \\
+この場合、初めの \verb+%+ が区切り文字になる。
+
+\noindent
+4.5. \verb*AworldA end\\
+この場合、A ですら区切文字になる。
+
+\noindent
+4.5. \verb*
+Hello
+ end\\
+改行ですら区切文字になる。
+
+\section{test verb impl}
+\begin{itemize}
+\item[5.1] \verb*|int main(){return 0;}|
+\item[5.2] EOL でエラーにする
+  \begin{verbatim}
+  \verb+hello
+world+
+  \end{verbatim}
+\item[5.3] EOF でエラーにする→OK \verb
+ContentOfVerb
+hello
+\end{itemize}
+
+\section{debug \tt ns.Scanner4.NextVerbArgument}
+\if0
+そもそも本物の TeX では verb を引数の中で使えない。
+\newcommand{\cmd}[1]{$#1$:\verb|#1|}
+\begin{tabular}{ll|ll|ll}
+  \cmd{\arccos}&\cmd{\arcsin}&\cmd{\arctan}\\
+  \cmd{\arg}&\cmd{\cos}&\cmd{\cosh}\\
+  \cmd{\cot}&\cmd{\coth}&\cmd{\csc}\\
+  \cmd{\deg}&\cmd{\det}&\cmd{\dim}\\
+  \cmd{\exp}&\cmd{\gcd}&\cmd{\hom}\\
+  \cmd{\inf}&\cmd{\ker}&\cmd{\lg}\\
+  \cmd{\lim}&\cmd{\liminf}&\cmd{\limsup}\\
+  \cmd{\ln}&\cmd{\log}&\cmd{\max}\\
+  \cmd{\min}&\cmd{\Pr}&\cmd{\sec}\\
+  \cmd{\sin}&\cmd{\sinh}&\cmd{\sup}\\
+  \cmd{\tan}&\cmd{\tanh}
+\end{tabular}
+\fi
+\newcommand{\cmd}[1]{$#1$:\verb+A+ hello}
+\cmd{\arccos}${\arccos}$+A+ hello
+
+\renewcommand{\cmd}[1]{$#1$:\verb+(1+2+3, $a+b+c$)}
+\cmd{\arccos}1234+
+
+
+\end{document}

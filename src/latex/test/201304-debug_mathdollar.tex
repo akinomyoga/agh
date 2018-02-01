@@ -1,0 +1,31 @@
+%% -*- coding:sjis -*-
+\documentclass{article}
+\begin{document}
+
+\subsection{症状}
+\begin{itemize}
+\item 全角空白の直後に ``\verb+$\コマンド+'' が存在すると、単なる文字列として解釈されてしまう。
+\item 半角空白の直後では発生しない。
+\item 文字コードには依存しない。
+\item \verb+\begin{itemize}+ の外側でも内側でも関係ない。
+\item 全角空白\verb+$\コマンド+ の \verb+\コマンド+ 部分は何であっても起こる。
+\item 全角空白の前の単語の有無、\verb+\コマンド+ の後の続きのソースに拘わらず起こる。
+\item 通常の全角文字では起こらず、全角空白でのみ起こる。
+\item \verb+$+ と続くコマンドの間に空白文字の連続が存在していても起こる。
+\item \verb+$+ と続くコマンドの間に通常文字が存在していると起こらない。
+\end{itemize}
+
+　$\to$
+\textbf　$\to$
+
+\subsection{調査}
+\begin{itemize}
+\item 試してみた所、Scanner4 の時点で動作が可笑しいようである。
+\end{itemize}
+
+\def\あ{hello}
+\def\　{world}
+\あ
+\　あ
+
+\end{document}

@@ -1,0 +1,93 @@
+%% -*- coding:sjis -*-
+\documentclass{jsarticle}
+
+\begin{document}
+
+\subsection{{\tt\string\mathfoobar} symbols [2013-11-06]}
+取り敢えず text を math に変えた物を全て試してみる。
+\begin{center}
+{Text-mode Commands.}
+\newcommand{\cadn}[1]{\texttt{\string#1}& N/A & N/A}
+\newcommand{\cad}[1]{\texttt{\string#1}& $#1$ & N/A}
+\newcommand{\cadd}[1]{\texttt{\string#1}& $#1$ & #1}
+\begin{tabular}{ | lcc | lcc |}
+\hline 
+Command  & Math & Text & Command  & Math & Text\\
+\hline
+\cad{\lbrace}       & \cad{\rbrace} \\ 
+\cadn{\mathasciicircum}       & \cadn{\mathless} \\ 
+\cadn{\mathasciitilde}        & \cadn{\mathordfeminine} \\ 
+\cadn{\mathasteriskcentered} & \cadn{\mathordmasculine} \\ 
+\cadn{\mathbackslash}        & \cad{\mathparagraph} \\ 
+\cadn{\mathbar}              & \cadn{\mathperiodcentered} \\ 
+\cadn{\mathbraceleft}        & \cadn{\mathquestiondown} \\ 
+\cadn{\mathbraceright}       & \cadn{\mathquotedblleft} \\ 
+\cadn{\mathbullet}           & \cadn{\mathquotedblright} \\ 
+\cadn{\mathcopyright}        & \cadn{\mathquoteleft} \\ 
+\cadn{\mathdagger}           & \cadn{\mathquoteright} \\ 
+\cadn{\mathdaggerdbl}        & \cadn{\mathregistered} \\ 
+\cad{\mathdollar}           & \cad{\mathsection} \\ 
+\cad{\mathellipsis}         & \cad{\mathsterling} \\ 
+\cadn{\mathemdash}           & \cadn{\mathtrademark} \\ 
+\cadn{\mathendash}           & \cadd{\mathunderscore} \\ 
+\cadn{\mathexclamdown}       & \cadn{\mathvisiblespace} \\ 
+\cadn{\mathgreater}&&\\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{test {\string\string} command in math-mode [2013-11-06]}
+$\string\string$ (math-mode) and {\string\string} (text-mode)!
+\texttt{\string\string} (text-mode tt)
+\begin{center}
+\string\hello\"a\\
+\string\\\"a\\
+\string \"ab\\
+\string a\"b\\
+%%\string{\"a\"b} エラー
+\string $$hello$\\
+\end{center}
+
+\begin{itemize}
+\item \verb+\string+ は math-mode でも text-mode でも使える。
+\item \verb+\string+ は次の一単語を文字列として解釈する。(2番目のコマンドは通常通り。)
+\item \verb+\string+ は次の「一文字」に作用する物ではない。(\verb+\\+ は二文字ともそのまま出力される。)
+\item \verb+\string+ 直後の単語が通常の文字であっても、それを文字列として解釈し、以降は通常に戻る。
+\item \verb+\string+ 直後に空白がある場合は、空白は無視される。
+\item \verb+\string+ 直後の \{ も文字として解釈する。(引数として \verb+{}+ で囲んだ複数の単語を指定するとエラーになる。)
+\end{itemize}
+
+\subsection{{\tt\string\textfoobar} symbols [2013-11-06]}
+
+\begin{center}
+{Text-mode Commands.}
+\newcommand{\cad}[1]{\texttt{\string#1}& #1 & N/A}
+\newcommand{\cadd}[1]{\texttt{\string#1}& #1 & $#1$}
+\begin{tabular}{ | lcc | lcc |}
+\hline 
+Command  & 表示 & Math & Command  & 表示 & Math\\
+\hline
+\cad{\textasciicircum}       & \cadd{\textless} \\ 
+\cad{\textasciitilde}        & \cadd{\textordfeminine} \\ 
+\cadd{\textasteriskcentered} & \cadd{\textordmasculine} \\ 
+\cadd{\textbackslash}        & \cadd{\textparagraph} \\ 
+\cadd{\textbar}              & \cadd{\textperiodcentered} \\ 
+\cadd{\textbraceleft}        & \cadd{\textquestiondown} \\ 
+\cadd{\textbraceright}       & \cadd{\textquotedblleft} \\ 
+\cadd{\textbullet}           & \cadd{\textquotedblright} \\ 
+\cadd{\textcopyright}        & \cadd{\textquoteleft} \\ 
+\cadd{\textdagger}           & \cadd{\textquoteright} \\ 
+\cadd{\textdaggerdbl}        & \cadd{\textregistered} \\ 
+\cad{\textdollar}            & \cadd{\textsection} \\ 
+\cadd{\textellipsis}         & \cadd{\textsterling} \\ 
+\cadd{\textemdash}           & \cadd{\texttrademark} \\ 
+\cadd{\textendash}           & \cadd{\textunderscore} \\ 
+\cadd{\textexclamdown}       & \cadd{\textvisiblespace} \\ 
+\cadd{\textgreater}&&\\
+\hline
+\end{tabular}
+\end{center}
+
+
+
+\end{document}

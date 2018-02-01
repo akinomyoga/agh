@@ -1,0 +1,19 @@
+\documentclass{article}
+
+\usepackage{url}
+\urldef{\hellourl}\url{http://hello.example.com/}
+%% \DeclareUrlCommand\tturl{\urlstyle{tt}}
+%% \urldef{\worldurl}\tturl{http://world.example.com/}
+\urldef{\worldurl}\url{http://world.example.com/}
+
+\begin{document}
+
+This is \hellourl. That is \worldurl.
+
+\urlstyle{rm}
+This is \hellourl. That is \worldurl.
+
+\urlstyle{sf}
+This is \hellourl. That is \worldurl.
+
+\end{document}

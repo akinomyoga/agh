@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage{amsmath}
+\begin{document}
+
+\section{alignment 指定の中の空白について}
+
+\[
+\begin{array}{|c|c|c|}
+  a & b & c\\
+  A & B & C
+\end{array}
+\]
+
+\[
+\begin{array}{| c | c | c |}
+  a & b & c\\
+  A & B & C
+\end{array}
+\]
+
+\[
+\begin{array}{ |c|c|c| }
+  a & b & c\\
+  A & B & C
+\end{array}
+\]
+
+\[
+\begin{array}{
+|c|c|
+%
+ c
+|
+}
+  a & b & c\\
+  A & B & C
+\end{array}
+\]
+
+\[
+\begin{array}{||c|c|c||}
+  a & b & c\\
+  A & B & C
+\end{array}
+\]
+
+\[
+\begin{array}{| |c|c|c| |}
+  a & b & c\\
+  A & B & C
+\end{array}
+\]
+
+\end{document}

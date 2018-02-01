@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <title>Debug Zenkaku space followed by $ (math mode start) and some commands</title>
+  <meta name="agh-fly-type" content="tex,color" />
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://localhost/agh/mwg.std.css" />
+  <script type="text/javascript" charset="utf-8" src="http://localhost/agh/agh.fly.js"></script>
+</head>
+<body>
+<h1>Debug: Zenkaku space followed by $ and some commands</h1>
+<p>
+  <span class="tex:math">\frac12+\mbox{hello 　$\to$ world}</span>
+</p>
+
+<h2>LaTeX における全角空白の扱い</h2>
+<p>例えば <code class="agh-prog-tex">\あい</code> などという記述がある場合、
+LaTeX は "\あい" をひとまとまりのコマンドと解釈するようである。
+然し <code class="agh-prog-tex">\　い</code> という記述がある場合には、
+LaTeX は "\　" というコマンドに続けて、通常の文字として "い" が来たと解釈する。
+つまり、全角空白は全角の他の文字と明らかに異なる扱いを受けている。
+取り敢えず、通常の空白文字や記号文字と同じ扱いをすると見て良いだろう。
+</p>
+
+</body>
+</html>

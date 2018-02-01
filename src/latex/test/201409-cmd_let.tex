@@ -1,0 +1,32 @@
+%% -*- coding:sjis -*-
+\documentclass{article}
+\def\d{\mathrm{d}}
+\begin{document}
+
+\section{let command}
+%
+%% 1 別のモードのコマンドでも定義をコピーする事が出来る
+\let\test\sqrt
+%
+%% 2 置換先を単なる文字とする事も可能 (text 挿入と変わらない?)
+\let\fuga hello
+%
+%% 3 さすがに文字を別のコマンドに割り当てる事はできない
+%% \let あ い
+%% \let xy
+%
+$ \test{2134}\fuga $
+
+$\int\d^3x hello world$
+
+\begin{quote}
+あいうえお本当ですか
+\end{quote}
+
+\section{cmd:renewcommand}
+
+\newcommand{\hoge}{hoge}
+\renewcommand{\hoge}{fuga}
+%%\renewcommand{\fairlyNewCommand}{fuga}
+
+\end{document}

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <title>test_pkg_amsmath</title>
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://localhost/~murase/agh/mwg.std.css" />
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://localhost/~murase/agh/prog.std.css" />
+  <meta name="agh-fly-type" content="tex" />
+  <script type="text/javascript" charset="utf-8" src="http://localhost/~murase/agh/agh.fly.js"></script>
+  <style type="text/css">
+  tex\:container{font-size:120%;}
+  p.aghfly-begin-align_ *{border-color:black;}
+  p.aghfly-begin-align_ *{border-color:inherit!important;}
+  </style>
+  <script id="tex-default" type="application/x-tex">
+  \newcounter{equation}
+  \newcounter{page}
+  \def\d{\mathrm{d}}
+  </script>
+</head>
+<body>
+<h1>test for package amsmath</h1>
+
+<h3>\iint [2013-11-04]</h3>
+<p class="aghfly-begin-gather_">
+  \usepackage{latexsym}
+  \int_0^1 dx \\
+  \iint_0^1 dx \\
+  \iiint_0^1 dx \\
+  \iiiint_0^1 dx \\
+  \idotsint_0^1 dx \\
+</p>
+<p class="aghfly-begin-center">
+\usepackage{latexsym}
+\begin{tabular}{rl|rl}
+  \verb+\smallint+ &amp; $\smallint dx$ &amp;
+  \verb+\ell+ &amp; $123\ell$ \\
+\end{tabular}
+</p>
+
+<h3>\dots* [2013-11-04]</h3>
+<p class="aghfly-begin-gather">
+  a = 1,\dots,n,\\
+  b = 1+\dots+n,\\
+  c = \oint\dots\oint \d{x_1}\dotsm\d{x_n},\\
+</p>
+
+<p class="aghfly-begin-gather">
+\label{e:barwq}\begin{split}
+    H_c &amp;=\frac{1}{2n} \sum^n_{l=0}(-1)^{l}(n-{l})^{p-2}
+        \sum_{l _1+\dots+ l _p=l}\prod^p_{i=1} \binom{n_i}{l _i}\\
+        &amp;\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}\cdot
+        \Bigl[(n-l )^2-\sum^p_{j=1}(n_i-l _i)^2\Bigr].
+  \end{split}\\
+\left.\begin{aligned}
+    \dot B &amp;= -\nabla\times E,\\
+    \dot E &amp;= \nabla\times B - 4\pi j,
+  \end{aligned}\right\}
+  \qquad \text{Maxwell's equations} \\
+P_{r-j}=\begin{cases}
+    0&amp; \text{if $r-j$ is odd},\\
+    r!\,(-1)^{(r-j)/2}&amp; \text{if $r-j$ is even}.
+  \end{cases}
+</p>
+
+<h3>\dots* [2013-11-03]</h3>
+<p>mathsymb にグリフを追加。</p>
+<p class="aghfly-begin-center">
+\begin{tabular}{rl|rl}
+  \verb+\ldots+ &amp; $a,\ldots,b$ &amp;
+  \verb+\cdots+ &amp; $a+\cdots+b$ \\
+  \verb+\vdots+ &amp; $a\vdots b$ &amp;
+  \verb+\ddots+ &amp; $a\ddots b$ \\
+  \verb+\dots+  &amp; $a\dots b$  &amp;
+  \verb+\dotsc+ &amp; $a\dotsc b$ \\
+  \verb+\dotsb+ &amp; $a\dotsb b$ &amp;
+  \verb+\dotsm+ &amp; $a\dotsm b$ \\
+  \verb+\dotsi+ &amp; $\int\dotsi\int$ &amp;
+  \verb+\dotso+ &amp; $a\dotso b$ \\ \hline
+  \verb+\partial+ &amp; $\partial$ &amp;
+  \verb+:=+       &amp; $a:=b$\\
+  \verb+a&lt;b+   &amp; $a&lt;b$ &amp;
+  \verb+a&gt;b+   &amp; $a&gt;b$ \\
+  \verb+\langle|x-y|\rangle+ &amp; $\langle|x-y|\rangle$ &amp;
+\end{tabular}
+</p>
+
+<h3>\AmS [2013-11-03]</h3>
+<p class="aghfly-begin-center">
+  Hello, \AmS-\LaTeX world!
+</p>
+
+
+</body>
+</html>

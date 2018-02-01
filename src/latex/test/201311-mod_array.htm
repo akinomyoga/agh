@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <title>test_mod_array</title>
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://localhost/~murase/agh/mwg.std.css" />
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://localhost/~murase/agh/prog.std.css" />
+  <meta name="agh-fly-type" content="tex:imath;" />
+  <script type="text/javascript" charset="utf-8" src="http://localhost/~murase/agh/agh.fly.js"></script>
+  <style type="text/css">
+  p.aghfly-begin-align_{color:navy;border-color:green;}
+  p.aghfly-begin-align_ *{border-color:inherit!important;}
+  </style>
+</head>
+<body style="border-color:red;">
+<h3>alignment @ argument bug [2013-11-05]</h3>
+<p>html が直接表示されていたので。</p>
+<p class="aghfly-begin-gather_">
+  \gdef\hello{Hello, \AmS\LaTeX world!}
+  \begin{array}{c@{\frac12}c@{&lt;b&gt;hello&lt;/b&gt;}c}
+    x &amp; y &amp; z \\
+    a &amp; b &amp; c
+  \end{array}
+</p>
+
+<h3>environment pmatrix spacing [2013-11-04]</h3>
+<p class="aghfly-begin-align_">
+A &amp;=\begin{pmatrix} 1 &amp; 2 \\ 3 &amp; 4 \end{pmatrix} \\
+B &amp;= \begin{array}{@{1}c@{2}c@{3}c@{4}}
+  x &amp; y &amp; z \\
+  a &amp; b &amp; c
+\end{array}
+</p>
+<p>どうも空白が大きすぎる様な気がする。
+…一番最初の列の左余白、一番最後の列の右余白、
+一番最初の行の上余白、一番最後の行の下余白は 0 にしても良いのではないか?
+</p>
+
+<h3>environment pmatrix [2013-11-03]</h3>
+
+<p class="aghfly-begin-align_">
+A &amp;=
+  \begin{array}{ccc}
+  x &amp; y &amp; z \\
+  a &amp; b &amp; c \\ \hline \hline \hline
+  s &amp; t &amp; u \\ \hline
+  \end{array} \\
+B &amp;=
+  \left(\begin{array}{||ccc||}
+  x &amp; y &amp; z \\
+  a &amp; b &amp; c \\
+  s &amp; t &amp; u
+  \end{array}\right) \\
+\sqrt{1 \choose 2} \\
+C &amp;=
+  \begin{Vmatrix}
+  x &amp; y &amp; z \\
+  a &amp; b &amp; c \\
+  s &amp; t &amp; u \\
+  \end{Vmatrix} \\
+</p>
+
+<h3>Test. Cell.write_bL, Cell.write_bR</h3>
+<p class="aghfly-begin-align_">
+  \begin{array}{@{hoge}||@{A}@{B}||c|c|c|@{hello}||@{X}@{Z}|||}
+  1 &amp; 2 &amp; 3 \\ \hline
+  2 &amp; 4 &amp; 7 \\
+  3 &amp; 7 &amp;14 \\
+  4 &amp;11 &amp;25
+  \end{array}
+</p>
+
+</body>
+</html>

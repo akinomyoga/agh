@@ -1,0 +1,83 @@
+%% -*- coding:cp932 -*-
+\documentclass{jsarticle}
+\usepackage{amsmath,amssymb,bm}
+\begin{document}
+
+%%-----------------------------------------------------------------------------
+\subsection{digits [2015-11-04]}
+\begin{align}
+  \surd\ \barwedge\ \veebar\ \odot\ \oplus\ \otimes\ \oslash\ \circledcirc\ \boxdot\ \bigtriangleup \\
+  \bigtriangledown\ \bigcirc\ \dagger\ \diamond\ \star\ \triangleleft\ \triangleright\ \angle\ \infty\ \prime\ \triangle \\
+\end{align}
+
+\subsection{digits [2015-11-04]}
+
+数字のフォントについて。
+\begin{center}
+\begin{tabular}{cc}
+  math normal & $0213456789$ \\
+  math mathit & $\mathit{0123456789}$ \\
+  math mathrm & $\mathrm{0123456789}$ \\
+  math mathbf & $\mathbf{0123456789}$ \\
+  math bm & $\bm{0123456789}$ \\
+  math mathcal & $\mathcal{0123456789}$ \\
+  math mathbb & $\mathbb{0123456789}$ \\
+  math mathfrak & $\mathfrak{0123456789}$
+\end{tabular}
+\end{center}
+
+%%-----------------------------------------------------------------------------
+\subsection{cdots [2013-11-03]}
+
+\begin{align*}
+  \ell
+\end{align*}
+
+\begin{align*}
+  a\cdots b, & \quad a+\dots+b \\
+  a\ldots b, & \quad a,\dots,b \\
+  a\ddots b, \\
+  a\vdots b, \\
+  \dot{A}\dot{a}\dot,\dot;;
+\end{align*}
+
+%%-----------------------------------------------------------------------------
+
+\subsection{slash [2013-02-07]}
+
+\[/\backslash\]
+
+\subsection{cmd bar}
+\newcommand{\hoge}[1]{#1{ab}}
+\[\bar{abc}\hoge{\bar}\]
+
+\'a \`a \^a \"a \~a
+\=a \.a \u a \v a \H a
+\t a \c a \b a \d a
+
+\subsection{cmd widehat}
+\[
+  \widehat{\int \mathrm d x (x^2+1)}
+  =\widehat{x}
+\]
+
+\[
+  \widetilde{\int \mathrm d x (x^2+1)}
+  =\widetilde{x}
+\]
+
+\[
+  \overrightarrow{AB}
+  \overleftarrow{AB}
+  \overleftrightarrow{AB}
+\]
+
+\subsection{Relational operators}
+\begin{center}
+\begin{tabular}{cc|cc}
+\verb+:=+ & $:=$ &
+\verb+=:+ & $=:$ \\
+\end{tabular}
+\end{center}
+
+\end{document}

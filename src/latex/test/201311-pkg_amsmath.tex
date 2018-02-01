@@ -1,0 +1,57 @@
+%% -*- coding:sjis -*-
+\documentclass{article}
+\usepackage{latexsym}
+\usepackage{amsmath,amssymb}
+\begin{document}
+
+\section{check}
+\subsection{\tt pkg:latexsym}
+\begin{tabular}{|cc|cc|} \hline
+  $\lhd$ & \verb+\lhd+ &
+  $\rhd$ & \verb+\rhd+ \\
+  $\unlhd$ & \verb+\unlhd+ &
+  $\unrhd$ & \verb+\unrhd+ \\
+  $\mho$ & \verb+\mho+ &
+  $\leadsto$ & \verb+\leadsto+ \\
+  $\Join$ & \verb+\Join+ &
+  $\Box$ & \verb+\Box+ \\
+  $\sqsubset$ & \verb+\sqsubset+ &
+  $\sqsupset$ & \verb+\sqsupset+ \\
+  $\Diamond$ & \verb+\Diamond+ &
+  $\square$ & \verb+\square+ (amssymb)\\
+  $\iint$ & \verb+\iint+ &
+  $\iiint$ & \verb+\iiint+ \\
+  $\iiiint$ & \verb+\iiiint+ &
+  $\idotsint$ & \verb+\idotsint+ \\
+  $\varlimsup _{x\to0}$ & \verb+\varlimsup _{x\to0}+ &
+  $\varliminf _{x\to0}$ & \verb+\varliminf _{x\to0}+ \\
+  $\varinjlim _{x\to0}$ & \verb+\varinjlim _{x\to0}+ &
+  $\varprojlim_{x\to0}$ & \verb+\varprojlim_{x\to0}+ \\ \hline
+  $\displaystyle\iint$ & \verb+\iint+ &
+  $\displaystyle\iiint$ & \verb+\iiint+ \\
+  $\displaystyle\iiiint$ & \verb+\iiiint+ &
+  $\displaystyle\idotsint$ & \verb+\idotsint+ \\
+  $\displaystyle\varlimsup _{x\to0}$ & \verb+\varlimsup _{x\to0}+ &
+  $\displaystyle\varliminf _{x\to0}$ & \verb+\varliminf _{x\to0}+ \\
+  $\displaystyle\varinjlim _{x\to0}$ & \verb+\varinjlim _{x\to0}+ &
+  $\displaystyle\varprojlim_{x\to0}$ & \verb+\varprojlim_{x\to0}+ \\ \hline
+\end{tabular}
+
+\section{tests}
+\subsection{dots and ldots in paragraph-mode [2013-11-06]}
+hello\dots some\ldots world!\\
+paragraph-mode Ç≈Ç‡ \verb+\dots+ Ç∆ \verb+\ldots+ ÇÕégÇ¶ÇÈólÇ…Ç»ÇÈÅB
+
+\subsection{align environments [2013-01-14]}
+\begin{align}
+hello &= world
+\end{align}
+\begin{flalign}
+hello &= world
+\end{flalign}
+%% \begin{fralign}
+%% hello &= world
+%% \end{fralign}
+
+\end{document}
+

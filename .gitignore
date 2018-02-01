@@ -34,6 +34,8 @@
 /src/latex/test/*.aux
 /src/latex/test/*.pdf
 /src/latex/test/*.dvi
+/src/latex/test/*.toc
+/src/latex/test/*Notes.bib
 
 
 /gh-pages

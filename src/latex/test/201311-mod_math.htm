@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <title>test_mod_math</title>
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://localhost/~murase/agh/mwg.std.css" />
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="http://localhost/~murase/agh/prog.std.css" />
+  <meta name="agh-fly-type" content="tex" />
+  <script type="text/javascript" charset="utf-8" src="http://localhost/~murase/agh/agh.fly.js"></script>
+</head>
+<body class="aghfly-inline-math" style="border-color:red;">
+
+<h3>\bigl, \Bigl 等の対応 [2013-11-07]</h3>
+<p>tags: aghfonts, </p>
+
+<p class="aghfly-begin-center">
+\def\arraystretch{3}
+\begin{tabular}{rl|rl}
+\verb+(+       &amp; $(      $ &amp;  \verb+[+       &amp; $a[      b$ \\
+\verb+\bigl(+  &amp; $\bigl( $ &amp;  \verb+\bigl[+  &amp; $a\bigl[ b$ \\
+\verb+\Bigl(+  &amp; $\Bigl( $ &amp;  \verb+\Bigl[+  &amp; $a\Bigl[ b$ \\
+\verb+\biggl(+ &amp; $\biggl($ &amp;  \verb+\biggl[+ &amp; $a\biggl[b$ \\
+\verb+\Biggl(+ &amp; $\Biggl($ &amp;  \verb+\Biggl[+ &amp; $a\Biggl[b$
+\end{tabular}
+</p>
+
+<p>処理の手順は以下の通りである。</p>
+<ol>
+<li>cmex9 から大きい括弧の字体を整理してコピーする。
+  <p class="marked">※先ず初めに big (mathbb に入れる) について以降の処理を全て行い、
+  続いて Big (mathfrak), bigg (mathit), Bigg (mathcal) に対して同様の処理を行う。
+  </p>
+</li>
+<li>括弧の大きさを拡大縮小して通常の括弧の大きさに戻す。
+  <ul>
+  <li>これはフォントが正しく読み込まれなかった場合に、
+    通常のフォントの括弧で代用できる様にする為である。
+    (大きく表示する為のフォントでない為に縦横比が多少変かも知れないが、
+    全く異なる大きさで表示される事になるよりは増しである。)
+  </li>
+  <li>拡大縮小率は左角括弧 "[" の大きさが一致する様に決定する。</li>
+  </ul>
+  <ul>
+  <li>normal: b=-250 t=750 l=120 adv=285, h=1000 rate=100%</li>
+  <li>big:    b=-1157 t=42 l=207 adv=428, h=1199 rate=120%
+    <ul>
+    <li>0.8340 倍に縮小する。(8340 = 60x139)</li>
+    <li>余白も同じ位に、縮小するべき (変換の原点をグリフの原点に指定して変換を実行する)。</li>
+    <li>左余白を normal の時と一致する様に変更するべきか? →取り敢えず今の所はその儘にしておく。</li>
+    </ul>
+  </li>
+  <li>Big:   b=-1757 t=42 l=231 r=18 adv=485, h=1799 rate=180%
+    <ul>
+    <li>0.55586 倍に縮小。～ 0.51 x 1.09</li>
+    </ul>
+  </li>
+  <li>bigg: b=-2357 t=42 l=255 r=13 adv=542, h=2399 rate=240%
+    <ul>
+    <li>0.41684 倍 ～ 3.79 x 0.11</li>
+    </ul>
+  </li>
+  <li>Bigg: b=-2957 t=42 l=279 r=8 adv=599, h=2999 rate=300%
+    <ul>
+    <li>0.33344 倍 ～ 0.29 x 1.15</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+</ol>
+
+<h4>字体と bigl 系コマンドの対応関係の確認 2013-11-07</h4>
+  <p>(1) 字体の大きさを見て計算した高さの割合は、実際に出力される内容と一致しているのか。
+  (2) 四種類の文字はそれぞれ bigl Bigl biggl Biggl に対応しているのか。
+  (3) bigl の字体に関しては、通常の字体よりも長さが短くなっているが問題にならないのか。
+  などの疑問点があるので、実際に出力した結果を見て確認してみる。
+  幅と高さを実際に出力された pdf で実測してみた結果:
+  </p>
+  <ul>
+  <li>normal 7px x 53px; rate=100%; 長さ=7.57</li>
+  <li>bigl 10px x 63px; rate=119%; 長さ=6.3</li>
+  <li>Bigl 12px x 95px; rate=179%; 長さ=7.92</li>
+  <li>biggl 13px x 127px; rate=240%; 長さ=9.77</li>
+  <li>Biggl 16px x 160px; rate=302%; 長さ=10</li>
+  </ul>
+  <p>計算した高さは実際に出力される高さに一致している。
+  それぞれ bigl-Biggl に対応しているとしたので良かった様だ。
+  実際に "長さ" (高さ/幅) が短くなっているので問題ない様だ。
+  </p>
+
+<h4>括弧の縦位置合わせ</h4>
+  <p>実際に出力された pdf を見ると、
+    括弧の上下中心線を基準にして上下に括弧が伸張している様である。
+    一方で、html でそのまま文字の大きさを変更すると段々と括弧の位置が上に上がっていく。
+    恐らく、baseline を基準にして上下に括弧が伸張している為である。
+  </p>
+  <p>その為、vertical-align を用いて括弧の上下の位置を調整したい。
+    vertical-align:middle を指定すると何となく良くなる様な気がするが、
+    今度は括弧の位置が段々と下に下がっていく様になって逆向きにずれてしまう。
+  </p>
+  <p>そこで、baeline からのずれとして実際に数値を指定して垂直位置を調整する事にする。
+    実際に指定する数値を求める為に以下の手順を取る。
+    (1) 何も vertical-align (va) を指定せずに望ましい位置からのずれを測る。
+    (2) vertical-align に適当な値 (0.1em) を指定し、それによって移動する量を測る。
+    (3) 実際に vertical-align に何を指定すれば (1) のずれを打ち消せるか計算する。
+  </p>
+  <table class="normal center">
+  <tr>
+    <td>拡大率 (%)</td>
+    <td>va=0 の時<br/>実測ずれ (px)</td>
+    <td>va=-0.1em の時<br/>実測ずれ (px)</td>
+    <td>.1em (px)<br/>換算値 (px)<br/>補正値</td>
+    <td>指定する va (0.1em)</td>
+  </tr>
+  <tr><td>120</td><td> 3</td><td>-4</td><td> 7<br/>17.5<br/> 6.87</td><td>0.437</td></tr>
+  <tr><td>180</td><td>13</td><td> 3</td><td>10<br/>16.6<br/>10.30</td><td>1.262</td></tr>
+  <tr><td>240</td><td>21</td><td> 7</td><td>14<br/>17.5<br/>13.73</td><td>1.529</td></tr>
+  <tr><td>300</td><td>30</td><td>13</td><td>17<br/>17.0<br/>17.17</td><td>1.738</td></tr>
+  </table>
+  <p>これによって求めた数値を実際に指定した所、良い感じになったのでそれで良しとする。</p>
+
+<h3>\scriptstyle: mod_math [2013-11-05]</h3>
+<h4>this is test for \sum</h4>
+<ul>
+<li>$2xy_1^{(5)}+(\sum_{n=0}^{100}\frac1n)+(\sum f(n))$</li>
+<li>$\displaystyle \sum_{n=0}^{100}\frac1n$</li>
+<li>$\displaystyle \sum_{n=0}^{100}\frac1n$</li>
+<li>$\frac{2xy_1^{(5)}+(\sum_{n=0}^{100}\frac1n)}2$</li>
+<li>$\frac{2xy_1^{(5)}+(\sum_{n=0}^{100}\frac1n)}2$</li>
+</ul>
+
+<h4>this is test for \frac</h4>
+<ul>
+<li>これは文中に埋め込んだ分数達 $\frac12-\frac13 = \frac16$ です。</li>
+<li>これは文中に埋め込んだ分数達 $\displaystyle \frac12-\frac13 = \frac16$ です。</li>
+<li>
+  <div class="note" style="width:20em;">
+  このボックスは、文中に埋め込んだ分数達がどの様に表示されるか試す為の物です。
+  早速、分数を文中に埋め込むと、$\frac12-\frac13 = \frac16$ となります。
+  もう一回埋め込むと、$\frac12-\frac13 = \frac16$ となります。
+  文章中に分数を埋め込んだ時に、行の高さに影響を与えてしまうのは好ましくありません。
+  そこで \textstyle が設定されている時に出力される分数は、
+  (中身が単純な場合に) 行の高さを乱さない様にします。
+  因みに、唯の数式を埋め込むと $x=y$ の様になります。
+  余り高さに変化がない事が期待されます。
+  </div>
+</li>
+<li>更に、\textstyle を用いて連分数にするとどうなるでしょうか。
+  $1+\frac1{1+\frac34}$
+  更に更に、連分数だと…
+  $1+\frac1{2+\frac1{3+\frac1{4+\frac1{5+\frac16}}}}$
+</li>
+<li>\dfrac $\dfrac13$, \tfrac $\displaystyle \tfrac15$</li>
+</ul>
+
+<h4>this is test for \int</h4>
+<ul>
+<li>$\int dx = x+C, \displaystyle \int dx x = x^2/2 + C$</li>
+<li><span class="aghfly-tex-math">\int dx = x+C</span></li>
+<li><span class="aghfly-tex-para">$\int dx = x+C$</span></li>
+</ul>
+<p class="aghfly-begin-gather_">
+  \int dx = x + C \\
+</p>
+<p class="aghfly-begin-gather_">
+  {a = \displaystyle \int dx(x+1)} \\
+  {a = \textstyle \int dx(x+1)} \\
+  {a = \scriptstyle \int dx(x+1)} \\
+  {a = \scriptscriptstyle \int dx(x+1)}
+</p>
+
+</body>
+</html>
