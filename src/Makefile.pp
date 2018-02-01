@@ -1,7 +1,9 @@
-# Makefile -*- Makefile -*-
+# -*- mode: makefile-gmake -*-
 
 all:
 .PHONY: all
+
+include config.mk
 
 BASE=..
 OUTDIR=$(BASE)/out
@@ -10,7 +12,10 @@ MONO:=$(shell bash -c 'type -p mono')
 GZJS:=$(MONO) $(BASE)/tools/ext/gzjs.exe
 MWGPP:=PPC_CPP=1 $(BASE)/tools/ext/mwg_pp.awk
 
-all: directory jsfiles jgzfiles copy_file
+all: directory jsfiles copy_file
+ifneq ($(generate_compressed_jsfiles),)
+all: jgzfiles
+endif
 
 .PHONY: upload
 upload:
@@ -30,7 +35,7 @@ jsdoc:
 # .js files
 #-------------------------------------------------------------------------------
 #%m agh::js
-jsfiles+=$(OUTDIR)/%name%.js
+jsfiles += $(OUTDIR)/%name%.js
 $(OUTDIR)/%name%.js: %name%.js
 	cp $< $@
 $(OUTDIR)/%name%.js.gz: $(OUTDIR)/%name%.js
@@ -39,7 +44,7 @@ $(OUTDIR)/%name%.jgz: $(OUTDIR)/%name%.js.gz
 	cp $< $@
 #%end
 #%m agh::js_from (
-jsfiles+=$(OUTDIR)/%name%.js
+jsfiles += $(OUTDIR)/%name%.js
 $(OUTDIR)/%name%.js: %from%
 	cp $< $@
 $(OUTDIR)/%name%.js.gz: $(OUTDIR)/%name%.js
@@ -48,7 +53,7 @@ $(OUTDIR)/%name%.jgz: $(OUTDIR)/%name%.js.gz
 	cp $< $@
 #%)
 #%m registerPreprocessedJs
-jsfiles+=$(OUTDIR)/%file%
+jsfiles += $(OUTDIR)/%file%
 ##%[name="%file%".replace(".js$","")]
 ##%x (
 $(OUTDIR)/${name}.js: ${name}.js %depends%
@@ -177,9 +182,11 @@ i prog-type.png
 
 .PHONY: directory
 directory: $(directory)
-.PHONY: jsfiles
+
+.PHONY: jsfiles jgzfiles
 jsfiles: $(jsfiles)
 jgzfiles: $(jsfiles:.js=.js.gz) $(jsfiles:.js=.jgz)
+
 .PHONY: copy_file
 copy_file: $(copy_file)
 

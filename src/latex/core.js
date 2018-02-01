@@ -29,14 +29,18 @@ ns.InitializeView = function(_window) {
   case "Op": csspath = "latex/latex.op.css"; break;
   }
 
-  var head = _window.document.getElementsByTagName("head")[0];
-  if (head) {
-    var link = _window.document.createElement("link");
-    link.rel = "stylesheet";
-    link.type = "text/css";
-    link.charset = "utf-8";
-    link.href = agh.scripts.AGH_URLBASE + csspath;
-    head.appendChild(link);
+  if (_window.document === agh.scripts.DOCUMENT) {
+    agh.scripts.load(csspath);
+  } else {
+    var head = _window.document.getElementsByTagName("head")[0];
+    if (head) {
+      var link = _window.document.createElement("link");
+      link.rel = "stylesheet";
+      link.type = "text/css";
+      link.charset = "utf-8";
+      link.href = agh.scripts.AGH_URLBASE + csspath;
+      head.appendChild(link);
+    }
   }
 
   var eHTML = _window.document.documentElement;

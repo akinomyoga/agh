@@ -2033,7 +2033,7 @@ Function.prototype.get_name = function() {
         //----------------------------------------------------------------------
         if (agh.Array.contains(["loading", "parsed", "ready"], this.files[filename])) return false;
         this.files[filename] = "loading";
-        var script = document.createElement("script");
+        var script = this.DOCUMENT.createElement("script");
         script.src = this.AGH_URLBASE + filename.slice(0, -3) + this.JGZ_EXTENSION;
         script.charset = "utf-8";
         script.type = "text/javascript";
@@ -2051,7 +2051,7 @@ Function.prototype.get_name = function() {
         //----------------------------------------------------------------------
         if (this.files[filename] == "ready") return false;
         this.files[filename] = "ready";
-        var link = document.createElement("link");
+        var link = this.DOCUMENT.createElement("link");
         link.rel = "stylesheet";
         link.type = "text/css";
         link.href = agh.scripts.AGH_URLBASE + filename;
@@ -2060,6 +2060,7 @@ Function.prototype.get_name = function() {
         return true;
       },
       AGH_URLBASE: "",
+      DOCUMENT: document,
       DOCUMENT_HEAD: document.getElementsByTagName("head")[0],
       JGZ_EXTENSION: ".js"
     });
@@ -2074,8 +2075,11 @@ Function.prototype.get_name = function() {
         fname = fname.slice(0, -3);
         js_ext = ".js.gz";
       } else if (fname.endsWith(".jgz")) {
-        fname = fname.slice(0, -2) + "s";
+        fname = fname.slice(0, -4) + ".js";
         js_ext = ".jgz";
+      } else if (fname.endsWith(".min.js")) {
+        fname = fname.slice(0, -7) + ".js";
+        js_ext = ".min.js";
       }
       if (fname != THIS_FILE) continue;
 

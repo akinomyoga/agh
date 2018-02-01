@@ -5,14 +5,26 @@
 <script type="text/javascript" charset="utf-8" src="../out/agh.js"></script>
 <script type="text/javascript">
 agh.scripts.wait(["event:onload", "agh.lang.tex.js"], function() {
-  function convertDocument(id) {
-    var div = document.getElementById(id);
-    var source = agh.Text.Unescape(div.innerHTML, "html");
-    var doc = new agh.LaTeX.Document(source);
-    var result = doc.Parse();
-    div.innerHTML = result;
+  function insertAfter(elem, node, ref) {
+    if (elem.insertAfter)
+      return elem.insertAfter(node, ref);
+
+    var next = ref.nextSibling;
+    if (next) return elem.insertBefore(node, next);
+    elem.appendChild(node);
+    return node;
   }
-  convertDocument("texdoc1");
+
+  var scripts = document.body.getElementsByTagName('script');
+  for (var i = 0, iN = scripts.length; i < iN; i++) {
+    var script = scripts[i];
+    if (script.type == 'application/x-aghtex-document') {
+      var div = document.createElement('div');
+      div.className = 'aghtex-page';
+      div.innerHTML =new agh.LaTeX.Document(script.text).Parse();
+      insertAfter(script.parentNode, div, script);
+    }
+  }
 });
 </script>
 <style type="text/css">
@@ -26,7 +38,7 @@ body {
 </style>
 </head>
 <body>
-<div id="texdoc1" class="aghtex-page">
+<script id="texdoc1" type="application/x-aghtex-document">
 \documentclass[amsmath,amssymb]{revtex4-1}
 \begin{document}
 \title{Test agh.lang.latex 201802}
@@ -83,6 +95,7 @@ hello\\[3mm]world
 \end{align}
 
 \end{document}
-</div>
+</script>
+
 </body>
 </html>

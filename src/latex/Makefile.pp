@@ -3,6 +3,8 @@
 all:
 .PHONY: all
 
+include ../config.mk
+
 BASE=../..
 OUTDIR=$(BASE)/out/latex
 DOCDIR=$(BASE)/doc/latex
@@ -27,6 +29,9 @@ $(OUTDIR)/.htaccess: htaccess
 	cp -p $< $@
 
 all: css jsfiles resources
+ifneq ($(generate_compressed_jsfiles),)
+all: jgzfiles
+endif
 
 Makefile: Makefile.pp
 	$(MWGPP) $< > $@
@@ -47,7 +52,7 @@ $(OUTDIR)/latex.ie.css: latex.pp.css
 # .js files
 #-------------------------------------------------------------------------------
 #%define add_js
-jsfiles:=$(jsfiles) $(OUTDIR)/%name%.js
+jsfiles += $(OUTDIR)/%name%.js
 $(OUTDIR)/%name%.js.gz: $(OUTDIR)/%name%.js
 	$(GZJS) $<
 $(OUTDIR)/%name%.jgz: $(OUTDIR)/%name%.js.gz
@@ -94,7 +99,9 @@ $(OUTDIR)/../agh.lang.tex.js: main.pp.js core.js $(modules)
 #%x add_js.r#%name%#../agh.lang.tex#
 
 #-------------------------------------------------------------------------------
-jsfiles: $(jsfiles) $(jsfiles:.js=.js.gz) $(jsfiles:.js=.jgz)
+jsfiles: $(jsfiles)
+jgzfiles: $(jsfiles:.js=.js.gz) $(jsfiles:.js=.jgz)
+.PHONY: jsfiles jgzfiles
 
 #-------------------------------------------------------------------------------
 # resources

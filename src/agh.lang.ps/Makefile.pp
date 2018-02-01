@@ -1,4 +1,12 @@
-# -*- Makefile -*-
+# -*- mode: makefile-gmake -*-
+
+all:
+.PHONY: all
+
+include ../config.mk
+
+Makefile: Makefile.pp
+	$(MWGPP) $< > $@
 
 BASE=../..
 DOCDIR:=$(BASE)/doc/agh.lang.ps
@@ -8,11 +16,10 @@ MONO:=$(shell bash -c 'type -p mono')
 GZJS:=$(MONO) $(BASE)/tools/ext/gzjs.exe
 MWGPP:=$(BASE)/tools/ext/mwg_pp.awk
 
-.PHONY: all jsfiles doc
 all: jsfiles
-
-Makefile: Makefile.pp
-	$(MWGPP) $< > $@
+ifneq ($(generate_compressed_jsfiles),)
+all: jgzfiles
+endif
 
 #------------------------------------------------------------------------------
 #  jsfiles
@@ -27,7 +34,7 @@ agh_lang_ps_source:= \
   agh.lang.ps-io.js \
   agh.lang.ps-cmd.js
 
-jsfiles:=$(jsfiles) $(OUTDIR)/agh.lang.ps.js $(OUTDIR)/agh.lang.ps.js.gz $(OUTDIR)/agh.lang.ps.jgz
+jsfiles += $(OUTDIR)/agh.lang.ps.js
 $(OUTDIR)/agh.lang.ps.js: $(agh_lang_ps_source) | $(OUTDIR)
 	$(MWGPP) $< > $@
 $(OUTDIR)/agh.lang.ps.js.gz: $(OUTDIR)/agh.lang.ps.js | $(OUTDIR)
@@ -36,6 +43,8 @@ $(OUTDIR)/agh.lang.ps.jgz: $(OUTDIR)/agh.lang.ps.js.gz | $(OUTDIR)
 	cp $< $@
 
 jsfiles: $(jsfiles)
+jgzfiles: $(jsfiles:.js=.js.gz) $(jsfiles:.js=.jgz)
+.PHONY: jsfiles jgzfiles
 
 #------------------------------------------------------------------------------
 #  documents
@@ -54,3 +63,4 @@ document_files+=$(DOCDIR)/%SRC%
 #%expand RegisterDocumentHtml.r|%SRC%|hist4.htm|
 
 doc: $(document_files)
+.PHONY: doc

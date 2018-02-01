@@ -3,21 +3,21 @@
 //    MWG 3.0 - DOM                                                   K. Murase
 //
 //*****************************************************************************
-agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
+agh.scripts.register("agh.dom.js", ["agh.js", "agh.text.js"], function(){
   // agh.dom1.js の API を組み直し
 
-  var agh=this;
-  agh.Namespace('dom',agh);
+  var agh = this;
+  agh.Namespace('dom', agh);
 
-  function _empty(){}
-  function _false(){return false;}
+  function _empty() {}
+  function _false() { return false; }
 
-  function insertAfter(elem,node,ref){
-    if(elem.insertAfter)
-      return elem.insertAfter(node,ref);
+  function insertAfter(elem, node, ref) {
+    if (elem.insertAfter)
+      return elem.insertAfter(node, ref);
 
-    var next=ref.nextSibling;
-    if(next)return elem.insertBefore(node,next);
+    var next = ref.nextSibling;
+    if (next) return elem.insertBefore(node, next);
     elem.appendChild(node);
     return node;
   }
@@ -398,10 +398,10 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
         if(value===oldValue)return;
         if(value){
           elem.unselectable="off";
-          elem.attachEvent("onselectstart",_false);
+          elem.attachEvent("onselectstart", _false);
         }else{
           elem.unselectable="on";
-          elem.detachEvent("onselectstart",_false);
+          elem.detachEvent("onselectstart", _false);
         }
       }
     });
