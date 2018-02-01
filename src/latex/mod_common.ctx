@@ -346,8 +346,8 @@ context "global" {
 
   command s@\hspace(#1)  '<span style="padding-right:#1;"></span>';
   command s@\hspace*(#1) '<span style="padding-right:#1;"></span>';
-  command s@\vspace(#1)  '<p class="tex-vspace" style="font-size:#1">&nbsp;</p>';
-  command s@\vspace*(#1) '<p class="tex-vspace" style="font-size:#1">&nbsp;</p>';
+  command s@\vspace(#1)  '<p class="aghtex-vspace" style="font-size:#1">&nbsp;</p>';
+  command s@\vspace*(#1) '<p class="aghtex-vspace" style="font-size:#1">&nbsp;</p>';
 
   command s>\enspace()              @'\hspace{0.5em}'; // from plain-TeX, kerning
 

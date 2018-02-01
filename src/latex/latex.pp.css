@@ -92,7 +92,8 @@ div.tex-left{text-align:left;}
   tex\:AmS span{vertical-align:-20%;margin-left:-0.6ex;margin-right:-0.3ex;}
 /*%%)*/
 
-p.tex-vspace{margin:0px;padding:0px;}
+p.aghtex-vspace{margin:0px;padding:0px;}
+tex\:i.aghtex-vspace{display:block;height:0;margin:0px;padding:0px;}
 
 dl.tex-desc{margin-left:1em;}
 dl.tex-desc dt{font-weight:bold;}

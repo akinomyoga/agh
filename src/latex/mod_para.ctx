@@ -23,13 +23,9 @@ context "mode.para" {
     command s@\negthinspace() '<tex:i class="aghtex-negative-space"></tex:i>';
   }
 
-
   command s@\-() "&#xAD;"; // soft hyphen
 
-  letter  s@\~()    '<tex:i class="aghtex-nobr"> </tex:i>'; // <nobr>
-  command s@#" " () "&nbsp;";
-  command s@#"\\"() "<br />";
-  command s@#par () "<br />";
+  letter s@\~()    '<tex:i class="aghtex-nobr"> </tex:i>'; // <nobr>
   letter f#'\n'() {
     if (doc.scanner.is(mod_core.SCAN_WT_LTR, '\n')) {
       doc.skipSpaceAndComment();
@@ -37,6 +33,16 @@ context "mode.para" {
     } else
       doc.currentCtx.output.buff.push(" ");
   };
+  _Ctx.DefineCommand({
+    " ": ['s@', "&nbsp;"],
+    "par":['s@', "<br />"],
+    "\\": ['f;#[]D', function(doc, argv) {
+      if (argv[1]) {
+        doc.currentCtx.output.buff.push('<tex:i class="aghtex-vspace" style="margin-bottom: ', argv[1], ';">&nbsp;</tex:i>');
+      } else
+        doc.currentCtx.output.buff.push('<br />');
+    }]
+  });
 
   //@A 字体
   _Ctx.DefineCommand({

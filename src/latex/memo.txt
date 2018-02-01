@@ -49,8 +49,6 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
   * mod:length: \length = length の形式に対応する
   * mod:length: \dimen123 = dimension の形式に対応する
 
-  * mod:length: \\[...]
-
 2017-07-19
 
   * http://swn1.com/fir.tex このファイルで変換できていないものに対応する。
@@ -78,6 +76,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     \\[引数]
       上記のファイルでは使用されていないが、他のファイルで変な文字列が残る。
 
+      2018-02-01 対応した。
 
 2015-11-03
 
@@ -186,6 +185,8 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2018-02-01
 
+  * mod:length: \\[...]
+
   * mod:length: Length の対応
 
     \hbox に対応する前に先ずは Length の読み取りに対応することにする。
@@ -220,7 +221,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     %     従って、この場合についても再解析が必要になる。
     %
     % この様に考えると scanner に特別な単語区切りを実装するのは汚くなる。
-    % 現状のまま、scanner で読み取られた SCAN_WT_TXT, SCAN_WT_LTR を切り取りながら解析する方法で行く。 
+    % 現状のまま、scanner で読み取られた SCAN_WT_TXT, SCAN_WT_LTR を切り取りながら解析する方法で行く。
 
     取り敢えず \hbox で必要な範囲で対応した。動いている。
 
