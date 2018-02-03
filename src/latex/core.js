@@ -769,10 +769,9 @@ agh.memcpy(ns.Context.prototype, {
 //◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 ns.Writer = function(text) {
   this.buff = [];
-//  this.prefix = "";
   this.postfix = "";
 };
-agh.memcpy(ns.Writer. prototype, {
+agh.memcpy(ns.Writer.prototype, {
   appendText: function(text) {
     this.buff.push(agh.Text.Escape(text, "html"));
   },
@@ -784,13 +783,11 @@ agh.memcpy(ns.Writer. prototype, {
   },
   clear: function() {
     this.buff = [];
-  //  this.prefix = "";
     this.postfix = "";
   },
   appendPre: function(text) {
     var current = this.buff.join('');
     this.buff = [text, current];
-  //  this.prefix += text;
   },
   appendPost: function(text) {
     this.postfix = text + this.postfix;
@@ -799,7 +796,6 @@ agh.memcpy(ns.Writer. prototype, {
     var ret = this.buff.join("");
     this.buff = [ret];
     return ret + this.postfix;
-  //  return this.prefix + ret + this.postfix;
   },
   toString: function() {
     return "[object " + nsName + ".Writer]";
@@ -1960,7 +1956,7 @@ agh.memcpy(ns.Command2, {
       var defvalue = optional ? $1.slice(1, -1) : null;
       if ($2 == null || $2 == "")$2="@";
       var readtype = COMMAND2_READTYPE[$2.last()];
-      var context = $2.length > 1 ? $2.substring(0, $2. length - 1) : null;
+      var context = $2.length > 1 ? $2.substring(0, $2.length - 1) : null;
       var htescape = $3 == "0";
       var arg_num = $4; // 数字の場合は意味を持たない (引き数番号は現れた順に割り当てられるので)
 

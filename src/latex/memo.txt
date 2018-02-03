@@ -24,6 +24,98 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 問題点・改善点・新機能の計画などについての議論をここに記述する。
 
+2018-02-03
+
+  * \mathbb{C} の色が固定になっている。
+
+  * latex/test のコンパイルを自動化する。
+    一時ディレクトリを使ってコンパイルする。
+    -output-directory=... は platex 及び pdflatex は対応している。
+
+  * 何と CSS で変数を使える機能があるようだ。
+
+    https://stackoverflow.com/questions/1875852/how-can-i-define-colors-as-variables-in-css
+    http://jsfiddle.net/Z4VWc/1/
+    https://developer.mozilla.org/ja/docs/Web/CSS/var
+
+    しかもある要素で指定すればそこより下にある要素に適用される。
+    これを使えば黒以外の文字色の場合にも対応できるし、
+    フォントの設定なども入れ子になっている場合でも大丈夫なように設計できるかもしれない。
+
+    しかし、これができるくらいであれば、var(color) 的なものがあっても良いと思うのだが…。
+
+    % と思って var(--color) としてみたら、何と文字色を指定することができた…。
+    % しかし、Web を探してもこの動作については記述がない。
+    % うーん。https://drafts.csswg.org/css-variables/#using-variables を見ると、
+    % --color と color を別のものとして取り扱っている例が見られる。
+    % ということは、Chrome の var(--color) で color に触れる動作は非標準的なものだろう。
+    % というか var(color) でアクセス出来ないのが悪いのである…。
+    %
+    % 改めて試してみた所 --color は動作しなかった。
+    % 実は jsFiddle が --color を定義していただけなのではあるまいか。
+    % しかし、だとしたらどのようにして --color を color を追跡する値にしたのだろう。
+    % そう考えるとやはり何か方法があるのかもしれない。
+    %
+    % うーん。改めて jsfiddle に行って試すが不思議だ。以下は動かない。
+    %
+    % border-bottom: 1px solid var(--color);
+    % border-bottom-color: var(--color);
+    %
+    % 以下のようにすると動く。
+    %
+    % border-bottom: 1px solid black;
+    % border-bottom-color: var(--color);
+    %
+    % どうやら以下のように完全に分けて書けば動くようだ。
+    % border-bottom-width: 1px;
+    % border-bottom-style: solid;
+    % border-bottom-color: var(--color);
+    %
+    % と思ったら、実は color を指定しなければ既定で border-color は color の様だ。
+    % つまり、var(--color) は解釈されなくて fallback として color が使われていただけだったのだ。
+    % 現に var(--color) 以外の var(--sssss) などでも同様に動作する。
+
+
+2018-02-02
+
+  * array の p{長さ} で一列定義されるはずなのに、唯の分割幅と解釈されている。
+
+  * 二重 \hline の間の間隔が潰れている。
+    height/width の解釈 (border を含むか含まないか) を CSS で設定できたのでは。
+    →box-sizing である。これを content-box にしたらブラウザ依存性もなくなるのでは?
+    と思ったが、よく考えたら content-box は既定値である。それなのに何故
+    セルが潰れてしまうのかは謎である。これはまた後で色々試す必要がある。
+
+  * 日付は現在時刻ではなくて document.lastModified を使えるのではないか。
+
+    document.lastModified の形式はブラウザによって色々の様である。
+    例えば https://developer.mozilla.org/ja/docs/Web/API/Document/lastModified では、
+
+      Tuesday, July 10, 2001 10:19:42
+
+    という形式が例に挙げられている。Chrome のコンソールで試すと、
+
+      07/09/2002 01:11:15
+
+    という形式になっている。試しに new Date("上記の二種類の形式") でやってみたところ、
+    どちらの形式でも正しく解釈できている様だ。ブラウザの document.lastModified は、
+    自身の new Date でちゃんと解釈できると仮定すればこれをそのまま使える。
+
+    より任意の形式に対応できる様に手で実装することはできるかもしれないが、
+    際限がないし面倒なので其処までは対応しない。
+    さて、解釈に失敗したときにはどのようになるだろうか。
+    試してみると
+
+      new Date("").getTime() === NaN
+
+    になるようである。或いは、date.getTime() === 0 ということもあるかもしれない。
+    これらの可能性を除外するためには、
+
+      var date = new Date(document.lastModified);
+      if (!(date.getTime() > 0)) date = new Date; // date.getTime() may be NaN
+
+    などとして、失敗した時には現在時刻を返す様にすれば良い。
+
 2018-02-01
 
   * 制限: <length> は現在 plus/minus も読み取っているが、
@@ -62,7 +154,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2017-07-19
 
-  * http://swn1.com/fir.tex このファイルで変換できていないものに対応する。
+  * http://swn1.com/fir.tex このファイルで変換できていないものに対応する。 #tmp0001
 
     \usepackage{amstex}
       http://www.verycomputer.com/18_3517fcaedefc7bf6_1.htm によると、
@@ -81,35 +173,15 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     \thispagestyle
       取り敢えず引数は取る様にする。対応していなくても。
 
-    \hdotsfor
-      これの対応は難しい。
-
-      td{vertical-align:middle;}
-      td>tex\:i{display:block;border:0.3em dotted black;height:0;}
-
-      などにすれば良いのでは。
-      しかし、左右で点が密集した感じになる。
-      また、点の間隔を制御する方法は与えられているのだろうか。
-      と思って検索してみたら何か出てきた。
-
-      http://blog.funxion.jp/139/
-      https://stackoverflow.com/questions/6250394/how-to-increase-space-between-dotted-border-dots
-      https://jsfiddle.net/yyp67pbg/
-
-      ここに載っている方法だと点は四角くなってしまう。少しいじってみたら丸くするのも簡単だった。
-
-      td{
-        background-image: radial-gradient(0.3em, black 50%, transparent 50%);
-        background-position: center;
-        background-size: 0.6em 0.3em;
-        background-repeat: repeat-x;
-      }
-
-
     \\[引数]
       上記のファイルでは使用されていないが、他のファイルで変な文字列が残る。
 
       2018-02-01 対応した。
+
+      2018-02-03 実は、配列環境の \\ でも同様に引き数で高さを指定することができる様だ。
+      但し、これについては \hline 等との兼ね合いを調べて慎重に実装しなければならない。
+      (新しい行を挿入するのか、前の行に padding を入れるのか、次の行に padding を入れるのか。
+      padding を入れるとしたら全てのセルに共通の padding を入れるべきかなどなど。)
 
 2015-11-03
 
@@ -196,6 +268,164 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 ------------------------------------------------------------------------------
 
 終了した ToDo 及び関連する議論はここに残す。
+
+2018-02-03
+
+  * 2017-07-19 \hdotsfor (used in http://swn1.com/fir.tex) [#D0022]
+
+    #tmp0001 の子項目
+
+    これの対応は難しい。
+
+    | td{vertical-align:middle;}
+    | td>tex\:i{display:block;border:0.3em dotted black;height:0;}
+    |
+    | などにすれば良いのでは。
+    | しかし、左右で点が密集した感じになる。
+    | また、点の間隔を制御する方法は与えられているのだろうか。
+    | と思って検索してみたら何か出てきた。
+    |
+    | http://blog.funxion.jp/139/
+    | https://stackoverflow.com/questions/6250394/how-to-increase-space-between-dotted-border-dots
+    | https://jsfiddle.net/yyp67pbg/
+    |
+    | ここに載っている方法だと点は四角くなってしまう。少しいじってみたら丸くするのも簡単だった。
+    |
+    | td{
+    |   background-image: radial-gradient(0.3em, black 50%, transparent 50%);
+    |   background-position: center;
+    |   background-size: 0.6em 0.3em;
+    |   background-repeat: repeat-x;
+    | }
+
+    取り敢えずは実装できた。
+
+    幾つか疑問点があるので試してみる事にする: 201802-hdotsfor.tex
+
+    - done: 本来は hdotsfor は amsmath がないと動かないはず。
+      また tabular でも動くのかどうかを確かめる必要がある。
+
+      →そのままでは \begin{array} では使えなかった。
+      \usepackage{amsmath} したら \begin{array} でも使える様になった。
+      それでも \begin{tabular} では使えなかった。
+
+      実装としては、doc.context_cast("...").OverwriteContext を使うか、
+      もしくはその場でコマンドを追加するという方法を用いるのが良さそうである。
+      単一のコマンドなので寧ろそちらの方が良いかもしれない。
+
+      そのまま doc.context_cast("env.array").AddCommandHandler("hdotsfor", ...); を用いる事にした。
+      動いている。
+
+    - done: \hdotsfor を指定した時点で既にセル内容があるときの振る舞いは?
+      更に \hdotsfor を指定した後に内容を追記した時の振る舞いは?
+
+      →\hdotsfor より前に内容があるとエラーになる。
+      \hdotsfor より後の内容は右寄せで表示される。
+      点線は内容の左余白だけに表示される。
+      実は、点線の縦位置は baseline に同じ。
+
+      現在の実装では \multicolumn でも \hdots でも、
+      既に内容がある場合でも何もエラーは発生しない。
+      これらについてはエラーを出力するべきなのではないか。
+      →エラーを出力する様に変更した。
+
+      また、内容を重複して指定した時、hdots と内容が異なる行に表示されている。
+      これは position: absolute; にして hdots が内容の配置に影響を与えない様に修正したい。
+      と思ったが、これだと縦位置の調整ができない。
+      position:absolute をして何も top, bottom, right, left を指定しない場合は、
+      position:static と同様に他の要素を押しのけてしまう様である。
+      と思ったがそういう訳でもないようだ。要素を挿入する順序の問題の様だ。
+
+      点線を表示するための要素を先に挿入したら問題はなくなった。
+      また、位置が padding によらない様に、left:0 も指定した。
+      点線が表示される高さ (縦位置) も height を調整することでできるようだ。
+      問題なく表示されている。
+
+    - done: 左右の border の振る舞いは?
+
+      | 右側の border は消える。複数本あっても 0 本になる。
+      | multicolumn によって新しく設定することはできる。
+      |
+      | 現在の実装はどうなっていただろうか。
+      | border を個別に消すことはできるが、
+      | 逆に border を消す操作と border を作る操作が conflict した時はどうなったろうか。
+      |
+      | % 現在の実装を調べてみる。先ず、各列の既定値については Table#borderV に格納されていて、
+      | % 更に Column#borderL 及び Column#borderR を通してアクセスできる。
+      | % ある列の borderR と次の列の borderL は同じインスタンスになっている。
+      | の様になっていると見せかけて実は borderV は何にも利用されていなかった。
+      | 使われていないだけでなく、最初に空の配列で初期化されるだけで中に要素も作られない。
+      |
+      | うーん。結局 Column#borderL 及び borderR は最初に罫線を指定する時に初期化される様だ。
+      | 初期化しているのは add_bL 及び add_bR のみであり、add_bL/add_bR に罫線が設定されるのは、
+      | TableAlignSetter#setBorder のみである。他に add_bR に [extra column] エラーメッセージが
+      | 設定されるが、これは例外的な使用方法なので今は考えなくても良い。
+      | そして TableAlignSetter#setBorder では、
+      | 一番左の罫線を設定する時は第一列の borderL を使うが、
+      | それ以外は必ず borderR に登録する様である。
+      |
+      | この動作は hdotsfor で右側の罫線が消えるということと、
+      | \multicolumn で再度線を設定することができるということと、整合している。
+      | つまり、hdotsfor はセルの右側の罫線を削除する。
+      | 一方で \multicolumn はセルの両側に罫線を設定する。
+      |
+      | もう少し確認する。もしこれが正しいのだとすると、
+      | \multicolumn で定義される左側の罫線は、
+      | \multicolumn の左にあるセルの右側の罫線と独立に処理されるはず。
+      | つまり、罫線が追加される or 左側の罫線は multicolumn で削除できない。
+      | →実際に試してみると左側の罫線は multicolumn で削除できないというのは正しかった。
+      |   但し、罫線が追加されるということはない。正確にいうと multicolumn の左側の一番最初の罫線は、
+      |   左側のセルの一番右側の罫線と同じ位置になるので一見して増えない。
+      |   しかし、multicolumn の左側の二つ目以降の罫線は実際に追加されて表示される。
+      | →この様な複雑な振る舞いを再現できているのかどうか、と思って確認してみた所、
+      |   現在の実装では厳密にこれらの振る舞いを再現できている様だ。
+      | →しかし、そうすると今度は multicolumn が一番左側にある時には違いが出るのでは、
+      |   と思って実際に試してみるとちゃんと実際の LaTeX の振る舞いを再現できている。
+      |   つまり、実際の LaTeX もこの実装と同じ様な処理を起こっている、
+      |   つまり、一番左の罫線は一番左の列が担当し、
+      |   それ以外の罫線はその左側にある列が担当するという形になっている。
+      |   multicolumn は multicolumn を構成する一番左の列の borderL と、
+      |   一番右の列の borderR を用いて実装される。
+      |   或るセルの borderR の一番右の罫線と、次のセルの borderL
+      |   の一番左の罫線は同じ位置に描画されるので、くっついて見える。
+
+      実際の実装でも現在の実装でも以下のように array の罫線は管理・構成されていると思われる。
+
+      - 全体に共通の縦罫線は、(複数本あったとしても) 各セルの borderR に設定される。
+      - 但し、一番左の縦罫線に関しては、一番左のセルの borderL に設定される。
+      - \multicolumn を実行すると結合セルに含まれるの一番左のセルの borderL と、
+        一番右のセルの borderR が上書きされる。特に何も罫線をしていしない場合は
+        borderL/borderR は空になる。
+      - 描画の際には或るセルの borderR の一番右の罫線と、
+        その次のセルの borderL の一番左の罫線は同じ位置に描画される。
+        (もしくは HTML の場合には border-collapse でくっついている。)
+      - \hdotsfor#1 は \multicolumn{#1}{r}{...} と等価の気がする。
+
+      これは set_hdots で set_multicol と同様に borderL, borderR を設定するだけで良い。
+
+    - unchanged: もう一つ気付いたことは multicolumn の後に続けて内容を記述すると、
+      内容が付加されるということ。振る舞いを見ると hdotsfor の時と同じ。
+
+      もう少し調べてみる。
+      multicolumn/hdotsfor の追加内容は親の align に関係なく右 align の様だ。
+      また math mode コマンドは使えない。直立体。
+      paragraph mode の ~ は無視される。つまり、paragraph mode でもない。
+
+      現在の実装を調べてみると multicolumn に関しては、
+      後に続けて入力した内容についてはセルの中にちゃんと入る。
+      但し、math mode になっていて align は multicolumn に指定したものになっている。
+      つまり前回実装した時に全て調べた上で現在の実装になっている気がする。
+      現在の振る舞いについては変更しないことにする。
+
+    - done: multicolumn/hdotsfor を二重に設定すると何が起こるのか?
+
+      実際に LaTeX で試すとエラーになる。
+      現在の aghtex の実装だとエラーは出ずに、
+      最初に指定した方の内容が表示される。
+      しかし、それだけで済んでいるはずがない。
+      内部で変なことになっている気がする。
+
+      何れにしても何処かでエラーを検出する必要がある。
 
 2018-02-01
 

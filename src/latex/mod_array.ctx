@@ -1,54 +1,61 @@
 ﻿// -*- mode: js -*-
 
 agh.memcpy(ns.Modules["core"].ErrorMessages, {
-  "mod:array.env:array.ctx:align.UnknownAlignmentCharacter": [
+  'mod:array.env:array.ctx:align.UnknownAlignmentCharacter': [
     "unknown align char '{ch}'",
     "指定した文字 '{ch}' は、表組みの alignment 指定子として未知です。\n"
       +"lcr 又は @, p, * 等を組み合わせて指定して下さい。"],
-  "mod:array.cmd:multicolumn.DoubleAlignmentCharacter": [
+  'mod:array.cmd:multicolumn.DoubleAlignmentCharacter': [
     "extra align spec",
     "'{ch}' は二回目の alignment の設定です。\n"
       +"\\multicolumn に対して複数の alignment を設定する事は出来ません。"],
-  "mod:array.cmd:multicol.EmptyAlignment": [
+  'mod:array.cmd:multicol.EmptyAlignment': [
     "missing alignment", "\\multicolumn の第二引数に alignment の指定が含まれていません。\nlcr の何れかを指定して下さい。"],
-  "mod:array.env:array.ctx:align.ltr:p.MissingArgument": [
+  'mod:array.cmd:multicol.MulticolAlreadyHasContent': [
+    "invalid \\{cmdName}", "Cells with contents cannot be turned into muticolumn cells."],
+  'mod:array.cmd:multicol.MulticolAlreadyMulticol': [
+    "invalid \\{cmdName}", "The multicolumn commands cannot be specified more than once in a single cell."],
+  'mod:array.env:array.ctx:align.ltr:p.MissingArgument': [
     "missing arg", "alignment 指定子 p には引数が必要です。\np{width} の形式で引数を指定して下さい。"],
-  "mod:array.env:array.ctx:align.ltr:*.InvalidRepeatNumber": [
+  'mod:array.env:array.ctx:align.ltr:*.InvalidRepeatNumber': [
     "invalid arg for '*'", "* の第一引数には繰り返し回数を示す正の整数値を指定して下さい。"],
-  "mod:array.env:array.ctx:align.ltr:*.EmptyContent": [
+  'mod:array.env:array.ctx:align.ltr:*.EmptyContent': [
     "missing arg", "* に第二引数がありません。\n第二引数には、繰り返す内容を指定して下さい。"],
   "mod:array.env:array.ExtraContentAfterMulticol": [
     "extra cell content",
     "\\multicol を指定した直後にセル内容を記述する事は出来ません。\n"
       + "\\ 又は & を用いて次の列か次の行に移ってから内容を既述して下さい。"],
-  "mod:array.env:array.cmd:cline.InvalidRange": [
+  'mod:array.env:array.cmd:cline.InvalidRange': [
     "'{cmdName}' invalid arg",
     "第一引数 '{range}' は無効な形式です。\n"
       + "\\cline コマンドの第一引数は /\\d+\\-\\d+/ の形で指定して下さい。"],
-  "mod:array.env:array.InvalidVerticalAlign": [
+  'mod:array.env:array.InvalidVerticalAlign': [
     "invalid valign",
     "指定した値 '{valign}' は垂直位置指定として不適切です。\r\ntbm のいずれかの値を指定して下さい。"],
-  "mod:array.env:array.ExtraColumn": [
+  'mod:array.env:array.ExtraColumn': [
     "extra column", "指定された列数よりも多くの列が指定されています。\nalignment を正しく指定して下さい。"],
-  "mod:array.env:eqnarray.ExtraColumn": [
+  'mod:array.env:eqnarray.ExtraColumn': [
     "extra column", "既定の列数よりも多くの列が指定されています。\neqnarray 環境では三列までしか使用する事は出来ません。"],
-  "mod:array.env:gather.ExtraColumn": [
+  'mod:array.env:gather.ExtraColumn': [
     "extra column", "gather 環境では複数の列を指定する事はできません。\\begin{align} 環境の使用を検討して下さい。"],
-  "mod:array.env:eqnarray.ContextBroken": [
+  'mod:array.env:eqnarray.ContextBroken': [
     "BUG/env:eqnarray", "ctx:env.eqnarray/cmd:\\\\: array context is not set. this command should be used inside env:eqnarray."],
-  "mod:array.env:array.InvalidNextLine": [
+  'mod:array.env:array.InvalidNextLine': [
     "invalid '{cmdName}'",
     "environment array: この場所で次の行に移る事は出来ません。"],
-  "mod:array.env:array.InvalidNextColumn": [
+  'mod:array.env:array.InvalidNextColumn': [
     "invalid '{cmdName}'",
     "environment array: この場所で次の列に移る事は出来ません。"],
-  "mod:array.env:array.InvalidHorizontalLine": [
+  'mod:array.env:array.InvalidHorizontalLine': [
     "invalid '{cmdName}'",
     "environment array: この場所で横罫線を設定する事は出来ません。"],
-  "mod:array.env:array.InvalidMulticolumn": [
+  'mod:array.env:array.InvalidMulticolumn': [
     "invalid '{cmdName}'",
     "environment array: この場所で複数列セルを宣言する事は出来ません。"],
-  "mod:array.env:alignat.NegativeColumnNumber": [
+  'mod:array.env:array.InvalidHdotsfor': [
+    "invalid '{cmdName}'",
+    "environment array: この場所で水平点線を宣言する事は出来ません。"],
+  'mod:array.env:alignat.NegativeColumnNumber': [
     "invalid column number",
     "environment alignat: '{arg1}' は不正な列数です。列数には正の整数を指定して下さい。"]
 });
@@ -85,7 +92,8 @@ agh.memcpy(_at.Cell.prototype, {
   //****************************************************************
   //    既定値
   //****************************************************************
-  content: "",
+  content: "",     // セル内容
+  is_hdots: false, // 水平に点線を表示するかどうか
   borderL: null, // Array of 1 or "@ string"
   borderR: null, // Array of 1 or "@ string"
   borderT: null,
@@ -182,17 +190,9 @@ agh.memcpy(_at.Cell.prototype, {
       output,
       this.get_bL(),
       wcell.get_bR(),
-      totspan
-      );
+      totspan);
   },
   write_internal: function(output, bL, bR, tdspan) {
-  /*
-    if (this.y == 8) {
-      console.log("Now going to write cell.");
-      console.log("Cell content is" + this.content + ".");
-      console.log(this.get_bL());
-    }
-  //*/
     bL = bL || [];
     bR = bR || [];
     var sty = new ns.Writer();
@@ -219,39 +219,32 @@ agh.memcpy(_at.Cell.prototype, {
     }
 
     var pL = this.get_pL();
-    if (pL != null) {
-      sbuff.push('padding-left:', pL, ';');
-    }
+    if (pL != null) sbuff.push('padding-left:', pL, ';');
     var pR = this.get_pR();
-    if (pR != null) {
-      sbuff.push('padding-right:', pR, ';');
-    }
+    if (pR != null) sbuff.push('padding-right:', pR, ';');
 
-  /*
-    if (this.y == 8) {
-      console.log("Now going to write cell.");
-      console.log("Cell content is " + this.content + ".");
-      console.log(body_bL);
-      console.log(bL);
-    }
-  //*/
     this.write_bL(output, bL, bbT, bbB);
 
     // 本体書き出し
-    var buff = output.buff;
-    buff.push(' <td class="aghtex-array-cell"');
-    buff.push(_at.toAlign(this.get_align()));
-    if (tdspan > 1) {
-      buff.push(' colspan="', tdspan, '"');
+    var className = 'aghtex-array-cell';
+    var content = this.content;
+    if (this.is_hdots) {
+      var hdots_type = 'hdots';
+      if (agh.browser.vIE < 10) hdots_type = 'hdots-ie9';
+      content = '<tex:i class="aghtex-array-' + hdots_type + '"></tex:i>' + content;
+      className += ' aghtex-array-hdots-cell';
     }
 
-    // - スタイル
-    sty = sty.toHtml();
-    if (sty.length > 0) {
-      buff.push(' style="', sty, '"');
+    var buff = output.buff;
+    buff.push(' <td class="', className, '"');
+    buff.push(_at.toAlign(this.get_align()));
+    if (tdspan > 1) buff.push(' colspan="', tdspan, '"');
+    var style = sty.toHtml();
+    if (style.length > 0) {
+      buff.push(' style="', style, '"');
       // ■ padding
     }
-    buff.push('>', this.content, '</td>\n');
+    buff.push('>', content, '</td>\n');
 
     this.write_bR(output, bR, bbT, bbB);
   },
@@ -403,7 +396,7 @@ agh.memcpy(_at.Column.prototype, {
       var r = c.cols_bR();
       if (r > maxR) maxR = r;
     }
-    this.tdc = maxL + 1+maxR;
+    this.tdc = maxL + 1 + maxR;
     this.tdcL = maxL;
     this.tdcR = maxR;
 
@@ -486,7 +479,7 @@ agh.memcpy(_at.MulticolAlignSetter.prototype, {
   setAlign: function(ltr) {
     if (this.align_set) {
       this.doc.currentCtx.output.error(
-        "mod:array.cmd:multicolumn.DoubleAlignmentCharacter", {ch: ltr},
+        'mod:array.cmd:multicolumn.DoubleAlignmentCharacter', {ch: ltr},
         "\\multicolumn.argument#1");
       return;
     }
@@ -554,12 +547,12 @@ _at.AlignHandlers = {
   p: function(doc, ltr) {
     // エラー (之が呼び出される＝text の最後の文字ではない＝引数がない)
     doc.currentCtx.output.error(
-      "mod:array.env:array.ctx:align.ltr:p.MissingArgument", null,
+      'mod:array.env:array.ctx:align.ltr:p.MissingArgument', null,
       "ltr:p (ctx:env.array.align)");
   },
   "0": function(doc, ltr) {
     doc.currentCtx.output.error(
-      "mod:array.env:array.ctx:align.UnknownAlignmentCharacter", {ch: ltr},
+      'mod:array.env:array.ctx:align.UnknownAlignmentCharacter', {ch: ltr},
       "letter '" + ltr + "' (ctx:env.array.align)");
   }
 };
@@ -610,14 +603,14 @@ context "env.array.align" new("sub.braced") {
     var i = parseInt(argv[1]);
     if (isNaN(i) || i < 1) {
       output.error(
-        "mod:array.env:array.ctx:align.ltr:*.InvalidRepeatNumber", null,
+        'mod:array.env:array.ctx:align.ltr:*.InvalidRepeatNumber', null,
         "ltr:* (ctx:env.array.align)");
       i = 1;
     }
 
     if (argv[2] == null) {
       output.error(
-        "mod:array.env:array.ctx:align.ltr:*.EmptyContent", null,
+        'mod:array.env:array.ctx:align.ltr:*.EmptyContent', null,
         "ltr:* (ctx:env.array.align)");
       return;
     }
@@ -736,8 +729,24 @@ agh.memcpy(_at.Table.prototype, {
   set_hline: function() {
     this.addHorizontalLines(this.cx, 1);
   },
-  set_multicol: function(doc, span, align, content) {
-    // 連結の設定
+  _multispan_checkExistingCellContents: function(doc, commandName) {
+    if (this.cell().is_multicol) {
+      doc.currentCtx.output.error(
+        'mod:array.cmd:multicol.MulticolAlreadyMulticol', {cmdName: commandName},
+        "\\" + commandName + " (ctx:array)");
+      return false;
+    }
+
+    var cellContent = doc.currentCtx.output.toHtml().trim();
+    if (cellContent !== "") {
+      doc.currentCtx.output.error(
+        'mod:array.cmd:multicol.MulticolAlreadyHasContent', {cmdName: commandName},
+        "\\" + commandName + " (ctx:array)");
+    }
+
+    return true;
+  },
+  _multispan_connectHorizontalCells: function(span) {
     this.cell().colspan = span;
     this.cell().is_multicol = true;
     for (var i = 1; i < span; i++) {
@@ -745,6 +754,13 @@ agh.memcpy(_at.Table.prototype, {
       c.is_spanpad = true;
       c.is_multicol = true;
     }
+  },
+  set_multicol: function(doc, span, align, content) {
+    if (!this._multispan_checkExistingCellContents(doc, "multicolumn")) {
+      doc.currentCtx.output.buff.push(content);
+      return;
+    }
+    this._multispan_connectHorizontalCells(span);
 
     // 内容の設定
     var lcell = this.cell();
@@ -765,9 +781,20 @@ agh.memcpy(_at.Table.prototype, {
 
     if (rcell.align == null) {
       doc.currentCtx.output.error(
-        "mod:array.cmd:multicol.EmptyAlignment", null,
+        'mod:array.cmd:multicol.EmptyAlignment', null,
         "\\multicolumn (ctx:array)");
     }
+  },
+  set_hdots: function(doc, span) {
+    if (!this._multispan_checkExistingCellContents(doc, "hdotsfor")) return;
+    this._multispan_connectHorizontalCells(span);
+    var lcell = this.cell();
+    this.cy += span - 1;
+    var rcell = this.cell();
+
+    lcell.borderL = [];
+    rcell.borderR = [];
+    rcell.is_hdots = true;
   },
   set_cline: function(start, end) {
     start--;
@@ -832,14 +859,6 @@ agh.memcpy(_at.Table.prototype, {
       this.write_bB(output, tdc_total, x);
     }
     buff.push('</table>');
-
-//#debug 0
-    var a = [];
-    for (var x = 0; x < this.xM; x++, a.push("\n"))
-      for (var y = 0; y < this.yM; y++)
-        a.push(agh.Text.Unescape(this.cell(x, y).content, "html"), ", ");
-    alert(a.join(""));
-//#end debug
   },
   write_thead: function(output) {
     var buff = output.buff;
@@ -899,7 +918,7 @@ agh.memcpy(_at.Table, {
     var data = doc.currentCtx.ENVDATA;
     if (!(data instanceof _at.Table)) {
       doc.currentCtx.output.error(
-        "mod:array.env:array.Invalid" + msg_action, {cmdName: cmdName},
+        'mod:array.env:array.Invalid' + msg_action, {cmdName: cmdName},
         "\\" + cmdName);
       return null;
     }
@@ -916,7 +935,7 @@ agh.memcpy(_at.Table, {
       var cont = output.toHtml().trim();
       if (cont) {
         output.error(
-          "mod:array.env:array.ExtraContentAfterMulticol", null,
+          'mod:array.env:array.ExtraContentAfterMulticol', null,
           "ltr:& (env:array)");
         data.cell().content += cont;
       }
@@ -957,9 +976,8 @@ agh.memcpy(_at.Table, {
     var s = args[1].match(/^\s*(\d)+\s*\-\s*(\d+)/);
     if (s == null) {
       output.error(
-        "mod:array.env:array.cmd:cline.InvalidRange", {cmdName: args[0], range: args[1]},
+        'mod:array.env:array.cmd:cline.InvalidRange', {cmdName: args[0], range: args[1]},
         "\\" + args[0]);
-
       return;
     }
 
@@ -967,7 +985,6 @@ agh.memcpy(_at.Table, {
   }),
   // \multicolumn{2}{|c|}{content}
   H_MULTICOL: new ns.Command2("f", "#!1#@2#>3", function(doc, args) {
-    var output = doc.currentCtx.output;
     var data = _at.Table.GetTable(doc, args[0], "Multicolumn");
     if (data == null) return;
 
@@ -978,14 +995,22 @@ agh.memcpy(_at.Table, {
 
     // ■ 既に内容があった場合警告
     data.set_multicol(doc, cnum, csty, content);
-  })
-});
+  }),
+  H_HDOTSFOR: new ns.Command2("f", "#!1", function(doc, args) {
+    var data = _at.Table.GetTable(doc, args[0], "Hdotsfor");
+    if (data == null) return;
 
+    var cnum = parseInt(args[1]);
+    if (isNaN(cnum) || cnum <= 0) cnum = 1;
+    data.set_hdots(doc, cnum);
+  }),
+});
+// export for use in amsmath
+_Mod["cmd:hdotsfor"] = _at.Table.H_HDOTSFOR;
 //*****************************************************************************
 //  array 環境
 //-----------------------------------------------------------------------------
 _Mod.ArrayEnvironmentDefaultPrologue = function(doc, ctx) {
-  var output = doc.currentCtx.output;
   var t = new _at.Table();
   return ctx.ENVDATA = t;
 
@@ -1016,7 +1041,7 @@ _Mod.ReadVerticalAlign = function(doc) {
   var va = doc.GetOptionalArgumentRaw() || "m";
   if ("tbm".indexOf(va.trim().first()) < 0) {
     doc.currentCtx.output.error(
-      "mod:array.env:array.InvalidVerticalAlign", {valign: va});
+      'mod:array.env:array.InvalidVerticalAlign', {valign: va});
     va = "m";
   }
   return va;
@@ -1047,7 +1072,7 @@ var ENV_PARAMS = {
 
     // 以降の列の追加
     t.default_col().add_bR(ns.Writer.get_error(
-      "mod:array.env:array.ExtraColumn"));
+      'mod:array.env:array.ExtraColumn'));
   },
   epilogue: _Mod.ArrayEnvironmentDefaultEpilogue,
   catcher: _Mod.ArrayEnvironmentDefaultCatcher
@@ -1148,7 +1173,7 @@ context "env.eqnarray" new("env.array") {
     if (actx != null) {
       _Mod.eqno_output(doc, actx, output);
     } else {
-      output.error("mod:array.env:eqnarray.ContextBroken");
+      output.error('mod:array.env:eqnarray.ContextBroken');
     }
 
     data.cell().content += output.toHtml();
@@ -1181,7 +1206,7 @@ _Mod["envdef:eqnarray*"] = {
     t.col(1).paddingL = "0px";
     t.col(1).paddingR = "0px";
     t.default_col().add_bR(ns.Writer.get_error(
-      "mod:array.env:eqnarray.ExtraColumn", null,
+      'mod:array.env:eqnarray.ExtraColumn', null,
       "env:eqnarray"));
   },
   epilogue: function(doc, ctx) {
@@ -1272,7 +1297,7 @@ _Mod["envdef:alignat*"] = {
     var n_ = doc.ReadArgument("txt");
     var n = parseInt(n_);
     if (!(n > 0)) {
-      doc.currentCtx.output.error("mod:array.env:alignat.NegativeColumnNumber", {arg1: n_});
+      doc.currentCtx.output.error('mod:array.env:alignat.NegativeColumnNumber', {arg1: n_});
     } else for (var i = 0; i < n; i++) {
       t.col(2 * i).halign = "r";
       t.col(2 * i).paddingR = "0px";
@@ -1281,7 +1306,7 @@ _Mod["envdef:alignat*"] = {
     }
 
     t.default_col().add_bR(ns.Writer.get_error(
-      "mod:array.env:narray.ExtraColumn", null,
+      'mod:array.env:narray.ExtraColumn', null,
       "env:alignat"));
   },
   epilogue: _Mod["envdef:eqnarray*"].epilogue,
@@ -1352,7 +1377,7 @@ _Mod["envdef:gather*"] = {
 
     t.col(0).halign = "c";
     t.default_col().add_bR(ns.Writer.get_error(
-      "mod:array.env:gather.ExtraColumn", null,
+      'mod:array.env:gather.ExtraColumn', null,
       "env:gather"));
   },
   epilogue: function(doc, ctx) {
@@ -1404,7 +1429,7 @@ _Mod["envdef:multline*"] = {
 
     t.col(0).halign = "l";
     t.default_col().add_bR(ns.Writer.get_error(
-      "mod:array.env:gather.ExtraColumn", null,
+      'mod:array.env:gather.ExtraColumn', null,
       "env:multline"));
   },
   epilogue: function(doc, ctx) {

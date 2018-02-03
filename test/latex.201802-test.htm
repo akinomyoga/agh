@@ -40,6 +40,7 @@ body {
 <body>
 <script id="texdoc1" type="application/x-aghtex-document">
 \documentclass[amsmath,amssymb]{revtex4-1}
+\usepackage{url}
 \begin{document}
 \title{Test agh.lang.latex 201802}
 \author{\verb+@akinomyoga+}
@@ -93,6 +94,89 @@ hello\\[3mm]world
   G &\stackrel{1+\frac23}{=} H, \\
   I &= J.
 \end{align}
+
+\section{\verb+\hdotsfor+ 対応}
+\begin{align}
+  A &= \begin{pmatrix}
+    a_{11} & a_{12} & 0 & \ldots & \ldots & \ldots & 0 \\
+    a_{21} & a_{22} & a_{23} & 0 & \ldots & \ldots & 0 \\
+    0 & a_{32} & a_{33} & a_{34} & 0 & \ldots & 0 \\
+    \hdotsfor{7} \\
+    \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+    \hdotsfor{7} \\
+      \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+    \hdotsfor{7} \\
+    0 & \ldots & 0 & a_{n-2,n-3} & a_{n-2,n-2} & a_{n-2,n-1} & 0 \\
+    0 & \ldots & \ldots & 0 & q_{n-1,n-2} & a_{n-1,n-1} & a_{n-1,n} \\
+    0 & \ldots & \ldots & \ldots & 0 & a_{n,n-1} & a_{nn}
+  \end{pmatrix} \\
+  &= \begin{pmatrix}
+    A_{t-I s-J} & \hdotsfor{4} \\
+    \hdotsfor{2} & A_{t-s} & \hdotsfor{2} \\
+    \dots & A_{t-1} & A_t & A_{t+1} & \dots \\
+    \hdotsfor{2} & A_{t+s} & \hdotsfor{2} \\
+    \hdotsfor{4} & A_{t+I s+J}
+  \end{pmatrix}
+\end{align}
+
+参考:
+
+\begin{itemize}
+\item ``matrices - Creating straight line in matrix - TeX - LaTeX Stack Exchange''
+  \url{https://tex.stackexchange.com/questions/68264/creating-straight-line-in-matrix}
+\item ``High Order Sum-of-Products in Cellular Logic'' \url{http://swn1.com/fir.tex}
+\end{itemize}
+
+\subsection{\verb+\hdotsfor+/\verb+\multicolumn+ と罫線の振る舞いについて}
+
+\begin{equation}
+  A = \left(\begin{array}{||c||c||c||c||c||}
+    A_{t-I s-J} & \hdotsfor{4} \\
+    \hdotsfor{2} & A_{t-s} & \hdotsfor{2} \\
+    \dots & A_{t-1} & A_t & A_{t+1} & \dots \\
+    \hdotsfor{2} & A_{t+s} & \hdotsfor{2} \\
+    \hdotsfor{4} & \multicolumn{1}{|c|}{A_{t+I s+J}}
+  \end{array}\right)
+\end{equation}
+
+\begin{center}
+  \begin{tabular}{||c||c||c||c||}
+    A & \multicolumn{2}{c}{test} & D \\
+    A & \multicolumn{2}{|c|}{test} & D \\
+    A & \multicolumn{2}{||c||}{test} & D \\
+    \multicolumn{2}{c}{test} & C & D \\
+    \multicolumn{2}{|c|}{test} & C & D \\
+    \multicolumn{2}{||c||}{test} & C & D \\
+  \end{tabular}
+\end{center}
+
+\subsection{\verb+\multicolumn+ の直後の内容について}
+
+\verb+\multicolumn+ / \verb+\hdotsfor+ の前後にセル内容を記述するとどうなるか。
+\begin{equation}
+  A = \left(\begin{array}{ccccc}
+    A_{x-1 y-1} & B_{x+1 y-1} & C_{q+2 r-1} & D_{p+3 q+1} & E \\
+    A_{t-I s-J} & \hdotsfor{4} XYZ HELLO \\
+    A_{t-I s-J} & \multicolumn{4}{r}{E} XYZ HELLO \\
+    A_{t-I s-J} & \multicolumn{4}{c}{E} XYZ HELLO \\
+    A_{t-I s-J} & \multicolumn{4}{l}{E} XYZ HELLO \\
+    %% A_{t-I s-J} & \hdotsfor{4} X_Y^Z \frac12 \\ % Error
+    A_{t-I s-J} & \hdotsfor{4} X~Y~Z \\
+    A_{t-I s-J} & XYZ \hdotsfor{4} \\
+    A_{t-I s-J} & XYZ \multicolumn{4}{c}{test} \\
+  \end{array}\right)
+\end{equation}
+
+複数の \verb+\multicolumn+ / \verb+\hdotsfor+ を指定するとどうなるか。
+\begin{equation}
+  A = \begin{pmatrix}
+    X & Y & Z & W\\
+    \multicolumn{2}{c}{X Y} \multicolumn{2}{c}{Z W} & 1\\ % Error on the next multicolumn
+    \multicolumn{2}{c}{X Y} \hdotsfor{2} & 2\\ % Error on \hdotsfor (says \@multispan)
+    \hdotsfor{2} \multicolumn{2}{c}{Z W} & 3\\ % Error on \multicolumn (says \@multispan)
+    \hdotsfor{2} \hdotsfor{2} & 4 \\ % Error on \hdotsfor (says \@multispan)
+  \end{pmatrix}
+\end{equation}
 
 \end{document}
 </script>

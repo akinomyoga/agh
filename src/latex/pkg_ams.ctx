@@ -645,6 +645,7 @@ ns.Document.Packages["amsmath"] = function(doc, opt, pkgName) {
   doc.context_cast("mode.para").OverwriteContext(doc.context_cast("pkg:amsmath/mode.para"));
   doc.context_cast("mode.math").AddBaseContext(doc.context_cast("pkg:amsmath/mode.math"));
   doc.context_cast("global").OverwriteContext(doc.context_cast("pkg:amsmath/global"));
+  doc.context_cast("env.array").AddCommandHandler("hdotsfor", mod_array["cmd:hdotsfor"]);
 };
 ns.Document.Packages["amstex"] = ns.Document.Packages["amsmath"];
 //******************************************************************************
