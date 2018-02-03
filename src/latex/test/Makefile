@@ -1,12 +1,23 @@
 # -*- mode:makefile-gmake -*-
 
-.SUFFIXES: .tex .dvi .pdf
+# use_pdflatex := 1
 
+ifneq ($(use_pdflatex),)
+.SUFFIXES: .tex .dvi .pdf
+.tex.pdf:
+	[ -d tmp ] || mkdir -p tmp; \
+	pdflatex -output-directory=tmp $< && \
+	mv tmp/$(<:.tex=.pdf) ./$@
+else
+.SUFFIXES: .tex .dvi .pdf
 .tex.dvi:
-	platex $<
+	[ -d tmp ] || mkdir -p tmp; \
+	platex -output-directory=tmp $< && \
+	mv tmp/$(<:.tex=.dvi) ./$@
 .dvi.pdf:
 	dvipdfm $<
+endif
 
-all: 201409-cmd_verb.pdf
-all: 201311-pkg_amsmath.pdf
-all: 201511-symbol.pdf
+texfiles := $(wildcard 20????-*.tex)
+all: $(texfiles:.tex=.pdf)
+$(warning Hello $(texfiles) $(use_pdflatex))

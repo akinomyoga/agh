@@ -108,10 +108,10 @@ agh.memcpy(_at.Cell.prototype, {
     return this.table.col(this.y);
   },
   get_bL: function() {
-    return this.borderL || this.y == 0 && this.table.col(0).borderL; //borderV[0];
+    return this.borderL || this.y == 0 && this.table.col(0).borderL;
   },
   get_bR: function() {
-    return this.borderR || this.table.col(this.y).borderR; //borderV[this.y + 1];
+    return this.borderR || this.table.col(this.y).borderR;
   },
   get_bT: function() {
     if (this.x != 0) return false;
@@ -133,6 +133,11 @@ agh.memcpy(_at.Cell.prototype, {
   get_pR: function() {
     if (this.paddingR != null) return this.paddingR;
     return this.get_col().paddingR;
+  },
+  get_pB: function() {
+    var line = this.table.line(this.x);
+    if (line) return line.paddingBottom;
+    return null;
   },
   get_align: function() {
     if (this.align != null) return this.align;
@@ -222,6 +227,8 @@ agh.memcpy(_at.Cell.prototype, {
     if (pL != null) sbuff.push('padding-left:', pL, ';');
     var pR = this.get_pR();
     if (pR != null) sbuff.push('padding-right:', pR, ';');
+    var pB = this.get_pB();
+    if (pB != null) sbuff.push('padding-bottom:', pB, ';');
 
     this.write_bL(output, bL, bbT, bbB);
 
@@ -636,10 +643,14 @@ context "env.array.align" new("sub.braced") {
 //********************************************************************
 _at.Table = function() {
   this.cells = [];
-  this.borderV = [];  // 垂直線既定値
   this.borderH = [];  // 水平線データ
 
-  this.cols = [];    // 列数情報
+  this.cols = [];  // 列情報 [new Column, ...]
+
+  // 行情報 [{paddingBottom, }, ...]
+  //   paddingBottom は \\[1cm] で指定される vskip により設定される。
+  //   行に属する各セルに paddingBottom を出力する。
+  this.lines = [];
 };
 agh.memcpy(_at.Table.prototype, {
   //****************************************************************
@@ -663,6 +674,14 @@ agh.memcpy(_at.Table.prototype, {
     if (y >= this.yM) this.yM = y+1;
 
     return this.cells[x][y] || (this.cells[x][y] = new _at.Cell(this, x, y));
+  },
+  line: function(x) {
+    if (x == null) x = this.cx;
+    var line = this.lines[x];
+    if (line)
+      return line;
+    else
+      return this.lines[x] = {};
   },
   col: function(y) {
     if (y == null) y = this.cy;
@@ -878,29 +897,29 @@ agh.memcpy(_at.Table.prototype, {
   },
   write_bT: agh.browser.vIE ? function(output, tdc_total) {
     var h = this.getHorizontalLines(0) - 1;
-    while (h-->0) {
+    while (h-- > 0) {
       output.buff.push(
         '<tr><td class="tex-arr2hlineT" colspan="', tdc_total,
         '"><tex:i class="aghtex-array-hline-iedummy">&nbsp;</tex:i></td></tr>\n');
     }
   } : function(output, tdc_total) {
     var h = this.getHorizontalLines(0) - 1;
-    while (h-->0) {
+    while (h-- > 0) {
       output.buff.push(
         '<tr><td class="tex-arr2hlineT" colspan="', tdc_total,
         '"></td></tr>\n');
     }
   },
-  write_bB: agh.browser.vIE?function(output, tdc_total, x) {
+  write_bB: agh.browser.vIE ? function(output, tdc_total, x) {
     var h = this.getHorizontalLines(x + 1) - 1;
-    while (h-->0) {
+    while (h-- > 0) {
       output.buff.push(
         '<tr><td class="tex-arr2hlineB" colspan="', tdc_total,
         '"><tex:i class="aghtex-array-hline-iedummy">&nbsp;</tex:i></td></tr>\n');
     }
-  }: function(output, tdc_total, x) {
+  } : function(output, tdc_total, x) {
     var h = this.getHorizontalLines(x + 1) - 1;
-    while (h-->0) {
+    while (h-- > 0) {
       output.buff.push(
         '<tr><td class="tex-arr2hlineB" colspan="', tdc_total,
         '"></td></tr>\n');
@@ -948,16 +967,18 @@ agh.memcpy(_at.Table, {
     output.clear();
     data.next_col();
   },
-  H_NEXT_ROW: function(doc, cmdName) {
-    doc.scanner.Next();
+  // \\[dimen]
+  H_NEXT_ROW: new ns.Command2("f", "#[]D", function(doc, argv) {
     var output = doc.currentCtx.output;
-    var data = _at.Table.GetTable(doc, cmdName, "NextLine");
+    var data = _at.Table.GetTable(doc, argv[0], "NextLine");
     if (data == null) return;
 
+    if (argv[1]) data.line().paddingBottom = argv[1];
     data.cell().content += output.toHtml();
     output.clear();
+
     data.next_row();
-  },
+  }),
   H_HLINE: function(doc, cmdName) {
     doc.scanner.Next();
     var output = doc.currentCtx.output;
@@ -1003,7 +1024,7 @@ agh.memcpy(_at.Table, {
     var cnum = parseInt(args[1]);
     if (isNaN(cnum) || cnum <= 0) cnum = 1;
     data.set_hdots(doc, cnum);
-  }),
+  })
 });
 // export for use in amsmath
 _Mod["cmd:hdotsfor"] = _at.Table.H_HDOTSFOR;
@@ -1163,10 +1184,10 @@ context "env.eqnarray" new("env.array") {
     var output = doc.currentCtx.output;
     doc.AssignContextVariable(CTXV_NONUMBER, true);
   };
-  command f@#"\\"() {
-    doc.scanner.Next();
+
+  _Ctx.DefineCommand("\\", ["f;#[]D", function(doc, argv) {
     var output = doc.currentCtx.output;
-    var data = _at.Table.GetTable(doc, cmdName, "NextLine");
+    var data = _at.Table.GetTable(doc, argv[0], "NextLine");
     if (data == null) return;
 
     var actx = doc.GetContextVariable(CTXV_ARRAYCTX);
@@ -1176,10 +1197,12 @@ context "env.eqnarray" new("env.array") {
       output.error('mod:array.env:eqnarray.ContextBroken');
     }
 
+    if (argv[1]) data.line().paddingBottom = argv[1];
     data.cell().content += output.toHtml();
     output.clear();
+
     data.next_row();
-  };
+  }]);
 }
 
 /* 表環境を新しく式番号に対応する為の手順

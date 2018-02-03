@@ -26,6 +26,12 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2018-02-03
 
+  * \hdotsfor by background-image: radial-gradient() が印刷されない。
+    Chrome において、背景を印刷するにしても、印刷画面では点線が表示されるが、
+    実際に PDF に出力してみると消えている。
+    background-image: url(.svg) だとちゃんと印刷されているようなので、
+    簡単な黒い円が一個だけの SVG を作って、それで表示するべきなのではないか。
+
   * \mathbb{C} の色が固定になっている。
 
   * latex/test のコンパイルを自動化する。
@@ -75,6 +81,53 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     % つまり、var(--color) は解釈されなくて fallback として color が使われていただけだったのだ。
     % 現に var(--color) 以外の var(--sssss) などでも同様に動作する。
 
+    また SVG で表示している根号や括弧なども color と同じ色にするためには、
+    SVG の中でも var() で色を指定できるのかどうか確認する必要がある。
+    と思ったが、試してみたら既にそのように動作している。
+    fill="currentColor" とするだけで現在の color と同じ色で描画してくれる様だ。
+
+    寧ろ CSS でも currentColor で指定できて欲しいものだ…
+    と思って Chrome で試してみたら認識している。
+    調べたら比較的最近実装されたようである。
+
+      http://am-yu.net/2015/02/11/currentcolor/
+      http://chibinowa.net/note/web/css-current-color.html
+
+    MDN で確認してみると実は Chrome では v1 から既に対応していた様だ。
+    IE でも 9 以降で実装している。もっと早く気付いておくべきだった。
+
+      https://developer.mozilla.org/ja/docs/Web/CSS/color_value#currentColor_keyword
+
+    と思って latex.pp.css を確認したら既に currentColor を使って指定されていた…。
+    color:black などと指定しているのは
+
+    - mathbb-shadow
+
+      color を上書きしているので currentColor にできない。外側の要素の currentColor が知りたいのである。
+      しかし、入れ子にして外側で shadow を指定して、内側で color を変更すれば行けるかもしれない
+      しかし、それでもアルファベットに関しては shadow ではなくフォントで表示する様に変えている所で、
+      外側の要素の currentColor を取得する必要があるのである。
+      実は、これこそ --aghtex-mathbb-color: currentColor; として
+      内側で var(--aghtex-mathbb-color) とすれば良いのではなかろうか。
+
+    - .aghtex-array-cell{border-color:black;}
+      これは単に $"borderColor" に置き換えれば良い気がする…
+      と思ったが、$"borderColor" は IE/Op で空文字列に展開されるので
+      少し異なる切り替え方をする必要がある。
+
+      % 因みに、これが他の border と独立に指定されている理由は、
+      % 恐らく table 内部の要素に対しても border-color を継承させるためである?
+      % →と思ったが、それは変である。black と決め打ちしたら継承できない。
+      % 何も指定しないほうがましである。
+
+    - hdots の gradient の色
+      これは将来的には SVG に置き換えるかもしれないが、
+      現時点で変更しておいて問題はないように思われる。
+      また IE9 以下に対しては、そもそも border-color を指定しなければ既定の色で描画されるはず?
+
+    - また他に気付いたのは、td.tex-bd-* は記述はあるが何処からも使用されていない。
+
+      grc '\bbd\b' とすると何処にも使われていないという事が明らかである。
 
 2018-02-02
 
@@ -160,6 +213,8 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
       http://www.verycomputer.com/18_3517fcaedefc7bf6_1.htm によると、
       昔は amsmath は amstex というパッケージ名だったらしい。
 
+      対応した。
+
     \operatorname
       これは既に operatornamewithlimits というコマンドを実装しているようなので、
       単にそれを多少修正して登録するだけなのではないか。
@@ -170,18 +225,10 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
       ソースコード中の "mod:common.*" などの文字列と被っていて検索しにくいが、
       多分対応していない。
 
+      他に \pmod, \bmod などがある。
+
     \thispagestyle
       取り敢えず引数は取る様にする。対応していなくても。
-
-    \\[引数]
-      上記のファイルでは使用されていないが、他のファイルで変な文字列が残る。
-
-      2018-02-01 対応した。
-
-      2018-02-03 実は、配列環境の \\ でも同様に引き数で高さを指定することができる様だ。
-      但し、これについては \hline 等との兼ね合いを調べて慎重に実装しなければならない。
-      (新しい行を挿入するのか、前の行に padding を入れるのか、次の行に padding を入れるのか。
-      padding を入れるとしたら全てのセルに共通の padding を入れるべきかなどなど。)
 
 2015-11-03
 
@@ -268,6 +315,67 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 ------------------------------------------------------------------------------
 
 終了した ToDo 及び関連する議論はここに残す。
+
+2018-02-04
+
+  * 2017-07-19 \\[引数] (used in http://swn1.com/fir.tex) [#D0023]
+    
+    上記のファイルでは使用されていないが、他のファイルで変な文字列が残る。
+
+    2018-02-01 対応した。
+
+    2018-02-03 実は、配列環境の \\ でも同様に引き数で高さを指定することができる様だ。
+    但し、これについては \hline 等との兼ね合いを調べて慎重に実装しなければならない。
+    (新しい行を挿入するのか、前の行に padding を入れるのか、次の行に padding を入れるのか。
+    padding を入れるとしたら全てのセルに共通の padding を入れるべきかなどなど。)
+
+    platex で試してみると \hline の直前に vskip が入る様である。
+    hline を複数指定してもこれは変わらない。
+    セルの padding で高さを確保するのだとしたら全ての要素に padding を入れる必要がある。
+    例えば、中身の高さの小さなセルにだけ padding を入れると実質見た目に変化がなくなる。
+
+    どの様に実現するかについてだが…。
+
+    a 一つの方法は全てのセルに padding-bottom を入れるという事。
+    b もう一つの方法は新しい行を入れる方法。
+
+    新しい行を入れる方法の場合は罫線がある場合を考えると、
+    縦罫線も再現する様に改めてセルたちを出力しなければならない。
+    また、multicolumn が設定されている時にはどの様に振る舞うのかも調べなければならない。
+    →調べてみると multicolumn で設定された罫線がそのまま下に伸びるようである。
+      つまり、各セルについて padding-bottom が設定されていると考えて問題ないように思う。
+
+    具体的にどう実装するかについて。振る舞いとして a の方が実装が楽である。
+    b でも実現できないことはないが面倒である。
+    実装は多少汚い気もするが、絶対指定で高さを指定する時点で何れにしても、
+    inline style を指定する必要は出てくるのだから、取り敢えず a を採用する。
+
+    - ok: 今の実装を見ていて気になったのだが、
+      実は \hline を一番上に二個以上設定すると、全ての行に \hline が表示されるのでは?
+
+      →試してみるとちゃんと重複して表示されるというようなことは起こっていない。何故だろう。
+      と思ってよく見たら、write_bT を呼び出しているのは、
+      各行の直前ではなくて、何れの行の出力を行うよりも前の一番最初だけだった。
+
+    或る行に含まれる全ての cell に同じ描画属性を与えるにはどうしたら良いだろう。
+    調べてみると、現状ではそのような機能はないように見える。
+    \hline の場合には Table で borderH という配列を保持していて、
+    getHorizontalLines() を使ってアクセスしている。
+    "行" を表現するオブジェクトの配列、といったものは存在しないようである。
+
+    a 一つの方法は borderH を真似て Table#paddingBottom の配列を作る。
+    b もう一つの方法は Table#lines.paddingB という物を作る。
+    c 或いは、各セルに Cell#paddingB を保持させて、
+      \cline と同様に一つ一つ paddingB を設定していく。
+
+    思うに共通の paddingB (vskip) と各セルの paddingB は区別した方が良い気がする。
+    という訳なので、c ではなく a または b を用いて実現する。
+    Table#borderH という形にしたのは、hline は各行に属するというよりは、
+    行と行の間に属するからであった。
+    padding に関して言えば、明らかに行に属するものなので、
+    これは Table#lines のようなメンバを追加しても良いように思われる。
+
+    b で実装した。OK。動いている。
 
 2018-02-03
 

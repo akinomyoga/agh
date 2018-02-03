@@ -46,6 +46,7 @@ body {
 \author{\verb+@akinomyoga+}
 \maketitle
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{\verb+\hbox+ 対応}
 \newlength{\mywidth}
 \setlength{\mywidth}{1cm}
@@ -68,6 +69,7 @@ body {
 \def\A{.1} [\hbox to 1\A\mywidth {C}]
 \def\A{m} [\hbox to 1.2c\A {D}]
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{length の対応}
 
 \newlength{\mylength}
@@ -82,6 +84,7 @@ hello\\world
 
 hello\\[3mm]world
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{\verb+\stackrel+ の配置方法の変更}
 \begin{align}
   A &= B, \\
@@ -95,7 +98,9 @@ hello\\[3mm]world
   I &= J.
 \end{align}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{\verb+\hdotsfor+ 対応}
+
 \begin{align}
   A &= \begin{pmatrix}
     a_{11} & a_{12} & 0 & \ldots & \ldots & \ldots & 0 \\
@@ -177,6 +182,43 @@ hello\\[3mm]world
     \hdotsfor{2} \hdotsfor{2} & 4 \\ % Error on \hdotsfor (says \@multispan)
   \end{pmatrix}
 \end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{表組みにおける \verb+\\[引き数]+ の対応}
+\begin{align}
+  A &= \begin{pmatrix}
+    \hline
+    A & B & C & D \\ \hline
+    A & B & C & D \\ \hline \hline
+    A & B & C & D \\ \hline \hline \hline
+    A & B & C & D \\
+  \end{pmatrix} = \begin{pmatrix}
+    \hline
+    A & B & C & D \\[3mm] \hline
+    A & B & C & D \\[3mm] \hline \hline
+    A & B & C & D \\[3mm] \hline \hline \hline
+    A & B & C & D \\[3mm]
+  \end{pmatrix}, \\
+  B &= \begin{array}{|c|c|c|c|c|}
+    \hline
+    A & \multicolumn{2}{||c||}{bc} & D & E \\[3mm] \hline
+    A & B & \multicolumn{2}{||c||}{cd} & E \\[3mm] \hline
+    A & B & C & D & E \\[3mm] \hline
+  \end{array}
+\end{align}
+
+現在の実装をしているときに気になったこと。
+一番上に \verb+\hline+ を複数指定した時でも正しく動いているか?
+これはちゃんと動いている。実装を読み間違えただけだった。
+\begin{align}
+  A = \begin{pmatrix}
+    \hline\hline
+    a_{11} & a_{12} & a_{13} \\
+    a_{21} & a_{22} & a_{23} \\
+    a_{31} & a_{32} & a_{33} \\ \hline\hline
+  \end{pmatrix}
+\end{align}
+
 
 \end{document}
 </script>
