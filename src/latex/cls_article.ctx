@@ -85,14 +85,22 @@ var monthNames = [
   "May",       "June",      "July",      "August",
   "September", "October",   "November",  "December"
 ];
-function get_today_text() {
-  var now = new Date();
-  var y = now.getYear();
+function getDateString(date) {
+  var y = date.getYear();
   if (y < 1900) y += 1900;
   y = y.toString();
-  var m = monthNames[now.getMonth()];
-  var d = now.getDate().toString();
-  return m + " " + d + " " + y;
+  var m = monthNames[date.getMonth()];
+  var d = date.getDate().toString();
+  return m + " " + d + ", " + y;
+}
+// ToDo: currently unused. It will be used for \today command.
+function getDateStringOfToday() {
+  return getDateString(new Date);
+}
+function getDateStringOflastModified() {
+  var date = new Date(document.lastModified);
+  if (!(date.getTime() > 0)) date = new Date; // date.getTime() may be NaN
+  return getDateString(date);
 }
 
 //-----------------------------------------------------------------------------
@@ -154,11 +162,6 @@ context "cls:article/mode.para" new() {
   _Ctx.AddCommandHandler("paragraph*"    , mod_ref.CreateSectionCommand({httag: 'h5', htclass: 'aghtex-article-paragraph', html: '#'}));
   _Ctx.AddCommandHandler("subparagraph*" , mod_ref.CreateSectionCommand({httag: 'h6', htclass: 'aghtex-article-subparagraph', html: '#'}));
 
-  var monthNames = [
-    "January",   "February",  "March",     "April",
-    "May",       "June",      "July",      "August",
-    "September", "October",   "November",  "December"
-  ];
   command f\maketitle() {
     var output = doc.currentCtx.output;
     var buff = output.buff;
@@ -182,7 +185,7 @@ context "cls:article/mode.para" new() {
     if (date)
       buff.push(date);
     else
-      buff.push(get_today_text());
+      buff.push(getDateStringOflastModified());
 
     buff.push('</tex:i></h1>');
   };
@@ -399,7 +402,8 @@ context "cls:revtex/mode.para" new() {
     if (date)
       buff.push(date);
     else
-      buff.push(get_today_text());
+      buff.push(getDateStringOflastModified());
+
     buff.push(')</tex:i></h1>');
 
     var abs = doc.GetDocumentVariable(_revtex, 'abstract');

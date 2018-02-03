@@ -24,6 +24,21 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 問題点・改善点・新機能の計画などについての議論をここに記述する。
 
+2018-02-04
+
+  * \today コマンド
+
+    cls_article.ctx に getDateStringOfToday という関数があるが現在は使われていない。
+    getDateString も含めて別のモジュールに関数を移動して、
+    cls_article.ctx ではそのモジュールから import した関数で実装を行うのが良い。
+
+  * aghtex4chrome でドキュメントの日付が background.html の日付になる。
+    これは document.lastModified を background.html の中で実行しているのが原因である。
+    正しく処理するためには
+
+    1 先ず初めに ns.Document に対して外部から lastModified を指定できるようにする必要がある。
+    2 aghtex4chrome の受け渡しで lastModified も受け渡す様にする必要がある。
+
 2018-02-03
 
   * \hdotsfor by background-image: radial-gradient() が印刷されない。
@@ -138,36 +153,6 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     →box-sizing である。これを content-box にしたらブラウザ依存性もなくなるのでは?
     と思ったが、よく考えたら content-box は既定値である。それなのに何故
     セルが潰れてしまうのかは謎である。これはまた後で色々試す必要がある。
-
-  * 日付は現在時刻ではなくて document.lastModified を使えるのではないか。
-
-    document.lastModified の形式はブラウザによって色々の様である。
-    例えば https://developer.mozilla.org/ja/docs/Web/API/Document/lastModified では、
-
-      Tuesday, July 10, 2001 10:19:42
-
-    という形式が例に挙げられている。Chrome のコンソールで試すと、
-
-      07/09/2002 01:11:15
-
-    という形式になっている。試しに new Date("上記の二種類の形式") でやってみたところ、
-    どちらの形式でも正しく解釈できている様だ。ブラウザの document.lastModified は、
-    自身の new Date でちゃんと解釈できると仮定すればこれをそのまま使える。
-
-    より任意の形式に対応できる様に手で実装することはできるかもしれないが、
-    際限がないし面倒なので其処までは対応しない。
-    さて、解釈に失敗したときにはどのようになるだろうか。
-    試してみると
-
-      new Date("").getTime() === NaN
-
-    になるようである。或いは、date.getTime() === 0 ということもあるかもしれない。
-    これらの可能性を除外するためには、
-
-      var date = new Date(document.lastModified);
-      if (!(date.getTime() > 0)) date = new Date; // date.getTime() may be NaN
-
-    などとして、失敗した時には現在時刻を返す様にすれば良い。
 
 2018-02-01
 
@@ -317,6 +302,40 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 終了した ToDo 及び関連する議論はここに残す。
 
 2018-02-04
+
+  * 2018-02-02 日付は現在時刻ではなくて document.lastModified を使えるのではないか。
+
+    document.lastModified の形式はブラウザによって色々の様である。
+    例えば https://developer.mozilla.org/ja/docs/Web/API/Document/lastModified では、
+
+      Tuesday, July 10, 2001 10:19:42
+
+    という形式が例に挙げられている。Chrome のコンソールで試すと、
+
+      07/09/2002 01:11:15
+
+    という形式になっている。試しに new Date("上記の二種類の形式") でやってみたところ、
+    どちらの形式でも正しく解釈できている様だ。ブラウザの document.lastModified は、
+    自身の new Date でちゃんと解釈できると仮定すればこれをそのまま使える。
+
+    より任意の形式に対応できる様に手で実装することはできるかもしれないが、
+    際限がないし面倒なので其処までは対応しない。
+    さて、解釈に失敗したときにはどのようになるだろうか。
+    試してみると
+
+      new Date("").getTime() === NaN
+
+    になるようである。或いは、date.getTime() === 0 ということもあるかもしれない。
+    これらの可能性を除外するためには、
+
+      var date = new Date(document.lastModified);
+      if (!(date.getTime() > 0)) date = new Date; // date.getTime() may be NaN
+
+    などとして、失敗した時には現在時刻を返す様にすれば良い。
+
+    実装した。と思ったが aghtex4chrome では反映されていない。
+    よく考えたら当たり前である。変換を実行しているのは別のページなのだから。
+    これについては別項目を立てて処理することにする。
 
   * 2017-07-19 \\[引数] (used in http://swn1.com/fir.tex) [#D0023]
     
