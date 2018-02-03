@@ -218,11 +218,11 @@ context "mode.para" {
   _Ctx.AddCommandHandler("rq", quoteright);
   letter s@\'"'()  '<tex:f class="aghtex-textrm">”</tex:f>'; // "
 
-  environment s@\center()     '<div class="tex-center">#0</div>';
-  environment s@\flushright() '<div class="tex-right">#0</div>';
-  environment s@\flushleft()  '<div class="tex-left">#0</div>';
-  environment s@\quote()      '<blockquote class="tex-quote">#0</blockquote>';
-  environment s@\quotation()  '<blockquote class="tex-quota">#0</blockquote>';
+  environment s@\center()     '<div class="aghtex-center">#0</div>';
+  environment s@\flushright() '<div class="aghtex-flushright">#0</div>';
+  environment s@\flushleft()  '<div class="aghtex-flushleft">#0</div>';
+  environment s@\quote()      '<blockquote class="aghtex-quote">#0</blockquote>';
+  environment s@\quotation()  '<blockquote class="aghtex-quota">#0</blockquote>';
   environment s@\verse()      '<tex:verse>#0</tex:verse>';
 
   //---------------------------------------------------------------------------
@@ -314,15 +314,17 @@ context "mode.para" {
       ctx.userC["label"] = ns.Modules["mod:ref"]["cmd:label:eq"];
     },
     epilogue: function(doc, ctx) {
+      // ToDo: mod_array.eqno_output と統合する?
+
       var buff = doc.currentCtx.output.buff;
       var labels = ctx.GetContextVariable(CTXV_LABEL_EQ);
       if (labels.length > 0) {
         var id = "aghtex." + labels[0];
-        buff.push('<tex:eqno class="right" id="', id, '">');
+        buff.push('<tex:i class="aghtex-equation-eqno-right" id="', id, '">');
         for (var i = 1; i < labels.length; i++)
           doc.references.label_id_map[labels[i]] = id;
       } else {
-        buff.push('<tex:eqno class="right">');
+        buff.push('<tex:i class="aghtex-equation-eqno-right">');
       }
 
       // 式番号の形式を指定するコマンドを呼び出す様に変更する■
@@ -338,7 +340,7 @@ context "mode.para" {
           doc.references.displayedText['ref@' + labels[0]] = eqno;
       }
 
-      buff.push('</tex:eqno></tex:math>\r\n');
+      buff.push('</tex:i></tex:math>\r\n');
     },
     context: "mode.math"
   });

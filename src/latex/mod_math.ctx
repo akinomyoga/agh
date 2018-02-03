@@ -417,12 +417,12 @@ context "mode.math" {
   //    分数 / atop
   //---------------------------------------------------------------
   if (agh.browser.vIE <= 8 || ns.compatMode == "IE-qks") {
-    command s@\frac(#>1#>2) '<table cellspacing="0" class="aghtex-frac"><tr><td class="tex-num">#1</td></tr><tr><td class="tex-den">#2</td></tr></table>';
+    command s@\frac(#>1#>2) '<table cellspacing="0" class="aghtex-frac-ie6"><tr><td class="aghtex-frac-ie6-num">#1</td></tr><tr><td class="aghtex-frac-ie6-den">#2</td></tr></table>';
     command f\over() {
       var output = doc.currentCtx.output;
       var former = output.toHtml();
       output.clear();
-      output.buff.push('<table cellspacing="0" class="aghtex-frac"><tr><td class="tex-num">', former, '</td></tr><tr><td class="tex-den">');
+      output.buff.push('<table cellspacing="0" class="aghtex-frac-ie6"><tr><td class="aghtex-frac-ie6-num">', former, '</td></tr><tr><td class="aghtex-frac-ie6-den">');
       output.appendPost('</td></tr></table>');
     };
   } else {
@@ -457,14 +457,12 @@ context "mode.math" {
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 
-    buff.push('<td class="aghtex-center"');
-    if (bar)
-      buff.push(' style="border-bottom:1px solid black;"');
+    buff.push('<td class="', bar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
     buff.push('>', former, '</td>');
 
     if (right)
       mod_base.OutputStretchBracketTd(output, right, 2);
-    buff.push('</tr><tr><td class="aghtex-center">');
+    buff.push('</tr><tr><td class="aghtex-genfrac-center">');
     output.appendPost('</td></tr></table>');
   }
   command f\atopwithdelims("#!1#!2") {

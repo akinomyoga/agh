@@ -719,8 +719,8 @@ context "mode.math" new("global") {
       ")": stretchImg("paren1r.png", 1.0, ")", 'rparen'),
       "{": stretchImg("paren2l.png", 1.2, "{", 'lbrace'),
       "}": stretchImg("paren2r.png", 1.2, "}", 'rbrace'),
-      "[": '<td rowspan="2" class="tex-left-kaku">&nbsp;</td>',
-      "]": '<td rowspan="2" class="tex-right-kaku">&nbsp;</td>',
+      "[": '<td rowspan="2" class="aghtex-left-kaku">&nbsp;</td>',
+      "]": '<td rowspan="2" class="aghtex-right-kaku">&nbsp;</td>',
       "〈": stretchImg("paren4l.png", 1, "〈", 'langle'),
       "〉": stretchImg("paren4r.png", 1, "〉", 'rangle'),
 
@@ -729,32 +729,32 @@ context "mode.math" new("global") {
       "〕": stretchImg("paren5r.png", 1, "〕"),
 
       // 共通
-      "|": agh.browser.vIE ? '<td rowspan="2" class="tex-left-pipe">&nbsp;</td>' :
-        '<td rowspan="2" class="tex-left-pipe"></td>',
-      "∥": agh.browser.vIE ? '<td rowspan="2" class="tex-left-vert">&nbsp;</td>' :
-        '<td rowspan="2" class="tex-left-vert"></td>',
+      "|": agh.browser.vIE ? '<td rowspan="2" class="aghtex-left-pipe">&nbsp;</td>' :
+        '<td rowspan="2" class="aghtex-left-pipe"></td>',
+      "∥": agh.browser.vIE ? '<td rowspan="2" class="aghtex-left-vert">&nbsp;</td>' :
+        '<td rowspan="2" class="aghtex-left-vert"></td>',
 
       // ceiling / floor
-      "\u2308": '<td rowspan="2" class="tex-left-ceil">&nbsp;</td>', //
-      "\uF0E9": '<td rowspan="2" class="tex-left-ceil">&nbsp;</td>', // Symbol Font
-      "\u00E9": '<td rowspan="2" class="tex-left-ceil">&nbsp;</td>', // Symbol Font
-      "\u230A": '<td rowspan="2" class="tex-left-flor">&nbsp;</td>', //
-      "\uF0EB": '<td rowspan="2" class="tex-left-flor">&nbsp;</td>', // Symbol Font
-      "\u00EB": '<td rowspan="2" class="tex-left-flor">&nbsp;</td>', // Symbol Font
-      "\u2309": '<td rowspan="2" class="tex-right-ceil">&nbsp;</td>', //
-      "\uF0F9": '<td rowspan="2" class="tex-right-ceil">&nbsp;</td>', // Symbol Font
-      "\u00F9": '<td rowspan="2" class="tex-right-ceil">&nbsp;</td>', // Symbol Font
-      "\u230B": '<td rowspan="2" class="tex-right-flor">&nbsp;</td>', //
-      "\uF0FB": '<td rowspan="2" class="tex-right-flor">&nbsp;</td>', // Symbol Font
-      "\u00FB": '<td rowspan="2" class="tex-right-flor">&nbsp;</td>', // Symbol Font
-      //"<tex:f>&#xF0E9;</tex:f>": '<td rowspan="2" class="tex-left-ceil">&nbsp;</td>',
-      //"<tex:f>&#xE9;</tex:f>": '<td rowspan="2" class="tex-left-ceil">&nbsp;</td>',
-      //"<tex:f>&#xF0EB;</tex:f>": '<td rowspan="2" class="tex-left-flor">&nbsp;</td>',
-      //"<tex:f>&#xEB;</tex:f>": '<td rowspan="2" class="tex-left-flor">&nbsp;</td>',
-      //"<tex:f>&#xF0F9;</tex:f>": '<td rowspan="2" class="tex-right-ceil">&nbsp;</td>',
-      //"<tex:f>&#xF9;</tex:f>": '<td rowspan="2" class="tex-right-ceil">&nbsp;</td>',
-      //"<tex:f>&#xF0FB;</tex:f>": '<td rowspan="2" class="tex-right-flor">&nbsp;</td>',
-      //"<tex:f>&#xFB;</tex:f>": '<td rowspan="2" class="tex-right-flor">&nbsp;</td>',
+      "\u2308": '<td rowspan="2" class="aghtex-left-ceil">&nbsp;</td>', //
+      "\uF0E9": '<td rowspan="2" class="aghtex-left-ceil">&nbsp;</td>', // Symbol Font
+      "\u00E9": '<td rowspan="2" class="aghtex-left-ceil">&nbsp;</td>', // Symbol Font
+      "\u230A": '<td rowspan="2" class="aghtex-left-flor">&nbsp;</td>', //
+      "\uF0EB": '<td rowspan="2" class="aghtex-left-flor">&nbsp;</td>', // Symbol Font
+      "\u00EB": '<td rowspan="2" class="aghtex-left-flor">&nbsp;</td>', // Symbol Font
+      "\u2309": '<td rowspan="2" class="aghtex-right-ceil">&nbsp;</td>', //
+      "\uF0F9": '<td rowspan="2" class="aghtex-right-ceil">&nbsp;</td>', // Symbol Font
+      "\u00F9": '<td rowspan="2" class="aghtex-right-ceil">&nbsp;</td>', // Symbol Font
+      "\u230B": '<td rowspan="2" class="aghtex-right-flor">&nbsp;</td>', //
+      "\uF0FB": '<td rowspan="2" class="aghtex-right-flor">&nbsp;</td>', // Symbol Font
+      "\u00FB": '<td rowspan="2" class="aghtex-right-flor">&nbsp;</td>', // Symbol Font
+      //"<tex:f>&#xF0E9;</tex:f>": '<td rowspan="2" class="aghtex-left-ceil">&nbsp;</td>',
+      //"<tex:f>&#xE9;</tex:f>": '<td rowspan="2" class="aghtex-left-ceil">&nbsp;</td>',
+      //"<tex:f>&#xF0EB;</tex:f>": '<td rowspan="2" class="aghtex-left-flor">&nbsp;</td>',
+      //"<tex:f>&#xEB;</tex:f>": '<td rowspan="2" class="aghtex-left-flor">&nbsp;</td>',
+      //"<tex:f>&#xF0F9;</tex:f>": '<td rowspan="2" class="aghtex-right-ceil">&nbsp;</td>',
+      //"<tex:f>&#xF9;</tex:f>": '<td rowspan="2" class="aghtex-right-ceil">&nbsp;</td>',
+      //"<tex:f>&#xF0FB;</tex:f>": '<td rowspan="2" class="aghtex-right-flor">&nbsp;</td>',
+      //"<tex:f>&#xFB;</tex:f>": '<td rowspan="2" class="aghtex-right-flor">&nbsp;</td>',
 
       // arrows
       "↑"    : stretchImg("stretch_uarr.png",   1.2, "↑"),

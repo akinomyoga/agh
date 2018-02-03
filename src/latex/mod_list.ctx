@@ -91,7 +91,7 @@ context "env.description" new("mode.para") {
 ns.ContextFactory["mode.para"].AddEnvironment("description", {
   prologue: function(doc, ctx) {
     ctx["env:description"] = {hasItem: false};
-    doc.currentCtx.output.buff.push('<dl class="tex-desc">\r\n');
+    doc.currentCtx.output.buff.push('<dl class="aghtex-desc">\r\n');
   },
   epilogue: function(doc, ctx) {
     var envdata = ctx["env:description"];

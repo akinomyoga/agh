@@ -365,9 +365,9 @@ context "pkg:amsmath/mode.math" new() {
   var cfrac_html = null;
   if (agh.browser.vIE) {
     cfrac_html = (
-      '<table cellspacing="0" class="aghtex-frac">'
-      + '<tr><td class="tex-num" style="text-align:$!important;">$</td></tr>'
-      + '<tr><td class="tex-den" style="text-align:$!important;">$</td></tr></table>'
+      '<table cellspacing="0" class="aghtex-frac-ie6">'
+      + '<tr><td class="aghtex-frac-ie6-num" style="text-align:$!important;">$</td></tr>'
+      + '<tr><td class="aghtex-frac-ie6-den" style="text-align:$!important;">$</td></tr></table>'
     ).split(/\$/g);
   } else {
     cfrac_html = (
@@ -412,14 +412,15 @@ context "pkg:amsmath/mode.math" new() {
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 
-    buff.push('<td align="center" class="aghtex-center"');
-    if (barWidth && barWidth != "")
-      buff.push(' style="border-bottom:', barWidth, ' solid black;"');
+    var hasBar = barWidth && barWidth;
+    buff.push('<td align="center" class="', hasBar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
+    if (hasBar && barWidth !== '1px')
+      buff.push(' style="border-bottom-width:', barWidth, ';"');
     buff.push('>', htNumerator, '</td>');
 
     if (right)
       mod_base.OutputStretchBracketTd(output, right, 2);
-    buff.push('</tr><tr><td align="center" class="aghtex-center">', htDenominator, '</td></tr></table>');
+    buff.push('</tr><tr><td align="center" class="aghtex-genfrac-center">', htDenominator, '</td></tr></table>');
   }
 
   _Ctx.DefineCommand({

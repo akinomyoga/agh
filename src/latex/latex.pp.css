@@ -71,9 +71,9 @@ tex\:container.aghtex-math td,
 tex\:math td{padding:0px;border-width:0px;white-space:nowrap;}
 
 /* -- */
-div.tex-center{text-align:center;}
-div.tex-right{text-align:right;}
-div.tex-left{text-align:left;}
+div.aghtex-center{text-align:center;}
+div.aghtex-flushright{text-align:right;}
+div.aghtex-flushleft{text-align:left;}
 
 /* TeX */
 /*%%if mode=="Trident" (*/
@@ -95,16 +95,16 @@ div.tex-left{text-align:left;}
 p.aghtex-vspace{margin:0px;padding:0px;}
 tex\:i.aghtex-vspace{display:block;height:0;margin:0px;padding:0px;}
 
-dl.tex-desc{margin-left:1em;}
-dl.tex-desc dt{font-weight:bold;}
-dl.tex-desc dt tex\:dt{position:relative;left:-1em;}
-dl.tex-desc dd{margin-left:1em;display:block;margin-top:.8ex;margin-bottom:.8ex;}
+dl.aghtex-desc{margin-left:1em;}
+dl.aghtex-desc dt{font-weight:bold;}
+dl.aghtex-desc dt tex\:dt{position:relative;left:-1em;}
+dl.aghtex-desc dd{margin-left:1em;display:block;margin-top:.8ex;margin-bottom:.8ex;}
 /*%%if mode=="WebKit" (*/
-	dl.tex-desc dt{display:run-in;}
+	dl.aghtex-desc dt{display:run-in;}
 /*%%)*/
 
-blockquote.tex-quote{text-indent:0px;}
-blockquote.tex-quota{text-indent:1em;}
+blockquote.aghtex-quote{text-indent:0px;}
+blockquote.aghtex-quota{text-indent:1em;}
 tex\:verse{display:block;margin-left:2em;margin-right:2em;}
 
 tex\:i.aghtex-hbox{display:inline-block;vertical-align:baseline;white-space:nowrap;}
@@ -737,23 +737,23 @@ table.aghtex-cmdleft-sf{vertical-align:middle;}
 tr.aghtex-cmdleft{height:0px;}
 td.aghtex-cmdleft-content{vertical-align:baseline;}
 
-td.tex-left-kaku, td.tex-right-kaku,
-td.tex-left-ceil, td.tex-right-ceil,
-td.tex-left-flor, td.tex-right-flor,
-td.tex-left-vert,
-td.tex-left-pipe, td.tex-right-pipe{
+td.aghtex-left-kaku, td.aghtex-right-kaku,
+td.aghtex-left-ceil, td.aghtex-right-ceil,
+td.aghtex-left-flor, td.aghtex-right-flor,
+td.aghtex-left-vert,
+td.aghtex-left-pipe, td.aghtex-right-pipe{
   border-style:solid!important;
 	width:.5ex;padding:0px!important;
 }
-td.tex-left-kaku {border-width:1px 0px 1px 1px!important;}
-td.tex-right-kaku{border-width:1px 1px 1px 0px!important;}
-td.tex-left-ceil {border-width:1px 0px 0px 1px!important;}
-td.tex-right-ceil{border-width:1px 1px 0px 0px!important;}
-td.tex-left-flor {border-width:0px 0px 1px 1px!important;}
-td.tex-right-flor{border-width:0px 1px 1px 0px!important;}
-td.tex-left-vert {border-width:0px 1px 0px 1px!important;width:1px;font-size:1px;}
-td.tex-left-pipe {border-width:0px 0px 0px 1px!important;width:1px;font-size:1px;}
-td.tex-right-pipe{border-width:0px 1px 0px 0px!important;width:1px;font-size:1px;}
+td.aghtex-left-kaku {border-width:1px 0px 1px 1px!important;}
+td.aghtex-right-kaku{border-width:1px 1px 1px 0px!important;}
+td.aghtex-left-ceil {border-width:1px 0px 0px 1px!important;}
+td.aghtex-right-ceil{border-width:1px 1px 0px 0px!important;}
+td.aghtex-left-flor {border-width:0px 0px 1px 1px!important;}
+td.aghtex-right-flor{border-width:0px 1px 1px 0px!important;}
+td.aghtex-left-vert {border-width:0px 1px 0px 1px!important;width:1px;font-size:1px;}
+td.aghtex-left-pipe {border-width:0px 0px 0px 1px!important;width:1px;font-size:1px;}
+td.aghtex-right-pipe{border-width:0px 1px 0px 0px!important;width:1px;font-size:1px;}
 
 td.aghtex-cmdleft-sup{font-size:75%;padding:0px;vertical-align:top;}
 /*%%if mode=="Trident" (*/
@@ -780,15 +780,20 @@ tex\:sup tex\:num,
 tex\:sub tex\:num,
 tex\:sup tex\:den,
 tex\:sub tex\:den{padding:0px;font-size:80%;}
-td.aghtex-center{text-align:center;}
+td.aghtex-genfrac-numerator,
+td.aghtex-genfrac-center{text-align:center;}
+td.aghtex-genfrac-numerator{border-bottom:1px solid black;}
 /*%%if mode=="Trident" (*/
-  table.aghtex-frac{display:inline;vertical-align:middle;margin:0px 0.2ex;border-collapse:collapse;}
-  table.aghtex-frac tr td.tex-num,
-  table.aghtex-frac tr td.tex-den{padding:0px!important;border-width:0px!important;text-align:center!important;}
-  table.aghtex-frac tr td.tex-den{border-width:1px 0px 0px 0px!important;border-style:solid!important;}
-  table.aghtex-int table.aghtex-frac tr td,
-  tex\:sup table.aghtex-frac tr td,
-  tex\:sub table.aghtex-frac tr td{padding:0px;font-size:80%;}
+  table.aghtex-frac-ie6{display:inline;vertical-align:middle;margin:0px 0.2ex;border-collapse:collapse;}
+  td.aghtex-frac-ie6-num,
+  td.aghtex-frac-ie6-den{padding:0px!important;border-width:0px!important;text-align:center!important;}
+  td.aghtex-frac-ie6-den{border-width:1px 0px 0px 0px!important;border-style:solid!important;}
+  table.aghtex-int td.aghtex-frac-ie6-num,
+  table.aghtex-int td.aghtex-frac-ie6-den,
+  tex\:sup td.aghtex-frac-ie6-num,
+  tex\:sup td.aghtex-frac-ie6-den,
+  tex\:sub td.aghtex-frac-ie6-num,
+  tex\:sub td.aghtex-frac-ie6-den{padding:0px;font-size:80%;}
 /*%%)*/
 
 /*%%if mode=="Gecko" (*/
@@ -1083,10 +1088,6 @@ table.aghtex-array{
   display:inline-table;
   /*%%)*/
 }
-col.tex-vline{width:1px;}
-/*%%if mode=="Opera"||mode=="Gecko" (*/
-  col.tex\:vline{width:2px;}
-/*%%)*/
 
 table.aghtex-array-valign-t{vertical-align:top;}
 table.aghtex-array-valign-m{vertical-align:middle;}
@@ -1094,19 +1095,6 @@ table.aghtex-array-valign-b{vertical-align:bottom;}
 table.aghtex-array-lrpad{
   margin-left:0.15em;margin-right:0.15em;}
 
-/* 罫線 */ /* char */
-table.tex-bd-l{border-left:1px solid $"borderColor";}
-table.tex-bd-t{border-top:1px solid $"borderColor";}
-
-td.tex-bd-l{border-left:1px solid $"borderColor";}
-td.tex-bd-r{border-right:1px solid $"borderColor";}
-td.tex-bd-t{border-top:1px solid $"borderColor";}
-/* ↓ for IE 6: 各要素にも tex-bd-b を追加している */ /* char */
-td.tex-bd-b{border-bottom:1px solid $"borderColor";}
-/* tr.tex-bd-b>td{border-bottom:1px solid $"borderColor";} ← × IE 6 */
-
-td.tex-vline{border-right:1px solid $"borderColor";padding:0px;}
-tr.tex-hline td{border-bottom:1px solid $"borderColor";padding:0px;height:2px;}
 /*----------------------------------------------------------
 		mod_array (array 環境 2)
 ----------------------------------------------------------*/
@@ -1144,11 +1132,11 @@ tex\:i.aghtex-array-hdots-ie9{
   height:0.7em;border-bottom:0.15em dotted black;}
 /*%%end*/
 
-td.tex-arr2hlineT{height:1px;border-top:1px solid $"borderColor";font-size:1px;padding:0px;}
-td.tex-arr2hlineB{height:1px;border-bottom:1px solid $"borderColor";font-size:1px;padding:0px;}
+td.aghtex-array-hline-t{height:1px;border-top:1px solid $"borderColor";font-size:1px;padding:0px;}
+td.aghtex-array-hline-b{height:1px;border-bottom:1px solid $"borderColor";font-size:1px;padding:0px;}
 /*%%if mode=="Opera"||mode=="Gecko" (*/
-td.tex-arr2hlineT{height:0;padding-top:1px;}
-td.tex-arr2hlineB{height:0;padding-bottom:1px;}
+td.aghtex-array-hline-t{height:0;padding-top:1px;}
+td.aghtex-array-hline-b{height:0;padding-bottom:1px;}
 /*%%elif mode=="Trident" (*/
 tex\:i.aghtex-array-hline-iedummy{
   display:block;
@@ -1172,11 +1160,11 @@ tex\:i.aghtex-array-hline-iedummy{
 		mod_ref
 ----------------------------------------------------------*/
 /*%%if mode=="Trident"||mode=="Opera"||mode=="WebKit" (*/
-  tex\:eqno.right{position:absolute;right:1em;top:50%;margin-top:-0.7em;}
-  tex\:eqno.left{position:absolute;left:1em;top:50%;margin-top:-0.7em;}
+  tex\:i.aghtex-equation-eqno-right{position:absolute;right:1em;top:50%;margin-top:-0.7em;}
+  tex\:i.aghtex-equation-eqno-left{position:absolute;left:1em;top:50%;margin-top:-0.7em;}
 /*%%elif mode=="Gecko"*/
-  tex\:eqno.right{position:absolute;right:1em;top:50%;margin-top:-1em;}
-  tex\:eqno.left{position:absolute;left:1em;top:50%;margin-top:-1em;}
+  tex\:i.aghtex-equation-eqno-right{position:absolute;right:1em;top:50%;margin-top:-1em;}
+  tex\:i.aghtex-equation-eqno-left{position:absolute;left:1em;top:50%;margin-top:-1em;}
 /*%%)*/
 tex\:i.aghtex-eqno{display:inline-block;}
 tex\:i.aghtex-eqno-right{position:absolute;right:1em;}
@@ -1352,7 +1340,7 @@ h2.aghtex-revtex-thebibliography{
 		<table> の style 継承
 ----------------------------------------------------------*/
 table.aghtex-array,
-table.aghtex-frac,
+table.aghtex-frac-ie6,
 table.aghtex-sqrt,
 table.aghtex-int,
 table.aghtex-inline,

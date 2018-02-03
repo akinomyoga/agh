@@ -899,14 +899,14 @@ agh.memcpy(_at.Table.prototype, {
     var h = this.getHorizontalLines(0) - 1;
     while (h-- > 0) {
       output.buff.push(
-        '<tr><td class="tex-arr2hlineT" colspan="', tdc_total,
+        '<tr><td class="aghtex-array-hline-t" colspan="', tdc_total,
         '"><tex:i class="aghtex-array-hline-iedummy">&nbsp;</tex:i></td></tr>\n');
     }
   } : function(output, tdc_total) {
     var h = this.getHorizontalLines(0) - 1;
     while (h-- > 0) {
       output.buff.push(
-        '<tr><td class="tex-arr2hlineT" colspan="', tdc_total,
+        '<tr><td class="aghtex-array-hline-t" colspan="', tdc_total,
         '"></td></tr>\n');
     }
   },
@@ -914,14 +914,14 @@ agh.memcpy(_at.Table.prototype, {
     var h = this.getHorizontalLines(x + 1) - 1;
     while (h-- > 0) {
       output.buff.push(
-        '<tr><td class="tex-arr2hlineB" colspan="', tdc_total,
+        '<tr><td class="aghtex-array-hline-b" colspan="', tdc_total,
         '"><tex:i class="aghtex-array-hline-iedummy">&nbsp;</tex:i></td></tr>\n');
     }
   } : function(output, tdc_total, x) {
     var h = this.getHorizontalLines(x + 1) - 1;
     while (h-- > 0) {
       output.buff.push(
-        '<tr><td class="tex-arr2hlineB" colspan="', tdc_total,
+        '<tr><td class="aghtex-array-hline-b" colspan="', tdc_total,
         '"></td></tr>\n');
     }
   },
