@@ -549,7 +549,7 @@ tex\:vphantom.aghtex-vphantom-align-m{vertical-align:middle;}
 tex\:vphantom.aghtex-vphantom-align-t{vertical-align:top;}
 tex\:vphantom.aghtex-vphantom-align-b{vertical-align:bottom;}
 
-tex\:i.aghtex-latex-allowbreak{whit-espace:normal;}
+tex\:i.aghtex-latex-allowbreak{white-espace:normal;}
 
 /* -- 負の空白 -- */
 /*%%if mode=="Trident" (*/

@@ -225,6 +225,15 @@ hello\\[3mm]world
 
 \textcolor[named]{red}{Hello, $\mathbb{C}P^{N-1}$! Hello, $\mathbb{あいうえお漢字}$!}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\verb+\settowidth+ 対応}
+
+長さを測る 1. $\Sigma$, 2. $\frac12+\frac34$, 3. $\displaystyle \frac12 + \frac34$
+\newlength{\mylength}
+\settowidth{\mylength}{$\Sigma$}
+\settowidth{\mylength}{$\frac12+\frac34$}
+\settowidth{\mylength}{$\displaystyle \frac12+\frac34$}
+
 \end{document}
 </script>
 

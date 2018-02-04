@@ -70,8 +70,9 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     http://www.onemathematicalcat.org/MathJaxDocumentation/TeXSyntax.htm
     ここに MathJax の対応しているコマンドの一覧が載っている。
 
-  * https://en.wikibooks.org/wiki/LaTeX/Lengths
-    Lengths
+  * 2018-02-01 Lengths https://en.wikibooks.org/wiki/LaTeX/Lengths
+
+    \settowidth
 
   * http://www.math.kobe-u.ac.jp/HOME/kodama/tips-latex-math-margin.html
     http://surgery.matrix.jp/comp/tex/plain/plain09.html
@@ -206,7 +207,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2018-02-04
 
-  * 2018-02-02 二重 \hline の間の間隔が潰れている。
+  * 2018-02-02 二重 \hline の間の間隔が潰れている。 [#D0028]
     height/width の解釈 (border を含むか含まないか) を CSS で設定できたのでは。
     →box-sizing である。これを content-box にしたらブラウザ依存性もなくなるのでは?
     と思ったが、よく考えたら content-box は既定値である。それなのに何故
@@ -225,7 +226,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     →結局 IE に対する対策と同様にすることにした。
     ブラウザに依存しないコードで同じ見た目にすることができるので。
 
-  * 2018-02-03 latex/test のコンパイルを自動化する。
+  * 2018-02-03 latex/test のコンパイルを自動化する。 [#D0027]
     一時ディレクトリを使ってコンパイルする。
     -output-directory=... は platex 及び pdflatex は対応している。
 
@@ -233,7 +234,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     日本語が認識できたりできなかったり、フォントが入っていたりいなかったりして
     コンパイルできなくなっているファイルが多すぎて駄目だ。やはり TeX は駄目だ。
 
-  * 2018-02-03 \mathbb{C} の色が固定になっている。
+  * 2018-02-03 \mathbb{C} の色が固定になっている。 [#D0026]
 
     結局 text-shadow を用いて中抜きにする方法だと難しそうだ。
 
@@ -245,7 +246,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     また、text-shadow を用いた時も --aghtex-color が指定されている時にはそれを用いる様にした。
     同時に pkg:color では color を指定すると同時に --aghtex-color も設定する。
 
-  * 2018-02-03 何と CSS で変数を使える機能があるようだ。
+  * 2018-02-03 何と CSS で変数を使える機能があるようだ。 [#D0025]
 
     https://stackoverflow.com/questions/1875852/how-can-i-define-colors-as-variables-in-css
     http://jsfiddle.net/Z4VWc/1/
@@ -352,7 +353,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
       grc '\bbd\b' とすると何処にも使われていないという事が明らかである。
       →全体的に class を整理した。全ての class について "aghtex-" prefix に変更した。
 
-  * 2018-02-02 日付は現在時刻ではなくて document.lastModified を使えるのではないか。
+  * 2018-02-02 日付は現在時刻ではなくて document.lastModified を使えるのではないか。 [#D0024]
 
     document.lastModified の形式はブラウザによって色々の様である。
     例えば https://developer.mozilla.org/ja/docs/Web/API/Document/lastModified では、

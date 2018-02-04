@@ -23,9 +23,8 @@ agh.memcpy(ns.Modules["core"].ErrorMessages, {
     "指定された名前の counter は見つかりませんでした。"]
 });
 
-var _Mod = {};
 var _modkey = 'mod:counter';
-ns.Modules[_modkey] = _Mod;
+var _Mod = ns.Modules[_modkey] = {};
 
 var roman1, roman5, Roman1, Roman5;
 (function() {

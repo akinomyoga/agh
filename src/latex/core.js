@@ -1467,7 +1467,7 @@ ns.Document.prototype.ReadDimension = function() {
   ///
   ///   <sign> :- '-' | '+'
   ///   <number> :- /[\d.]+/
-  ///   <unit> :- /in|bp|cm|mm|pt|pc|sp|dd|cc|em|ex|zw|zh|mu|px/i
+  ///   <unit> :- /in|bp|cm|mm|pt|pc|sp|dd|cc|n[cd]|em|ex|zw|zh|mu|px/i
   ///
 
   /* 実装上の注意:
@@ -1533,9 +1533,9 @@ ns.Document.prototype.ReadDimension = function() {
       var text = this.scanner.word;
       if (incompleteUnit) text = incompleteUnit + text;
 
-      var m = /^(?:in|bp|cm|mm|pt|pc|sp|dd|cc|em|ex|zw|zh|mu|px)/i.exec(text);
+      var m = /^(?:in|bp|cm|mm|pt|pc|sp|dd|cc|n[cd]|em|ex|zw|zh|mu|px)/i.exec(text);
       if (!m) {
-        if ((m = /^[bcdimpsz]$/i.exec(text))) {
+        if ((m = /^[bcdimnpsz]$/i.exec(text))) {
           // 不完全な単位の場合 (未だ単位になる可能性がある)
           incompleteUnit = m[0];
           this.scanner.Next();

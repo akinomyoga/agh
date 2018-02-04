@@ -32,6 +32,8 @@ var UNITDATA = {
   // didot points
   dd: {mm: 0.37597 , outunit: "mm"}, // 1 dd (didot point) = 15625/41559 mm
   cc: {mm: 4.51166 , outunit: "mm"}, // 1 cc (cicero) = 12 dd
+  nd: {mm: 0.375   , outunit: "mm"}, // 1 nd (new didot) = 0.375 mm
+  nc: {mm: 4.5     , outunit: "mm"}, // 1 nc (new cicero) = 12 nd = 4.5 mm
 
   // letter sizes
   ex: {mm: 1.8     , outunit: "ex"},
@@ -85,7 +87,7 @@ agh.memcpy(ns.Length, {
     /// 読み取った情報を元に作成した Length インスタンスを返します。
     /// src_index に、指定した文字列の何処まで読み取ったかの情報を格納します。
     /// </returns>
-    var m = text.match(/^\s*([\-+]?)\s*([\d\.]+)\s*(in|bp|cm|mm|pt|pc|sp|dd|cc|em|ex|zw|zh|mu|px)/i);
+    var m = text.match(/^\s*([\-+]?)\s*([\d\.]+)\s*(in|bp|cm|mm|pt|pc|sp|dd|cc|n[cd]|em|ex|zw|zh|mu|px)/i);
     if (!m) return null;
     var value = parseFloat(m[1] + m[2]);
     if (isNaN(value)) value = 0;
@@ -106,7 +108,7 @@ agh.memcpy(ns.Length.prototype, {
     return ret;
   },
   parseUnit: function(text) {
-    var a = text.match(/(?:in|bp|cm|mm|pt|pc|sp|dd|cc|em|ex|zw|zh|mu|px)\b/i);
+    var a = text.match(/(?:in|bp|cm|mm|pt|pc|sp|dd|cc|n[cd]|em|ex|zw|zh|mu|px)\b/i);
     return a != null ? a[0].toLowerCase() : "px";
   },
   changeUnit: function(number, beforeUnit, afterUnit) {
@@ -157,7 +159,7 @@ agh.memcpy(ns.Length.prototype, {
     else
       this.val += delta;
   },
-  subtractValue: function(arg) {
+  subtractValue: function(arg) { // currently unused
     this.addValue(arg, true);
   },
   setValue: function(arg) {
@@ -234,6 +236,50 @@ context "global" {
     }
   });
 
+  /// @fn measureHtml(html)
+  ///   指定した HTML を表示したときの width, height (baseline から上の高さ),
+  ///   depth (baseline から下の高さ) を計算します。
+  function measureHtml(html) {
+    var scale = 100;
+
+    var factory = document.createElement("div");
+    var buff = [];
+    buff.push('<tex:i style="position: absolute; z-index: -1; visibility: hidden; display: block; white-space: nowrap; vertical-align: baseline">');
+    buff.push('<tex:i style="display: inline-block; vertical-align: baseline; width: 1em; height: 1px;"></tex:i>');
+    buff.push('<tex:i style="display: inline-block; vertical-align: baseline;">', html, '</tex:i>');
+    buff.push('</tex:i>');
+    factory.innerHTML = buff.join("");
+    var container = factory.firstChild;
+    var mark = container.firstChild;
+    var span = mark.nextSibling;
+
+    document.body.appendChild(container);
+    var em = mark.offsetWidth;
+    var width  = (span.offsetWidth) / em;
+    var height = (mark.offsetTop + 1) / em;
+    var depth  = (span.offsetHeight - height) / em;
+
+    /* font-size で拡大して高精度で決定する。
+     *
+     *   但し、等比拡大になっているときのみにする。
+     *   内部で 1cm や 3mm などの絶対指定が含まれる場合、
+     *   font-size でスケールしないので、font-size
+     *   を変えて拡大して計測すると誤った結果になるため。
+     */
+    container.style.fontSize = scale + 'px';
+    var e1 = mark.offsetWidth;
+    var w1 = (span.offsetWidth) / e1;
+    var h1 = (mark.offsetTop + 1) / e1;
+    var d1 = (span.offsetHeight - h1) / e1;
+    if (Math.abs(w1 - width ) < 1 / em + 1 / e1) width  = w1;
+    if (Math.abs(h1 - height) < 1 / em + 1 / e1) height = h1;
+    if (Math.abs(d1 - depth ) < 1 / em + 1 / e1) depth  = d1;
+
+    document.body.removeChild(container);
+
+    return {width: width, height: height, depth: depth};
+  }
+
   _Ctx.DefineCommand({
     newdimen: ['f;#@1', function(doc, argv) {
       var lname = get_lenName(doc, argv[1]);
@@ -256,6 +302,24 @@ context "global" {
       var lname = get_lenName(doc, argv[1]);
       if (lname == null) return;
       addtolength(doc, lname, argv[2]);
+    }],
+    settowidth: ['f;#@1#>2', function(doc, argv) {
+      var lname = get_lenName(doc, argv[1]);
+      if (lname == null) return;
+      var metric = measureHtml(argv[2]);
+      if (metric.width > 0) setlength(doc, lname, new ns.Length(metric.width, 'em'));
+    }],
+    settoheight: ['f;#@1#>2', function(doc, argv) {
+      var lname = get_lenName(doc, argv[1]);
+      if (lname == null) return;
+      var metric = measureHtml(argv[2]);
+      if (metric.height > 0) setlength(doc, lname, new ns.Length(metric.height, 'em'));
+    }],
+    settodepth: ['f;#@1#>2', function(doc, argv) {
+      var lname = get_lenName(doc, argv[1]);
+      if (lname == null) return;
+      var metric = measureHtml(argv[2]);
+      if (metric.depth > 0) setlength(doc, lname, new ns.Length(metric.depth, 'em'));
     }]
   });
 }
