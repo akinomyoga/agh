@@ -68,19 +68,19 @@ context "mode.math" {
     cal: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-mathcal">', '</tex:f>'),
 
     // - 以下は数式モードでは効果無し。
-    mc          : mod_base.CHRelax,
-    gt          : mod_base.CHRelax,
-    normalfont  : mod_base.CHRelax,
-    tiny        : mod_base.CHRelax,
-    scriptsize  : mod_base.CHRelax,
-    footnotesize: mod_base.CHRelax,
-    small       : mod_base.CHRelax,
-    normalsize  : mod_base.CHRelax,
-    large       : mod_base.CHRelax,
-    Large       : mod_base.CHRelax,
-    LARGE       : mod_base.CHRelax,
-    huge        : mod_base.CHRelax,
-    Huge        : mod_base.CHRelax,
+    mc          : mod_base["cmd:relax"],
+    gt          : mod_base["cmd:relax"],
+    normalfont  : mod_base["cmd:relax"],
+    tiny        : mod_base["cmd:relax"],
+    scriptsize  : mod_base["cmd:relax"],
+    footnotesize: mod_base["cmd:relax"],
+    small       : mod_base["cmd:relax"],
+    normalsize  : mod_base["cmd:relax"],
+    large       : mod_base["cmd:relax"],
+    Large       : mod_base["cmd:relax"],
+    LARGE       : mod_base["cmd:relax"],
+    huge        : mod_base["cmd:relax"],
+    Huge        : mod_base["cmd:relax"],
 
     // - 以下は文章モードに移行して評価
     text  : ['s@;#mode.para>1', '<tex:f class="aghtex-textrm">#1</tex:f>'], // 文章モードはデフォルトで roman で良いか?
@@ -436,7 +436,7 @@ context "mode.math" {
           '</tex:i></tex:num><tex:den><tex:i>', argv[2],
           '</tex:i></tex:den></tex:frac2>');
     }
-    _Mod.CH_FRAC = cmd_frac;
+    _Mod["cmd:frac"] = cmd_frac;
 
     command f\frac(#>1#>2) { cmd_frac(doc,argv); };
     command f\over() {

@@ -54,10 +54,10 @@ context "pkg:latexsym/mode.math" new() {
     Diamond : ['s@', '<tex:f class="aghtex-binop aghtex-syma-mincho">◇</tex:f>'],
 
     // \iint \iiint \iiiint \idotsint
-    iint    : ['f', function(doc, cmdName) { mod_math['cmd:int'](doc, '&#x222C;'); }],
-    iiint   : ['f', function(doc, cmdName) { mod_math['cmd:int'](doc, '&#x222D;'); }],
-    iiiint  : ['f', function(doc, cmdName) { mod_math['cmd:int'](doc, '&#x2A0C;'); }],
-    idotsint: ['f', function(doc, cmdName) { mod_math['cmd:int'](doc, '&#x222B;<tex:f class="aghtex-dotsi">&#x22EF;</tex:f>&#x222B;'); }],
+    iint    : ['f', function(doc, cmdName) { mod_math["cmd:int"](doc, '&#x222C;'); }],
+    iiint   : ['f', function(doc, cmdName) { mod_math["cmd:int"](doc, '&#x222D;'); }],
+    iiiint  : ['f', function(doc, cmdName) { mod_math["cmd:int"](doc, '&#x2A0C;'); }],
+    idotsint: ['f', function(doc, cmdName) { mod_math["cmd:int"](doc, '&#x222B;<tex:f class="aghtex-dotsi">&#x22EF;</tex:f>&#x222B;'); }],
 
     varlimsup : ['s', @'\mathop\overline\mathrm{lim}'],
     varliminf : ['s', @'\mathop\underline\mathrm{lim}'],
@@ -318,9 +318,9 @@ context "pkg:amssymb/mode.math" new() {
     gimel              : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2137;</tex:f>'],
 
     // integrals
-    iint               : ['f', function(doc, cmdName) { mod_math['cmd:int'](doc, '&#x222C;'); }],
-    iiint              : ['f', function(doc, cmdName) { mod_math['cmd:int'](doc, '&#x222D;'); }],
-    iiiint             : ['f', function(doc, cmdName) { mod_math['cmd:int'](doc, '&#x2A0C;'); }]
+    iint               : ['f', function(doc, cmdName) { mod_math["cmd:int"](doc, '&#x222C;'); }],
+    iiint              : ['f', function(doc, cmdName) { mod_math["cmd:int"](doc, '&#x222D;'); }],
+    iiiint             : ['f', function(doc, cmdName) { mod_math["cmd:int"](doc, '&#x2A0C;'); }]
   });
 }
 ns.Document.Packages["amssymb"] = function(doc, opt, pkgName) {
@@ -364,8 +364,8 @@ context "pkg:amsmath/mode.math" new() {
     substack  : ['s;#1', @"\begin{array}{c}#1\end{array}"],
 
     // 色々なスタイルの分数
-    dfrac     : ['f;#>1#>2', mod_math.CH_FRAC],
-    tfrac     : ['f;#>1#>2', mod_math.CH_FRAC]
+    dfrac     : ['f;#>1#>2', mod_math["cmd:frac"]],
+    tfrac     : ['f;#>1#>2', mod_math["cmd:frac"]]
   });
 
   //--------------------------------------------------------------------------
@@ -497,9 +497,9 @@ context "pkg:amsmath/mode.math" new() {
     }],
 
     // marker commands for \dots
-    DOTSB: mod_base.CHRelax,
-    DOTSI: mod_base.CHRelax,
-    DOTSX: mod_base.CHRelax
+    DOTSB: mod_base["cmd:relax"],
+    DOTSI: mod_base["cmd:relax"],
+    DOTSX: mod_base["cmd:relax"]
   });
 
   function DefineDotsForCommand(cmdName, dotstype) {

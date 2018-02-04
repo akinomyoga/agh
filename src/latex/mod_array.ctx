@@ -635,10 +635,9 @@ context "env.array.align" new("sub.braced") {
       doc.scanner.Next();
       _at.AlignHandlers[0](doc, cmdName);
     },
-    "\0\b\t\n\v\f\r 　": function(doc,cmdName) { doc.scanner.Next(); },
-    "\x01\x02\x03\x04\x05\x06\x07\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f": function(doc, cmdName) {
-      doc.scanner.Next();
-    }
+    "\0\b\t\n\v\f\r 　": mod_base["cmd:relax"],
+    "\x01\x02\x03\x04\x05\x06\x07\x0e\x0f": mod_base["cmd:relax"],
+    "\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f": mod_base["cmd:relax"]
   });
 }
 //********************************************************************
@@ -973,7 +972,6 @@ agh.memcpy(_at.Table, {
   }),
   H_HLINE: function(doc, cmdName) {
     doc.scanner.Next();
-    var output = doc.currentCtx.output;
     var data = _at.Table.GetTable(doc, cmdName, "HorizontalLine");
     if (data == null) return;
 
@@ -1172,11 +1170,9 @@ _Mod.eqno_epilogue = function(doc, ctx) {
 };
 
 context "env.eqnarray" new("env.array") {
-  command f\nonumber() {
-    var output = doc.currentCtx.output;
+  _Ctx.DefineCommand("nonumber", ["f", function(doc, argv) {
     doc.AssignContextVariable(CTXV_NONUMBER, true);
-  };
-
+  }]);
   _Ctx.DefineCommand("\\", ["f;#[]D", function(doc, argv) {
     var output = doc.currentCtx.output;
     var data = _at.Table.GetTable(doc, argv[0], "NextLine");
@@ -1431,10 +1427,9 @@ _Mod["envdef:gathered"] = {
 // \begin{multline} (amsmath)
 
 context "env.multline" new("env.array") {
-  command f\nonumber() {
-    var output = doc.currentCtx.output;
+  _Ctx.DefineCommand("nonumber", ['f', function(doc, argv) {
     doc.AssignContextVariable(CTXV_NONUMBER, true);
-  };
+  }]);
 }
 
 _Mod["envdef:multline*"] = {

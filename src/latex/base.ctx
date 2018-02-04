@@ -9,7 +9,7 @@
  *    @fn mod_base.OutputStretchBracketTd(output,text,rowspan)
  *    @fn mod_base.GetStretchImageTd(imageUrl,rowspan,alternativeText);
  *
- *    @fn mod_base.CHRelax
+ *    @fn mod_base["cmd:relax"]
  */
 
 var _Mod = ns.Modules["mod:base"] = {};
@@ -65,7 +65,7 @@ var CH_RAW = function(doc, letter) {
   doc.currentCtx.output.buff.push('\\', letter);
   doc.scanner.Next();
 };
-_Mod.CHRelax = function(doc, cmdName) { doc.scanner.Next(); };
+_Mod["cmd:relax"] = function(doc, cmdName) { doc.scanner.Next(); };
 /*
 var CH_ESCAPE_HTML = function(doc, letter) {
   doc.currentCtx.output.appendText("\\"+letter);
