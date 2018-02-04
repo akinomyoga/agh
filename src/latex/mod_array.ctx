@@ -895,34 +895,21 @@ agh.memcpy(_at.Table.prototype, {
       buff.push('</tr>\n');
     }
   },
-  write_bT: agh.browser.vIE ? function(output, tdc_total) {
+  write_bT: function(output, tdc_total) {
+    // Note: IE とそれから Chrome で時々、中に dummy 要素がないと高さが潰れる。
     var h = this.getHorizontalLines(0) - 1;
     while (h-- > 0) {
       output.buff.push(
         '<tr><td class="aghtex-array-hline-t" colspan="', tdc_total,
-        '"><tex:i class="aghtex-array-hline-iedummy">&nbsp;</tex:i></td></tr>\n');
-    }
-  } : function(output, tdc_total) {
-    var h = this.getHorizontalLines(0) - 1;
-    while (h-- > 0) {
-      output.buff.push(
-        '<tr><td class="aghtex-array-hline-t" colspan="', tdc_total,
-        '"></td></tr>\n');
+        '"><tex:i class="aghtex-array-hline-dummy">&nbsp;</tex:i></td></tr>\n');
     }
   },
-  write_bB: agh.browser.vIE ? function(output, tdc_total, x) {
+  write_bB: function(output, tdc_total, x) {
     var h = this.getHorizontalLines(x + 1) - 1;
     while (h-- > 0) {
       output.buff.push(
         '<tr><td class="aghtex-array-hline-b" colspan="', tdc_total,
-        '"><tex:i class="aghtex-array-hline-iedummy">&nbsp;</tex:i></td></tr>\n');
-    }
-  } : function(output, tdc_total, x) {
-    var h = this.getHorizontalLines(x + 1) - 1;
-    while (h-- > 0) {
-      output.buff.push(
-        '<tr><td class="aghtex-array-hline-b" colspan="', tdc_total,
-        '"></td></tr>\n');
+        '"><tex:i class="aghtex-array-hline-dummy">&nbsp;</tex:i></td></tr>\n');
     }
   },
   "0": 0

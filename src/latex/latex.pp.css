@@ -1163,7 +1163,7 @@ td.aghtex-array-hline-b{height:1px;border-bottom:1px solid $"borderColor";font-s
 td.aghtex-array-hline-t{height:0;padding-top:1px;}
 td.aghtex-array-hline-b{height:0;padding-bottom:1px;}
 /*%%elif mode=="Trident" (*/
-tex\:i.aghtex-array-hline-iedummy{
+tex\:i.aghtex-array-hline-dummy{
   display:block;
   margin:0;padding:0;
   height:1px;overflow:hidden;}
