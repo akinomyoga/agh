@@ -426,7 +426,7 @@ context "global" {
   //---------------------------------------------------------------------------
   // \mbox
   command s@\mbox("#mode.lr>1") '<tex:i class="aghtex-hbox">#1</tex:i>';
-  command s@\fbox("#mode.lr>1") '<tex:i class="aghtex-hbox aghtex-latex-fbox">#1</tex:i>';
+  command s@\fbox("#mode.lr>1") '<tex:i class="aghtex-hbox aghtex-hbox-fbox">#1</tex:i>';
   command s@\frame("#mode.lr>1") '<tex:i class="aghtex-hbox aghtex-hbox-frame">#1</tex:i>';
   command f\framebox("#[]!1#[c]!2#mode.lr>3") {
     // #L1 (dimen)

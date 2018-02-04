@@ -106,10 +106,24 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     2018-02-04 \settowidth は対応した。
     2018-02-04 \the も対応した。
 
-    \newdimen / \newskip に対応する。
+    \newdimen / \newskip / \newmuskip に対応する。
       実は \newlength は既存のコマンドを上書きしないように内部でチェックをする \newskip である様だ。
       https://tex.stackexchange.com/questions/22863/what-are-the-differences-between-newdimen-newskip-and-newlength
       \newlength の上書きチェックについても対応する必要がある。
+
+    各種の既定 Lengths について定義を行う。
+    取り敢えずは適当な値で良い。例えば、A4 を仮定するなど。
+    (但し、印刷する時に問題になるかもしれないが…)。
+
+    と思ったら vh vw などという単位が CSS には存在しているようだ。
+    https://developer.mozilla.org/ja/docs/Web/CSS/Length
+    例えば 0.5\paperwidth に対しては
+
+      `calc(0.5 * var(--aghtex-paper-width, 50vw))`
+
+    などとすれば良いだろうか。しかし、それだと様々な計算ができなくなる。
+    一方で、絶対指定にするとウィンドウのサイズを変更した時に追随できない。
+
 
   * http://www.math.kobe-u.ac.jp/HOME/kodama/tips-latex-math-margin.html
     http://surgery.matrix.jp/comp/tex/plain/plain09.html
@@ -242,6 +256,13 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 終了した ToDo 及び関連する議論はここに残す。
 
 2018-02-04
+
+  * \fbox の class が誤っていて枠線が表示されていなかったのを修正した [#D0031]
+
+  * \settowidth: aghtex4chrome 環境でちゃんと動作するのだろうか? [#D0030]
+
+    →試してみた所ちゃんと動いている様だ。
+    また、\settowidth の計算で一部間違っているところが見つかったので修正した。
 
   * 2018-02-01 length に関連して \the コマンドというものもある。 [#D0029]
 

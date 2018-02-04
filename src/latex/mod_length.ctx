@@ -286,7 +286,7 @@ context "global" {
     var em = mark.offsetWidth;
     var width  = (span.offsetWidth) / em;
     var height = (mark.offsetTop + 1) / em;
-    var depth  = (span.offsetHeight - height) / em;
+    var depth  = (span.offsetHeight - mark.offsetTop - 1) / em;
 
     if (em < scale) {
       /* font-size で拡大して高精度で決定する。
@@ -300,7 +300,7 @@ context "global" {
       var e1 = mark.offsetWidth;
       var w1 = (span.offsetWidth) / e1;
       var h1 = (mark.offsetTop + 1) / e1;
-      var d1 = (span.offsetHeight - h1) / e1;
+      var d1 = (span.offsetHeight - mark.offsetTop - 1) / e1;
       if (Math.abs(w1 - width ) < 1 / em + 1 / e1) width  = w1;
       if (Math.abs(h1 - height) < 1 / em + 1 / e1) height = h1;
       if (Math.abs(d1 - depth ) < 1 / em + 1 / e1) depth  = d1;
