@@ -136,10 +136,16 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2018-01-31
 
-  * \ref で出力される section 番号の後に空白が入っている。
+  * 伸縮チルダが変になっている: $\widetilde{C[T]}$。
 
-    x 更にローマ数字の 10 が "I" になっている。
+  * \noindent
 
+  * https://hal.inria.fr/file/index/docid/662674/filename/Fayolle-IPPI-50.tex
+
+    cls:paper, pkg:hyperref, pkg:amsthm (env:proof, \newtheoremstyle, \theoremstyle)
+    \thanks \and \rule \protect \newblock
+
+  * \pacs \address \acknowledgments
 
 2017-07-19
 
@@ -259,6 +265,10 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 終了した ToDo 及び関連する議論はここに残す。
 
 2018-02-04
+
+  * 2018-01-31 \ref で出力される section 番号の後に空白が入っている。
+    x done: 更にローマ数字の 10 が "I" になっている。
+      これは直した。数字を切り出す位置が反転していた。
 
   * 2018-02-02 array の p{長さ} で一列定義されるはずなのに、唯の既存の列にたいする幅指定と解釈されている。 [#D0031]
     どうやら p{...} の時には alignment は l の様である。

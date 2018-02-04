@@ -128,7 +128,7 @@ context "global" new() {
     doc.scanner.m_makeatletter = true;
     doc.scanner.Next();
   });
-  _Ctx.AddCommandHandler('makeatletter', function(doc, cmdName) {
+  _Ctx.AddCommandHandler('makeatother', function(doc, cmdName) {
     doc.scanner.m_makeatletter = false;
     doc.scanner.Next();
   });
