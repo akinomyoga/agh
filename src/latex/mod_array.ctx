@@ -229,6 +229,8 @@ agh.memcpy(_at.Cell.prototype, {
     if (pR != null) sbuff.push('padding-right:', pR, ';');
     var pB = this.get_pB();
     if (pB != null) sbuff.push('padding-bottom:', pB, ';');
+    var width = this.get_width();
+    if (width != null) sbuff.push('width:', width, ';');
 
     this.write_bL(output, bL, bbT, bbB);
 
@@ -515,14 +517,14 @@ _at.AlignHandlers = {
 //#debug
     if (setter.idKey !== _at.AlignSetterKey) {
       alert([
-        "◆ Fatal Logical Error",
+        "LOGIC_ERROR",
         "場所: array2.ctx/context env.array.align/command '" + ltr + "'",
         "状況: align 指定コマンドが呼び出されましたが、",
         "　　　ここは env.array.align context 直下ではありません。",
         "・env.array.align の text_modifier が子孫 context に混入している可能性",
         "・env.array.align で定義されたコマンドが子孫 context に混入している可能性"
       ].join("\n"));
-      throw new Error("internal fatal error");
+      throw new Error("internal error");
     }
 //#end debug
     return setter;
@@ -588,54 +590,57 @@ context "env.array.align" new("sub.braced") {
   //================================================================
   //>#1 を読み取るのに使用する context は…? 出来るだけ親 ctx が良い
   //→親に対応する context 名 .. を定義した。
-  letter f@\lcr() {
-    doc.scanner.Next();
-    _at.AlignHandlers[cmdName](doc, cmdName);
-  };
-  letter f@\|() {
-    doc.scanner.Next();
-    var setter = _at.AlignHandlers.getAlignSetter(doc, '|');
-    if (setter != null) setter.setBorder(1);
-  };
-  letter f\p("#..!1") {
-    var setter = _at.AlignHandlers.getAlignSetter(doc, 'p');
-    if (setter != null) setter.setWidth(argv[1]);
-  };
-  letter f\@("#..>1") {
-    var setter = _at.AlignHandlers.getAlignSetter(doc, '@');
-    if (setter != null) setter.setBorder(argv[1]);
-  };
-  letter f\*("#..!1#@2") {
-    var output = doc.currentCtx.output;
-    var i = parseInt(argv[1]);
-    if (isNaN(i) || i < 1) {
-      output.error(
-        'mod:array.env:array.ctx:align.ltr:*.InvalidRepeatNumber', null,
-        "ltr:* (ctx:env.array.align)");
-      i = 1;
-    }
+  _Ctx.DefineLetter({
+    "lcr": function(doc, cmdName) {
+      doc.scanner.Next();
+      _at.AlignHandlers[cmdName](doc, cmdName);
+    },
+    '|': function(doc, cmdName) {
+      doc.scanner.Next();
+      var setter = _at.AlignHandlers.getAlignSetter(doc, '|');
+      if (setter != null) setter.setBorder(1);
+    },
+    'p': ['f;#D', function(doc, argv) {
+      var setter = _at.AlignHandlers.getAlignSetter(doc, 'p');
+      if (setter != null) {
+        setter.setAlign('l');
+        setter.setWidth(argv[1].toString());
+      }
+    }],
+    '@': ['f;#..>1', function(doc, argv) {
+      var setter = _at.AlignHandlers.getAlignSetter(doc, '@');
+      if (setter != null) setter.setBorder(argv[1]);
+    }],
+    '*': ['f;#..!1#@2', function(doc, argv) {
+      var output = doc.currentCtx.output;
+      var i = parseInt(argv[1]);
+      if (isNaN(i) || i < 1) {
+        output.error(
+          'mod:array.env:array.ctx:align.ltr:*.InvalidRepeatNumber', null,
+          "ltr:* (ctx:env.array.align)");
+        i = 1;
+      }
 
-    if (argv[2] == null) {
-      output.error(
-        'mod:array.env:array.ctx:align.ltr:*.EmptyContent', null,
-        "ltr:* (ctx:env.array.align)");
-      return;
-    }
+      if (argv[2] == null) {
+        output.error(
+          'mod:array.env:array.ctx:align.ltr:*.EmptyContent', null,
+          "ltr:* (ctx:env.array.align)");
+        return;
+      }
 
-    // 挿入
-    doc.scanner.InsertSource(argv[2].toString().repeat(i));
-  };
-  letter f@#"!\"#$'()=~-^`{[;:]+,./&<>?_&<>"() {
-    doc.scanner.Next();
-    _at.AlignHandlers[0](doc, cmdName);
-  };
-  letter f@#"\0\b\t\n\v\f\r 　"() { doc.scanner.Next(); };
-  letter f@#"\x01\x02\x03\x04\x05\x06\x07\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f"() {
-    doc.scanner.Next();
-  };
+      // 挿入
+      doc.scanner.InsertSource(argv[2].toString().repeat(i));
+    }],
+    "!\"#$'()=~-^`{[;:]+,./&<>?_&<>": function(doc, cmdName) {
+      doc.scanner.Next();
+      _at.AlignHandlers[0](doc, cmdName);
+    },
+    "\0\b\t\n\v\f\r 　": function(doc,cmdName) { doc.scanner.Next(); },
+    "\x01\x02\x03\x04\x05\x06\x07\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f": function(doc, cmdName) {
+      doc.scanner.Next();
+    }
+  });
 }
-/*
-//*/
 //********************************************************************
 //
 //    class Table

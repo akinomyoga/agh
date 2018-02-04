@@ -1954,7 +1954,7 @@ agh.memcpy(ns.Command2, {
       // データの整理
       var optional = $1 != null && $1 != "";
       var defvalue = optional ? $1.slice(1, -1) : null;
-      if ($2 == null || $2 == "")$2="@";
+      if ($2 == null || $2 == "") $2="@";
       var readtype = COMMAND2_READTYPE[$2.last()];
       var context = $2.length > 1 ? $2.substring(0, $2.length - 1) : null;
       var htescape = $3 == "0";

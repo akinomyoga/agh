@@ -1,0 +1,27 @@
+\documentclass{revtex4-1}
+\usepackage{color}
+\usepackage{amsmath}
+\begin{document}
+
+\newlength{\mylength}
+
+\fbox{$\Sigma$}
+
+\begin{center}
+  \fboxsep=0pt
+  \def\check#1{%
+    \fbox{#1} &
+    \settowidth{\mylength}{#1}\the\mylength &
+    \settoheight{\mylength}{#1}\the\mylength &
+    \settodepth{\mylength}{#1}\the\mylength}
+  \begin{tabular}{c|c|c|c}
+    Box & Width & Height & Depth \\ \hline\hline
+    \check{$\Sigma$} \\
+    \check{$\frac12+\frac34$} \\
+    \check{$\dfrac12+\dfrac34$} \\
+  \end{tabular}
+\end{center}
+
+\fbox{$\Sigma$}
+
+\end{document}

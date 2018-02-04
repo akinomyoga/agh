@@ -1,0 +1,126 @@
+\documentclass[11pt]{revtex4-1}
+\usepackage{amsmath}
+\begin{document}
+
+\begin{align}
+  A &= \begin{pmatrix}
+    a_{11} & a_{12} & 0 & \ldots & \ldots & \ldots & 0 \\
+    a_{21} & a_{22} & a_{23} & 0 & \ldots & \ldots & 0 \\
+    0 & a_{32} & a_{33} & a_{34} & 0 & \ldots & 0 \\
+    \hdotsfor{7} \\
+    \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+    \hdotsfor{7} \\
+      \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+    \hdotsfor{7} \\
+    0 & \ldots & 0 & a_{n-2,n-3} & a_{n-2,n-2} & a_{n-2,n-1} & 0 \\
+    0 & \ldots & \ldots & 0 & q_{n-1,n-2} & a_{n-1,n-1} & a_{n-1,n} \\
+    0 & \ldots & \ldots & \ldots & 0 & a_{n,n-1} & a_{nn}
+  \end{pmatrix} \\
+  &= \begin{pmatrix}
+    A_{t-I s-J} & \hdotsfor{4} \\
+    \hdotsfor{2} & A_{t-s} & \hdotsfor{2} \\
+    \dots & A_{t-1} & A_t & A_{t+1} & \dots \\
+    \hdotsfor{2} & A_{t+s} & \hdotsfor{2} \\
+    \hdotsfor{4} & A_{t+I s+J}
+  \end{pmatrix}
+\end{align}
+
+\section{cmd:hdotsfor and pkg:amsmath}
+
+%% \usepackage{amsmath} をしなければ使えない。
+%% \usepackage{amsmath} すれば array 環境でも使える。
+
+\begin{equation}
+  A = \left(\begin{array}{ccccccc}
+    A_{t-I s-J} & \hdotsfor{4} \\
+    \hdotsfor{2} & A_{t-s} & \hdotsfor{2} \\
+    \dots & A_{t-1} & A_t & A_{t+1} & \dots \\
+    \hdotsfor{2} & A_{t+s} & \hdotsfor{2} \\
+    \hdotsfor{4} & A_{t+I s+J}
+  \end{array}\right)
+\end{equation}
+
+%% tabular 環境では \hdotsfor は使えるようにならない。
+
+% \begin{tabular}{ccccccc}
+%   $A_{t-I s-J}$ & \hdotsfor{4} \\
+%   \hdotsfor{2} & $A_{t-s}$ & \hdotsfor{2} \\
+%   $\dots$ & $A_{t-1}$ & $A_t$ & $A_{t+1}$ & $\dots$ \\
+%   \hdotsfor{2} & $A_{t+s}$ & \hdotsfor{2} \\
+%   \hdotsfor{4} & $A_{t+I s+J}$
+% \end{tabular}
+
+%% \hdotsfor より前に内容があるとエラーになる
+%% \hdotsfor より後の内容は右寄せで表示される。
+%% 点線は内容の左余白だけに表示される。点線の縦位置は baseline に同じ。
+
+\begin{equation}
+  A = \left(\begin{array}{ccccccc}
+%%    A_{t-I s-J} & X \hdotsfor{4} \\ % Error
+    A_{t-I s-J} & \hdotsfor{4} XYZ HELLO \\
+    A_{t-I s-J} & \multicolumn{4}{r}{E} XYZ HELLO \\
+    A_{t-I s-J} & \hdotsfor{4} \\
+    \hdotsfor{2} & A_{t-s} & \hdotsfor{2} \\
+    \dots & A_{t-1} & A_t & A_{t+1} & \dots \\
+    \hdotsfor{2} & A_{t+s} & \hdotsfor{2} \\
+    \hdotsfor{4} & A_{t+I s+J}
+  \end{array}\right)
+\end{equation}
+
+\subsection{hdotsfor and borders}
+
+%% 右側の border は消える。複数本あっても 0 本になる。
+%% multicolumn によって新しく設定することはできる。
+
+\begin{equation}
+  A = \left(\begin{array}{||c||c||c||c||c||}
+    A_{t-I s-J} & \hdotsfor{4} \\
+    \hdotsfor{2} & A_{t-s} & \hdotsfor{2} \\
+    \dots & A_{t-1} & A_t & A_{t+1} & \dots \\
+    \hdotsfor{2} & A_{t+s} & \hdotsfor{2} \\
+    \hdotsfor{4} & \multicolumn{1}{|c|}{A_{t+I s+J}}
+  \end{array}\right)
+\end{equation}
+
+\begin{center}
+  \begin{tabular}{||c||c||c||c||}
+    A & \multicolumn{2}{c}{test} & D \\ % \multicolumn の左側の罫線は削除されない。
+    A & \multicolumn{2}{|c|}{test} & D \\ % \multicolumn の左側の罫線は特に数が増えたりはしない。
+    A & \multicolumn{2}{||c||}{test} & D \\ % こうすると一本増える。
+    \multicolumn{2}{c}{test} & C & D \\
+    \multicolumn{2}{|c|}{test} & C & D \\
+    \multicolumn{2}{||c||}{test} & C & D
+  \end{tabular}
+\end{center}
+
+\subsection{multicolumn additional contents}
+
+%% multicolumn/hdotsfor の追加内容は親の align に関係なく右 align の様だ。
+%% また math mode コマンドは使えない。直立体。
+%% paragraph mode の ~ は無視される。つまり、paragraph mode でもない。
+\begin{equation}
+  A = \left(\begin{array}{ccccccc}
+    A_{x-1 y-1} & B_{x+1 y-1} & C_{q+2 r-1} & D_{p+3 q+1} & E \\
+    A_{t-I s-J} & \hdotsfor{4} XYZ HELLO \\
+    A_{t-I s-J} & \multicolumn{4}{r}{E} XYZ HELLO \\
+    A_{t-I s-J} & \multicolumn{4}{c}{E} XYZ HELLO \\
+    A_{t-I s-J} & \multicolumn{4}{l}{E} XYZ HELLO \\
+    %% A_{t-I s-J} & \hdotsfor{4} X_Y^Z \frac12 \\ % Error
+    A_{t-I s-J} & \hdotsfor{4} X~Y~Z \\
+  \end{array}\right)
+\end{equation}
+
+\subsection{double multicolumn}
+Can \verb+\multicplumn+ and \verb+\hdotsfor+ be specified twice in the same cell?
+
+\begin{equation}
+  A = \left(\begin{array}{cccc}
+    X & Y & Z \\
+    % \multicolumn{2}{c}{X Y} \multicolumn{2}{c}{Z W} \\ % Error on the next multicolumn
+    % \multicolumn{2}{c}{X Y} \hdotsfor{2} \\ % Error on \hdotsfor (says \@multispan)
+    % \hdotsfor{2} \multicolumn{2}{c}{Z W} \\ % Error on \multicolumn (says \@multispan)
+    % \hdotsfor{2} \hdotsfor{2} \\ % Error on \hdotsfor (says \@multispan)
+  \end{array}\right)
+\end{equation}
+
+\end{document}

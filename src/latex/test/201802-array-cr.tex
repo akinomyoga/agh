@@ -1,0 +1,30 @@
+\documentclass[11pt]{revtex4-1}
+\usepackage{amsmath}
+\begin{document}
+%% \title{array \texttt{\textbackslash\textbackslash[dimen]}}
+%% \author{akinomyoga}
+%% \maketitle
+
+\begin{align}
+  A &= \begin{pmatrix}
+    \hline
+    A & B & C & D \\ \hline
+    A & B & C & D \\ \hline \hline
+    A & B & C & D \\ \hline \hline \hline
+    A & B & C & D \\
+  \end{pmatrix} = \begin{pmatrix}
+    \hline
+    A & B & C & D \\[3mm] \hline
+    A & B & C & D \\[3mm] \hline \hline
+    A & B & C & D \\[3mm] \hline \hline \hline
+    A & B & C & D \\[3mm]
+  \end{pmatrix}, \\
+  B &= \begin{array}{|c|c|c|c|c|}
+    \hline
+    A & \multicolumn{2}{||c||}{bc} & D & E \\[3mm] \hline
+    A & B & \multicolumn{2}{||c||}{cd} & E \\[3mm] \hline
+    A & B & C & D & E \\[3mm] \hline
+  \end{array}
+\end{align}
+
+\end{document}

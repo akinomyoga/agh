@@ -29,14 +29,14 @@
 
 /tools/out
 
-# experimental files
+# generated files for LaTeX experimental
+/src/latex/test/tmp
 /src/latex/test/*.log
 /src/latex/test/*.aux
 /src/latex/test/*.pdf
 /src/latex/test/*.dvi
 /src/latex/test/*.toc
 /src/latex/test/*Notes.bib
-
 
 /gh-pages
 
