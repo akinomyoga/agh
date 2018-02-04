@@ -119,14 +119,14 @@ context "pkg:color/global" new() {
     var color = get_color(doc, argv[1].trim(), argv[2].trim());
     if (color == null) return;
 
-    doc.currentCtx.output.buff.push('<tex:i class="aghtex-color-textcolor" style="color:', color, '">');
+    doc.currentCtx.output.buff.push('<tex:i class="aghtex-color-textcolor" style="color:', color, ';--aghtex-color:', color, ';">');
     doc.currentCtx.output.appendPost("</tex:i>");
   };
   command f\textcolor("#[]!1#!2#>3") {
-    var color = get_color(doc,argv[1].trim(),argv[2].trim());
+    var color = get_color(doc, argv[1].trim(), argv[2].trim());
     if (color == null) return;
 
-    doc.currentCtx.output.buff.push('<tex:i class="aghtex-color-textcolor" style="color:', color, '">', argv[3], "</tex:i>");
+    doc.currentCtx.output.buff.push('<tex:i class="aghtex-color-textcolor" style="color:', color, ';--aghtex-color:', color, ';">', argv[3], "</tex:i>");
   };
   command f\colorbox("#[]!1#!2#mode.lr>3") {
     // \colorbox[model]{background-colour-spec}{text}

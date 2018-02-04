@@ -42,107 +42,16 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 2018-02-03
 
   * \hdotsfor by background-image: radial-gradient() が印刷されない。
+
     Chrome において、背景を印刷するにしても、印刷画面では点線が表示されるが、
     実際に PDF に出力してみると消えている。
     background-image: url(.svg) だとちゃんと印刷されているようなので、
     簡単な黒い円が一個だけの SVG を作って、それで表示するべきなのではないか。
 
-  * \mathbb{C} の色が固定になっている。
-
-  * latex/test のコンパイルを自動化する。
-    一時ディレクトリを使ってコンパイルする。
-    -output-directory=... は platex 及び pdflatex は対応している。
-
-  * 何と CSS で変数を使える機能があるようだ。
-
-    https://stackoverflow.com/questions/1875852/how-can-i-define-colors-as-variables-in-css
-    http://jsfiddle.net/Z4VWc/1/
-    https://developer.mozilla.org/ja/docs/Web/CSS/var
-
-    しかもある要素で指定すればそこより下にある要素に適用される。
-    これを使えば黒以外の文字色の場合にも対応できるし、
-    フォントの設定なども入れ子になっている場合でも大丈夫なように設計できるかもしれない。
-
-    しかし、これができるくらいであれば、var(color) 的なものがあっても良いと思うのだが…。
-
-    % と思って var(--color) としてみたら、何と文字色を指定することができた…。
-    % しかし、Web を探してもこの動作については記述がない。
-    % うーん。https://drafts.csswg.org/css-variables/#using-variables を見ると、
-    % --color と color を別のものとして取り扱っている例が見られる。
-    % ということは、Chrome の var(--color) で color に触れる動作は非標準的なものだろう。
-    % というか var(color) でアクセス出来ないのが悪いのである…。
-    %
-    % 改めて試してみた所 --color は動作しなかった。
-    % 実は jsFiddle が --color を定義していただけなのではあるまいか。
-    % しかし、だとしたらどのようにして --color を color を追跡する値にしたのだろう。
-    % そう考えるとやはり何か方法があるのかもしれない。
-    %
-    % うーん。改めて jsfiddle に行って試すが不思議だ。以下は動かない。
-    %
-    % border-bottom: 1px solid var(--color);
-    % border-bottom-color: var(--color);
-    %
-    % 以下のようにすると動く。
-    %
-    % border-bottom: 1px solid black;
-    % border-bottom-color: var(--color);
-    %
-    % どうやら以下のように完全に分けて書けば動くようだ。
-    % border-bottom-width: 1px;
-    % border-bottom-style: solid;
-    % border-bottom-color: var(--color);
-    %
-    % と思ったら、実は color を指定しなければ既定で border-color は color の様だ。
-    % つまり、var(--color) は解釈されなくて fallback として color が使われていただけだったのだ。
-    % 現に var(--color) 以外の var(--sssss) などでも同様に動作する。
-
-    また SVG で表示している根号や括弧なども color と同じ色にするためには、
-    SVG の中でも var() で色を指定できるのかどうか確認する必要がある。
-    と思ったが、試してみたら既にそのように動作している。
-    fill="currentColor" とするだけで現在の color と同じ色で描画してくれる様だ。
-
-    寧ろ CSS でも currentColor で指定できて欲しいものだ…
-    と思って Chrome で試してみたら認識している。
-    調べたら比較的最近実装されたようである。
-
-      http://am-yu.net/2015/02/11/currentcolor/
-      http://chibinowa.net/note/web/css-current-color.html
-
-    MDN で確認してみると実は Chrome では v1 から既に対応していた様だ。
-    IE でも 9 以降で実装している。もっと早く気付いておくべきだった。
-
-      https://developer.mozilla.org/ja/docs/Web/CSS/color_value#currentColor_keyword
-
-    と思って latex.pp.css を確認したら既に currentColor を使って指定されていた…。
-    color:black などと指定しているのは
-
-    - mathbb-shadow
-
-      color を上書きしているので currentColor にできない。外側の要素の currentColor が知りたいのである。
-      しかし、入れ子にして外側で shadow を指定して、内側で color を変更すれば行けるかもしれない
-      しかし、それでもアルファベットに関しては shadow ではなくフォントで表示する様に変えている所で、
-      外側の要素の currentColor を取得する必要があるのである。
-      実は、これこそ --aghtex-mathbb-color: currentColor; として
-      内側で var(--aghtex-mathbb-color) とすれば良いのではなかろうか。
-
-    - .aghtex-array-cell{border-color:black;}
-      これは単に $"borderColor" に置き換えれば良い気がする…
-      と思ったが、$"borderColor" は IE/Op で空文字列に展開されるので
-      少し異なる切り替え方をする必要がある。
-
-      % 因みに、これが他の border と独立に指定されている理由は、
-      % 恐らく table 内部の要素に対しても border-color を継承させるためである?
-      % →と思ったが、それは変である。black と決め打ちしたら継承できない。
-      % 何も指定しないほうがましである。
-
-    - hdots の gradient の色
-      これは将来的には SVG に置き換えるかもしれないが、
-      現時点で変更しておいて問題はないように思われる。
-      また IE9 以下に対しては、そもそも border-color を指定しなければ既定の色で描画されるはず?
-
-    - また他に気付いたのは、td.tex-bd-* は記述はあるが何処からも使用されていない。
-
-      grc '\bbd\b' とすると何処にも使われていないという事が明らかである。
+    後弄っていて気付いたのは、radial-gradient の色として currentColor を使っているが、
+    Chrome では文字色を動的に変更しても点線の色はそれに追随して変化しないということである。
+    Ctrl+Wheel で描画サイズを変更するなどしないと反映されない。
+    一方で、background-image: url(.svg) に関しては、ちゃんと追随して色が変更される。
 
 2018-02-02
 
@@ -302,6 +211,133 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 終了した ToDo 及び関連する議論はここに残す。
 
 2018-02-04
+
+  * 2018-02-03 latex/test のコンパイルを自動化する。
+    一時ディレクトリを使ってコンパイルする。
+    -output-directory=... は platex 及び pdflatex は対応している。
+
+    これは実装してみたが、tex 環境によって入っている documentclass が異なったり、
+    日本語が認識できたりできなかったり、フォントが入っていたりいなかったりして
+    コンパイルできなくなっているファイルが多すぎて駄目だ。やはり TeX は駄目だ。
+
+  * 2018-02-03 \mathbb{C} の色が固定になっている。
+
+    結局 text-shadow を用いて中抜きにする方法だと難しそうだ。
+
+    -webkit-text-stroke を用いて中抜きにする方法を用いることにした。
+    昔試した時には Chrome と Safari で比較して、
+    Chrome ではよく見えないとして棄却したが、
+    改めて観察してみて Chrome では綺麗ではないが耐えられないという事もない様に思われたので。
+
+    また、text-shadow を用いた時も --aghtex-color が指定されている時にはそれを用いる様にした。
+    同時に pkg:color では color を指定すると同時に --aghtex-color も設定する。
+
+  * 2018-02-03 何と CSS で変数を使える機能があるようだ。
+
+    https://stackoverflow.com/questions/1875852/how-can-i-define-colors-as-variables-in-css
+    http://jsfiddle.net/Z4VWc/1/
+    https://developer.mozilla.org/ja/docs/Web/CSS/var
+
+    しかもある要素で指定すればそこより下にある要素に適用される。
+    これを使えば黒以外の文字色の場合にも対応できるし、
+    フォントの設定なども入れ子になっている場合でも大丈夫なように設計できるかもしれない。
+
+    しかし、これができるくらいであれば、var(color) 的なものがあっても良いと思うのだが…。
+
+    % と思って var(--color) としてみたら、何と文字色を指定することができた…。
+    % しかし、Web を探してもこの動作については記述がない。
+    % うーん。https://drafts.csswg.org/css-variables/#using-variables を見ると、
+    % --color と color を別のものとして取り扱っている例が見られる。
+    % ということは、Chrome の var(--color) で color に触れる動作は非標準的なものだろう。
+    % というか var(color) でアクセス出来ないのが悪いのである…。
+    %
+    % 改めて試してみた所 --color は動作しなかった。
+    % 実は jsFiddle が --color を定義していただけなのではあるまいか。
+    % しかし、だとしたらどのようにして --color を color を追跡する値にしたのだろう。
+    % そう考えるとやはり何か方法があるのかもしれない。
+    %
+    % うーん。改めて jsfiddle に行って試すが不思議だ。以下は動かない。
+    %
+    % border-bottom: 1px solid var(--color);
+    % border-bottom-color: var(--color);
+    %
+    % 以下のようにすると動く。
+    %
+    % border-bottom: 1px solid black;
+    % border-bottom-color: var(--color);
+    %
+    % どうやら以下のように完全に分けて書けば動くようだ。
+    % border-bottom-width: 1px;
+    % border-bottom-style: solid;
+    % border-bottom-color: var(--color);
+    %
+    % と思ったら、実は color を指定しなければ既定で border-color は color の様だ。
+    % つまり、var(--color) は解釈されなくて fallback として color が使われていただけだったのだ。
+    % 現に var(--color) 以外の var(--sssss) などでも同様に動作する。
+
+    また SVG で表示している根号や括弧なども color と同じ色にするためには、
+    SVG の中でも var() で色を指定できるのかどうか確認する必要がある。
+    と思ったが、試してみたら既にそのように動作している。
+    fill="currentColor" とするだけで現在の color と同じ色で描画してくれる様だ。
+
+    寧ろ CSS でも currentColor で指定できて欲しいものだ…
+    と思って Chrome で試してみたら認識している。
+    調べたら比較的最近実装されたようである。
+
+      http://am-yu.net/2015/02/11/currentcolor/
+      http://chibinowa.net/note/web/css-current-color.html
+
+    MDN で確認してみると実は Chrome では v1 から既に対応していた様だ。
+    IE でも 9 以降で実装している。もっと早く気付いておくべきだった。
+
+      https://developer.mozilla.org/ja/docs/Web/CSS/color_value#currentColor_keyword
+
+    と思って latex.pp.css を確認したら既に currentColor を使って指定されていた…。
+    color:black などと指定しているのは
+
+    - mathbb-shadow
+
+      color を上書きしているので currentColor にできない。外側の要素の currentColor が知りたいのである。
+      しかし、入れ子にして外側で shadow を指定して、内側で color を変更すれば行けるかもしれない
+      しかし、それでもアルファベットに関しては shadow ではなくフォントで表示する様に変えている所で、
+      外側の要素の currentColor を取得する必要があるのである。
+      実は、これこそ --aghtex-mathbb-color: currentColor; として
+      内側で var(--aghtex-mathbb-color) とすれば良いのではなかろうか。
+
+      →やってみたが駄目だった。"currentColor" という値が --aghtex-mathbb-color に設定されるだけの様だ。
+      うーん。結局 var(--aghtex-color) などに頼るしか無いのだろうか。
+      取り敢えず pkg:color では color を指定するとともに --aghtex-color も指定するようにした。
+      これにより一応は pkg:color を通した着色の場合には mathbb-shadow でも正しく色がつく様になった。
+
+      しかし、結局 text-stroke を用いて中抜きの文字を表示することにした。
+      -webkit-text-stroke / -webkit-text-fill-color を用いれば
+      color を上書きすることなく描画色を変更できる。
+      また拡大した時の形状も見やすい。
+
+    - .aghtex-array-cell{border-color:black;}
+      これは単に $"borderColor" に置き換えれば良い気がする…
+      と思ったが、$"borderColor" は IE/Op で空文字列に展開されるので
+      少し異なる切り替え方をする必要がある。
+
+      % 因みに、これが他の border と独立に指定されている理由は、
+      % 恐らく table 内部の要素に対しても border-color を継承させるためである?
+      % →と思ったが、それは変である。black と決め打ちしたら継承できない。
+      % 何も指定しないほうがましである。
+
+      →これは何も考えずに border-color:currentColor; で良い気がする。
+      というのももし currentColor を認識できなければ、既定の設定になるからである。
+
+    - hdots の gradient の色
+      これは将来的には SVG に置き換えるかもしれないが、
+      現時点で変更しておいて問題はないように思われる。
+      また IE9 以下に対しては、そもそも border-color を指定しなければ既定の色で描画されるはず?
+
+      →radial-gradient の色を currentColor にした。
+
+    - また他に気付いたのは、td.tex-bd-* は記述はあるが何処からも使用されていない。
+
+      grc '\bbd\b' とすると何処にも使われていないという事が明らかである。
+      →全体的に class を整理した。全ての class について "aghtex-" prefix に変更した。
 
   * 2018-02-02 日付は現在時刻ではなくて document.lastModified を使えるのではないか。
 

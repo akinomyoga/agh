@@ -782,7 +782,7 @@ tex\:sup tex\:den,
 tex\:sub tex\:den{padding:0px;font-size:80%;}
 td.aghtex-genfrac-numerator,
 td.aghtex-genfrac-center{text-align:center;}
-td.aghtex-genfrac-numerator{border-bottom:1px solid black;}
+td.aghtex-genfrac-numerator{border-bottom:1px solid $"borderColor";}
 /*%%if mode=="Trident" (*/
   table.aghtex-frac-ie6{display:inline;vertical-align:middle;margin:0px 0.2ex;border-collapse:collapse;}
   td.aghtex-frac-ie6-num,
@@ -1033,27 +1033,46 @@ tex\:i.aghtex-mathbb-e{left:0px;top:0px;color:white;}
     *filter:Glow(color=black,strength=1);
   }
 /*%%elif mode=="WebKit"*/
+  tex\:i.aghtex-mathbb-stroke-sf,
   tex\:i.aghtex-mathbb-stroke{
     -webkit-text-fill-color:transparent;
-    -webkit-text-stroke-color:inherit;
-    -webkit-text-stroke-width:1px;
+    -webkit-text-stroke-color:currentColor;
+    -webkit-text-stroke-width:0.04em;
+    text-fill-color:transparent;
+    text-stroke-color:currentColor;
+    text-stroke-width:0.04em;
     font-weight:900;
+  }
+  tex\:i.aghtex-mathbb-stroke-sf{
+    text-stroke-width:1px;
+    -webkit-text-stroke-width:1px;
   }
 /*%%)*/
 tex\:i.aghtex-mathbb-shadow{
   color:white;
   font-weight:900;
   text-shadow:black -1px -1px 0px, black 1px -1px 0px, black -1px 1px 0px, black 1px 1px 0px;
+  text-shadow:var(--aghtex-color, black) -1px -1px 0px, var(--aghtex-color, black) 1px -1px 0px, var(--aghtex-color, black) -1px 1px 0px, var(--aghtex-color, black) 1px 1px 0px;
 }
 
 /*%%if mode=="WebKit"*/
-tex\:math tex\:i.aghtex-mathbb-stroke tex\:f.aghtex-alpha-upper,
+tex\:math tex\:i.aghtex-mathbb-stroke-sf tex\:f.aghtex-alpha-upper,
+tex\:math tex\:i.aghtex-mathbb-stroke tex\:f.aghtex-alpha-upper{
+  font-family:aghtex_mathbb;
+  font-weight:normal;
+  -webkit-text-fill-color: currentColor;
+  -webkit-text-stroke-color: transparent;
+  -webkit-text-stroke-width: 0;
+  text-fill-color: currentColor;
+  text-stroke-color: transparent;
+  text-stroke-width: 0;
+}
 /*%%end*/
 tex\:math tex\:i.aghtex-mathbb-shadow tex\:f.aghtex-alpha-upper{
   font-family:aghtex_mathbb;
-  color:black;
-  font-weight:normal;
   text-shadow:none;
+  color:var(--aghtex-color, black);
+  font-weight:normal;
 }
 
 /*------------------------------------------------------------------*/
@@ -1100,7 +1119,8 @@ table.aghtex-array-lrpad{
 ----------------------------------------------------------*/
 td.aghtex-array-border-txt,
 td.aghtex-array-border-zw{
-  border:solid $"borderColor";
+  border-style:solid;
+  border-color:currentColor;
   padding:0px;vertical-align:baseline;
 }
 td.aghtex-array-border-zw{
@@ -1108,7 +1128,8 @@ td.aghtex-array-border-zw{
 }
 
 td.aghtex-array-cell{
-  border-width:0px;border-style:solid!important;border-color:black;
+  border-width:0px;border-style:solid!important;
+  border-color:currentColor;
   padding:0.2ex .9ex;vertical-align:baseline;}
 tr.aghtex-array-first-row>td.aghtex-array-cell{padding-top:0;}
 tr.aghtex-array-last-row>td.aghtex-array-cell{padding-bottom:0;}
@@ -1123,13 +1144,17 @@ tex\:i.aghtex-array-hdots{
   display:block;position:absolute;width:100%;left:0;}
 tex\:i.aghtex-array-hdots{
   height:1.0em;
-  background-image: radial-gradient(0.15em, black 50%, transparent 50%);
+  background-image: radial-gradient(0.15em, currentColor 50%, transparent 50%);
   background-position: center bottom;
   background-size: 0.5em 0.2em;
   background-repeat: repeat-x;}
 /*%%if mode=="Trident"*/
 tex\:i.aghtex-array-hdots-ie9{
-  height:0.7em;border-bottom:0.15em dotted black;}
+  height:0.7em;
+  border-bottom-width:0.15em;
+  border-bottom-style:dotted;
+  border-bottom-color:currentColor; /* IE9+ */
+}
 /*%%end*/
 
 td.aghtex-array-hline-t{height:1px;border-top:1px solid $"borderColor";font-size:1px;padding:0px;}

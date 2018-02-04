@@ -75,13 +75,22 @@ context "pkg:amssymb/mode.math" new() {
   _Ctx.DefineCommand({
     mathbb             : ['s@;#>1', (
       // Sf/Cr: text-stroke
-      agh.browser.vSf ? '<tex:i class="aghtex-mathbb-stroke">#1</tex:i>':
+      agh.browser.vSf ?
+        '<tex:i class="aghtex-mathbb-stroke-sf">#1</tex:i>' :
+      agh.browser.vCr ?
+        '<tex:i class="aghtex-mathbb-stroke">#1</tex:i>' :
       // Cr/Op/Fx: text-shadow
-      agh.browser.vCr || agh.browser.vOp || agh.browser.vFx >= 3.5 ? '<tex:i class="aghtex-mathbb-shadow">#1</tex:i>':
+      agh.browser.vOp || agh.browser.vFx >= 3.5 || agh.browser.vIE >= 10.0 ?
+        '<tex:i class="aghtex-mathbb-shadow">#1</tex:i>' :
       // IE: filter:glow
       agh.browser.vIE ? '<tex:i class="aghtex-mathbb-glow">#1</tex:i>':
       // Old versions: multiple overlays
-      '<tex:i class="aghtex-mathbb-old"><tex:i class="aghtex-mathbb-a">#1</tex:i><tex:i class="aghtex-mathbb-b">#1</tex:i><tex:i class="aghtex-mathbb-c">#1</tex:i><tex:i class="aghtex-mathbb-d">#1</tex:i><tex:i class="aghtex-mathbb-e">#1</tex:i>#1</tex:i>'
+      '<tex:i class="aghtex-mathbb-old">' +
+        '<tex:i class="aghtex-mathbb-a">#1</tex:i>' +
+        '<tex:i class="aghtex-mathbb-b">#1</tex:i>' +
+        '<tex:i class="aghtex-mathbb-c">#1</tex:i>' +
+        '<tex:i class="aghtex-mathbb-d">#1</tex:i>' +
+        '<tex:i class="aghtex-mathbb-e">#1</tex:i>#1</tex:i>'
     )],
     mathfrak           : ['s@;#>1', '<tex:f class="aghtex-mathfrak">#1</tex:f>'],
 
