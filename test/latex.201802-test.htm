@@ -228,11 +228,27 @@ hello\\[3mm]world
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{\verb+\settowidth+ 対応}
 
-長さを測る 1. $\Sigma$, 2. $\frac12+\frac34$, 3. $\displaystyle \frac12 + \frac34$
 \newlength{\mylength}
-\settowidth{\mylength}{$\Sigma$}
-\settowidth{\mylength}{$\frac12+\frac34$}
-\settowidth{\mylength}{$\displaystyle \frac12+\frac34$}
+\setlength{\mylength}{1cm plus 1mm minus 1mm}
+length value = \the\mylength
+
+\begin{center}
+  \begin{tabular}{c|ccc}
+    & $\Sigma$ & $\frac12+\frac34$ & $\displaystyle \frac12 + \frac34$ \\ \hline
+  Width &
+    \settowidth{\mylength}{$\Sigma$}\the\mylength &
+    \settowidth{\mylength}{$\frac12+\frac34$}\the\mylength &
+    \settowidth{\mylength}{$\displaystyle \frac12+\frac34$}\the\mylength \\
+  Height &
+    \settoheight{\mylength}{$\Sigma$}\the\mylength &
+    \settoheight{\mylength}{$\frac12+\frac34$}\the\mylength &
+    \settoheight{\mylength}{$\displaystyle \frac12+\frac34$}\the\mylength \\
+  Depth &
+    \settodepth{\mylength}{$\Sigma$}\the\mylength &
+    \settodepth{\mylength}{$\frac12+\frac34$}\the\mylength &
+    \settodepth{\mylength}{$\displaystyle \frac12+\frac34$}\the\mylength
+  \end{tabular}
+\end{center}
 
 \end{document}
 </script>

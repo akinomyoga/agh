@@ -1418,10 +1418,10 @@ ns.Document.Test = function(text) {
 agh.memcpy(_Mod.ErrorMessages, {
   "aghtex.Document.ReadDimension.MissingDimension": [
     "missing dimension",
-    "a number followed by a unit or a dimension/length command is expected."],
+    "a number followed by a unit or a length/dimen/skip command is expected."],
   "aghtex.Document.ReadDimension.MissingUnit": [
     "missing unit",
-    "a unit of the dimension, which may be a unit name or a dimension/length command, is expected."],
+    "a unit of the dimension, which may be a unit name or a length/dimen/skip command, is expected."],
   "aghtex.Document.ReadDimension.MissingNumber": [
     "missing number",
     "a unit is specified without any number while reading a dimension."],
@@ -1430,7 +1430,7 @@ agh.memcpy(_Mod.ErrorMessages, {
     "the unit name of the dimension, '{unit}', is unrecognized."],
   "aghtex.Document.ReadDimension.InvalidDimension": [
     "invalid dimension",
-    "a command '\\{cmd}' was given for the unit of the dimension, but the command does not give a valid dimension/length."]
+    "a command '\\{cmd}' was given for the unit of the dimension, but the command does not give a valid length/dimen/skip."]
 });
 function error_missing_dimension(doc) {
   doc.currentCtx.output.error(

@@ -39,6 +39,34 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     1 先ず初めに ns.Document に対して外部から lastModified を指定できるようにする必要がある。
     2 aghtex4chrome の受け渡しで lastModified も受け渡す様にする必要がある。
 
+  * \count の対応?
+
+    LaTeX Counter と plain-TeX \count はどうやら色々使い方が異なる。
+    mod:length の \the は plain-TeX の \count に対応している。
+
+  * Counter \theCounterName に対応?
+
+    LaTeX Counter は \theCounterName の形でその値を出力することができる。
+
+  * global/local Counter
+
+    現在の実装だと {} で囲まれた章の番号は外に影響を与えないのでは? 要確認。
+    章番号はグローバルな値に影響を与えるべきである。
+    一方で、\item などによる番号の増加は外に影響を与えないほうが自然である。
+
+  * \if...
+
+    実は \if 系統だけ実装してしまえば、
+    ループなどの機能は既存の枠組みで自動的に動くような気がする。
+    \iftrue, \iffalse の実装はそれぞれ同じレベルにある
+    (skipSpaceAndCommentMacroExpanded で?) \else, \fi までを読み取れば良い。
+
+    然し…raw の読み取りで skipSpaceAndCommentMacroExpanded を使うと、
+    結局、元の LaTeX と同じように \protect などが必要になって始末が悪い。
+    仕方がないので、raw 読み取りの時でも skipSpaceAndCommentMacroExpanded は使わずに読み取る。
+    このことから来る制限として \else \fi のエイリアスは \let を用いる必要があるということ。
+    \def でエイリアスを作ると認識されない。
+
 2018-02-03
 
   * \hdotsfor by background-image: radial-gradient() が印刷されない。
@@ -51,7 +79,10 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     後弄っていて気付いたのは、radial-gradient の色として currentColor を使っているが、
     Chrome では文字色を動的に変更しても点線の色はそれに追随して変化しないということである。
     Ctrl+Wheel で描画サイズを変更するなどしないと反映されない。
+
     一方で、background-image: url(.svg) に関しては、ちゃんと追随して色が変更される。
+    と思ったが 2015-10-31 の記録を見るとやはり追随して変化しないのかもしれない。
+    後で改めて確認が必要である。
 
 2018-02-02
 
@@ -72,15 +103,17 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
   * 2018-02-01 Lengths https://en.wikibooks.org/wiki/LaTeX/Lengths
 
-    \settowidth
+    2018-02-04 \settowidth は対応した。
+    2018-02-04 \the も対応した。
+
+    \newdimen / \newskip に対応する。
+      実は \newlength は既存のコマンドを上書きしないように内部でチェックをする \newskip である様だ。
+      https://tex.stackexchange.com/questions/22863/what-are-the-differences-between-newdimen-newskip-and-newlength
+      \newlength の上書きチェックについても対応する必要がある。
 
   * http://www.math.kobe-u.ac.jp/HOME/kodama/tips-latex-math-margin.html
     http://surgery.matrix.jp/comp/tex/plain/plain09.html
     レイアウト関連のコマンド
-
-  * length に関連して \the コマンドというものもある。
-
-    https://tex.stackexchange.com/questions/38674/the-the-command
 
   * mod:length (ns.Document#ReadDimension):
     \dimen整数 の読み取りには対応していない。
@@ -88,10 +121,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     また \dimen コマンドかどうかの判定を行う必要がある。
     更にその為には \dimen コマンドを実装してある必要がある。
 
-  * mod:length: ReadLength ... dimension plus dimension minus dimension
-
   * mod:length: \dimen123
-  * mod:length: \length = length の形式に対応する
   * mod:length: \dimen123 = dimension の形式に対応する
 
 2017-07-19
@@ -118,6 +148,12 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
     \thispagestyle
       取り敢えず引数は取る様にする。対応していなくても。
+
+      これは各ページのページ番号やヘッダ・フッタの配置を指定するものである。
+      章の最初のページだけ形式を変更するなどの場合に用いられる。
+      HTML の場合にはそもそもページの概念がないのでどう対応するかは謎。
+      印刷時のヘッダ・フッタについては CSS で制御できるかもしれない。
+      後で調べると良い。
 
 2015-11-03
 
@@ -206,6 +242,17 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 終了した ToDo 及び関連する議論はここに残す。
 
 2018-02-04
+
+  * 2018-02-01 length に関連して \the コマンドというものもある。 [#D0029]
+
+    https://tex.stackexchange.com/questions/38674/the-the-command
+
+    現在の実装では \the は length/dimension にしか対応していない。
+    mod_counter.ctx では LaTeX の counter にしか対応していないので、
+    plain-TeX count の様に \the\counterName で出力できるものではない。
+    plain-TeX 形式の count に対応するときに \the もそれに対応すれば良い。
+
+    取り敢えず count の事は考えない。length (dimen/skip) に対して対応した。
 
   * 2018-02-02 二重 \hline の間の間隔が潰れている。 [#D0028]
     height/width の解釈 (border を含むか含まないか) を CSS で設定できたのでは。
@@ -452,7 +499,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
     #tmp0001 の子項目
 
-    これの対応は難しい。
+    | これの対応は難しい。
 
     | td{vertical-align:middle;}
     | td>tex\:i{display:block;border:0.3em dotted black;height:0;}
@@ -668,6 +715,13 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     % 現状のまま、scanner で読み取られた SCAN_WT_TXT, SCAN_WT_LTR を切り取りながら解析する方法で行く。
 
     取り敢えず \hbox で必要な範囲で対応した。動いている。
+
+    | * mod:length: ReadLength ... dimension plus dimension minus dimension
+    | * mod:length: \length = length の形式に対応する
+
+    plus/minus 付きのものについても実装した。
+    lengthHandler と dimensionHandler を作成して、
+    それぞれ ReadLength/ReadDimension で = の右辺を読むように変えた。
 
   * \hbox に対応する。 [#D0017]
 
