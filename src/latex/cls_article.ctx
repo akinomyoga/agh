@@ -361,12 +361,12 @@ context "cls:revtex/mode.para" new() {
     httag: 'h1', htclass: 'aghtex-revtex-part', html: '<tex:i class="aghtex-revtex-part">Part #</tex:i> #'
   }));
   _Ctx.AddCommandHandler("section", mod_ref.CreateSectionCommand({
-    counter: "section", refname: '\\Roman{section}.\\quad', toctype: "section", emitnote: true,
-    httag: 'h2', htclass: 'aghtex-revtex-section', html: '# #'
+    counter: "section", refname: '\\Roman{section}.', toctype: "section", emitnote: true,
+    httag: 'h2', htclass: 'aghtex-revtex-section', html: '#<tex:i class="aghtex-hspace-quad"></tex:i> #'
   }));
   _Ctx.AddCommandHandler("subsection", mod_ref.CreateSectionCommand({
-    counter: "subsection", refname: '\\Alph{subsection}.\\quad', toctype: "subsection", emitnote: true,
-    httag: 'h3', htclass: 'aghtex-revtex-subsection', html: '# #'
+    counter: "subsection", refname: '\\Alph{subsection}.', toctype: "subsection", emitnote: true,
+    httag: 'h3', htclass: 'aghtex-revtex-subsection', html: '#<tex:i class="aghtex-hspace-quad"></tex:i> #'
   }));
   _Ctx.AddCommandHandler("subsubsection", mod_ref.CreateSectionCommand({
     counter: "subsubsection", refname: '\\arabic{section}.\\arabic{subsection}.\\arabic{subsubsection}', emitnote: true,

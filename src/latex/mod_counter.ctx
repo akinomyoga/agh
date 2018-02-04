@@ -92,11 +92,12 @@ agh.memcpy(ns.Counter.prototype, {
       return ns.Writer.get_error(
         "mod:counter.cmd:roman.CounterOutOfRange",
         null, "Counter#roman (mod:counter)");
+    if (this.val == 0) return 'nulla';
 
     var x = this.val.toString();
     var r = [];
     for (var i = x.length - 1; i >= 0; i--) {
-      switch (x.substr(i, 1)) {
+      switch (x.substr(x.length - 1 - i, 1)) {
       case "0": break;
       case "1": r.push(rm1[i]); break;
       case "2": r.push(rm1[i], rm1[i]); break;

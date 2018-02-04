@@ -530,24 +530,30 @@ tex\:close4{letter-spacing:-0.4ex;padding-right:0.4ex;}
 /*%%)*/
 
 /* --- 空白 --- */
-tex\:phantom,
-tex\:vphantom,
-tex\:hphantom{
-  display:inline-block;vertical-align:baseline;
-/*%%if mode=="Gecko" (*/
-  /* Fx Workaround for "display:inline-block;overflow:hidden" Bug */
-  visibility:hidden;overflow:visible;
-/*%%else*/
-  visibility:hidden;overflow:hidden;
-/*%%)*/
+tex\:i.aghtex-hspace-slash {padding-right: 0.3ex;}
+tex\:i.aghtex-hspace-quad {padding-right: 2.4ex;}
+tex\:i.aghtex-hspace-qquad {padding-right: 4.8ex;}
 
+tex\:i.aghtex-phantom,
+tex\:i.aghtex-vphantom,
+tex\:i.aghtex-vphantom-middle,
+tex\:i.aghtex-vphantom-top,
+tex\:i.aghtex-vphantom-bottom,
+tex\:i.aghtex-hphantom{
+  display:inline-block;vertical-align:baseline;
+  /* Fx:  Workaround for "display:inline-block;overflow:hidden" Bug
+   * Cr: どうやら overflow: hidden にすると baseline が正しく計算されない (2018-02-05) */
+  visibility:hidden;overflow:visible;
   background-color:lightblue;}
-tex\:vphantom{width:1px;}  /*  0 を指定すると何も指定していないのと同じ? */
-tex\:hphantom{height:1px;}
-tex\:vphantom2{display:block;width:100em;}
-tex\:vphantom.aghtex-vphantom-align-m{vertical-align:middle;}
-tex\:vphantom.aghtex-vphantom-align-t{vertical-align:top;}
-tex\:vphantom.aghtex-vphantom-align-b{vertical-align:bottom;}
+tex\:i.aghtex-hphantom{height:1px;}
+tex\:i.aghtex-vphantom,
+tex\:i.aghtex-vphantom-middle,
+tex\:i.aghtex-vphantom-top,
+tex\:i.aghtex-vphantom-bottom{width:1px;}  /*  0 を指定すると何も指定していないのと同じ? */
+tex\:i.aghtex-vphantom-middle{vertical-align:middle;}
+tex\:i.aghtex-vphantom-top{vertical-align:top;}
+tex\:i.aghtex-vphantom-bottom{vertical-align:bottom;}
+tex\:i.aghtex-vphantom-inner{display:block;white-space:nowrap;width:100em;}
 
 tex\:i.aghtex-latex-allowbreak{white-espace:normal;}
 

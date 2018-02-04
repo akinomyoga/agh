@@ -344,21 +344,34 @@ context "global" {
   //---------------------------------------------------------------------------
   // 空白・改行
 
-  command s@\hspace(#1)  '<span style="padding-right:#1;"></span>';
-  command s@\hspace*(#1) '<span style="padding-right:#1;"></span>';
-  command s@\vspace(#1)  '<p class="aghtex-vspace" style="font-size:#1">&nbsp;</p>';
-  command s@\vspace*(#1) '<p class="aghtex-vspace" style="font-size:#1">&nbsp;</p>';
+  command s@\hspace(#D)  '<tex:i style="padding-right:#1;"></tex:i>';
+  command s@\hspace*(#D) '<tex:i style="padding-right:#1;"></tex:i>';
+  command s@\vspace(#D)  '<p class="aghtex-vspace" style="font-size:#1">&nbsp;</p>';
+  command s@\vspace*(#D) '<p class="aghtex-vspace" style="font-size:#1">&nbsp;</p>';
 
   command s>\enspace()              @'\hspace{0.5em}'; // from plain-TeX, kerning
 
   command s@#" "()                   '&nbsp;';
   command s@\enskip()                '&nbsp;';
-  command s>#"/"()                  @"\hspace{0.3ex}";
-  command s>\quad()                 @"\hspace{2.4ex}";
-  command s>\qquad()                @"\hspace{4.8ex}";
-  command s@\phantom("#>1")         "<tex:phantom>#1</tex:phantom>";
-  command s@\hphantom("#>1")        "<tex:hphantom>#1</tex:hphantom>";
-  command s@\vphantom("#[_]!1#>2")  '<tex:vphantom class="aghtex-vphantom-align-#1"><tex:vphantom2>#2</tex:vphantom2></tex:vphantom>';
+  command s@#"/"()                  '<tex:i class="aghtex-hspace-slash"></tex:i>';
+  command s@\quad()                 '<tex:i class="aghtex-hspace-quad"></tex:i>';
+  command s@\qquad()                '<tex:i class="aghtex-hspace-qquad"></tex:i>';
+  command s@\phantom("#>1")         '<tex:i class="aghtex-phantom">#1</tex:i>';
+  command s@\hphantom("#>1")        '<tex:i class="aghtex-hphantom">#1</tex:i>';
+  command f\vphantom("#[]!1#>2") {
+    var className = 'aghtex-vphantom';
+    switch (argv[1]) {
+    case 't': className = 'aghtex-vphantom-top';    break;
+    case 'b': className = 'aghtex-vphantom-bottom'; break;
+    case 'm': className = 'aghtex-vphantom-middle'; break;
+    case '': break;
+    default:
+      doc.currentCtx.output.error('mod:common.cmd:vphantom.UnrecogizedAlign', null, '\\vphantom (mod:common)');
+      break;
+    }
+    doc.currentCtx.output.buff.push(
+      '<tex:i class="', className, '"><tex:i class="aghtex-vphantom-inner">', argv[2], '</tex:i></tex:i>');
+  };
 
   command s@\hfill()     '<tex:i class="aghtex-hfill"></tex:i>';
   command s@\dotfill()   '<tex:i class="aghtex-hfill-dot"></tex:i>';

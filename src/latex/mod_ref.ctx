@@ -97,7 +97,7 @@ _Mod.CreateSectionCommand = function(param) {
 };
 
 
-context "global"{
+context "global" {
   command f\label("#1") {
     var name = agh.Text.Escape(argv[1].trim(), "html-attr");
     if (name == "") {
@@ -199,7 +199,7 @@ ns.Document.prototype.AddContentsLine = function(doc, file, type, content, id) {
   }
 };
 
-context "mode.para"{
+context "mode.para" {
   command f\addcontentsline(#1#2#>3) {
     var file = argv[1].trim();
     var type = agh.Text.Escape(argv[2].trim(), "html-attr");
@@ -419,7 +419,7 @@ agh.memcpy(ns.Document.prototype, {
 var CTXV_FOOTNOTE = 'mod_ref/footnote';
 var CTXV_MPFOOTNOTE = 'mod_ref/is_mpfootnote';
 
-context "mode.para"{
+context "mode.para" {
 
 #%m mod_ref::footnote (
   var %footnote% = {

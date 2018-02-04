@@ -134,6 +134,13 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
   * mod:length: \dimen123
   * mod:length: \dimen123 = dimension の形式に対応する
 
+2018-01-31
+
+  * \ref で出力される section 番号の後に空白が入っている。
+
+    x 更にローマ数字の 10 が "I" になっている。
+
+
 2017-07-19
 
   * http://swn1.com/fir.tex このファイルで変換できていないものに対応する。 #tmp0001
