@@ -148,21 +148,19 @@ resources:=$(resources) $(OUTDIR)/%name%
 $(OUTDIR)/%name%: res/%name%
 	cp -p $< $@
 #%)
-#%expand add_res.r#%name%#int.png#
-#%expand add_res.r#%name%#oint.png#
-#%expand add_res.r#%name%#root.png#
-#%expand add_res.r#%name%#paren1l.png#
-#%expand add_res.r#%name%#paren1r.png#
-#%expand add_res.r#%name%#paren2l.png#
-#%expand add_res.r#%name%#paren2r.png#
-#%expand add_res.r#%name%#paren2ov.png#
-#%expand add_res.r#%name%#paren2ud.png#
-#%expand add_res.r#%name%#paren4l.png#
-#%expand add_res.r#%name%#paren4r.png#
+#%expand add_res.r#%name%#stretch_sqrt.png#
+#%expand add_res.r#%name%#stretch_lparen.png#
+#%expand add_res.r#%name%#stretch_rparen.png#
+#%expand add_res.r#%name%#stretch_lbrace.png#
+#%expand add_res.r#%name%#stretch_rbrace.png#
+#%expand add_res.r#%name%#stretch_overbrace.png#
+#%expand add_res.r#%name%#stretch_underbrace.png#
+#%expand add_res.r#%name%#stretch_langle.png#
+#%expand add_res.r#%name%#stretch_rangle.png#
 #%expand add_res.r#%name%#paren5l.png#
 #%expand add_res.r#%name%#paren5r.png#
-#%expand add_res.r#%name%#stretch_hat.png#
-#%expand add_res.r#%name%#stretch_tilde.png#
+#%expand add_res.r#%name%#stretch_widehat.png#
+#%expand add_res.r#%name%#stretch_widetilde.png#
 #%expand add_res.r#%name%#stretch_larr.png#
 #%expand add_res.r#%name%#stretch_rarr.png#
 #%expand add_res.r#%name%#stretch_lrarr.png#

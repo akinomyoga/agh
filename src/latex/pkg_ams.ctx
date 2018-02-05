@@ -582,10 +582,10 @@ context "pkg:amsmath/mode.math" new() {
     // \underrightarrow
     // \underleftarrow
     // \underleftrightarrow
-    overleftrightarrow : mod_math.CreateCommandOverStretch("stretch_lrarr.png", "overleftrightarrow"),
-    underrightarrow    : mod_math.CreateCommandUnderStretch("stretch_rarr.png", "underrightarrow"),
-    underleftarrow     : mod_math.CreateCommandUnderStretch("stretch_larr.png", "underleftarrow"),
-    underleftrightarrow: mod_math.CreateCommandUnderStretch("stretch_lrarr.png", "underleftrightarrow"),
+    overleftrightarrow : mod_math.CreateCommandOverStretch({commandName: "overleftrightarrow", imageSrc: "stretch_lrarr.png", svg: mod_math["svg:stretch_lrarr"]}),
+    underrightarrow    : mod_math.CreateCommandUnderStretch({commandName: "underrightarrow", imageSrc: "stretch_rarr.png", svg: mod_math["svg:stretch_rarr"]}),
+    underleftarrow     : mod_math.CreateCommandUnderStretch({commandName: "underleftarrow", imageSrc: "stretch_larr.png", svg: mod_math["svg:stretch_larr"]}),
+    underleftrightarrow: mod_math.CreateCommandUnderStretch({commandName: "underleftrightarrow", imageSrc: "stretch_lrarr.png", svg: mod_math["svg:stretch_lrarr"]}),
 
     // \dddot,  \dddot
     dddot : mod_math.CreateAccentCommand('vec', '<tex:f class="aghtex-syma-mincho">&#x22EF;</tex:f>', true), // combining = &#x20DB;

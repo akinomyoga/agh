@@ -6,8 +6,8 @@
  *  @section 公開オブジェクト
  *    ※以下 mod_math = ns.Modules["mod:math"] とする。
  *
- *    @fn mod_math.CreateCommandOverStretch(imgsrc,alttxt);
- *    @fn mod_math.CreateCommandUnderStretch(imgsrc,alttxt);
+ *    @fn mod_math.CreateCommandOverStretch({commandName, imageSrc, svg});
+ *    @fn mod_math.CreateCommandUnderStretch({commandName, imageSrc, svg});
  *    @fn mod_math.CreateCommandSummation(content);
  *    @fn mod_math.CreateAccentCommandQksB(height,htSymbol);
  *    @fn mod_math.CreateAccentCommand(type,htsymb,ismath);
@@ -270,7 +270,7 @@ context "mode.math" {
   //---------------------------------------------------------------
   //    他
   //---------------------------------------------------------------
-  var HT_SQRT_STRETCH_IMAGE = mod_base.GetStretchImageTd("root.png", 2, "√", 'sqrt');
+  var HT_SQRT_STRETCH_IMAGE = mod_base.GetStretchImageTd("stretch_sqrt.png", 2, "√", 'sqrt');
   command f\sqrt(#[]>1#>2) {
     var buff = doc.currentCtx.output.buff;
     buff.push('<table cellpadding="0" class="aghtex-inline aghtex-sqrt"><tr style="height:0px;">');
@@ -322,6 +322,7 @@ context "mode.math" {
     }
   })();
 
+  // image を指定する時は、IE/Sf では画像要素で、それ以外では <td> 要素でなければならない。
   function output_underbrace(buff, content, image, undertxt) {
     if (agh.browser.vIE || agh.browser.vSf) {
       if (agh.browser.vIE) {
@@ -348,8 +349,10 @@ context "mode.math" {
       buff.push('</table>');
     }
   }
-  function output_overbrace(buff, content, image, overtext) {
-    buff.push('<tex:i class="aghtex-overbrace">');
+  function output_overbrace(buff, content, image, overtext, className) {
+    buff.push('<tex:i class="aghtex-overbrace');
+    if (className) buff.push(' ', className);
+    buff.push('">');
     if (overtext)
       buff.push('<tex:i class="aghtex-overbrace-t"><tex:i class="aghtex-overbrace-u">', overtext, '</tex:i></tex:i>');
     if (image)
@@ -359,60 +362,110 @@ context "mode.math" {
   _Mod.OutputUnderbrace = output_underbrace;
   _Mod.OutputOverbrace = output_overbrace;
 
-  var ht_img_overbrace = '<img alt="\\overbrace" class="aghtex-overbrace" src="' + ns.BaseUrl + 'paren2ov.png" />';
-  var ht_img_underbrace;
-  if (agh.browser.vIE || agh.browser.vSf)
-    ht_img_underbrace = '<img alt="\\underbrace" class="aghtex-underbrace" src="' + ns.BaseUrl + 'paren2ud.png" />';
-  else
-    ht_img_underbrace = GenerateHtmlUndertextImage("paren2ud.png", 1, "\\underbrace");
+  _Mod.CreateCommandOverStretch = function(info) {
+    var className = 'aghtex-overbrace-' + info.commandName;
+    var image;
+    if (info.svg && /^(Sf|Fx)-/.test(ns.compatMode))
+      image = info.svg;
+    else
+      image = '<img alt="\\' + info.commandName + '" class="aghtex-overbrace" src="' + ns.BaseUrl + info.imageSrc + '" />';
 
-  command f\underbrace(#>1) {
-    var undertxt = null;
-    doc.skipSpaceAndComment();
-    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "_")) {
-      doc.scanner.Next();
-      undertxt=doc.GetArgumentHtml();
-    }
-
-    var buff = doc.currentCtx.output.buff;
-    output_underbrace(buff, argv[1], ht_img_underbrace, undertxt);
-  };
-  command f\overbrace(#>1) {
-    var overtxt = null;
-    doc.skipSpaceAndComment();
-    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "^")) {
-      doc.scanner.Next();
-      overtxt = doc.GetArgumentHtml();
-    }
-
-    var buff = doc.currentCtx.output.buff;
-    output_overbrace(buff, argv[1], ht_img_overbrace, overtxt);
-  };
-
-  _Mod.CreateCommandOverStretch = function(imgsrc, alttxt) {
-    var image = '<img alt="\\' + alttxt + '" class="aghtex-overbrace" src="' + ns.BaseUrl + imgsrc + '" />';
     return new ns.Command2("f", "#>1", function(doc, argv) {
+      var text = null;
+      if (info.overText) {
+        doc.skipSpaceAndComment();
+        if (doc.scanner.is(mod_core.SCAN_WT_LTR, "^")) {
+          doc.scanner.Next();
+          text = doc.GetArgumentHtml();
+        }
+      }
       var buff = doc.currentCtx.output.buff;
-      output_overbrace(buff, argv[1], image);
+      output_overbrace(buff, argv[1], image, text, className);
     });
-  }
-  _Mod.CreateCommandUnderStretch = function(imgsrc, alttxt) {
+  };
+  _Mod.CreateCommandUnderStretch = function(info) {
     var image;
     if (agh.browser.vIE || agh.browser.vSf)
-      image = '<img alt="\\' + alttxt + '" class="aghtex-underbrace" src="' + ns.BaseUrl + imgsrc + '" />';
+      image = '<img alt="\\' + info.commandName + '" class="aghtex-underbrace" src="' + ns.BaseUrl + info.imageSrc + '" />';
+    else if (info.svg && /^(Sf|Fx)-/.test(ns.compatMode))
+      image = '<td class="aghtex-underbrace-svg">' + info.svg + '</td>';
     else
-      image = GenerateHtmlUndertextImage(imgsrc, 1, '\\' + alttxt);
+      image = GenerateHtmlUndertextImage(info.imageSrc, 1, '\\' + info.commandName);
 
     return new ns.Command2("f", "#>1", function(doc, argv) {
+      var text = null;
+      if (info.underText) {
+        doc.skipSpaceAndComment();
+        if (doc.scanner.is(mod_core.SCAN_WT_LTR, "_")) {
+          doc.scanner.Next();
+          text = doc.GetArgumentHtml();
+        }
+      }
       var buff = doc.currentCtx.output.buff;
-      output_underbrace(buff, argv[1], image);
+      output_underbrace(buff, argv[1], image, text);
     });
-  }
+  };
 
-  _Ctx.AddCommandHandler("widehat", _Mod.CreateCommandOverStretch("stretch_hat.png", "widehat"));
-  _Ctx.AddCommandHandler("widetilde", _Mod.CreateCommandOverStretch("stretch_tilde.png", "widetilde"));
-  _Ctx.AddCommandHandler("overrightarrow", _Mod.CreateCommandOverStretch("stretch_rarr.png", "overrightarrow"));
-  _Ctx.AddCommandHandler("overleftarrow", _Mod.CreateCommandOverStretch("stretch_larr.png", "overleftarrow"));
+  var generateSvgSource = function(svg) {
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + svg.width + ' ' + svg.height + '" preserveAspectRatio="none">'
+      + '<g transform="matrix(1 0 0 -1 0 768)"><path fill="currentColor" d="' + svg.path + '" /></g></svg>';
+  };
+  _Mod["svg:stretch_underbrace"] = generateSvgSource({
+    width: 2048, height: 1024,
+    path: "M1024 -256c-8 0 -14 6 -16 10c-42 214 -118 370 -216 414h-562c-184 78 -230 508 -230 582"
+      + "c0 10 4 18 18 18s18 -8 18 -18c0 -68 56 -342 194 -416h562c148 -70 200 -308 232 -496"
+      + "c32 188 84 426 232 496h562c138 74 194 348 194 416c0 10 4 18 18 18s18 -8 18 -18"
+      + "c0 -74 -46 -504 -230 -582h-562c-98 -44 -174 -200 -216 -414c-2 -4 -8 -10 -16 -10z"
+  });
+  _Mod["svg:stretch_overbrace"] = generateSvgSource({
+    width: 2048, height: 1024,
+    path: "M1024 768c8 0 14 -6 16 -10c42 -214 118 -370 216 -414h562c184 -78 230 -508 230 -582"
+      + "c0 -10 -4 -18 -18 -18s-18 8 -18 18c0 68 -56 342 -194 416h-562c-148 70 -200 308 -232 496"
+      + "c-32 -188 -84 -426 -232 -496h-562c-138 -74 -194 -348 -194 -416c0 -10 -4 -18 -18 -18s-18 8 -18 18"
+      + "c0 74 46 504 230 582h562c98 44 174 200 216 414c2 4 8 10 16 10z"
+  });
+  _Mod["svg:stretch_hat"] = generateSvgSource({
+    width: 2048, height: 1024,
+    path: "M9 -256l-9 122l1024 902l1024 -898l-9 -126l-1015 727z"
+  });
+  _Mod["svg:stretch_tilde"] = generateSvgSource({
+    width: 2140, height: 1024,
+    path: "M0 -90c246 470 488 858 720 858h1c313 -3 435 -737 739 -740h1c264 0 559 550 669 736"
+      + "l10 -172c-340 -613 -539 -848 -725 -848h-2c-320 3 -424 751 -735 752c-176 0 -422 -306 -668 -749z"
+  });
+  _Mod["svg:stretch_rarr"] = generateSvgSource({
+    width: 2048, height: 1024,
+    path: "M-0 256c0 34 8 85 18 85l1887 -4c-69 92 -110 295 -126 365c-1 6 -2 12 -2 18c0 25 12 48 25 48"
+      + "c12 0 20 -1 31 -48c25 -105 28 -136 63 -223c32 -79 90 -161 144 -216c6 -6 8 -12 8 -25s-2 -19 -8 -25"
+      + "c-54 -55 -112 -136 -144 -215c-35 -87 -38 -118 -63 -223c-11 -47 -19 -48 -31 -48c-13 0 -25 22 -25 47"
+      + "c0 6 1 12 2 18c16 70 57 274 126 366l-1887 -4c-10 0 -18 50 -18 84z"
+  });
+  _Mod["svg:stretch_larr"] = generateSvgSource({
+    width: 2048, height: 1024,
+    path: "M2048 256c0 -34 -8 -84 -18 -84l-1887 4c69 -92 110 -296 126 -366c1 -6 2 -12 2 -18"
+      + "c0 -25 -12 -47 -25 -47c-12 0 -20 1 -31 48c-25 105 -28 136 -63 223c-32 79 -90 160 -144 215"
+      + "c-6 6 -8 12 -8 25s2 19 8 25c54 55 112 137 144 216c35 87 38 118 63 223c11 47 19 48 31 48"
+      + "c13 0 25 -23 25 -48c0 -6 -1 -12 -2 -18c-16 -70 -57 -273 -126 -365l1887 4c10 0 18 -51 18 -85z"
+  });
+  _Mod["svg:stretch_lrarr"] = generateSvgSource({
+    width: 2048, height: 1024,
+    path: "M144 174c69 -92 109 -294 125 -364c1 -6 2 -12 2 -18c0 -25 -12 -47 -25 -47c-12 0 -20 1 -31 48"
+      + "c-25 105 -28 136 -63 223c-32 79 -90 160 -144 215c-6 6 -8 12 -8 25s2 19 8 25c54 55 112 137 144 216"
+      + "c35 87 38 118 63 223c11 47 19 48 31 48c13 0 25 -23 25 -48c0 -6 -1 -12 -2 -18c-16 -70 -57 -273 -126 -365"
+      + "h1762c-69 92 -110 295 -126 365c-1 6 -2 12 -2 18c0 25 12 48 25 48c12 0 20 -1 31 -48c25 -105 28 -136 63 -223"
+      + "c32 -79 90 -161 144 -216c6 -6 8 -12 8 -25s-2 -19 -8 -25c-54 -55 -112 -136 -144 -215"
+      + "c-35 -87 -38 -118 -63 -223c-11 -47 -19 -48 -31 -48c-13 0 -25 22 -25 47c0 6 1 12 2 18c16 70 57 274 126 366z"
+  });
+
+  _Ctx.DefineCommand({
+    underbrace: _Mod.CreateCommandUnderStretch({commandName: "underbrace", imageSrc: "stretch_underbrace.png", svg: _Mod["svg:stretch_underbrace"], underText: true}),
+    overbrace: _Mod.CreateCommandOverStretch({commandName: "overbrace", imageSrc: "stretch_overbrace.png", svg: _Mod["svg:stretch_overbrace"], overText: true}),
+    widehat: _Mod.CreateCommandOverStretch({commandName: "widehat", imageSrc: "stretch_widehat.png", svg: _Mod["svg:stretch_hat"]}),
+    widetilde: _Mod.CreateCommandOverStretch({commandName: "widetilde", imageSrc: "stretch_widetilde.png", svg: _Mod["svg:stretch_tilde"]}),
+    overrightarrow: _Mod.CreateCommandOverStretch({commandName: "overrightarrow", imageSrc: "stretch_rarr.png", svg: _Mod["svg:stretch_rarr"]}),
+    overleftarrow: _Mod.CreateCommandOverStretch({commandName: "overleftarrow", imageSrc: "stretch_larr.png", svg: _Mod["svg:stretch_larr"]})
+  });
+
   //---------------------------------------------------------------
   //    分数 / atop
   //---------------------------------------------------------------

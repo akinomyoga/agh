@@ -230,7 +230,9 @@ hello\\[3mm]world
 
 \newlength{\mylength}
 \setlength{\mylength}{1cm plus 1mm minus 1mm}
-length value = \the\mylength
+\verb+\mylength+ = \the\mylength
+\setlength{\mylength}{0.5\mylength}
+\verb+\mylength+ = \the\mylength
 
 \begin{center}
   \begin{tabular}{c|ccc}
@@ -262,7 +264,6 @@ length value = \the\mylength
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{\verb+\vphantom+ 変更}
-
 \begin{align}
   A &= \begin{pmatrix} \hline
     1 & 2 & 3 \text{\verb|default|} \\ \hline
@@ -275,6 +276,26 @@ length value = \the\mylength
   \end{pmatrix}.
 \end{align}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\verb+\widehat+ SVG 化}
+\def\overCommands#1{
+  This is $\overbrace{#1}^{test}$.
+  That is $\widetilde{#1}$.
+  It is $\widehat{#1}$.
+  There is $\overrightarrow{#1}$.
+  Here is $\overleftarrow{#1}$.
+  They are $\overleftrightarrow{#1}$.
+  These are $\underrightarrow{#1}$.
+  Those are $\underleftarrow{#1}$.
+  We are $\underleftrightarrow{#1}$.
+  You are $\underbrace{#1}_{under}$.}
+
+\overCommands{C[A,B,C,D,E,F,G]}
+
+\overCommands{C[T]}
+
+\textcolor{red}{
+  \overCommands{AB}}
 
 \end{document}
 </script>

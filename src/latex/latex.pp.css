@@ -891,6 +891,16 @@ tex\:i.aghtex-overbrace-b{display:inline-block;vertical-align:baseline;}
      img.aghtex-overbrace  {width:expression(this.parentElement.clientWidth);}
 /*%%)*/
 
+/*%%if mode == "Gecko" | mode == "WebKit" */
+td.aghtex-underbrace-svg{position:relative;height:1ex;}
+tex\:i.aghtex-overbrace-i{position:relative;}
+td.aghtex-underbrace-svg>svg,
+tex\:i.aghtex-overbrace-i>svg{width:100%;height:100%;position:absolute;left:0;top:0;}
+tex\:i.aghtex-overbrace-widehat>tex\:i.aghtex-overbrace-i{height:0.3em;}
+tex\:i.aghtex-overbrace-widetilde>tex\:i.aghtex-overbrace-i{height:0.22em;}
+/*%%end*/
+
+
 /*------------------------------------------------------------------*/
 /* 根号 */
 table.aghtex-sqrt{border-collapse:collapse;height:1em;vertical-align:baseline;}

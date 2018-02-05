@@ -138,6 +138,16 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
   * 伸縮チルダが変になっている: $\widetilde{C[T]}$。
 
+    SVG として埋め込むことにした。
+    然し、高さが大きくて見た目が悪い。
+    実際に出力に使っているコードは output_overbrace であり、
+    高さは overbrace と同じものを用いている。
+    しかし、\widetilde や \widehat はそれよりも低いほうが自然である。
+    class を付加する様にして widehat/widetilde の時は高さを変える様にした。
+
+    x 然し、現状では <img> で埋め込んでいるが、currentColor が反映されない。
+      currentColor が反映されるためには <svg> で埋め込む必要がある。
+
   * \noindent
 
   * https://hal.inria.fr/file/index/docid/662674/filename/Fayolle-IPPI-50.tex
@@ -1681,6 +1691,9 @@ P18.1 Font 作成ソフトに関し
     x しかし、これはこれで日本語が文字化けしているので操作する時に何が書かれているか分からない。
 
     $ fontforge-2012w
+
+    2018-02-05 これについては export LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 したら英語になった。
+    文字化け問題以外は生じていなかったのでこれを使うのが良さそう。
 
   F FontForge-20120731/MinGW (縦書き修正パッチ適用済)
     http://www.akenotsuki.com/eyeben/fonts/kanren.html にて公開されていた。

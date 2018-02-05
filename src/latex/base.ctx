@@ -715,14 +715,14 @@ context "mode.math" new("global") {
   _Mod.OutputStretchBracketTd = (function() {
     var bracket_dict = {
       // 括弧
-      "(": stretchImg("paren1l.png", 1.0, "(", 'lparen'),
-      ")": stretchImg("paren1r.png", 1.0, ")", 'rparen'),
-      "{": stretchImg("paren2l.png", 1.2, "{", 'lbrace'),
-      "}": stretchImg("paren2r.png", 1.2, "}", 'rbrace'),
+      "(": stretchImg("stretch_lparen.png", 1.0, "(", 'lparen'),
+      ")": stretchImg("stretch_rparen.png", 1.0, ")", 'rparen'),
+      "{": stretchImg("stretch_lbrace.png", 1.2, "{", 'lbrace'),
+      "}": stretchImg("stretch_rbrace.png", 1.2, "}", 'rbrace'),
       "[": '<td rowspan="2" class="aghtex-left-kaku">&nbsp;</td>',
       "]": '<td rowspan="2" class="aghtex-right-kaku">&nbsp;</td>',
-      "〈": stretchImg("paren4l.png", 1, "〈", 'langle'),
-      "〉": stretchImg("paren4r.png", 1, "〉", 'rangle'),
+      "〈": stretchImg("stretch_langle.png", 1, "〈", 'langle'),
+      "〉": stretchImg("stretch_rangle.png", 1, "〉", 'rangle'),
 
       // 拡張
       "〔": stretchImg("paren5l.png", 1, "〔"),
