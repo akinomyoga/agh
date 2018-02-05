@@ -100,7 +100,7 @@ context "mode.para" {
     normalfont: mod_common.CreateCommandTagFollowing('<tex:fnorm>', '</tex:fnorm>'),
 
     // 太字斜体
-    boldmath: ['s@#>1', '<tex:f class="aghtex-mathbm">#1</tex:f>'],
+    boldmath: ['s@;#>1', '<tex:f class="aghtex-mathbm">#1</tex:f>'],
 
     // アクセント
     "'": mod_math.CreateAccentCommand('acc', '<tex:f class="aghtex-symb-mincho">&#x00B4;</tex:f>'), // alt = &#x02CA;
