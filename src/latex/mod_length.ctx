@@ -73,6 +73,10 @@ ns.Length = function(value, unit) {
       // 例: new ns.Length(0.5, textwidth);
       this.val = unit.val * value;
       this.unit = unit.unit;
+      if (unit.plus instanceof ns.Length)
+        this.plus = new ns.Length(value, unit.plus);
+      if (unit.minus instanceof ns.Length)
+        this.minus = new ns.Length(value, unit.plus);
     } else {
       // 例: new ns.Length(2.0, "cm");
       this.val = value;
