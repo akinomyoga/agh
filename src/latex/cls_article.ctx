@@ -97,8 +97,8 @@ function getDateString(date) {
 function getDateStringOfToday() {
   return getDateString(new Date);
 }
-function getDateStringOflastModified() {
-  var date = new Date(document.lastModified);
+function getDateStringOflastModified(doc) {
+  var date = new Date(doc && doc.option.lastModified || document.lastModified);
   if (!(date.getTime() > 0)) date = new Date; // date.getTime() may be NaN
   return getDateString(date);
 }
@@ -185,7 +185,7 @@ context "cls:article/mode.para" new() {
     if (date)
       buff.push(date);
     else
-      buff.push(getDateStringOflastModified());
+      buff.push(getDateStringOflastModified(doc));
 
     buff.push('</tex:i></h1>');
   };
@@ -402,7 +402,7 @@ context "cls:revtex/mode.para" new() {
     if (date)
       buff.push(date);
     else
-      buff.push(getDateStringOflastModified());
+      buff.push(getDateStringOflastModified(doc));
 
     buff.push(')</tex:i></h1>');
 

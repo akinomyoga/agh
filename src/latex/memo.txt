@@ -26,9 +26,6 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2018-02-05
 
-  * aghtex4chrome で # 付きでファイルが開かれた時、
-    変換が完了した時点で該当位置に移動するようにしたい。
-
   * ReadDimension true unit / \magnification
 
     https://tex.stackexchange.com/questions/319508/what-is-the-difference-between-truemm-and-mm-etc
@@ -75,12 +72,13 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     getDateString も含めて別のモジュールに関数を移動して、
     cls_article.ctx ではそのモジュールから import した関数で実装を行うのが良い。
 
-  * aghtex4chrome でドキュメントの日付が background.html の日付になる。
-    これは document.lastModified を background.html の中で実行しているのが原因である。
-    正しく処理するためには
-
-    1 先ず初めに ns.Document に対して外部から lastModified を指定できるようにする必要がある。
-    2 aghtex4chrome の受け渡しで lastModified も受け渡す様にする必要がある。
+    よく考えてみると実は \today コマンドであっても document.lastModified を使うべきの気もする。
+    何故なら \today が \today である事に意味があるのは、
+    実際に PDF や DVI に変換を実行するのが最終的なドキュメントの作成日だからである。
+    しかし、.tex のままで表示できるということになると、
+    実際に発行するという動作を経ず閲覧日が変換日になる。
+    そもそも閲覧日を表示しても何の意味もない。
+    代わりに最終的な発行日として最後にファイルを変更した日を表示するのが自然である。
 
   * \count の対応?
 
@@ -305,6 +303,45 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 終了した ToDo 及び関連する議論はここに残す。
 
 2018-02-05
+
+  * aghtex4chrome で # 付きでファイルが開かれた時、
+    変換が完了した時点で該当位置に移動するようにしたい。
+
+    % これは実は DOMContentLoaded より前に変換を実行できれば問題ないかもしれない。
+    % と、思ったがよく考えたら変換を非同期で行っているので、
+    % 恐らくどんなに頑張っても DOMContentLoaded より前に完成できることを保証はできない。
+    % 従って、どの状況でも正しく動作するために結局対策は必要となると思われる。
+
+    変換が完了したときに移動するようにした。
+    window.location.hash に値を代入することで移動するらしいが、
+    実際に試してみると値が変わらない場合には何も起こらない。
+    一旦 window.location.hash = "" にしてから、
+    再度値を代入するというようにすれば一応動くが、
+    一瞬だけページ先頭に移動するので無駄にちらつきが発生する。
+    結局 a 要素を作成して a.href に値を設定して a.click() を呼び出すことにした。
+    動いている。代入した瞬間に a.click() すると描画が整った時にずれたりするが、
+    見たところそんなにずれないようなので良しとすることにする。
+
+    - 序でで、HTML ファイルらしきものを誤って aghtex4chrome で開いてしまった様子の時、
+      HTML として表示するようにリダイレクトする様に判定を書き加えた。
+      実際にやってみると一応は動いている (が DOMContentLoaded までに時間がかかって、
+      その後で内容の判定を行うので遅い)。
+
+  * 2018-02-04 aghtex4chrome でドキュメントの日付が background.html の日付になる。 [#D0034]
+    これは document.lastModified を background.html の中で実行しているのが原因である。
+    正しく処理するためには
+
+    1 先ず初めに ns.Document に対して外部から lastModified を指定できるようにする必要がある。
+    2 aghtex4chrome の受け渡しで lastModified も受け渡す様にする必要がある。
+
+    これについては Document#option という変数を用意して、
+    そこに外部からの設定項目を書き込むということにした。
+
+    後は、aghtex.js の tex_transform の第三引き数 option にオブジェクトを渡すことにした。
+    (コードを見ていると元々は option は文字列で指定することを意図していたようだが、
+    実際には何処からも使用されていなかったので役割を変更した。)
+    tex_transform から呼び出される tex_modes["full_texview"].transform の中で
+    doc.option.lastModified に値を設定する。
 
   * 2018-01-31 伸縮チルダが変になっている: $\widetilde{C[T]}$。 [#D0033]
 

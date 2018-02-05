@@ -388,7 +388,6 @@ agh.memcpy(ns.Scanner4.prototype, {
       src.index = reg.lastIndex;
       if (src.index < src.length) {
         var chnext = src.text.charCodeAt(src.index++);
-        console.log(chnext);
         if (chnext != 0x1F) {
           if (isTerminatorNL) {
             if (chnext == 0x0D && src.index < src.length && src.text.charCodeAt(src.index) == 0x0A) src.index++;
@@ -961,6 +960,8 @@ ns.Document = function(text, context) {
   // 解析時に使用
   this.currentCtx = null;
   this.ctxStack = [];
+
+  this.option = {};
 };
 agh.memcpy(ns.Document.prototype, {
   Clone: function() {

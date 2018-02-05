@@ -13,7 +13,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
 
       this.eedit=eedit;
       this.epare=eedit.parentNode;
-      if(aghtex.dom_istag(this.epare,'td')){
+      if (aghtex.dom_istag(this.epare,'td')){
         var efrm0=this._document.createElement('div');
         this.epare.appendChild(efrm0);
         efrm0.appendChild(this.eedit);
@@ -70,7 +70,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
         var eedit=this.eedit;
         var hook_resize=function(){
           var is_vsplit=epare.clientWidth>500;
-          if(is_vsplit){
+          if (is_vsplit){
             aghtex.dom_update_style(eedit,'width',"49%");
             aghtex.dom_update_style(efrm1,'width',"49%");
           }else{
@@ -88,9 +88,9 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
         var btnLS=this.prev.CreateButtonToggle('<span style="font-family:monospace,serif;">LS</span>',"Enable/disable Linked Scroll",true);
 
         function set_scroll(edst,esrc){
-          if(btnLS.aghtex_value){
+          if (btnLS.aghtex_value){
             var r=esrc.scrollTop/(esrc.scrollHeight-esrc.clientHeight);
-            if(r<0)r=0;else if(r>1)r=1;
+            if (r<0)r=0;else if (r>1)r=1;
             edst.scrollTop=(edst.scrollHeight-edst.clientHeight)*r;
           }
         }
@@ -109,7 +109,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
         // var epare=this.epare;
         // var epare_defaultFontSize=epare.style.fontSize;
         // button.aghtex_ontoggle=function(e,value){
-        //   if(value)
+        //   if (value)
         //     epare.style.fontSize="130%";
         //   else
         //     epare.style.fontSize=epare_defaultFontSize;
@@ -147,7 +147,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
   //  Site: gmail
   //---------------------------------------------------------------------------
   aghtex.Sites["gmail"]=function(_document){
-    if(_document==null)_document=document;
+    if (_document==null)_document=document;
 
     var reg_tag_div=/^div/i;
     function initialize_mailbody(sender){
@@ -155,17 +155,17 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
         var nodes=[];
         function _recursive(elem){
           // enum nodes
-          for(var i=0,iN=elem.childNodes.length;i<iN;i++){
+          for (var i=0,iN=elem.childNodes.length;i<iN;i++){
             var node=elem.childNodes[i];
-            if(node.nodeType==aghtex.NodeTypeELEMENT_NODE){
-              if((/^div$/i).test(node.tagName)){
+            if (node.nodeType==aghtex.NodeTypeELEMENT_NODE){
+              if ((/^div$/i).test(node.tagName)){
                 // div>:eq(0):not(div)
-                if(node.firstChild&&!(/^div$/i).test(node.firstChild.tagName)){
-                  for(var j=0,jN=node.childNodes.length;j<jN;j++)
+                if (node.firstChild&&!(/^div$/i).test(node.firstChild.tagName)){
+                  for (var j=0,jN=node.childNodes.length;j<jN;j++)
                     nodes.push(node.childNodes[j]);
                   continue;
                 }
-              }else if((/^blockquote$/i).test(node.tagName)){
+              }else if ((/^blockquote$/i).test(node.tagName)){
                 nodes.push(node); // splitter
                 _recursive(node);
                 nodes.push(node); // splitter
@@ -173,7 +173,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
               }
             }
 
-            if(/^(wbr|u|p)$/i.test(node.tagName)&&node.childNodes.length==0)
+            if (/^(wbr|u|p)$/i.test(node.tagName)&&node.childNodes.length==0)
               node.aghtex_ignore_content=true;
             nodes.push(node);
           }
@@ -193,38 +193,38 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
     var dbgflg=0;
     function document_body_onmousemove(event){
       var sender=event.target||event.srcElement;
-      if(sender==null)return;
+      if (sender==null)return;
 
       gmail_try_setup_mailbody(sender);
       gmail_try_setup_preview1(sender);
       gmail_try_setup_preview2(sender);
     }
     function gmail_try_setup_mailbody(sender){
-      if(sender.tag_aghtex)return;
+      if (sender.tag_aghtex)return;
 
       // div#:9m > div#:37 > textNodes の様な構造になっている。二番目の div を捕まえたい。
 
       // 判定1: sender ~= /div#:～/
-      if(!((/^div$/i).test(sender.tagName)&&(/^\:/).test(sender.id)))return;
+      if (!((/^div$/i).test(sender.tagName)&&(/^\:/).test(sender.id)))return;
 
       // 判定2: div 以外の子要素
       var firstChild=sender.firstChild;
-      if(!(
+      if (!(
         (/(?:^|\s)a3s(?:$|\s)/).test(sender.className)
           ||firstChild&&!(/^div$/i).test(firstChild.tagName||"text")))return;
 
       // 判定3: 親要素に対する判定も追加 2014-09-27
       var parent=sender.parentNode;
-      if(!(parent.tagName&&(/^div$/i).test(parent.tagName)&&(/^\:/).test(parent.id)))return;
+      if (!(parent.tagName&&(/^div$/i).test(parent.tagName)&&(/^\:/).test(parent.id)))return;
 
       sender.tag_aghtex=true;
       initialize_mailbody(sender);
     }
     function gmail_try_setup_preview1(sender){
-      if(sender.tag_aghtex)return;
-      if(aghtex.dom_istag(sender,'textarea')&&reg_cls_Ak.test(sender.className)){
-        if(!aghtex.dom_istag(sender.parentNode,'div')||!reg_cls_At.test(sender.parentNode.className))return;
-        if(!reg_container_id.test(sender.id))return;
+      if (sender.tag_aghtex)return;
+      if (aghtex.dom_istag(sender,'textarea')&&reg_cls_Ak.test(sender.className)){
+        if (!aghtex.dom_istag(sender.parentNode,'div')||!reg_cls_At.test(sender.parentNode.className))return;
+        if (!reg_container_id.test(sender.id))return;
 
         sender.tag_aghtex=true;
         aghtex.setupGMailPreview(sender);
@@ -232,10 +232,10 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
     }
     function gmail_try_setup_preview2(sender){
       // 2014-09-27
-      if(sender.tag_aghtex)return;
+      if (sender.tag_aghtex)return;
 
       // for debug
-      // if(sender.contentEditable){
+      // if (sender.contentEditable){
       //   console.log("X "+(/^div$/i).test(sender.tagName)+
       //               " "+(/^\:/).test(sender.id)+
       //               " "+(/^div$/i).test(sender.parentNode.tagName)+
@@ -244,10 +244,10 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
       // }
 
       // 判定1:
-      if(!(sender.contentEditable=="true"&&(/^div$/i).test(sender.tagName)&&(/^\:/).test(sender.id)))return;
+      if (!(sender.contentEditable=="true"&&(/^div$/i).test(sender.tagName)&&(/^\:/).test(sender.id)))return;
       // 判定2:
       var parent=sender.parentNode;
-      if(!((/^div$/i).test(parent.tagName)&&(/(?:^|\s)aO7(?:$|\s)/).test(parent.className)))return;
+      if (!((/^div$/i).test(parent.tagName)&&(/(?:^|\s)aO7(?:$|\s)/).test(parent.className)))return;
 
       sender.tag_aghtex=true;
       aghtex.setupGMailPreview(sender);
@@ -260,7 +260,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
   //  Site: googlegroups
   //---------------------------------------------------------------------------
   aghtex.Sites["ggroup"]=function(_document){
-    if(_document==null)_document=document;
+    if (_document==null)_document=document;
 
     function initialize_mailbody(sender){
       aghtex.SetupMailbody20111203(_document,sender,function(sender){
@@ -268,18 +268,18 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
 
         // enum nodes
         var nodes=[];
-        for(var i=0,iN=sender.childNodes.length;i<iN;i++){
+        for (var i=0,iN=sender.childNodes.length;i<iN;i++){
           var node=sender.childNodes[i];
           // div >0 ^div
-          if(aghtex.dom_istag(node,'p')&&node.childNodes.length>0){
+          if (aghtex.dom_istag(node,'p')&&node.childNodes.length>0){
             nodes.push(dummy_br);
-            for(var j=0,jN=node.childNodes.length;j<jN;j++)
+            for (var j=0,jN=node.childNodes.length;j<jN;j++)
               nodes.push(node.childNodes[j]);
-          }else if(aghtex.dom_istag(node,'div')&&/(?:^|\s)qt(?:$|\s)/.test(node.className))
-            for(var j=0,jN=node.childNodes.length;j<jN;j++)
+          }else if (aghtex.dom_istag(node,'div')&&/(?:^|\s)qt(?:$|\s)/.test(node.className))
+            for (var j=0,jN=node.childNodes.length;j<jN;j++)
               nodes.push(node.childNodes[j]);
           else{
-            if(/^(wbr|u|p)$/i.test(node.tagName)&&node.childNodes.length==0)
+            if (/^(wbr|u|p)$/i.test(node.tagName)&&node.childNodes.length==0)
               node.aghtex_ignore_content=true;
             nodes.push(node);
           }
@@ -290,42 +290,42 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
     }
     //-------------------------------------------------------------------------
     function is_mailbody_div(div){
-      // if(aghtex.dom_istag(div.firstChild,'div'))return false;
+      // if (aghtex.dom_istag(div.firstChild,'div'))return false;
       // return div.id=="inbdy";
 
       // 2013/01/31 修正
-      if(aghtex.dom_istag(div.firstChild,'div'))return false;
-      if(!(aghtex.dom_istag(div,'div')&&div.style.overflow=='hidden'))return false;
+      if (aghtex.dom_istag(div.firstChild,'div'))return false;
+      if (!(aghtex.dom_istag(div,'div')&&div.style.overflow=='hidden'))return false;
       var p=div.parentNode;
-      if(!(aghtex.dom_istag(p,'div')&&p.className==''))return false;
+      if (!(aghtex.dom_istag(p,'div')&&p.className==''))return false;
       var pp=p.parentNode;
       return aghtex.dom_istag(pp,'div')&&aghtex.dom_hasClassName(pp,'GAK2G4EDN3');
     }
 
     function document_body_onmousemove(event){
       var sender=event.target||event.srcElement;
-      if(sender==null||sender.tagName==null)return;
+      if (sender==null||sender.tagName==null)return;
       var tagName=sender.tagName.toLowerCase();
 
-      if(tagName=='div'){
-        if(sender.tag_aghtex)return;
+      if (tagName=='div'){
+        if (sender.tag_aghtex)return;
         sender.tag_aghtex=true;
 
-        if(!is_mailbody_div(sender))return;
+        if (!is_mailbody_div(sender))return;
         initialize_mailbody(sender);
-      }else if(tagName=='p'){
+      }else if (tagName=='p'){
         var div=sender.parentNode;
-        if(!aghtex.dom_istag(div,'div')
+        if (!aghtex.dom_istag(div,'div')
            ||aghtex.dom_istag(div.firstChild,'div')
            ||div.id!="inbdy")return;
 
-        if(div.tag_aghtex)return;
+        if (div.tag_aghtex)return;
         div.tag_aghtex=true;
         initialize_mailbody(div);
-      }else if(tagName=='textarea'){
-        if(sender.name!="body")return;
+      }else if (tagName=='textarea'){
+        if (sender.name!="body")return;
 
-        if(sender.tag_aghtex)return;
+        if (sender.tag_aghtex)return;
         sender.tag_aghtex=true;
         aghtex.setupGMailPreview(sender);
       }
@@ -337,24 +337,24 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
   //  Site: sites.google
   //---------------------------------------------------------------------------
   aghtex.Sites["gsite"]=function(_document){
-    if(_document==null)_document=document;
+    if (_document==null)_document=document;
 
     function initialize_textnodes(elem){
       var emaths=[];
       var eparas=[];
 
       var texts=aghtex.dom_getTextNodes(elem);
-      for(var i=0,iN=texts.length;i<iN;i++){
+      for (var i=0,iN=texts.length;i<iN;i++){
         var text=texts[i];
         var html2=aghtex.html_create_range(aghtex.html_escape_soft(text.textContent));
-        if(html2==null)continue;
+        if (html2==null)continue;
 
         var div=_document.createElement("div");
         div.innerHTML=html2;
         var maths=aghtex.dom_getElementsByClassName(div,"aghtex-math");
-        for(var j=0,jN=maths.length;j<jN;j++)emaths.push(maths[j]);
+        for (var j=0,jN=maths.length;j<jN;j++)emaths.push(maths[j]);
         var paras=aghtex.dom_getElementsByClassName(div,"aghtex-para");
-        for(var j=0,jN=paras.length;j<jN;j++)eparas.push(paras[j]);
+        for (var j=0,jN=paras.length;j<jN;j++)eparas.push(paras[j]);
 
         // replace nodes
         var parent=text.parentNode;
@@ -364,12 +364,12 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
         parent.removeChild(text);
       }
 
-      if(emaths.length!=0)aghtex.tex_transform(emaths,"math","");
-      if(eparas.length!=0)aghtex.tex_transform(eparas,"para","");
+      if (emaths.length!=0)aghtex.tex_transform(emaths,"math","");
+      if (eparas.length!=0)aghtex.tex_transform(eparas,"para","");
     }
 
     var div=_document.getElementById("sites-canvas");
-    if(div!=null)
+    if (div!=null)
       initialize_textnodes(div);
   };
 });
