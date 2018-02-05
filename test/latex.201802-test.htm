@@ -3,30 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <script type="text/javascript" charset="utf-8" src="../out/agh.js"></script>
-<script type="text/javascript">
-agh.scripts.wait(["event:onload", "agh.lang.tex.js"], function() {
-  function insertAfter(elem, node, ref) {
-    if (elem.insertAfter)
-      return elem.insertAfter(node, ref);
-
-    var next = ref.nextSibling;
-    if (next) return elem.insertBefore(node, next);
-    elem.appendChild(node);
-    return node;
-  }
-
-  var scripts = document.body.getElementsByTagName('script');
-  for (var i = 0, iN = scripts.length; i < iN; i++) {
-    var script = scripts[i];
-    if (script.type == 'application/x-aghtex-document') {
-      var div = document.createElement('div');
-      div.className = 'aghtex-page';
-      div.innerHTML =new agh.LaTeX.Document(script.text).Parse();
-      insertAfter(script.parentNode, div, script);
-    }
-  }
-});
-</script>
+<script type="text/javascript" charset="utf-8" src="../out/agh.lang.tex.js"></script>
 <style type="text/css">
 .aghtex-page {
   width: 50em; margin-left: auto; margin-right: auto; min-height: 100%;
@@ -38,7 +15,7 @@ body {
 </style>
 </head>
 <body>
-<script id="texdoc1" type="application/x-aghtex-document">
+<script type="agh:aghtex-document">
 \documentclass[amsmath,amssymb]{revtex4-1}
 \usepackage{url}
 \usepackage{color}
@@ -298,6 +275,30 @@ hello\\[3mm]world
   \overCommands{AB}}
 
 \end{document}
+</script>
+<script type="text/javascript">
+function insertAfter(elem, node, ref) {
+  if (elem.insertAfter)
+    return elem.insertAfter(node, ref);
+
+  var next = ref.nextSibling;
+  if (next) return elem.insertBefore(node, next);
+  elem.appendChild(node);
+  return node;
+}
+
+var scripts = document.body.getElementsByTagName('script');
+for (var i = 0, iN = scripts.length; i < iN; i++) {
+  var script = scripts[i];
+  if (script.type == 'agh:aghtex-document') {
+    var doc = new agh.LaTeX.Document(script.text); 
+    var div = document.createElement('div');
+    div.className = 'aghtex-page';
+    //div.innerHTML = agh.debug.measure(doc.Parse, doc);
+    div.innerHTML = doc.Parse();
+    insertAfter(script.parentNode, div, script);
+  }
+}
 </script>
 
 </body>

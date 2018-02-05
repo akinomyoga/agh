@@ -24,6 +24,11 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 問題点・改善点・新機能の計画などについての議論をここに記述する。
 
+2018-02-05
+
+  * aghtex4chrome で # 付きでファイルが開かれた時、
+    変換が完了した時点で該当位置に移動するようにしたい。
+
 2018-02-04
 
   * \today コマンド
@@ -120,7 +125,6 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
     などとすれば良いだろうか。しかし、それだと様々な計算ができなくなる。
     一方で、絶対指定にするとウィンドウのサイズを変更した時に追随できない。
 
-
   * http://www.math.kobe-u.ac.jp/HOME/kodama/tips-latex-math-margin.html
     http://surgery.matrix.jp/comp/tex/plain/plain09.html
     レイアウト関連のコマンド
@@ -135,18 +139,6 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
   * mod:length: \dimen123 = dimension の形式に対応する
 
 2018-01-31
-
-  * 伸縮チルダが変になっている: $\widetilde{C[T]}$。
-
-    SVG として埋め込むことにした。
-    然し、高さが大きくて見た目が悪い。
-    実際に出力に使っているコードは output_overbrace であり、
-    高さは overbrace と同じものを用いている。
-    しかし、\widetilde や \widehat はそれよりも低いほうが自然である。
-    class を付加する様にして widehat/widetilde の時は高さを変える様にした。
-
-    x 然し、現状では <img> で埋め込んでいるが、currentColor が反映されない。
-      currentColor が反映されるためには <svg> で埋め込む必要がある。
 
   * \noindent
 
@@ -274,9 +266,27 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 終了した ToDo 及び関連する議論はここに残す。
 
+2018-02-05
+
+  * 2018-01-31 伸縮チルダが変になっている: $\widetilde{C[T]}$。 [#D0033]
+
+    SVG として埋め込むことにした。
+    然し、高さが大きくて見た目が悪い。
+    実際に出力に使っているコードは output_overbrace であり、
+    高さは overbrace と同じものを用いている。
+    しかし、\widetilde や \widehat はそれよりも低いほうが自然である。
+    class を付加する様にして widehat/widetilde の時は高さを変える様にした。
+
+    x done: 然し、現状では <img> で埋め込んでいるが、currentColor が反映されない。
+      currentColor が反映されるためには <svg> で埋め込む必要がある。
+      これは直した。
+
+    \underbrace/\overbrace なども全て SVG が使える時には使う様に変更した。
+    また \underbrace/\overbrace 周りのコードも整理した。
+
 2018-02-04
 
-  * 2018-01-31 \ref で出力される section 番号の後に空白が入っている。
+  * 2018-01-31 \ref で出力される section 番号の後に空白が入っている。 [#D0032]
     x done: 更にローマ数字の 10 が "I" になっている。
       これは直した。数字を切り出す位置が反転していた。
 

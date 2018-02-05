@@ -868,8 +868,8 @@ agh.memcpy(ns.Writer, {
           desc = v[1];
         } else if (v instanceof Array) {
           if (desc != null) {
-            title = v[0].format(desc);
-            desc = v[1].format(desc);
+            title = agh.Text.format(v[0], desc);
+            desc = agh.Text.format(v[1], desc);
           } else {
             title = v[0];
             desc = v[1];
@@ -1814,14 +1814,13 @@ var COMMAND2_REG_ARGDEF = new RegExp(
   // $3 = 0               // @ (旧形式)
   // $4 = [1-9DL]         // 引数番号 or D = <dimension>, L = <length>
   // $Tc | $Tt | $Tl      // 後続のコマンド/文字列/記号
-  "([^\\#]*)\\#({0})?({1})?(0)?([1-9DL])(?:\\\\({2}+|.)|({3}+)|([^#\\\\]))?".format(
+  agh.Text.format(
+    "([^\\#]*)\\#({0})?({1})?(0)?([1-9DL])(?:\\\\({2}+|.)|({3}+)|([^#\\\\]))?",
     /\[(?:[^\]]*|\{[^\{\}]*\})\]/.source,
     /[^\!\>\#]*[\!\>]|\@/.source,
     REG_ISCMDCHAR.source,
-    REG_ISTXTCHAR.source
-  ),
-  "g"
-);
+    REG_ISTXTCHAR.source), "g");
+
 var COMMAND2_READTYPE = {
   "@": "raw",
   ">": "htm",

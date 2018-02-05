@@ -723,7 +723,6 @@
     //****************************************************************************
     delayed_wait(0, [
       "agh.js",
-      "agh.text.js",
       "agh.lang.tex.js",
       "latex/latex." + (isIE ? 'ie' : isFx ? 'fx' : isOp ? 'op' : 'sf') + ".css"
     ], function() {

@@ -9,9 +9,7 @@
 //*****************************************************************************
 #%[DEBUG_SCANNER=0]
 #%[DEBUG=1]
-agh.scripts.register("agh.lang.tex.js", [
-  "agh.js", "agh.text.js"
-], function() {
+agh.scripts.register("agh.lang.tex.js", ["agh.js"], function() {
 /*===========================================================================*/
   var nsName = "agh.LaTeX";
   //var nsName = "agh.DHTeXML2";

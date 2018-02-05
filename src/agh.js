@@ -1324,6 +1324,7 @@ agh.memcpy(String.prototype, {
 String.fromCharArray = function(arr) {
   return String.fromCharCode.apply(null, arr);
 };
+
 //==============================================================================
 //    String.prototype Ex
 //==============================================================================
@@ -1436,6 +1437,57 @@ agh.memcpy(String.prototype, {
 agh.Namespace("Text", agh);
 agh.Text.doubleQuote = function(str) {
   return '"' + agh.Text.Escape(str, "double-quoted") + '"';
+};
+/**
+ * @function agh.Text.format(...arg)
+ * @function agh.Text.format(table)
+ *   文字列を整形します。 
+ *
+ *   @param arg
+ *     文字列に挿入する値を指定します。
+ */
+agh.Text.format = function(text, table) {
+  var args = arguments;
+  return text.replace(/(\{\{|\}\})|\{([^\}]+)\}/g, function($0, $1, $2) {
+    if ($1 && $1 != '')
+      return $1 == '{{' ? '{' : '}';
+
+    // 引数を : で区切る
+    var a = $2.replace(/\\.|\:/g, function($0) {
+      return $0 == ':' ? '<agh::split>' : $0.substr(1);
+    }).split('<agh::split>');
+
+    // obj の取得
+    var key = a[0];
+    var num = parseInt(key);
+    var obj = num.toString() == key ? args[1 + num] : table[key];
+    if (obj == null) obj = "null";
+
+    // 変換
+    for (var i = 1; i < a.length; i++) {
+      if (agh.is(obj, String)) {
+        a[i].replace(/(\b[\w0-9_]+\b)(?:\(([^\(\)]*)\))?/, function($0, $1, $2) {
+          if (!$2) $2 = "";
+          try {
+            switch($1) {
+            case "escape": obj = agh.Text.Escape(obj,$2); break;
+            case "unescape": obj = agh.Text.Unescape(obj, $2); break;
+            case "upper": obj = obj.toUpperCase(); break;
+            case "lower": obj = obj.toLowerCase(); break;
+              //case "trim": case "trim_l": case "trim_r": case "reverse":
+            default:
+              obj = obj[$1].apply(obj, $2.split(","));
+              break;
+            }
+          } catch(e) {}
+          return "";
+        });
+      } else
+        obj = agh(obj, String, a[i]);
+      if (obj == null) obj = "null";
+    }
+    return obj.toString();
+  });
 };
 //==============================================================================
 //    agh.Text.Escape
@@ -2054,8 +2106,8 @@ Function.prototype.get_name = function() {
         var link = this.DOCUMENT.createElement("link");
         link.rel = "stylesheet";
         link.type = "text/css";
-        link.href = agh.scripts.AGH_URLBASE + filename;
         link.charset = "utf-8";
+        link.href = agh.scripts.AGH_URLBASE + filename;
         this.DOCUMENT_HEAD.appendChild(link);
         return true;
       },
@@ -2133,7 +2185,11 @@ Function.prototype.get_name = function() {
     //  event window.onload
     //--------------------------------------------------------------------------
     if (typeof window === "object") {
-      agh.addEventListener(window, 'load', function() {
+      /* DOMContentLoaded は HTML の DOM ツリーが構築完了したとき。
+       * load は更にそこから画像などをロードしてレイアウトが決定したとき。
+       */
+      var loadEventName = agh.browser.vIE < 9 ? 'load' : 'DOMContentLoaded';
+      agh.addEventListener(window, loadEventName, function() {
         agh.scripts.files['event:onload'] = 'ready';
         agh.scripts._dowait();
       }, false);
