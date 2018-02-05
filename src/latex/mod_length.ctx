@@ -5,13 +5,13 @@ var _Mod = ns.Modules["mod:length"] = {};
 
 agh.memcpy(ns.Modules["core"].ErrorMessages, {
   'mod:length.InvalidLengthName': [
-    "InvalidLengthName", "The name '{name}' is not avalid name for lengths. The length name should have a command form."],
+    "InvalidLengthName", "The name '{name}' is not a valid name for lengths. The length name should have a command form."],
   'mod:lentgh.InvalidCommandArgument': [
     "InvalidCommandArgument", "The specified argument '{value}' does not have a command form."],
   'mod:lentgh.UnrecognizedLengthName': [
-    "UnrecognizedLengthName", "The specified name '{value}' does not name a length/dimension/skip."],
+    "{value}", "The specified name '{value}' does not name a length/dimension/skip."],
   'mod:length.cmd:the.UnknownRegister': [
-    '\\the: UnknownRegister', "The name '{value}' does not name any of registers, such as count/dimension/skip/etc."]
+    '\\the{value}', "The name '{value}' does not name any of registers, such as count/dimension/skip/etc."]
 });
 
 /* 注意: 利用できる単位については以下でハードコーディングされている事に注意する。

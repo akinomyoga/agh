@@ -51,10 +51,10 @@ agh.memcpy(mod_core.ErrorMessages, {
       + "\\newcommand cannot override the existing commands/environments\n"
       + "you can override the existing commands with \\renewcommand, or the environments with \\renewenvironment"],
   'mod:common.cmd:renewcommand.NotYetDefined': [
-    "\\renewcommand NotYetDefined",
-    "the specified command/environment '{cmd}' has not yet been defined anywhere\n"
-      + "\\renewcommand/\\renewenvironment should override an existing commands/environments\n"
-      + "you can declare new commands with \\newcommand, or new environments with \\newenvironment"],
+    "{cmd}",
+    "The specified command/environment '{cmd}' has not yet been defined anywhere. "
+      + "\\renewcommand/\\renewenvironment should override existing commands/environments."
+      + "You can declare new commands with \\newcommand, or new environments with \\newenvironment."],
   "mod:common.cmd:string.EndOfDocument": [
     '\\string EndOfDocument',
     "reached the end of document. An argument of \\string cannot be read."],
@@ -195,7 +195,7 @@ context "global" {
     case "renewcommand":
       if (getExistingCommandHandler(doc,name) == null) {
         doc.currentCtx.output.error(
-          'mod:common.cmd:renewcommand.NotYetDefined',{cmd:name},
+          'mod:common.cmd:renewcommand.NotYetDefined',{cmd: '\\' + name},
           '\\renewcommand @ mod:common');
         return;
       }

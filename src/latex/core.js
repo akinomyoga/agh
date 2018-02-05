@@ -1462,7 +1462,7 @@ ns.Document.prototype.ReadDimension = function() {
   /// この形式の文字列が読み取れない場合は null を返します。
   ///
   ///   <dimension> :
-  ///     - <sign>? <number> <unit>
+  ///     - <sign>? <number> 'true'? <unit>
   ///     | <sign>? <number>? <\dimension>
   ///
   ///   <sign> :- '-' | '+'
@@ -1482,6 +1482,7 @@ ns.Document.prototype.ReadDimension = function() {
    */
 
   var digits = [];
+  var trueFlag = false;
   var incompleteUnit = null;
 
   var mode = 0; // 0: 符号待ち, 1: 数値待ち, 2: 数値読み取り中, 3: 単位待ち, 4: 単位読み取り中
@@ -1533,17 +1534,24 @@ ns.Document.prototype.ReadDimension = function() {
       var text = this.scanner.word;
       if (incompleteUnit) text = incompleteUnit + text;
 
-      var m = /^(?:in|bp|cm|mm|pt|pc|sp|dd|cc|n[cd]|em|ex|zw|zh|mu|px)/i.exec(text);
+      if (/^true/i.test(text)) {
+        trueFlag = true;
+        this.scanner.ConsumePartialTxt(4);
+        mode = 3;
+        continue;
+      }
+
+      var m = /^(?:true|in|bp|cm|mm|pt|pc|sp|dd|cc|n[cd]|em|ex|zw|zh|mu|px)/i.exec(text);
       if (!m) {
-        if ((m = /^[bcdimnpsz]$/i.exec(text))) {
-          // 不完全な単位の場合 (未だ単位になる可能性がある)
+        if ((m = /^[bcdimnpsz]|(?:t|tr|tru)$/i.exec(text))) {
+          // 不完全な単位の場合 (未だ単位 or "true" になる可能性がある)
           incompleteUnit = m[0];
           this.scanner.Next();
           mode = 4;
           continue;
         } else {
           // 既知の単位名にはなりえない場合
-          error_invalid_unit(doc, text);
+          error_invalid_unit(this, text);
           return null;
         }
       }
@@ -1554,7 +1562,7 @@ ns.Document.prototype.ReadDimension = function() {
       return new ns.Length(value, unit);
     } else if (this.scanner.wordtype === SCAN_WT_CMD) {
       if (mode === 4) {
-        error_invalid_unit(doc, incompleteUnit);
+        error_invalid_unit(this, incompleteUnit);
         return null;
       }
 
