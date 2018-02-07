@@ -109,25 +109,6 @@ agh/js - Ageha JavaScript Library v3.2
   ToDo
 -------------------------------------------------------------------------------
 
-2016-06-10
-
-  * aghfonts の取り込みとツール群の確認
-
-    今迄どこからともなく手に入れた ttf2eot と sfnt2woff を使用していた。
-    これらは可搬なプログラムなのだろうか。という事で検索してみる事にする。
-
-    ttf2eot は元々 google codes の上で管理されていた様だが今は放置されている。
-    代わりに github 上に clone を作っている人がいる。
-    [[metaflop/ttf2eot: clone of https://code.google.com/p/ttf2eot/ with patch applied>https://github.com/metaflop/ttf2eot]]
-
-    sfnt2woff に関しては firefox-3.6 に使われたコードを元にして簡単なツールが公開されている。
-    [[WOFF fonts!>http://people.mozilla.org/~jkew/woff/]]
-    [[TTF/OTFのフォントをWOFFに変換するツールsfnt2woff -- ぺけみさお>http://www.xmisao.com/2014/01/04/how-to-convert-ttf-to-woff-sfnt2woff.html]]
-    [[[solved] How to create a .woff file with sfnt2woff under Linux [U|Ku|Xu|Lu]buntu from Gerard Talbot on 2013-02-24 (public-css-testsuite@w3.org from February 2013)>https://lists.w3.org/Archives/Public/public-css-testsuite/2013Feb/0083.html]]
-    しかしここに公開されているのは 2009 年の物である。
-    2014 年の記事でもここへのリンクが貼られているが、いつ消えてもおかしくないのではないかという気がする。危なげだ。
-    何処かにダウンロードしておく必要があるだろう→ toos/ext/ で g add して repository に登録してしまう事にした。ソースコードのサイズは極めて小さい。
-
 2015-09-14
 
   * 計画 agh.syntax.js
@@ -566,6 +547,27 @@ latex
 -------------------------------------------------------------------------------
   実装メモ - log
 -------------------------------------------------------------------------------
+
+2018-02-06
+
+  * 2016-06-10 aghfonts の取り込みとツール群の確認
+
+    今迄どこからともなく手に入れた ttf2eot と sfnt2woff を使用していた。
+    これらは可搬なプログラムなのだろうか。という事で検索してみる事にする。
+
+    ttf2eot は元々 google codes の上で管理されていた様だが今は放置されている。
+    代わりに github 上に clone を作っている人がいる。
+    [[metaflop/ttf2eot: clone of https://code.google.com/p/ttf2eot/ with patch applied>https://github.com/metaflop/ttf2eot]]
+
+    sfnt2woff に関しては firefox-3.6 に使われたコードを元にして簡単なツールが公開されている。
+    [[WOFF fonts!>http://people.mozilla.org/~jkew/woff/]]
+    [[TTF/OTFのフォントをWOFFに変換するツールsfnt2woff -- ぺけみさお>http://www.xmisao.com/2014/01/04/how-to-convert-ttf-to-woff-sfnt2woff.html]]
+    [[[solved] How to create a .woff file with sfnt2woff under Linux [U|Ku|Xu|Lu]buntu from Gerard Talbot on 2013-02-24 (public-css-testsuite@w3.org from February 2013)>https://lists.w3.org/Archives/Public/public-css-testsuite/2013Feb/0083.html]]
+    しかしここに公開されているのは 2009 年の物である。
+    2014 年の記事でもここへのリンクが貼られているが、いつ消えてもおかしくないのではないかという気がする。危なげだ。
+    何処かにダウンロードしておく必要があるだろう→ toos/ext/ で g add して repository に登録してしまう事にした。ソースコードのサイズは極めて小さい。
+
+    追記: 2018-02-06 確認した所 sfnt2woff は予期した通り、消滅していた。README にその旨追記した。
 
 2015-08-30
 

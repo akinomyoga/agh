@@ -49,7 +49,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
       (hmode の開始・終了 ページの開始・終了) を管理する必要がある。
       現在の文脈に関するオブジェクトを管理する仕組みは既にある。
       これが既存のコードでどのように使われているか調べて、
-      その声質について考察しながら実装の可能性について探る必要がある。
+      その性質について考察しながら実装の可能性について探る必要がある。
 
     2 また、{...} で囲んだだけでこれらが無効になるのも妙なので、
       これらについても適切に処理する必要がある。
@@ -63,6 +63,8 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
       或いは、初めに \par が現れた瞬間に vmode が有効な文脈に変身するという実装でも良いかもしれない。
       それより以前の内容については <p></p> で囲まれないことになるが、まあそんなものだろう。
       (LaTeX において、引き数などの内部で \par が現れた時にどの様に処理しているかも確認したほうが良いかもしれない)
+
+
 
 2018-02-04
 
@@ -140,17 +142,18 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
   * 2018-02-01 Lengths https://en.wikibooks.org/wiki/LaTeX/Lengths
 
-    2018-02-04 \settowidth は対応した。
-    2018-02-04 \the も対応した。
+    - 2018-02-04 \settowidth は対応した。
+    - 2018-02-04 \the も対応した。
 
-    \newdimen / \newskip / \newmuskip に対応する。
+    - \newdimen / \newskip / \newmuskip に対応する。
       実は \newlength は既存のコマンドを上書きしないように内部でチェックをする \newskip である様だ。
       https://tex.stackexchange.com/questions/22863/what-are-the-differences-between-newdimen-newskip-and-newlength
       \newlength の上書きチェックについても対応する必要がある。
 
-    各種の既定 Lengths について定義を行う。
-    取り敢えずは適当な値で良い。例えば、A4 を仮定するなど。
-    (但し、印刷する時に問題になるかもしれないが…)。
+
+    - 各種の既定 Lengths について定義を行う。
+      取り敢えずは適当な値で良い。例えば、A4 を仮定するなど。
+      (但し、印刷する時に問題になるかもしれないが…)。
 
     と思ったら vh vw などという単位が CSS には存在しているようだ。
     https://developer.mozilla.org/ja/docs/Web/CSS/Length
@@ -206,6 +209,16 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
       多分対応していない。
 
       他に \pmod, \bmod などがある。
+
+      MathJax のページによると \mod#1 の時には
+        display-math [18mu]mod[2thinspace]#1
+        inline-math  [12mu]mod[2thinspace]#1
+      \pmod#1 の時には
+        display-math [18mu](mod[6mu]#1)
+        inline-math  [8mu](mod[6mu]#1)
+      という様なスペースの空け方になっているらしい。
+
+      因みに 18mu = 1em で 2\thinspace = 2/6 em = 6mu の様だ。
 
     \thispagestyle
       取り敢えず引数は取る様にする。対応していなくても。
@@ -304,7 +317,7 @@ Ageha Javascript Library - agh.LaTeX - memo.txt
 
 2018-02-05
 
-  * aghtex4chrome で # 付きでファイルが開かれた時、
+  * aghtex4chrome で # 付きでファイルが開かれた時、 [#D0035]
     変換が完了した時点で該当位置に移動するようにしたい。
 
     % これは実は DOMContentLoaded より前に変換を実行できれば問題ないかもしれない。
@@ -1793,6 +1806,9 @@ P18.1 Font 作成ソフトに関し
 
     $ fontforge-2013v
 
+  G 実は github.io の上で最新版が紹介されている。
+    そこからダウンロード・インストールして起動した見たところ問題なく動いている。
+
   以下は纏め。
 
       起動 硬直 輪郭 日本 Hint
@@ -1800,11 +1816,14 @@ P18.1 Font 作成ソフトに関し
     B  ○   ×   ○   ○   ○
     C  ○   ○   ×   ○   ○
     D  △   ×   ○   ○   ○
-    E  ○   ○   ○   ×   ○
+    E  ○   ○   ○   ※   ○
     F  ○   ○   ○   ○   ×
 
-    現状で、結局まともに使えるのは C という事になる。
-    輪郭を太らせる操作をする時にだけ F を起動する様にすれば良い。
+    % 現状で、結局まともに使えるのは C という事になる。
+    % 輪郭を太らせる操作をする時にだけ F を起動する様にすれば良い。
+
+    ※LC_ALL=C で起動すれば文字化けの問題は解決する。
+    LC_ALL=C を設定すれば E がクラッシュも少なく良い。
 
 P18.2 字体
 font

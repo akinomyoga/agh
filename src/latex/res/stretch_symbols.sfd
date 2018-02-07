@@ -19,7 +19,12 @@ OS2Version: 0
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 0
 CreationTime: 1370004503
-ModificationTime: 1517812740
+ModificationTime: 1517949967
+PfmFamily: 17
+TTFWeight: 500
+TTFWidth: 5
+LineGap: 92
+VLineGap: 0
 OS2TypoAscent: 0
 OS2TypoAOffset: 1
 OS2TypoDescent: 0
@@ -36,6 +41,7 @@ HheadDOffset: 1
 OS2Vendor: 'PfEd'
 MarkAttachClasses: 1
 DEI: 91125
+LangName: 1033 
 Encoding: Custom
 UnicodeInterp: none
 NameList: Adobe Glyph List
@@ -53,6 +59,7 @@ StemSnapV 7 [76 92]
 BlueScale 7 0.04379
 ForceBold 5 false
 EndPrivate
+TeXData: 1 0 0 346030 173015 115343 0 1048576 115343 783286 444596 497025 792723 393216 433062 380633 303038 157286 324010 404750 52429 2506097 1059062 262144
 BeginChars: 16 15
 
 StartChar: lparen
@@ -102,7 +109,7 @@ EndChar
 StartChar: lbrace
 Encoding: 2 123 3
 Width: 512
-Flags: WO
+Flags: W
 HStem: -256 18<447.406 511.997> 750 18<447.406 511.997>
 VStem: 212 83<-167.713 168.477 343.523 679.713>
 LayerCount: 2
@@ -228,7 +235,8 @@ StartChar: widetilde
 Encoding: 7 -1 8
 Width: 2140
 VWidth: 0
-Flags: HW
+Flags: W
+HStem: 496 272<626.712 760.359>
 LayerCount: 2
 Fore
 SplineSet
@@ -251,7 +259,7 @@ StartChar: widehat
 Encoding: 8 -1 9
 Width: 2048
 VWidth: 0
-Flags: HW
+Flags: W
 LayerCount: 2
 Fore
 SplineSet
@@ -269,7 +277,9 @@ StartChar: rarr
 Encoding: 9 -1 10
 Width: 2048
 VWidth: 0
-Flags: HW
+Flags: W
+HStem: 172 169<6.86213 1905>
+VStem: 1777 56<-253.945 -110.465 628.375 766.945>
 LayerCount: 2
 Fore
 SplineSet
@@ -299,7 +309,9 @@ StartChar: larr
 Encoding: 10 -1 11
 Width: 2048
 VWidth: 0
-Flags: HW
+Flags: W
+HStem: 176 161<143 2041.8>
+VStem: 215 56<-253.945 -110.465 628.375 766.945>
 LayerCount: 2
 Fore
 SplineSet
@@ -329,7 +341,9 @@ StartChar: lrarr
 Encoding: 11 -1 12
 Width: 2048
 VWidth: 0
-Flags: HW
+Flags: W
+HStem: 174 163<144 1905>
+VStem: 215 56<-253.945 -110.814 628.375 766.945> 1777 56<-253.945 -110.465 628.375 766.945>
 LayerCount: 2
 Fore
 SplineSet
@@ -367,10 +381,12 @@ SplineSet
 EndSplineSet
 EndChar
 
-StartChar: NameMe.12
+StartChar: overbrace
 Encoding: 12 -1 13
 Width: 2048
-Flags: HW
+Flags: W
+HStem: 178 166<199.145 824.966 1223.03 1848.85>
+VStem: 0 36<-255.994 -126.812> 2012 36<-255.994 -126.812>
 LayerCount: 2
 Fore
 SplineSet
@@ -396,10 +412,12 @@ SplineSet
 EndSplineSet
 EndChar
 
-StartChar: NameMe.13
+StartChar: underbrace
 Encoding: 13 -1 14
 Width: 2048
-Flags: HWO
+Flags: W
+HStem: 168 166<199.145 824.966 1223.03 1848.85>
+VStem: 0 36<638.812 767.994> 2012 36<638.812 767.994>
 LayerCount: 2
 Fore
 SplineSet
