@@ -198,7 +198,7 @@ agh.Class=function Class(name,base,members){
   BaseMethodsDelegator.prototype=agh.wrap(base_proto);
   BaseMethodsDelegator.prototype.constructor=BaseMethodsDelegator;
   for(var _name in base_proto){
-    try{
+    try {
       var _member=base_proto[_name];
     }catch(ex){
       // prototype (初期化していない) 上で
@@ -276,7 +276,7 @@ agh.Class.MemberCollection=(function(){
     this.method=_class.prototype[name];
     this.method.fullName=this.fullName;
     this.baseMethod=null;
-    try{
+    try {
       this.baseMethod=_class.base.prototype[name];
     }catch(ex){/* exception in getter of name? */}
 
@@ -462,10 +462,10 @@ agh.Class.MemberCollection=(function(){
       if(e==null)e={};
       for(var i=0;i<data.length;i++){
         var p=data[i];
-        try{
+        try {
           p.func.call(p.obj,this.m_sender,e);
         }catch(ex){
-          try{agh.scripts.invoke_onerror(p.func,ex);}catch(ex){}
+          try {agh.scripts.invoke_onerror(p.func,ex);}catch(ex){}
         }
       }
       return e;

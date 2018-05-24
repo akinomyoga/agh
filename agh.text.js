@@ -62,7 +62,7 @@ String.prototype.format=function(table){
         if(agh.is(obj,String)){
           a[i].replace(/(\b[\w0-9_]+\b)(?:\(([^\(\)]*)\))?/,function($0,$1,$2){
             if(!$2)$2="";
-            try{
+            try {
               switch($1){
                 case "escape":obj=agh.Text.Escape(obj,$2);break;
                 case "unescape":obj=agh.Text.Unescape(obj,$2);break;

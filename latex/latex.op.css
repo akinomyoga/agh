@@ -48,9 +48,9 @@ tex\:container.aghtex-math td,
 tex\:math td{padding:0px;border-width:0px;white-space:nowrap;}
 
 /* -- */
-div.tex-center{text-align:center;}
-div.tex-right{text-align:right;}
-div.tex-left{text-align:left;}
+div.aghtex-center{text-align:center;}
+div.aghtex-flushright{text-align:right;}
+div.aghtex-flushleft{text-align:left;}
 
 /* TeX */
   tex\:La{font-family:aghtex_roman,aghtex_mincho,serif;}
@@ -60,20 +60,22 @@ div.tex-left{text-align:left;}
   tex\:AmS{font-family:aghtex_mathcal,aghtex_gothic,sans-serif;}
   tex\:AmS span{vertical-align:-20%;margin-left:-0.6ex;margin-right:-0.3ex;}
 
-p.tex-vspace{margin:0px;padding:0px;}
+p.aghtex-vspace{margin:0px;padding:0px;}
+tex\:i.aghtex-vspace{display:block;height:0;margin:0px;padding:0px;}
 
-dl.tex-desc{margin-left:1em;}
-dl.tex-desc dt{font-weight:bold;}
-dl.tex-desc dt tex\:dt{position:relative;left:-1em;}
-dl.tex-desc dd{margin-left:1em;display:block;margin-top:.8ex;margin-bottom:.8ex;}
+dl.aghtex-desc{margin-left:1em;}
+dl.aghtex-desc dt{font-weight:bold;}
+dl.aghtex-desc dt tex\:dt{position:relative;left:-1em;}
+dl.aghtex-desc dd{margin-left:1em;display:block;margin-top:.8ex;margin-bottom:.8ex;}
 
-blockquote.tex-quote{text-indent:0px;}
-blockquote.tex-quota{text-indent:1em;}
+blockquote.aghtex-quote{text-indent:0px;}
+blockquote.aghtex-quota{text-indent:1em;}
 tex\:verse{display:block;margin-left:2em;margin-right:2em;}
 
-tex\:mbox{display:inline-block;vertical-align:baseline;white-space:nowrap;}
-tex\:mbox.aghtex-latex-fbox{border:1px solid ;padding:.3em;}
-tex\:mbox.aghtex-latex-frame{border:1px solid ;padding:0em;}
+tex\:i.aghtex-hbox{display:inline-block;vertical-align:baseline;white-space:nowrap;}
+tex\:i.aghtex-hbox-width{width:0;overflow:visible;margin-right:1cm /* default value */;}
+tex\:i.aghtex-hbox-fbox{border:1px solid ;padding:.3em;}
+tex\:i.aghtex-hbox-frame{border:1px solid ;padding:0em;}
 
 /* \begin{enumerate}, \begin{itemize} */
 ul.aghtex-ie,
@@ -99,14 +101,15 @@ tex\:i.aghtex-underline{border-bottom-width:1px;border-bottom-style:solid;}
 		重ね合わせ・アクセント等 (mod:math)
 ----------------------------------------------------------*/
 /* 重ね合わせ */
-tex\:lap{display:inline-block;text-align:center;line-height:0px;}
-tex\:lap tex\:m{display:block;position:relative;top:0;line-height:0px;}
-tex\:lap tex\:u{font-size:80%;display:block;position:relative;top:-0.6em;line-height:0px;}
-tex\:lap tex\:d{font-size:80%;display:block;position:relative;top:0.6em;line-height:0px;}
-tex\:lap tex\:math{line-height:0px;}
+tex\:i.aghtex-stackrel,
+tex\:i.aghtex-stackrel-lower{display:inline-block;vertical-align:baseline;text-align:center;}
+tex\:i.aghtex-stackrel-top,
+tex\:i.aghtex-stackrel-top-lower{font-size:75%;display:block;margin:0;position:relative;}
+tex\:i.aghtex-stackrel{margin-top:-0.52em;}
+tex\:i.aghtex-stackrel-lower{margin-top:-0.87em;}
+tex\:i.aghtex-stackrel-top{top:0.52em;}
+tex\:i.aghtex-stackrel-top-lower{top:0.87em;}
 
-tex\:lap tex\:lapm{display:block;position:relative;top:0px;left:0px;}
-tex\:lap tex\:lapm img.tex-lapm-cover{position:absolute;top:0px;left:0px;width:100%;height:100%;}
 
 tex\:i.aghtex-accent{position:relative;top:0;left:0;}
 tex\:i.aghtex-accent-acc{display:inline-block;margin-top:0.10em;}
@@ -381,10 +384,10 @@ tex\:vphantom.aghtex-vphantom-align-m{vertical-align:middle;}
 tex\:vphantom.aghtex-vphantom-align-t{vertical-align:top;}
 tex\:vphantom.aghtex-vphantom-align-b{vertical-align:bottom;}
 
-tex\:i.aghtex-latex-allowbreak{whit-espace:normal;}
+tex\:i.aghtex-latex-allowbreak{white-espace:normal;}
 
 /* -- 負の空白 -- */
-  tex\:negspace{margin-left:-0.4ex;}
+  tex\:i.aghtex-negative-space{margin-left:-0.4ex;}
 
 tex\:i.aghtex-nobr{white-space:nowrap;}
 tex\:i.aghtex-minipage{display:inline-block;vertical-align:middle;}
@@ -463,23 +466,23 @@ table.aghtex-cmdleft{
 tr.aghtex-cmdleft{height:0px;}
 td.aghtex-cmdleft-content{vertical-align:baseline;}
 
-td.tex-left-kaku, td.tex-right-kaku,
-td.tex-left-ceil, td.tex-right-ceil,
-td.tex-left-flor, td.tex-right-flor,
-td.tex-left-vert,
-td.tex-left-pipe, td.tex-right-pipe{
+td.aghtex-left-kaku, td.aghtex-right-kaku,
+td.aghtex-left-ceil, td.aghtex-right-ceil,
+td.aghtex-left-flor, td.aghtex-right-flor,
+td.aghtex-left-vert,
+td.aghtex-left-pipe, td.aghtex-right-pipe{
   border-style:solid!important;
 	width:.5ex;padding:0px!important;
 }
-td.tex-left-kaku {border-width:1px 0px 1px 1px!important;}
-td.tex-right-kaku{border-width:1px 1px 1px 0px!important;}
-td.tex-left-ceil {border-width:1px 0px 0px 1px!important;}
-td.tex-right-ceil{border-width:1px 1px 0px 0px!important;}
-td.tex-left-flor {border-width:0px 0px 1px 1px!important;}
-td.tex-right-flor{border-width:0px 1px 1px 0px!important;}
-td.tex-left-vert {border-width:0px 1px 0px 1px!important;width:1px;font-size:1px;}
-td.tex-left-pipe {border-width:0px 0px 0px 1px!important;width:1px;font-size:1px;}
-td.tex-right-pipe{border-width:0px 1px 0px 0px!important;width:1px;font-size:1px;}
+td.aghtex-left-kaku {border-width:1px 0px 1px 1px!important;}
+td.aghtex-right-kaku{border-width:1px 1px 1px 0px!important;}
+td.aghtex-left-ceil {border-width:1px 0px 0px 1px!important;}
+td.aghtex-right-ceil{border-width:1px 1px 0px 0px!important;}
+td.aghtex-left-flor {border-width:0px 0px 1px 1px!important;}
+td.aghtex-right-flor{border-width:0px 1px 1px 0px!important;}
+td.aghtex-left-vert {border-width:0px 1px 0px 1px!important;width:1px;font-size:1px;}
+td.aghtex-left-pipe {border-width:0px 0px 0px 1px!important;width:1px;font-size:1px;}
+td.aghtex-right-pipe{border-width:0px 1px 0px 0px!important;width:1px;font-size:1px;}
 
 td.aghtex-cmdleft-sup{font-size:75%;padding:0px;vertical-align:top;}
   td.aghtex-cmdleft-sup{white-space:nowrap;}
@@ -498,7 +501,9 @@ tex\:sup tex\:num,
 tex\:sub tex\:num,
 tex\:sup tex\:den,
 tex\:sub tex\:den{padding:0px;font-size:80%;}
-td.aghtex-center{text-align:center;}
+td.aghtex-genfrac-numerator,
+td.aghtex-genfrac-center{text-align:center;}
+td.aghtex-genfrac-numerator{border-bottom:1px solid ;}
 
 tex\:frac2{display:inline-block;vertical-align:-.65em;text-align:center;padding:0px 1px;}
 tex\:frac2>tex\:num{display:block;border-bottom:1px solid ;padding:0px 1px;}
@@ -602,9 +607,25 @@ tex\:i.aghtex-int-sub{position:relative;left:-0.6em;top:0em;margin-right:-0.6em;
 
 /*------------------------------------------------------------------*/
 /* Σの表記 */
-tex\:mathop{display:inline-block;vertical-align:middle;text-align:center;padding:0px 0.5ex;}
-tex\:mathop tex\:d{font-size:75%;display:block;margin:0;position:relative;top:-0.2ex;}
-tex\:mathop tex\:u{font-size:75%;display:block;margin:0;position:relative;top:0.2ex;}
+
+/* \mathop に対する DOM 構造
+ *   sup だけの時
+ *     <mathop><supcontainer><sup>sup</sup>text</supcontainer></mathop>
+ *   sub だけの時
+ *     <mathop><subcontainer><text>text</text><sub>sub</sub></subcontainer></mathop>
+ *   sub/sup が両方ある時
+ *     <mathop><subcontainer>
+ *        <supcontainer><sup>sup</sup>text</supcontainer>
+ *        <sub>sub</sub>
+ *     </subcontainer></mathop>
+ */
+tex\:i.aghtex-mathop{padding:0px 0.3ex;}
+tex\:i.aghtex-mathop-ie6container{display:inline-block;vertical-align:middle;text-align:center;}
+tex\:i.aghtex-mathop-subcontainer{display:inline-table;vertical-align:baseline;text-align:center;}
+tex\:i.aghtex-mathop-supcontainer{display:inline-block;vertical-align:baseline;text-align:center;}
+tex\:i.aghtex-mathop-text{display:inline-block;vertical-align:baseline;}
+tex\:i.aghtex-mathop-sub{font-size:75%;display:block;margin:0;position:relative;top:-0.2ex;}
+tex\:i.aghtex-mathop-sup{font-size:75%;display:block;margin:0;position:relative;top:0.2ex;}
 
 tex\:sum{display:inline-block;vertical-align:middle;text-align:center;font-size:180%;padding:0px 0.1ex;}
 tex\:sum2{display:inline-block;vertical-align:middle;text-align:center;padding:0px 0.2ex;}
@@ -653,13 +674,14 @@ tex\:i.aghtex-mathbb-shadow{
   color:white;
   font-weight:900;
   text-shadow:black -1px -1px 0px, black 1px -1px 0px, black -1px 1px 0px, black 1px 1px 0px;
+  text-shadow:var(--aghtex-color, black) -1px -1px 0px, var(--aghtex-color, black) 1px -1px 0px, var(--aghtex-color, black) -1px 1px 0px, var(--aghtex-color, black) 1px 1px 0px;
 }
 
 tex\:math tex\:i.aghtex-mathbb-shadow tex\:f.aghtex-alpha-upper{
   font-family:aghtex_mathbb;
-  color:black;
-  font-weight:normal;
   text-shadow:none;
+  color:var(--aghtex-color, black);
+  font-weight:normal;
 }
 
 /*------------------------------------------------------------------*/
@@ -686,8 +708,6 @@ table.aghtex-array{
   display:inline-table;
   white-space:nowrap;
 }
-col.tex-vline{width:1px;}
-  col.tex\:vline{width:2px;}
 
 table.aghtex-array-valign-t{vertical-align:top;}
 table.aghtex-array-valign-m{vertical-align:middle;}
@@ -695,25 +715,13 @@ table.aghtex-array-valign-b{vertical-align:bottom;}
 table.aghtex-array-lrpad{
   margin-left:0.15em;margin-right:0.15em;}
 
-/* 罫線 */ /* char */
-table.tex-bd-l{border-left:1px solid ;}
-table.tex-bd-t{border-top:1px solid ;}
-
-td.tex-bd-l{border-left:1px solid ;}
-td.tex-bd-r{border-right:1px solid ;}
-td.tex-bd-t{border-top:1px solid ;}
-/* ↓ for IE 6: 各要素にも tex-bd-b を追加している */ /* char */
-td.tex-bd-b{border-bottom:1px solid ;}
-/* tr.tex-bd-b>td{border-bottom:1px solid ;} ← × IE 6 */
-
-td.tex-vline{border-right:1px solid ;padding:0px;}
-tr.tex-hline td{border-bottom:1px solid ;padding:0px;height:2px;}
 /*----------------------------------------------------------
 		mod_array (array 環境 2)
 ----------------------------------------------------------*/
 td.aghtex-array-border-txt,
 td.aghtex-array-border-zw{
-  border:solid ;
+  border-style:solid;
+  border-color:currentColor;
   padding:0px;vertical-align:baseline;
 }
 td.aghtex-array-border-zw{
@@ -721,23 +729,36 @@ td.aghtex-array-border-zw{
 }
 
 td.aghtex-array-cell{
-  border-width:0px;border-style:solid!important;border-color:black;
+  border-width:0px;border-style:solid!important;
+  border-color:currentColor;
   padding:0.2ex .9ex;vertical-align:baseline;}
 tr.aghtex-array-first-row>td.aghtex-array-cell{padding-top:0;}
 tr.aghtex-array-last-row>td.aghtex-array-cell{padding-bottom:0;}
 
-td.tex-arr2hlineT{height:1px;border-top:1px solid ;font-size:1px;padding:0px;}
-td.tex-arr2hlineB{height:1px;border-bottom:1px solid ;font-size:1px;padding:0px;}
-td.tex-arr2hlineT{height:0;padding-top:1px;}
-td.tex-arr2hlineB{height:0;padding-bottom:1px;}
+
+td.aghtex-array-hdots-cell{
+  position:relative;height:1.3em;}
+tex\:i.aghtex-array-hdots{
+  display:block;position:absolute;width:100%;left:0;}
+tex\:i.aghtex-array-hdots{
+  height:1.0em;
+  background-image: radial-gradient(0.15em, currentColor 50%, transparent 50%);
+  background-position: center bottom;
+  background-size: 0.5em 0.2em;
+  background-repeat: repeat-x;}
+
+td.aghtex-array-hline-t{height:1px;border-top:1px solid ;font-size:1px;padding:0px;}
+td.aghtex-array-hline-b{height:1px;border-bottom:1px solid ;font-size:1px;padding:0px;}
+td.aghtex-array-hline-t{height:0;padding-top:1px;}
+td.aghtex-array-hline-b{height:0;padding-bottom:1px;}
 
 
 
 /*----------------------------------------------------------
 		mod_ref
 ----------------------------------------------------------*/
-  tex\:eqno.right{position:absolute;right:1em;top:50%;margin-top:-0.7em;}
-  tex\:eqno.left{position:absolute;left:1em;top:50%;margin-top:-0.7em;}
+  tex\:i.aghtex-equation-eqno-right{position:absolute;right:1em;top:50%;margin-top:-0.7em;}
+  tex\:i.aghtex-equation-eqno-left{position:absolute;left:1em;top:50%;margin-top:-0.7em;}
 tex\:i.aghtex-eqno{display:inline-block;}
 tex\:i.aghtex-eqno-right{position:absolute;right:1em;}
 tex\:i.aghtex-eqno-left{position:absolute;left:1em;}
@@ -817,7 +838,7 @@ a.aghtex-url-sf:hover,
 a.aghtex-url-same:hover{color:gray;}
 
 /* \usepackage{color} */
-tex\:mbox.aghtex-color-box{padding:0.3em;}
+tex\:i.aghtex-color-box{padding:0.3em;}
 
 /*----------------------------------------------------------
 		documentclass
@@ -906,7 +927,7 @@ h2.aghtex-revtex-thebibliography{
 		<table> の style 継承
 ----------------------------------------------------------*/
 table.aghtex-array,
-table.aghtex-frac,
+table.aghtex-frac-ie6,
 table.aghtex-sqrt,
 table.aghtex-int,
 table.aghtex-inline,

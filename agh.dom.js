@@ -3,21 +3,21 @@
 //    MWG 3.0 - DOM                                                   K. Murase
 //
 //*****************************************************************************
-agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
+agh.scripts.register("agh.dom.js", ["agh.js", "agh.text.js"], function(){
   // agh.dom1.js の API を組み直し
 
-  var agh=this;
-  agh.Namespace('dom',agh);
+  var agh = this;
+  agh.Namespace('dom', agh);
 
-  function _empty(){}
-  function _false(){return false;}
+  function _empty() {}
+  function _false() { return false; }
 
-  function insertAfter(elem,node,ref){
-    if(elem.insertAfter)
-      return elem.insertAfter(node,ref);
+  function insertAfter(elem, node, ref) {
+    if (elem.insertAfter)
+      return elem.insertAfter(node, ref);
 
-    var next=ref.nextSibling;
-    if(next)return elem.insertBefore(node,next);
+    var next = ref.nextSibling;
+    if (next) return elem.insertBefore(node, next);
     elem.appendChild(node);
     return node;
   }
@@ -122,8 +122,8 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
     return insertAdjacentText(elem,position,text);
   };
 
-  agh.dom.remove=function(node){
-    if(node.parentNode)
+  agh.dom.remove = function(node) {
+    if (node.parentNode)
       node.parentNode.removeChild(node);
   };
   agh.dom.isDescendantOf=function(descendant,ancestor){
@@ -154,7 +154,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
     };
   }else if(agh.browser.vIE){
     agh.dom.setInnerText=function(elem,value){
-      try{
+      try {
         elem.innerText=value;
       }catch(ex){
         // 手持ちの IE6 環境の所為だと思うが
@@ -229,7 +229,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
 
     // this.m_style
     if(agh.browser.vIE&&_document.createStyleSheet){
-      try{
+      try {
         this.m_sheet=_document.createStyleSheet();
       }catch(ex){}
     }
@@ -340,23 +340,23 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
     ///   現在の表示に使われている computed style を取得します。
     ///   @param[in] elem
     ///   @param[in] propertyName
-    if(propertyName in CustomCssProperties&&CustomCssProperties[propertyName].get)
+    if (propertyName in CustomCssProperties&&CustomCssProperties[propertyName].get)
       return CustomCssProperties[propertyName].get(elem);
 
-    if(elem.ownerDocument.defaultView){
-      var style=elem.ownerDocument.defaultView.getComputedStyle(elem,pseudo);
-      if(propertyName==null)return style;
+    if (elem.ownerDocument.defaultView) {
+      var style = elem.ownerDocument.defaultView.getComputedStyle(elem,pseudo);
+      if (propertyName == null) return style;
       return style.getPropertyValue(propertyName);
-    }else if(window.getComputedStyle){
-      var style=window.getComputedStyle(elem,pseudo);
-      if(propertyName==null)return style;
+    } else if(window.getComputedStyle) {
+      var style = window.getComputedStyle(elem, pseudo);
+      if (propertyName == null) return style;
       return style.getPropertyValue(propertyName);
     }else{
       // 擬似クラスには対応できない
-      if(pseudo!=null&&pseudo!=="")return null;
+      if (pseudo != null && pseudo !== "") return null;
 
-      var style=elem.currentStyle||elem.style;
-      if(propertyName==null)return style;
+      var style = elem.currentStyle || elem.style;
+      if (propertyName == null) return style;
       return style[agh.Text.Escape(propertyName,"camel")];
     }
   };
@@ -398,10 +398,10 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
         if(value===oldValue)return;
         if(value){
           elem.unselectable="off";
-          elem.attachEvent("onselectstart",_false);
+          elem.attachEvent("onselectstart", _false);
         }else{
           elem.unselectable="on";
-          elem.detachEvent("onselectstart",_false);
+          elem.detachEvent("onselectstart", _false);
         }
       }
     });
@@ -534,11 +534,11 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
   };
   agh.dom.Rectangle=Rectangle;
 
-  agh.dom.parseLength=(function(){
-    var units={
-      ex:7,em:12,
-      cm:37.8,mm:3.78,
-      'in':96,pc:16,pt:4.0/3.0
+  agh.dom.parseLength = (function(){
+    var units = {
+      ex: 7, em: 12,
+      cm: 37.8, mm: 3.78,
+      'in': 96, pc: 16, pt: 4.0 / 3.0
     };
 
     agh.scripts.wait(['event:onload'],function(){
@@ -554,28 +554,28 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
         margin:'0',padding:'0'
       });
 
-      try{
+      try {
         tmp0.appendChild(tmp);
         document.body.appendChild(tmp0);
         function measure(unit){
-          tmp.style.height=10+unit;
-          return tmp.offsetHeight/10;
+          tmp.style.height = 10 + unit;
+          return tmp.offsetHeight / 10;
         }
-        var ex_px=measure("ex");
-        var em_px=measure("em");
-        var cm_px=measure("cm");
-        var in_px=measure("in");
+        var ex_px = measure("ex");
+        var em_px = measure("em");
+        var cm_px = measure("cm");
+        var in_px = measure("in");
         document.body.removeChild(tmp0); // 何故か IE6 で例外
-      }catch(ex){}
+      } catch(ex) {}
 
-      units={
-        ex:ex_px  , em:em_px   ,
-        cm:cm_px  , mm:cm_px/10,
-        'in':in_px, pc:in_px/6 , pt:in_px/72
+      units = {
+        ex:   ex_px, em: em_px     ,
+        cm:   cm_px, mm: cm_px / 10,
+        'in': in_px, pc: in_px / 6 , pt: in_px / 72
       };
     });
 
-    return function(value,referenceElement){
+    return function(value, referenceElement) {
       /// <summary>
       /// 長さの表現を読み取って px を単位にした数値に変換します。
       /// </summary>
@@ -586,28 +586,28 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
       /// ・数値で指定した場合には、それをその儘返します。但し NaN の場合には 0 を返します。
       /// ・null / undefined を指定した場合には 0 を返します。
       /// </param>
-      if(value==null)return 0;
-      if(typeof value==="number"||value instanceof Number)return isNaN(value)?0:value;
-      value=value.toString();
+      if (value == null) return 0;
+      if (typeof value === "number" || value instanceof Number) return isNaN(value) ? 0 : value;
+      value = value.toString();
 
-      var m=value.match(/([-+]?[.\d]+)(%|\w*\b)/);
-      if(m==null)return 0;
+      var m = value.match(/([-+]?[.\d]+)(%|\w*\b)/);
+      if (m == null) return 0;
 
-      var u=1;
-      if(m[2] in units){
-        u=units[m[2]];
-      }else if(m[2]==='%'){
+      var u = 1;
+      if (m[2] in units) {
+        u = units[m[2]];
+      } else if(m[2] === '%') {
         // TODO referenceElement==null (document.body 等) の場合は % は何が基準になっているのか?
         //      window, documentElement, あるいはそれらから計算される何か?
-        if(referenceElement)
-          u=agh.dom.getStyle(referenceElement,'-agh-container-width')/100;
-        else if(window.innerWidth!=null)
-          u=window.innerWidth/100;
+        if (referenceElement)
+          u = agh.dom.getStyle(referenceElement, '-agh-container-width') / 100;
+        else if(window.innerWidth != null)
+          u = window.innerWidth / 100;
       }
 
-      var n=parseFloat(m[1]);
-      return isNaN(n)?0:n*u;
-    }
+      var n = parseFloat(m[1]);
+      return isNaN(n) ? 0 : n * u;
+    };
   })();
 
   if(agh.browser.vIE){
@@ -1489,7 +1489,7 @@ agh.scripts.register("agh.dom.js",["agh.js","agh.text.js"],function(){
       // * preventDefault, stopPropagation しても同じ所に登録された handler は常に実行する。
       params.currentTarget=target;
       for(var i=0,iN=hlist.length;i<iN;i++){
-        try{
+        try {
           hlist[i].call(target,agh.wrap(params));
         }catch(ex){
           if(!agh.scripts.invoke_onerror(hlist[i],ex))
