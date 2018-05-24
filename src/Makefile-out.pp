@@ -80,6 +80,7 @@ files+=$(PREFIX)/%name%.js
 d latex;
 d addon;
 d icons;
+d res;
 
 j agh;
 j agh.regex;
@@ -213,6 +214,13 @@ f icons/prog-prop.png;
 f icons/prog-sentence.png;
 f icons/prog-struct.png;
 f icons/prog-type.png;
+
+# resources
+f res/agh.icon.mwg_16x16.png;
+f res/agh.icon.mwg_128x128.png;
+f res/agh.icon.agh_16x16.png;
+f res/agh.icon.agh_48x48.png;
+f res/agh.icon.agh_128x128.png;
 #%)
 #%m filelist filelist.r/d /#%expand directory.r|%name%|/.r/;/|/
 #%m filelist filelist.r/f /#%expand file.r|%file%|/.r/;/|/

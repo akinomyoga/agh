@@ -112,7 +112,7 @@ $(OUTDIR)/prog.std.css: prog.std.pp.css
 #-------------------------------------------------------------------------------
 # icons for forms.js
 #-------------------------------------------------------------------------------
-directory+=$(OUTDIR)/icons
+directory += $(OUTDIR)/icons
 $(OUTDIR)/icons:
 	mkdir -p $@
 
@@ -169,6 +169,11 @@ i prog-type.png
 #-------------------------------------------------------------------------------
 # resources for forms.js
 #-------------------------------------------------------------------------------
+
+directory += $(OUTDIR)/res
+$(OUTDIR)/res:
+	mkdir -p $@
+
 #%expand simple_copy_file.r|%filename%|agh.forms.clo.png|
 #%expand simple_copy_file.r|%filename%|agh.forms.form.png|
 #%expand simple_copy_file.r|%filename%|agh.forms.max.png|
@@ -177,6 +182,14 @@ i prog-type.png
 
 #%expand simple_copy_file.r|%filename%|agh.forms.plus.png|
 #%expand simple_copy_file.r|%filename%|agh.forms.minus.png|
+
+# logo images
+
+#%expand simple_copy_file.r|%filename%|res/agh.icon.mwg_16x16.png|
+#%expand simple_copy_file.r|%filename%|res/agh.icon.mwg_128x128.png|
+#%expand simple_copy_file.r|%filename%|res/agh.icon.agh_16x16.png|
+#%expand simple_copy_file.r|%filename%|res/agh.icon.agh_48x48.png|
+#%expand simple_copy_file.r|%filename%|res/agh.icon.agh_128x128.png|
 
 #-------------------------------------------------------------------------------
 
