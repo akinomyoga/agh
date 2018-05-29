@@ -104,23 +104,49 @@ context "mode.math" {
     mathnormal: ['s@;#>1', '<tex:f class="aghtex-mathit">#1</tex:f>'],
     mathcal   : ['s@;#>1', '<tex:f class="aghtex-mathcal">#1</tex:f>'],
 
-    // 括弧の大きさ
-    big       : ['s@;#>1', '<tex:big class="aghtex-big1">#1</tex:big>'],
-    Big       : ['s@;#>1', '<tex:big class="aghtex-big2">#1</tex:big>'],
-    bigg      : ['s@;#>1', '<tex:big class="aghtex-big3">#1</tex:big>'],
-    Bigg      : ['s@;#>1', '<tex:big class="aghtex-big4">#1</tex:big>'],
-    bigl      : ['s@;#>1', '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
-    Bigl      : ['s@;#>1', '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
-    biggl     : ['s@;#>1', '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
-    Biggl     : ['s@;#>1', '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big4">#1</tex:big></tex:big>'],
-    bigr      : ['s@;#>1', '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
-    Bigr      : ['s@;#>1', '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
-    biggr     : ['s@;#>1', '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
-    Biggr     : ['s@;#>1', '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big4">#1</tex:big></tex:big>'],
-    bigm      : ['s@;#>1', '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
-    Bigm      : ['s@;#>1', '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
-    biggm     : ['s@;#>1', '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
-    Biggm     : ['s@;#>1', '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big4">#1</tex:big></tex:big>']
+  });
+
+  // 括弧の大きさ
+
+  var create_big_delimiter_with_supsub = function(size, lmr) {
+    var html = '<tex:big class="aghtex-' + size + '"></tex:big>';
+    var cls = 'aghtex-supsub-' + size;
+    return ns.Command2("f", "#>1", function(doc, args) {
+      var sbsp = doc.GetSubSup();
+
+      // 上付き・下付きがある時は右側の空白は無効にする。
+      if (sbsp.sup || sbsp.sub) {
+        switch (lmr) {
+        case 'bigr': lmr = null; break;
+        case 'bigm': lmr = 'bigl'; break;
+        }
+      }
+
+      var buff = doc.currentCtx.output.buff;
+      if (lmr) buff.push('<tex:big class="aghtex-', lmr, '">');
+      buff.push('<tex:big class="aghtex-', size, '">', args[1], '</tex:big>');
+      if (lmr) buff.push('</tex:big');
+      _Mod.OutputSupSubScripts(doc, sbsp.sup, sbsp.sub, cls);
+    });
+  };
+
+  _Ctx.DefineCommand({
+    big  : create_big_delimiter_with_supsub('big1', null),
+    Big  : create_big_delimiter_with_supsub('big2', null),
+    bigg : create_big_delimiter_with_supsub('big3', null),
+    Bigg : create_big_delimiter_with_supsub('big4', null),
+    bigl : create_big_delimiter_with_supsub('big1', 'bigl'),
+    Bigl : create_big_delimiter_with_supsub('big2', 'bigl'),
+    biggl: create_big_delimiter_with_supsub('big3', 'bigl'),
+    Biggl: create_big_delimiter_with_supsub('big4', 'bigl'),
+    bigr : create_big_delimiter_with_supsub('big1', 'bigr'),
+    Bigr : create_big_delimiter_with_supsub('big2', 'bigr'),
+    biggr: create_big_delimiter_with_supsub('big3', 'bigr'),
+    Biggr: create_big_delimiter_with_supsub('big4', 'bigr'),
+    bigm : create_big_delimiter_with_supsub('big1', 'bigm'),
+    Bigm : create_big_delimiter_with_supsub('big2', 'bigm'),
+    biggm: create_big_delimiter_with_supsub('big3', 'bigm'),
+    Biggm: create_big_delimiter_with_supsub('big4', 'bigm')
   });
 
   //---------------------------------------------------------------
@@ -196,39 +222,41 @@ context "mode.math" {
   if (agh.browser.vIE <= 6 || ns.compatMode == "IE-qks") {
     letter s@\^(#>1)  '<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">#1</tex:i></tex:sup>';
     letter s@\_(#>1)  '<tex:sub class="aghtex-tag-script">#1</tex:sub>';
-    var output_supsub_scripts = function(doc, sup, sub) {
+    var output_supsub_scripts = function(doc, sup, sub, className) {
       var buff = doc.currentCtx.output.buff;
+      var cls = className ? ' ' + className : '';
       if (sub !== null)
-        buff.push('<tex:sub class="aghtex-tag-script">', sub, '</tex:sub>');
+        buff.push('<tex:sub class="aghtex-tag-script', cls, '">', sub, '</tex:sub>');
       if (sup !== null)
-        buff.push('<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">', sup, '</tex:i></tex:sup>');
+        buff.push('<tex:sup class="aghtex-tag-script', cls, '"><tex:i class="aghtex-sup-nest">', sup, '</tex:i></tex:sup>');
     };
   } else {
-    var output_supsub_scripts = function(doc, sup, sub) {
+    var output_supsub_scripts = function(doc, sup, sub, className) {
       var buff = doc.currentCtx.output.buff;
+      var cls = className ? ' ' + className : '';
       if (sup === null || sub === null) {
         if (sup !== null)
-          buff.push('<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">', sup, '</tex:i></tex:sup>');
+          buff.push('<tex:sup class="aghtex-tag-script', cls, '"><tex:i class="aghtex-sup-nest">', sup, '</tex:i></tex:sup>');
         else if (sub !== null)
-          buff.push('<tex:sub class="aghtex-tag-script">', sub, '</tex:sub>');
+          buff.push('<tex:sub class="aghtex-tag-script', cls, '">', sub, '</tex:sub>');
         return;
       }
 
       if (!_Mod.GetMathStyle(doc))
         buff.push(
-          '<tex:supsub class="aghtex-tag-script"><tex:supsub-u>', sup,
+          '<tex:supsub class="aghtex-tag-script', cls, '"><tex:supsub-u>', sup,
           '</tex:supsub-u><tex:supsub-d>', sub,
           '</tex:supsub-d></tex:supsub>');
       else
         buff.push(
-          '<tex:supsub class="aghtex-textstyle aghtex-tag-script"><tex:supsub-u><tex:i>', sup,
+          '<tex:supsub class="aghtex-tag-script aghtex-textstyle', cls, '"><tex:supsub-u><tex:i>', sup,
           '</tex:i></tex:supsub-u><tex:supsub-d><tex:i>', sub,
           '</tex:i></tex:supsub-d></tex:supsub>');
     };
     letter f\^("#>1") {
       doc.skipSpaceAndComment();
       var sub = null;
-      if (doc.scanner.is(mod_core.SCAN_WT_LTR,"_")) {
+      if (doc.scanner.is(mod_core.SCAN_WT_LTR, "_")) {
         doc.scanner.Next();
         sub = doc.GetArgumentHtml();
       }
@@ -237,7 +265,7 @@ context "mode.math" {
     letter f\_("#>1") {
       doc.skipSpaceAndComment();
       var sup = null;
-      if (doc.scanner.is(mod_core.SCAN_WT_LTR,"^")) {
+      if (doc.scanner.is(mod_core.SCAN_WT_LTR, "^")) {
         doc.scanner.Next();
         sup = doc.GetArgumentHtml();
       }

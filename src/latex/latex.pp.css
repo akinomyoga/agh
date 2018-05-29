@@ -656,31 +656,91 @@ table.aghtex-inline{
 /*------------------------------------------------------------------*/
 /* 上付・下付 */
 
+tex\:sub{font-size:75%;display:inline-block;margin-right:0.15ex;}
+tex\:sup{font-size:75%;display:inline-block;}
+
 tex\:supsub,
-tex\:supsub-u,
-tex\:supsub-d{display:inline-block;text-align:left;text-indent:0px;padding:0px;margin:0px;}
+tex\:supsub-d,
+tex\:supsub-u{display:inline-block;text-align:left;text-indent:0px;padding:0px;margin:0px;}
+tex\:supsub{font-size:75%;}
+tex\:supsub-d{margin-right:0.15ex;}
 tex\:supsub-u{display:block;margin-bottom:-0.25em;}
-tex\:sub,tex\:supsub-d{margin-right:0.15ex;}
-/*%%if mode=="Trident" (*/
-  tex\:sub{font-size:75%;vertical-align:-35%;display:inline-block;}
-  tex\:sup{font-size:75%;vertical-align:40%;display:inline-block;}
-  tex\:supsub{font-size:75%;vertical-align:-0.5em;}
-/*%%elif mode=="WebKit"*/
-  tex\:sub{font-size:75%;vertical-align:-0.35em;display:inline-block;}
-  tex\:sup{font-size:75%;vertical-align:0.4em;display:inline-block;}
-  tex\:supsub{font-size:75%;vertical-align:-0.5em;}
-  tex\:supsub-d{vertical-align:text-top;}
+tex\:supsub.aghtex-supsub-big1>tex\:supsub-u { margin-bottom: -0.20em; }
+tex\:supsub.aghtex-supsub-big2>tex\:supsub-u { margin-bottom: 0.7em; }
+tex\:supsub.aghtex-supsub-big3>tex\:supsub-u { margin-bottom: 1.6em; }
+tex\:supsub.aghtex-supsub-big4>tex\:supsub-u { margin-bottom: 2.4em; }
+
+/*%%if mode=="WebKit"*/
+  tex\:sub{vertical-align:-0.35em;}
+  tex\:sub.aghtex-supsub-big1 { vertical-align: -0.35em; }
+  tex\:sub.aghtex-supsub-big2 { vertical-align: -0.9em; }
+  tex\:sub.aghtex-supsub-big3 { vertical-align: -1.4em; }
+  tex\:sub.aghtex-supsub-big4 { vertical-align: -1.8em; }
+
+  tex\:sup{vertical-align:0.4em;}
+  tex\:sup.aghtex-supsub-big1 { vertical-align: 0.4em; }
+  tex\:sup.aghtex-supsub-big2 { vertical-align: 0.8em; }
+  tex\:sup.aghtex-supsub-big3 { vertical-align: 1.2em; }
+  tex\:sup.aghtex-supsub-big4 { vertical-align: 1.6em; }
+
+/*%%elif mode=="Trident"*/
+  tex\:sub{vertical-align:-35%;}
+  tex\:sub.aghtex-supsub-big1 { vertical-align: -35%; }
+  tex\:sub.aghtex-supsub-big2 { vertical-align: -90%; }
+  tex\:sub.aghtex-supsub-big3 { vertical-align: -140%; }
+  tex\:sub.aghtex-supsub-big4 { vertical-align: -180%; }
+
+  tex\:sup{vertical-align:40%;}
+  tex\:sup.aghtex-supsub-big1 { vertical-align: 40%; }
+  tex\:sup.aghtex-supsub-big2 { vertical-align: 80%; }
+  tex\:sup.aghtex-supsub-big3 { vertical-align: 120%; }
+  tex\:sup.aghtex-supsub-big4 { vertical-align: 160%; }
+
 /*%%elif mode=="Opera"*/
-  tex\:sub{font-size:75%;vertical-align:-25%;display:inline-block;}
-  tex\:sup{font-size:75%;vertical-align:50%;display:inline-block;}
-  tex\:supsub{font-size:75%;vertical-align:-0.4em;}
-  tex\:supsub-d{vertical-align:text-top;}
+  tex\:sub{vertical-align:-25%;}
+  tex\:sub.aghtex-supsub-big1 { vertical-align: -25%; }
+  tex\:sub.aghtex-supsub-big2 { vertical-align: -80%; }
+  tex\:sub.aghtex-supsub-big3 { vertical-align: -130%; }
+  tex\:sub.aghtex-supsub-big4 { vertical-align: -170%; }
+
+  tex\:sup{vertical-align:50%;}
+  tex\:sup.aghtex-supsub-big1 { vertical-align: 50%; }
+  tex\:sup.aghtex-supsub-big2 { vertical-align: 90%; }
+  tex\:sup.aghtex-supsub-big3 { vertical-align: 130%; }
+  tex\:sup.aghtex-supsub-big4 { vertical-align: 170%; }
+
 /*%%elif mode=="Gecko"*/
-  tex\:sub{font-size:75%;vertical-align:-25%;display:inline-block;}
-  tex\:sup{font-size:75%;vertical-align:30%;display:inline-block;}
-  tex\:supsub{font-size:75%;vertical-align:-0.5em;}
+  tex\:sub{vertical-align:-25%;}
+  tex\:sub.aghtex-supsub-big1 { vertical-align: -25%; }
+  tex\:sub.aghtex-supsub-big2 { vertical-align: -80%; }
+  tex\:sub.aghtex-supsub-big3 { vertical-align: -130%; }
+  tex\:sub.aghtex-supsub-big4 { vertical-align: -170%; }
+
+  tex\:sup{vertical-align:30%;}
+  tex\:sup.aghtex-supsub-big1 { vertical-align: 30%; }
+  tex\:sup.aghtex-supsub-big2 { vertical-align: 70%; }
+  tex\:sup.aghtex-supsub-big3 { vertical-align: 110%; }
+  tex\:sup.aghtex-supsub-big4 { vertical-align: 150%; }
+/*%%end*/
+
+/*%%if mode == "Opera"*/
+  tex\:supsub{vertical-align:-0.4em;}
+  tex\:supsub.aghtex-supsub-big1 { vertical-align: -0.4em; }
+  tex\:supsub.aghtex-supsub-big2 { vertical-align: -0.9em; }
+  tex\:supsub.aghtex-supsub-big3 { vertical-align: -1.4em; }
+  tex\:supsub.aghtex-supsub-big4 { vertical-align: -1.8em; }
+/*%%else*/
+  tex\:supsub{vertical-align:-0.5em;}
+  tex\:supsub.aghtex-supsub-big1 { vertical-align: -0.5em; }
+  tex\:supsub.aghtex-supsub-big2 { vertical-align: -1.0em; }
+  tex\:supsub.aghtex-supsub-big3 { vertical-align: -1.5em; }
+  tex\:supsub.aghtex-supsub-big4 { vertical-align: -1.9em; }
+/*%%end*/
+
+/*%%if mode != "Trident"*/
   tex\:supsub-d{vertical-align:text-top;}
-/*%%)*/
+/*%%end*/
+
 tex\:i.aghtex-sup-nest{display:inline-block;vertical-align:text-bottom;}
 
 tex\:supsub.aghtex-textstyle{font-size:100%;margin-top:-1ex;margin-bottom:-1ex;}
@@ -698,7 +758,6 @@ tex\:supsub.aghtex-textstyle>tex\:supsub-d>tex\:i{display:block;margin-top:-0.1e
 tex\:supsub.aghtex-textstyle{vertical-align:-0.6em;}
 .aghtex-tag-script tex\:supsub.aghtex-textstyle{vertical-align:-0.7em;}
 /*%%)*/
-
 
 /*------------------------------------------------------------------*/
 /* \left-\right 括弧 */
