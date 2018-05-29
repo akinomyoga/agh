@@ -484,22 +484,21 @@ tex\:math tex\:f.aghtex-mathfrak tex\:f.aghtex-digit{
 }
 
 /* --- 文字の大きさ --- */
-tex\:big2{font-size:170%;}
 tex\:small1{font-size:85%;}
 tex\:small2{font-size:80%;}
 tex\:small3{font-size:75%;}
 tex\:small4{font-size:65%;}
 
-tex\:big.aghtex-bigl{margin-left:0.12em;margin-right:0;}
-tex\:big.aghtex-bigr{margin-left:0;margin-right:0.12em;}
-tex\:big.aghtex-bigm{margin-left:0.12em;margin-right:0.12em;}
-tex\:big.aghtex-bigl tex\:f,
-tex\:big.aghtex-bigr tex\:f,
-tex\:big.aghtex-bigm tex\:f{margin-left:0;margin-right:0;}
-tex\:big.aghtex-big1{font-size:120%;vertical-align:-0.044em;}
-tex\:big.aghtex-big2{font-size:180%;vertical-align:-0.126em;}
-tex\:big.aghtex-big3{font-size:240%;vertical-align:-0.153em;}
-tex\:big.aghtex-big4{font-size:300%;vertical-align:-0.174em;}
+tex\:i.aghtex-bigl{margin-left:0.12em;margin-right:0;}
+tex\:i.aghtex-bigr{margin-left:0;margin-right:0.12em;}
+tex\:i.aghtex-bigm{margin-left:0.12em;margin-right:0.12em;}
+tex\:i.aghtex-bigl tex\:f,
+tex\:i.aghtex-bigr tex\:f,
+tex\:i.aghtex-bigm tex\:f{margin-left:0;margin-right:0;}
+tex\:i.aghtex-big1{font-size:120%;vertical-align:-0.044em;}
+tex\:i.aghtex-big2{font-size:180%;vertical-align:-0.126em;}
+tex\:i.aghtex-big3{font-size:240%;vertical-align:-0.153em;}
+tex\:i.aghtex-big4{font-size:300%;vertical-align:-0.174em;}
 
 tex\:big5{font-size:320%;}
 tex\:small5{font-size:50%;}
@@ -656,108 +655,114 @@ table.aghtex-inline{
 /*------------------------------------------------------------------*/
 /* 上付・下付 */
 
-tex\:sub{font-size:75%;display:inline-block;margin-right:0.15ex;}
-tex\:sup{font-size:75%;display:inline-block;}
-
-tex\:supsub,
-tex\:supsub-d,
-tex\:supsub-u{display:inline-block;text-align:left;text-indent:0px;padding:0px;margin:0px;}
-tex\:supsub{font-size:75%;}
-tex\:supsub-d{margin-right:0.15ex;}
-tex\:supsub-u{display:block;margin-bottom:-0.25em;}
-tex\:supsub.aghtex-supsub-big1>tex\:supsub-u { margin-bottom: -0.20em; }
-tex\:supsub.aghtex-supsub-big2>tex\:supsub-u { margin-bottom: 0.7em; }
-tex\:supsub.aghtex-supsub-big3>tex\:supsub-u { margin-bottom: 1.6em; }
-tex\:supsub.aghtex-supsub-big4>tex\:supsub-u { margin-bottom: 2.4em; }
-
-/*%%if mode=="WebKit"*/
-  tex\:sub{vertical-align:-0.35em;}
-  tex\:sub.aghtex-supsub-big1 { vertical-align: -0.35em; }
-  tex\:sub.aghtex-supsub-big2 { vertical-align: -0.9em; }
-  tex\:sub.aghtex-supsub-big3 { vertical-align: -1.4em; }
-  tex\:sub.aghtex-supsub-big4 { vertical-align: -1.8em; }
-
-  tex\:sup{vertical-align:0.4em;}
-  tex\:sup.aghtex-supsub-big1 { vertical-align: 0.4em; }
-  tex\:sup.aghtex-supsub-big2 { vertical-align: 0.8em; }
-  tex\:sup.aghtex-supsub-big3 { vertical-align: 1.2em; }
-  tex\:sup.aghtex-supsub-big4 { vertical-align: 1.6em; }
-
-/*%%elif mode=="Trident"*/
-  tex\:sub{vertical-align:-35%;}
-  tex\:sub.aghtex-supsub-big1 { vertical-align: -35%; }
-  tex\:sub.aghtex-supsub-big2 { vertical-align: -90%; }
-  tex\:sub.aghtex-supsub-big3 { vertical-align: -140%; }
-  tex\:sub.aghtex-supsub-big4 { vertical-align: -180%; }
-
-  tex\:sup{vertical-align:40%;}
-  tex\:sup.aghtex-supsub-big1 { vertical-align: 40%; }
-  tex\:sup.aghtex-supsub-big2 { vertical-align: 80%; }
-  tex\:sup.aghtex-supsub-big3 { vertical-align: 120%; }
-  tex\:sup.aghtex-supsub-big4 { vertical-align: 160%; }
-
-/*%%elif mode=="Opera"*/
-  tex\:sub{vertical-align:-25%;}
-  tex\:sub.aghtex-supsub-big1 { vertical-align: -25%; }
-  tex\:sub.aghtex-supsub-big2 { vertical-align: -80%; }
-  tex\:sub.aghtex-supsub-big3 { vertical-align: -130%; }
-  tex\:sub.aghtex-supsub-big4 { vertical-align: -170%; }
-
-  tex\:sup{vertical-align:50%;}
-  tex\:sup.aghtex-supsub-big1 { vertical-align: 50%; }
-  tex\:sup.aghtex-supsub-big2 { vertical-align: 90%; }
-  tex\:sup.aghtex-supsub-big3 { vertical-align: 130%; }
-  tex\:sup.aghtex-supsub-big4 { vertical-align: 170%; }
-
-/*%%elif mode=="Gecko"*/
-  tex\:sub{vertical-align:-25%;}
-  tex\:sub.aghtex-supsub-big1 { vertical-align: -25%; }
-  tex\:sub.aghtex-supsub-big2 { vertical-align: -80%; }
-  tex\:sub.aghtex-supsub-big3 { vertical-align: -130%; }
-  tex\:sub.aghtex-supsub-big4 { vertical-align: -170%; }
-
-  tex\:sup{vertical-align:30%;}
-  tex\:sup.aghtex-supsub-big1 { vertical-align: 30%; }
-  tex\:sup.aghtex-supsub-big2 { vertical-align: 70%; }
-  tex\:sup.aghtex-supsub-big3 { vertical-align: 110%; }
-  tex\:sup.aghtex-supsub-big4 { vertical-align: 150%; }
-/*%%end*/
-
-/*%%if mode == "Opera"*/
-  tex\:supsub{vertical-align:-0.4em;}
-  tex\:supsub.aghtex-supsub-big1 { vertical-align: -0.4em; }
-  tex\:supsub.aghtex-supsub-big2 { vertical-align: -0.9em; }
-  tex\:supsub.aghtex-supsub-big3 { vertical-align: -1.4em; }
-  tex\:supsub.aghtex-supsub-big4 { vertical-align: -1.8em; }
-/*%%else*/
-  tex\:supsub{vertical-align:-0.5em;}
-  tex\:supsub.aghtex-supsub-big1 { vertical-align: -0.5em; }
-  tex\:supsub.aghtex-supsub-big2 { vertical-align: -1.0em; }
-  tex\:supsub.aghtex-supsub-big3 { vertical-align: -1.5em; }
-  tex\:supsub.aghtex-supsub-big4 { vertical-align: -1.9em; }
-/*%%end*/
-
-/*%%if mode != "Trident"*/
-  tex\:supsub-d{vertical-align:text-top;}
-/*%%end*/
-
+tex\:i.aghtex-sub{font-size:75%;display:inline-block;margin-right:0.15ex;}
+tex\:i.aghtex-sup{font-size:75%;display:inline-block;}
 tex\:i.aghtex-sup-nest{display:inline-block;vertical-align:text-bottom;}
 
-tex\:supsub.aghtex-textstyle{font-size:100%;margin-top:-1ex;margin-bottom:-1ex;}
-tex\:supsub.aghtex-textstyle>tex\:supsub-u{font-size:60%;}
-tex\:supsub.aghtex-textstyle>tex\:supsub-d{font-size:60%;}
-tex\:supsub.aghtex-textstyle>tex\:supsub-u>tex\:i{display:block;margin-bottom:-0.1ex;}
-tex\:supsub.aghtex-textstyle>tex\:supsub-d>tex\:i{display:block;margin-top:-0.1ex;}
-.aghtex-tag-script tex\:supsub.aghtex-textstyle{margin-top:0;margin-bottom:0}
-.aghtex-tag-script tex\:supsub.aghtex-textstyle>tex\:supsub-u{font-size:80%;}
-.aghtex-tag-script tex\:supsub.aghtex-textstyle>tex\:supsub-d{font-size:80%;}
-/*%%if mode=="Trident" (*/
-/*%%elif mode=="WebKit"*/
+/*%%if mode=="WebKit"*/
+  tex\:i.aghtex-sub { vertical-align: -0.35em; }
+  tex\:i.aghtex-sub-big1 { vertical-align: -0.35em; }
+  tex\:i.aghtex-sub-big2 { vertical-align: -0.9em; }
+  tex\:i.aghtex-sub-big3 { vertical-align: -1.4em; }
+  tex\:i.aghtex-sub-big4 { vertical-align: -1.8em; }
+
+  tex\:i.aghtex-sup { vertical-align: 0.4em; }
+  tex\:i.aghtex-sup-big1 { vertical-align: 0.4em; }
+  tex\:i.aghtex-sup-big2 { vertical-align: 0.8em; }
+  tex\:i.aghtex-sup-big3 { vertical-align: 1.2em; }
+  tex\:i.aghtex-sup-big4 { vertical-align: 1.6em; }
+
+/*%%elif mode=="Trident"*/
+  tex\:i.aghtex-sub { vertical-align: -35%; }
+  tex\:i.aghtex-sub-big1 { vertical-align: -35%; }
+  tex\:i.aghtex-sub-big2 { vertical-align: -90%; }
+  tex\:i.aghtex-sub-big3 { vertical-align: -140%; }
+  tex\:i.aghtex-sub-big4 { vertical-align: -180%; }
+
+  tex\:i.aghtex-sup { vertical-align: 40%; }
+  tex\:i.aghtex-sup-big1 { vertical-align: 40%; }
+  tex\:i.aghtex-sup-big2 { vertical-align: 80%; }
+  tex\:i.aghtex-sup-big3 { vertical-align: 120%; }
+  tex\:i.aghtex-sup-big4 { vertical-align: 160%; }
+
 /*%%elif mode=="Opera"*/
+  tex\:i.aghtex-sub { vertical-align: -25%; }
+  tex\:i.aghtex-sub-big1 { vertical-align: -25%; }
+  tex\:i.aghtex-sub-big2 { vertical-align: -80%; }
+  tex\:i.aghtex-sub-big3 { vertical-align: -130%; }
+  tex\:i.aghtex-sub-big4 { vertical-align: -170%; }
+
+  tex\:i.aghtex-sup { vertical-align: 50%; }
+  tex\:i.aghtex-sup-big1 { vertical-align: 50%; }
+  tex\:i.aghtex-sup-big2 { vertical-align: 90%; }
+  tex\:i.aghtex-sup-big3 { vertical-align: 130%; }
+  tex\:i.aghtex-sup-big4 { vertical-align: 170%; }
+
 /*%%elif mode=="Gecko"*/
-tex\:supsub.aghtex-textstyle{vertical-align:-0.6em;}
-.aghtex-tag-script tex\:supsub.aghtex-textstyle{vertical-align:-0.7em;}
-/*%%)*/
+  tex\:i.aghtex-sub { vertical-align: -25%; }
+  tex\:i.aghtex-sub-big1 { vertical-align: -25%; }
+  tex\:i.aghtex-sub-big2 { vertical-align: -80%; }
+  tex\:i.aghtex-sub-big3 { vertical-align: -130%; }
+  tex\:i.aghtex-sub-big4 { vertical-align: -170%; }
+
+  tex\:i.aghtex-sup { vertical-align: 30%; }
+  tex\:i.aghtex-sup-big1 { vertical-align: 30%; }
+  tex\:i.aghtex-sup-big2 { vertical-align: 70%; }
+  tex\:i.aghtex-sup-big3 { vertical-align: 110%; }
+  tex\:i.aghtex-sup-big4 { vertical-align: 150%; }
+/*%%end*/
+
+/* 上付きと下付きが両方指定された時に重ねて表示する。
+ *
+ * tex:i.aghtex-supsub (+ aghtex-supsub-textstyle aghtex-supsub-big?)
+ *   tex:i.aghtex-supsub-u
+ *     tex:i
+ *   tex:i.aghtex-supsub-d
+ *     tex:i
+ */
+
+tex\:i.aghtex-supsub,
+tex\:i.aghtex-supsub-d,
+tex\:i.aghtex-supsub-u{display:inline-block;text-align:left;text-indent:0px;padding:0px;margin:0px;}
+
+tex\:i.aghtex-supsub{font-size:75%;}
+/*%%if mode == "Opera"*/
+  tex\:i.aghtex-supsub { vertical-align: -0.4em; }
+  tex\:i.aghtex-supsub-big1 { vertical-align: -0.4em; }
+  tex\:i.aghtex-supsub-big2 { vertical-align: -0.9em; }
+  tex\:i.aghtex-supsub-big3 { vertical-align: -1.4em; }
+  tex\:i.aghtex-supsub-big4 { vertical-align: -1.8em; }
+/*%%else*/
+  tex\:i.aghtex-supsub { vertical-align: -0.5em; }
+  tex\:i.aghtex-supsub-big1 { vertical-align: -0.5em; }
+  tex\:i.aghtex-supsub-big2 { vertical-align: -1.0em; }
+  tex\:i.aghtex-supsub-big3 { vertical-align: -1.5em; }
+  tex\:i.aghtex-supsub-big4 { vertical-align: -1.9em; }
+/*%%end*/
+
+tex\:i.aghtex-supsub-u{display:block;margin-bottom:-0.25em;}
+tex\:i.aghtex-supsub-big1>tex\:i.aghtex-supsub-u { margin-bottom: -0.20em; }
+tex\:i.aghtex-supsub-big2>tex\:i.aghtex-supsub-u { margin-bottom: 0.7em; }
+tex\:i.aghtex-supsub-big3>tex\:i.aghtex-supsub-u { margin-bottom: 1.6em; }
+tex\:i.aghtex-supsub-big4>tex\:i.aghtex-supsub-u { margin-bottom: 2.4em; }
+
+tex\:i.aghtex-supsub-d{margin-right:0.15ex;}
+/*%%if mode != "Trident"*/
+  tex\:i.aghtex-supsub-d{vertical-align:text-top;}
+/*%%end*/
+
+tex\:i.aghtex-supsub-textstyle{font-size:100%;margin-top:-1ex;margin-bottom:-1ex;}
+tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-u{font-size:60%;}
+tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d{font-size:60%;}
+tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-u>tex\:i{display:block;margin-bottom:-0.1ex;}
+tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d>tex\:i{display:block;margin-top:-0.1ex;}
+.aghtex-tag-script tex\:i.aghtex-supsub-textstyle{margin-top:0;margin-bottom:0}
+.aghtex-tag-script tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-u{font-size:80%;}
+.aghtex-tag-script tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d{font-size:80%;}
+/*%%if mode=="Gecko"*/
+  tex\:i.aghtex-supsub-textstyle{vertical-align:-0.6em;}
+  .aghtex-tag-script tex\:i.aghtex-supsub-textstyle{vertical-align:-0.7em;}
+/*%%end*/
 
 /*------------------------------------------------------------------*/
 /* \left-\right 括弧 */
@@ -835,10 +840,10 @@ tex\:frac tex\:num{display:block;margin-bottom:0;margin-top:0px;padding-top:0px;
 tex\:frac tex\:den{display:block;margin-top:0;border-top:1px solid $"borderColor";padding-top:1px;margin-bottom:0px;margin-top:0px;}
 table.aghtex-int tex\:num,
 table.aghtex-int tex\:den,
-tex\:sup tex\:num,
-tex\:sub tex\:num,
-tex\:sup tex\:den,
-tex\:sub tex\:den{padding:0px;font-size:80%;}
+tex\:i.aghtex-sup tex\:num,
+tex\:i.aghtex-sub tex\:num,
+tex\:i.aghtex-sup tex\:den,
+tex\:i.aghtex-sub tex\:den{padding:0px;font-size:80%;}
 td.aghtex-genfrac-numerator,
 td.aghtex-genfrac-center{text-align:center;}
 td.aghtex-genfrac-numerator{border-bottom:1px solid $"borderColor";}
@@ -849,10 +854,10 @@ td.aghtex-genfrac-numerator{border-bottom:1px solid $"borderColor";}
   td.aghtex-frac-ie6-den{border-width:1px 0px 0px 0px!important;border-style:solid!important;}
   table.aghtex-int td.aghtex-frac-ie6-num,
   table.aghtex-int td.aghtex-frac-ie6-den,
-  tex\:sup td.aghtex-frac-ie6-num,
-  tex\:sup td.aghtex-frac-ie6-den,
-  tex\:sub td.aghtex-frac-ie6-num,
-  tex\:sub td.aghtex-frac-ie6-den{padding:0px;font-size:80%;}
+  tex\:i.aghtex-sup td.aghtex-frac-ie6-num,
+  tex\:i.aghtex-sup td.aghtex-frac-ie6-den,
+  tex\:i.aghtex-sub td.aghtex-frac-ie6-num,
+  tex\:i.aghtex-sub td.aghtex-frac-ie6-den{padding:0px;font-size:80%;}
 /*%%)*/
 
 /*%%if mode=="Gecko" (*/
@@ -872,7 +877,7 @@ tex\:frac2.aghtex-tag-script>tex\:den>tex\:i>table.aghtex-sqrt{margin-top:0.5ex;
 
 /* class=aghtex-tag-script は、既に数式中の小さい文字の中にある事を表し、
  * 内部の \tfrac が不必要に文字を小さくしたり余白を削ったりしない為にある。
- * 付加的な情報として tex:sup 等の要素につけて出力する。
+ * 付加的な情報として tex:i.aghtex-sup 等の要素につけて出力する。
  */
 .aghtex-tag-script tex\:frac2.aghtex-tag-script{margin-top:0;margin-bottom:0}
 .aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:num{font-size:95%;}
@@ -989,8 +994,8 @@ tex\:f.aghtex-int>tex\:f.aghtex-dotsi{
   font-size:60%;margin:0 -0.3ex 0 -0.2ex;}
 
 img.aghtex-int{width:1em;height:2.5em;vertical-align:middle;}
-tex\:sub.aghtex-int{vertical-align:-1.7em;margin-left:-0.6em;}
-tex\:sup.aghtex-int{vertical-align:1.7em;margin-left:0.1em;margin-right:-0.1em;}
+tex\:i.aghtex-sub-int{vertical-align:-1.7em;margin-left:-0.6em;}
+tex\:i.aghtex-sup-int{vertical-align:1.7em;margin-left:0.1em;margin-right:-0.1em;}
 
 table.aghtex-int{height:3.3em;border-collapse:collapse;font:inherit;margin-right:-0.2em;}
 /*%%if mode=="Opera" (*/
