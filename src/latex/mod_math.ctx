@@ -123,7 +123,7 @@ context "mode.math" {
       var buff = doc.currentCtx.output.buff;
       if (lmr) buff.push('<tex:i class="aghtex-', lmr, '">');
       buff.push('<tex:i class="aghtex-', size, '">', args[1], '</tex:i>');
-      if (lmr) buff.push('</tex:i');
+      if (lmr) buff.push('</tex:i>');
       _Mod.OutputSupSubScripts(doc, sbsp.sup, sbsp.sub, size);
     });
   };
@@ -158,15 +158,15 @@ context "mode.math" {
   letter s@\+() '<tex:f class="aghtex-binop aghtex-symb-gothic">＋</tex:f>';
   letter s@\-() '<tex:f class="aghtex-binop aghtex-symb-gothic">－</tex:f>';
   letter s@\=() '<tex:f class="aghtex-binop aghtex-symb-gothic">＝</tex:f>';
-  letter s@\/() '<tex:f class="aghtex-binop aghtex-symb-gothic">/</tex:f>';
+  letter s@\/() '<tex:f class="aghtex-binop aghtex-symb-gothic aghtex-big-variant">/</tex:f>';
 
   // 数式フォントで再定義
-  letter s@#'['  () '<tex:f class="aghtex-lbrace aghtex-symb-gothic">[</tex:f>';
-  letter s@#']'  () '<tex:f class="aghtex-rbrace aghtex-symb-gothic">]</tex:f>';
-  letter s@#'('  () '<tex:f class="aghtex-lbrace aghtex-symb-gothic">(</tex:f>';
-  letter s@#')'  () '<tex:f class="aghtex-rbrace aghtex-symb-gothic">)</tex:f>';
-  command s@\{   () '<tex:f class="aghtex-lbrace aghtex-symb-gothic">{</tex:f>';
-  command s@\}   () '<tex:f class="aghtex-rbrace aghtex-symb-gothic">}</tex:f>';
+  letter s@#'['  () '<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">[</tex:f>';
+  letter s@#']'  () '<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">]</tex:f>';
+  letter s@#'('  () '<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">(</tex:f>';
+  letter s@#')'  () '<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">)</tex:f>';
+  command s@\{   () '<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">{</tex:f>';
+  command s@\}   () '<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">}</tex:f>';
   command s@\&   () '<tex:f class="aghtex-symb-gothic">&amp;</tex:f>';
   command s@\%   () '<tex:f class="aghtex-symb-gothic">%</tex:f>';
   command s@\_   () '<tex:f class="aghtex-symb-gothic">_</tex:f>';

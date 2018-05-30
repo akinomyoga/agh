@@ -329,6 +329,29 @@ tex\:i.aghtex-accent-container-vec{top:-0.05em;}
 }
 /*%%end*/
 
+/* font:aghtex_mathscr */
+@font-face{
+  font-family:aghtex_mathscr;
+  /*%%if mode=="Trident" (*/
+  src:url(aghtex_mathscr.eot);
+  /*%%elif mode=="Opera"||mode=="WebKit"*/
+  src:url('aghtex_mathscr.ttf') format("truetype");
+  /*%%elif mode=="Gecko"*/
+  src:url('aghtex_mathscr.woff') format("woff");
+  /*%%)*/
+}
+/* font:aghtex_mathbm */
+@font-face{
+  font-family:aghtex_mathbm;
+  /*%%if mode=="Trident" (*/
+  src:url(aghtex_mathbm.eot);
+  /*%%elif mode=="Opera"||mode=="WebKit"*/
+  src:url('aghtex_mathbm.ttf') format("truetype");
+  /*%%elif mode=="Gecko"*/
+  src:url('aghtex_mathbm.woff') format("woff");
+  /*%%)*/
+}
+
 /* ------------------------------------------------------ */
 
 /* --- フォント --- */
@@ -489,20 +512,23 @@ tex\:small2{font-size:80%;}
 tex\:small3{font-size:75%;}
 tex\:small4{font-size:65%;}
 
+/* 1. 大きな括弧 (\bigl, \bigr, etc.) */
 tex\:i.aghtex-bigl{margin-left:0.12em;margin-right:0;}
 tex\:i.aghtex-bigr{margin-left:0;margin-right:0.12em;}
 tex\:i.aghtex-bigm{margin-left:0.12em;margin-right:0.12em;}
-tex\:i.aghtex-bigl tex\:f,
-tex\:i.aghtex-bigr tex\:f,
-tex\:i.aghtex-bigm tex\:f{margin-left:0;margin-right:0;}
-tex\:i.aghtex-big1{font-size:120%;vertical-align:-0.044em;}
-tex\:i.aghtex-big2{font-size:180%;vertical-align:-0.126em;}
-tex\:i.aghtex-big3{font-size:240%;vertical-align:-0.153em;}
-tex\:i.aghtex-big4{font-size:300%;vertical-align:-0.174em;}
+tex\:i.aghtex-big1>tex\:f { margin-left: 0; margin-right: -0.05em; }
+tex\:i.aghtex-big2>tex\:f { margin-left: 0; margin-right: -0.05em; }
+tex\:i.aghtex-big3>tex\:f { margin-left: 0; margin-right: -0.05em; }
+tex\:i.aghtex-big4>tex\:f { margin-left: 0; margin-right: -0.05em; }
+tex\:i.aghtex-big1 { font-size: 120%; vertical-align: -0.044em; }
+tex\:i.aghtex-big2 { font-size: 180%; vertical-align: -0.126em; }
+tex\:i.aghtex-big3 { font-size: 240%; vertical-align: -0.153em; }
+tex\:i.aghtex-big4 { font-size: 300%; vertical-align: -0.174em; }
 
-tex\:big5{font-size:320%;}
-tex\:small5{font-size:50%;}
-tex\:small6{font-size:25%;}
+tex\:i.aghtex-big1>tex\:f.aghtex-big-variant { font-family: aghtex_mathbb, aghtex_mathrm,aghtex_gothic,sans-serif; }
+tex\:i.aghtex-big2>tex\:f.aghtex-big-variant { font-family: aghtex_mathscr,aghtex_mathrm,aghtex_gothic,sans-serif; }
+tex\:i.aghtex-big3>tex\:f.aghtex-big-variant { font-family: aghtex_mathbm, aghtex_mathrm,aghtex_gothic,sans-serif; }
+tex\:i.aghtex-big4>tex\:f.aghtex-big-variant { font-family: aghtex_mathcal,aghtex_mathrm,aghtex_gothic,sans-serif; }
 
 tex\:fsize.aghtex-default{font-size:medium;}
 tex\:fsize.aghtex-script{font-size:75%;}
@@ -725,6 +751,9 @@ tex\:i.aghtex-sup-nest{display:inline-block;vertical-align:text-bottom;}
  *     tex:i
  *   tex:i.aghtex-supsub-d
  *     tex:i
+ *
+ * Note: aghtex-supsub-textstyle は \textstyle の時に付加される。
+ * Note: aghtex-supsub-big? は \biggl)^A などに対して付加される。
  */
 
 tex\:i.aghtex-supsub,

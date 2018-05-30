@@ -55,14 +55,14 @@ $(OUTDIR)/%name%.jgz: $(OUTDIR)/%name%.js.gz
 #%m registerPreprocessedJs
 jsfiles += $(OUTDIR)/%file%
 ##%[name="%file%".replace(".js$","")]
-##%x (
+##%x
 $(OUTDIR)/${name}.js: ${name}.js %depends%
 	$(MWGPP) $< > $@
 $(OUTDIR)/${name}.js.gz: $(OUTDIR)/${name}.js
 	$(GZJS) -o $@ $<
 $(OUTDIR)/${name}.jgz: $(OUTDIR)/${name}.js.gz
 	cp $< $@
-##%).i
+##%end.i
 #%end
 
 #%x registerPreprocessedJs.r|%file%|agh.js| .r|%depends%|agh/addEventListener.js|

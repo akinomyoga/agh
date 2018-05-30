@@ -141,6 +141,7 @@ $(OUTDIR)/%fontname%.woff: $(AgehaFontsDir)/%fontname%.ttf
 #%expand RegisterAgehaFont.r|%fontname%|aghtex_mathbb|
 #%expand RegisterAgehaFont.r|%fontname%|aghtex_mathfrak|
 #%expand RegisterAgehaFont.r|%fontname%|aghtex_mathbf|
+#%expand RegisterAgehaFont.r|%fontname%|aghtex_mathscr|
 
 
 #%define add_res (
