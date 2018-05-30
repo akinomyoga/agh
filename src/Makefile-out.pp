@@ -69,10 +69,6 @@ stamp@myoga.web.fc2.com/${stamp}: %file%
 #%m jsfile
 files+=$(PREFIX)/%name%.js
 ##%x file.r|%file%|%name%.js|
-jgzfiles+=$(PREFIX)/%name%.js.gz
-##%x file.r|%file%|%name%.js.gz|
-jgzfiles+=$(PREFIX)/%name%.jgz
-##%x file.r|%file%|%name%.jgz|
 #%end
 #%m fontfile
 ##%x file.r|%file%|%name%.ttf|
@@ -84,6 +80,7 @@ jgzfiles+=$(PREFIX)/%name%.jgz
 d latex;
 d addon;
 d icons;
+d res;
 
 j agh;
 j agh.regex;
@@ -217,6 +214,13 @@ f icons/prog-prop.png;
 f icons/prog-sentence.png;
 f icons/prog-struct.png;
 f icons/prog-type.png;
+
+# resources
+f res/agh.icon.mwg_16x16.png;
+f res/agh.icon.mwg_128x128.png;
+f res/agh.icon.agh_16x16.png;
+f res/agh.icon.agh_48x48.png;
+f res/agh.icon.agh_128x128.png;
 #%)
 #%m filelist filelist.r/d /#%expand directory.r|%name%|/.r/;/|/
 #%m filelist filelist.r/f /#%expand file.r|%file%|/.r/;/|/
@@ -226,7 +230,9 @@ f icons/prog-type.png;
 
 #%x file.r|%file%|addon/index.html|
 #%x file.r|%file%|addon/agh.addon.aghtex4chrome.tar.xz|
+ifneq ($(wildcard addon/agh.addon.aghtex4chrome.crx),)
 #%x file.r|%file%|addon/agh.addon.aghtex4chrome.crx|
+endif
 #%x file.r|%file%|addon/agh.addon.aghtex4chrome.xml|
 addon_dist_files+=addon/agh.addon.aghtex4chrome.tar.xz addon/agh.addon.aghtex4chrome.zip
 addon/agh.addon.aghtex4chrome.tar.xz: addon/agh.addon.aghtex4chrome/manifest.json
@@ -254,6 +260,7 @@ addon_dist_files+=addon/agh.addon.aghtex4firefox.tar.xz
 addon/agh.addon.aghtex4firefox.tar.xz: addon/agh.addon.aghtex4firefox@kch.murase/install.rdf
 	cd addon && tar cavf agh.addon.aghtex4firefox.tar.xz agh.addon.aghtex4firefox@kch.murase
 
+ifneq ($(wildcard addon/agh.addon.aghtex4ie/version.txt),)
 #%x file.r|%file%|addon/agh.addon.aghtex4ie.zip|
 #%x file.r|%file%|addon/agh.addon.aghtex4ie.tar.xz|
 addon_dist_files+=addon/agh.addon.aghtex4ie.zip
@@ -262,6 +269,7 @@ addon/agh.addon.aghtex4ie.zip: addon/agh.addon.aghtex4ie/version.txt
 addon_dist_files+=addon/agh.addon.aghtex4ie.tar.xz
 addon/agh.addon.aghtex4ie.tar.xz: addon/agh.addon.aghtex4ie/version.txt
 	cd addon && tar cavf agh.addon.aghtex4ie.tar.xz agh.addon.aghtex4ie --exclude=agh.addon.aghtex4ie/aghtex4ie.dll
+endif
 
 #%x file.r|%file%|addon/agh.addon.aghtex4seahorse.zip|
 #%x file.r|%file%|addon/agh.addon.aghtex4seahorse.tar.xz|
