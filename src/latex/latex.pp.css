@@ -786,11 +786,11 @@ tex\:i.aghtex-supsub-d{margin-right:0.15ex;}
   tex\:i.aghtex-supsub-d{vertical-align:text-top;}
 /*%%end*/
 
-tex\:i.aghtex-supsub-textstyle{font-size:100%;margin-top:-1ex;margin-bottom:-1ex;}
-tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-u{font-size:60%;}
-tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d{font-size:60%;}
-tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-u>tex\:i{display:block;margin-bottom:-0.1ex;}
-tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d>tex\:i{display:block;margin-top:-0.1ex;}
+tex\:i.aghtex-supsub-textstyle { font-size: 100%; margin-top: -1ex; margin-bottom: -1ex; }
+tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-u{font-size:65%;}
+tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d{font-size:65%;}
+tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-u>tex\:i{display:block;margin-bottom:-0.0em;}
+tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d>tex\:i{display:block;margin-top:-0.0em;}
 .aghtex-tag-script tex\:i.aghtex-supsub-textstyle{margin-top:0;margin-bottom:0}
 .aghtex-tag-script tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-u{font-size:80%;}
 .aghtex-tag-script tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d{font-size:80%;}

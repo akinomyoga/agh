@@ -253,7 +253,7 @@ context "mode.math" {
       else
         buff.push(
           '<tex:i class="aghtex-supsub', cls, ' aghtex-supsub-textstyle aghtex-tag-script">',
-          '<tex:i class="aghted-supsub-u"><tex:i>', sup, '</tex:i></tex:i>',
+          '<tex:i class="aghtex-supsub-u"><tex:i>', sup, '</tex:i></tex:i>',
           '<tex:i class="aghtex-supsub-d"><tex:i>', sub, '</tex:i></tex:i></tex:i>');
     };
     letter f\^("#>1") {
