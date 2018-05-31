@@ -15,166 +15,166 @@
  * -Op12 Presto は優秀だ。local に bold 版があればちゃんとそれを使ってくれる。
  */
 /*%%if mode=="Trident"||mode=="Opera" (*/
-@font-face{
-  font-family:aghtex_roman;
-  src:local("Times New Roman"),local("Times Roman"),local("Times");
+@font-face {
+  font-family: aghtex_roman;
+  src: local("Times New Roman"),local("Times Roman"),local("Times");
 }
 /*%%else*/
-@font-face{
-  font-family:aghtex_roman;
-  src:local("Times New Roman"),local("Times Roman"),local("Times");
-  font-weight:normal;
-  font-style:normal;
+@font-face {
+  font-family: aghtex_roman;
+  src: local("Times New Roman"),local("Times Roman"),local("Times");
+  font-weight: normal;
+  font-style: normal;
 }
-@font-face{
-  font-family:aghtex_roman;
-  src:local("Times New Roman Bold"),local("Times Roman Bold"),local("Times Bold");
-  font-weight:bold;
-  font-style:normal;
+@font-face {
+  font-family: aghtex_roman;
+  src: local("Times New Roman Bold"),local("Times Roman Bold"),local("Times Bold");
+  font-weight: bold;
+  font-style: normal;
 }
 /*%%)*/
-@font-face{
-  font-family:aghtex_mincho;
-  src:/*local("モリサワ リュウミン"),*/
+@font-face {
+  font-family: aghtex_mincho;
+  src: /*local("モリサワ リュウミン"),*/
     local("Hiragino Mincho Pro"),
     local("IPA P明朝"),local("MS PMincho"),local("ＭＳ Ｐ明朝");
 }
-@font-face{
-  font-family:aghtex_gothic;
-  src:local("Hiragino Kaku Gothic Pro"),
+@font-face {
+  font-family: aghtex_gothic;
+  src: local("Hiragino Kaku Gothic Pro"),
     local("MS PGothic"),local("ＭＳ Ｐゴシック");
 }
-@font-face{
-  font-family:aghtex_meiryo;
+@font-face {
+  font-family: aghtex_meiryo;
   /* MeiryoKe_PGothic は Firefox4.0 で文字化けする (Meiryo は OK) */
-  src:local("MeiryoKe_PGothic"),local("Hiragino Kaku Gothic Pro"),
+  src: local("MeiryoKe_PGothic"),local("Hiragino Kaku Gothic Pro"),
     local("MS PGothic"),local("ＭＳ Ｐゴシック");
 }
 
 /*----------------------------------------------------------
-		容れ物
+    容れ物
 ----------------------------------------------------------*/
 /* TeX 既定の設定 */
 tex\:container,
-tex\:math{text-indent:0px;line-height:normal;font-family:aghtex_roman,serif;font-style:normal;}
+tex\:math { text-indent: 0px; line-height: normal; font-family: aghtex_roman,serif; font-style: normal; }
 
 /* TeX 既定の設定 - 数式モード */
 /*%%if mode=="WebKit" (*/
 tex\:container.aghtex-math,
-tex\:math{display:inline-block;}
+tex\:math { display: inline-block; }
 /*%%)*/
 /* 2013-11-06 以下のコードは何の為にあったのか?
 tex\:container.aghtex-math table,
-tex\:math table{border:0px;border-collapse:separate;}
+tex\:math table { border: 0px; border-collapse: separate; }
 */
 tex\:container.aghtex-math td,
-tex\:math td{padding:0px;border-width:0px;white-space:nowrap;}
+tex\:math td { padding: 0px; border-width: 0px; white-space: nowrap; }
 
 /* -- */
-div.aghtex-center{text-align:center;}
-div.aghtex-flushright{text-align:right;}
-div.aghtex-flushleft{text-align:left;}
+div.aghtex-center { text-align: center; }
+div.aghtex-flushright { text-align: right; }
+div.aghtex-flushleft { text-align: left; }
 
 /* TeX */
 /*%%if mode=="Trident" (*/
-  tex\:La{font-family:aghtex_roman,aghtex_mincho,serif;letter-spacing:-0.5ex;}
-  tex\:La span{vertical-align:20%;font-size:80%;}
-  tex\:TeX{font-family:aghtex_roman,aghtex_mincho,serif;letter-spacing:-0.3ex;}
-  tex\:TeX span{vertical-align:-20%;}
-  tex\:AmS{font-family:aghtex_mathcal,aghtex_gothic,sans-serif;letter-spacing:-0.45ex;}
-  tex\:AmS span{vertical-align:-20%;}
+  tex\:La { font-family: aghtex_roman,aghtex_mincho,serif; letter-spacing: -0.5ex; }
+  tex\:La span { vertical-align: 20%; font-size: 80%; }
+  tex\:TeX { font-family: aghtex_roman,aghtex_mincho,serif; letter-spacing: -0.3ex; }
+  tex\:TeX span { vertical-align: -20%; }
+  tex\:AmS { font-family: aghtex_mathcal,aghtex_gothic,sans-serif; letter-spacing: -0.45ex; }
+  tex\:AmS span { vertical-align: -20%; }
 /*%%else*/
-  tex\:La{font-family:aghtex_roman,aghtex_mincho,serif;}
-  tex\:La span{vertical-align:12%;font-size:80%;margin-left:-0.9ex;margin-right:-0.2ex;}
-  tex\:TeX{font-family:aghtex_roman,aghtex_mincho,serif;}
-  tex\:TeX span{vertical-align:-20%;margin-left:-0.3ex;margin-right:-0.3ex;}
-  tex\:AmS{font-family:aghtex_mathcal,aghtex_gothic,sans-serif;}
-  tex\:AmS span{vertical-align:-20%;margin-left:-0.6ex;margin-right:-0.3ex;}
+  tex\:La { font-family: aghtex_roman,aghtex_mincho,serif; }
+  tex\:La span { vertical-align: 12%; font-size: 80%; margin-left: -0.9ex; margin-right: -0.2ex; }
+  tex\:TeX { font-family: aghtex_roman,aghtex_mincho,serif; }
+  tex\:TeX span { vertical-align: -20%; margin-left: -0.3ex; margin-right: -0.3ex; }
+  tex\:AmS { font-family: aghtex_mathcal,aghtex_gothic,sans-serif; }
+  tex\:AmS span { vertical-align: -20%; margin-left: -0.6ex; margin-right: -0.3ex; }
 /*%%)*/
 
-p.aghtex-vspace{margin:0px;padding:0px;}
-tex\:i.aghtex-vspace{display:block;height:0;margin:0px;padding:0px;}
+p.aghtex-vspace { margin: 0px; padding: 0px; }
+tex\:i.aghtex-vspace { display: block; height: 0; margin: 0px; padding: 0px; }
 
-dl.aghtex-desc{margin-left:1em;}
-dl.aghtex-desc dt{font-weight:bold;}
-dl.aghtex-desc dt tex\:dt{position:relative;left:-1em;}
-dl.aghtex-desc dd{margin-left:1em;display:block;margin-top:.8ex;margin-bottom:.8ex;}
+dl.aghtex-desc { margin-left: 1em; }
+dl.aghtex-desc dt { font-weight: bold; }
+dl.aghtex-desc dt tex\:dt { position: relative; left: -1em; }
+dl.aghtex-desc dd { margin-left: 1em; display: block; margin-top: .8ex; margin-bottom: .8ex; }
 /*%%if mode=="WebKit" (*/
-	dl.aghtex-desc dt{display:run-in;}
+  dl.aghtex-desc dt { display: run-in; }
 /*%%)*/
 
-blockquote.aghtex-quote{text-indent:0px;}
-blockquote.aghtex-quota{text-indent:1em;}
-tex\:verse{display:block;margin-left:2em;margin-right:2em;}
+blockquote.aghtex-quote { text-indent: 0px; }
+blockquote.aghtex-quota { text-indent: 1em; }
+tex\:verse { display: block; margin-left: 2em; margin-right: 2em; }
 
-tex\:i.aghtex-hbox{display:inline-block;vertical-align:baseline;white-space:nowrap;}
-tex\:i.aghtex-hbox-width{width:0;overflow:visible;margin-right:1cm /* default value */;}
-tex\:i.aghtex-hbox-fbox{border:1px solid $"borderColor";padding:.3em;}
-tex\:i.aghtex-hbox-frame{border:1px solid $"borderColor";padding:0em;}
+tex\:i.aghtex-hbox { display: inline-block; vertical-align: baseline; white-space: nowrap; }
+tex\:i.aghtex-hbox-width { width: 0; overflow: visible; margin-right: 1cm /* default value */; }
+tex\:i.aghtex-hbox-fbox { border: 1px solid $"borderColor"; padding: .3em; }
+tex\:i.aghtex-hbox-frame { border: 1px solid $"borderColor"; padding: 0em; }
 
 /* \begin{enumerate}, \begin{itemize} */
 ul.aghtex-ie,
-ol.aghtex-ie{margin-left:2em;}
+ol.aghtex-ie { margin-left: 2em; }
 /*%%if mode=="Trident" (*/
   ul.aghtex-item li,
-  ol.aghtex-enum li{margin-top:.8ex;margin-bottom:.8ex;}
+  ol.aghtex-enum li { margin-top: .8ex; margin-bottom: .8ex; }
 /*%%else*/
 ul.aghtex-item>li,
-ol.aghtex-enum>li{margin-top:.8ex;margin-bottom:.8ex;}
+ol.aghtex-enum>li { margin-top: .8ex; margin-bottom: .8ex; }
 /*%%)*/
 
-li.aghtex-itemize-marked{list-style-type:none;position:relative;}
-tex\:i.aghtex-itemize-mark1{position:absolute;left:-1ex;}
-tex\:i.aghtex-itemize-mark2{position:absolute;right:0px;}
+li.aghtex-itemize-marked { list-style-type: none; position: relative; }
+tex\:i.aghtex-itemize-mark1 { position: absolute; left: -1ex; }
+tex\:i.aghtex-itemize-mark2 { position: absolute; right: 0px; }
 
 /*----------------------------------------------------------
-		基本共通コマンド (mod:common)
+    基本共通コマンド (mod:common)
 ----------------------------------------------------------*/
 
 /* overline (math mode) は中身の margin を反映する為に display:inline-block にする */
-tex\:i.aghtex-overline{border-top-width:1px;border-top-style:solid;display:inline-block;margin-top:1px;}
+tex\:i.aghtex-overline { border-top-width: 1px; border-top-style: solid; display: inline-block; margin-top: 1px; }
 
 /* underline は途中改行できるように display:inline にする */
-tex\:i.aghtex-underline{border-bottom-width:1px;border-bottom-style:solid;}
+tex\:i.aghtex-underline { border-bottom-width: 1px; border-bottom-style: solid; }
 
 /*----------------------------------------------------------
-		重ね合わせ・アクセント等 (mod:math)
+    重ね合わせ・アクセント等 (mod:math)
 ----------------------------------------------------------*/
 /* 重ね合わせ */
 tex\:i.aghtex-stackrel,
-tex\:i.aghtex-stackrel-lower{display:inline-block;vertical-align:baseline;text-align:center;}
+tex\:i.aghtex-stackrel-lower { display: inline-block; vertical-align: baseline; text-align: center; }
 tex\:i.aghtex-stackrel-top,
-tex\:i.aghtex-stackrel-top-lower{font-size:75%;display:block;margin:0;position:relative;}
-tex\:i.aghtex-stackrel{margin-top:-0.52em;}
-tex\:i.aghtex-stackrel-lower{margin-top:-0.87em;}
-tex\:i.aghtex-stackrel-top{top:0.52em;}
-tex\:i.aghtex-stackrel-top-lower{top:0.87em;}
+tex\:i.aghtex-stackrel-top-lower { font-size: 75%; display: block; margin: 0; position: relative; }
+tex\:i.aghtex-stackrel { margin-top: -0.52em; }
+tex\:i.aghtex-stackrel-lower { margin-top: -0.87em; }
+tex\:i.aghtex-stackrel-top { top: 0.52em; }
+tex\:i.aghtex-stackrel-top-lower { top: 0.87em; }
 /*%%if mode=="Trident"*/
-tex\:i.aghtex-ie6stackrel{display:inline-block;text-align:center;line-height:0px;}
+tex\:i.aghtex-ie6stackrel { display: inline-block; text-align: center; line-height: 0px; }
 tex\:i.aghtex-ie6stackrel-top,
 tex\:i.aghtex-ie6stackrel-top-lower,
-tex\:i.aghtex-ie6stackrel-body{display:block;position:relative;top:0;line-height:0px;}
-tex\:i.aghtex-ie6stackrel-top{font-size:75%;top:-1.8ex;}
-tex\:i.aghtex-ie6stackrel-top-lower{font-size:75%;top:-1.35ex;}
-tex\:i.aghtex-ie6stackrel tex\:math{line-height:0px;}
+tex\:i.aghtex-ie6stackrel-body {display: block; position: relative; top: 0; line-height: 0px; }
+tex\:i.aghtex-ie6stackrel-top { font-size: 75%; top: -1.8ex; }
+tex\:i.aghtex-ie6stackrel-top-lower { font-size: 75%; top: -1.35ex; }
+tex\:i.aghtex-ie6stackrel tex\:math { line-height: 0px; }
 /*%%end*/
 
 /*%%if mode=="Trident"*/
-tex\:lap{display:inline-block;text-align:center;line-height:0px;}
-tex\:lap tex\:m{display:block;position:relative;top:0;line-height:0px;}
-tex\:lap tex\:math{line-height:0px;}
+tex\:lap { display: inline-block; text-align: center; line-height: 0px; }
+tex\:lap tex\:m { display: block; position: relative; top: 0; line-height: 0px; }
+tex\:lap tex\:math { line-height: 0px; }
 /*%%end*/
 
-tex\:i.aghtex-accent{position:relative;top:0;left:0;}
-tex\:i.aghtex-accent-acc{display:inline-block;margin-top:0.10em;}
-tex\:i.aghtex-accent-vec{display:inline-block;margin-top:0.15em;}
+tex\:i.aghtex-accent { position: relative; top: 0; left: 0; }
+tex\:i.aghtex-accent-acc { display: inline-block; margin-top: 0.10em; }
+tex\:i.aghtex-accent-vec { display: inline-block; margin-top: 0.15em; }
 /*%%if mode=="Trident"*/
   /* IE7 以下では display:inline とする */
-  tex\:i.aghtex-accent-acc{*display:inline;*margin-top:0.20em;}
-  tex\:i.aghtex-accent-vec{*display:inline;*margin-top:0.20em;}
+  tex\:i.aghtex-accent-acc { *display: inline; *margin-top: 0.20em; }
+  tex\:i.aghtex-accent-vec { *display: inline; *margin-top: 0.20em; }
 /*%%end*/
 
-tex\:i.aghtex-accent-container{position:absolute;top:0;left:0;width:100%;text-align:center;}
+tex\:i.aghtex-accent-container {position: absolute; top: 0; left: 0; width: 100%; text-align: center; }
 
 tex\:i.aghtex-accent-symbol-over,
 tex\:i.aghtex-accent-symbol-low ,
@@ -186,169 +186,169 @@ tex\:i.aghtex-accent-symbol-accU,
 tex\:i.aghtex-accent-symbol-vec ,
 tex\:i.aghtex-accent-symbol-vecS,
 tex\:i.aghtex-accent-symbol-vecL,
-tex\:i.aghtex-accent-symbol-vecU{position:relative;margin-left:-0.5ex;margin-right:-0.5ex;}
+tex\:i.aghtex-accent-symbol-vecU { position: relative; margin-left: -0.5ex; margin-right: -0.5ex; }
 
-tex\:i.aghtex-accent-symbol-low {top:0.00em;}
-tex\:i.aghtex-accent-symbol-lowT{top:0.20em;}
+tex\:i.aghtex-accent-symbol-low { top: 0.00em; }
+tex\:i.aghtex-accent-symbol-lowT { top: 0.20em; }
 
 tex\:i.aghtex-accent-symbol-accS,
-tex\:i.aghtex-accent-symbol-accL{top:-0.10em;}
+tex\:i.aghtex-accent-symbol-accL { top: -0.10em; }
 tex\:i.aghtex-accent-symbol-acc,
-tex\:i.aghtex-accent-symbol-accU{top:-0.35em}
+tex\:i.aghtex-accent-symbol-accU { top: -0.35em}
 tex\:i.aghtex-accent-symbol-vecS,
-tex\:i.aghtex-accent-symbol-vecL{top:-0.48em;}
+tex\:i.aghtex-accent-symbol-vecL { top: -0.48em; }
 tex\:i.aghtex-accent-symbol-vec,
-tex\:i.aghtex-accent-symbol-vecU{top:-0.70em;}
+tex\:i.aghtex-accent-symbol-vecU { top: -0.70em; }
 
 /* italic corrections */
 tex\:i.aghtex-accent-symbol-accL,
-tex\:i.aghtex-accent-symbol-vecL{left:0.08em;}
+tex\:i.aghtex-accent-symbol-vecL { left: 0.08em; }
 tex\:i.aghtex-accent-symbol-accU,
-tex\:i.aghtex-accent-symbol-vecU{left:0.15em;}
+tex\:i.aghtex-accent-symbol-vecU { left: 0.15em; }
 
 
 /*%%if mode=="Opera" (*/
-tex\:i.aghtex-accent-container{top:0.05em;}
+tex\:i.aghtex-accent-container { top: 0.05em; }
 /*%%elif mode=="WebKit" (*/
 /* [Sf] 少し Chrome と表示される位置が異なる in Windows */
-tex\:i.aghtex-accent-sf-acc{top:-0.05em;}
-tex\:i.aghtex-accent-sf-vec{top:-0.05em;}
+tex\:i.aghtex-accent-sf-acc { top: -0.05em; }
+tex\:i.aghtex-accent-sf-vec { top: -0.05em; }
 /*%%elif mode=="Gecko" (*/
-tex\:i.aghtex-accent-container-acc{top:-0.05em;}
-tex\:i.aghtex-accent-container-vec{top:-0.05em;}
+tex\:i.aghtex-accent-container-acc { top: -0.05em; }
+tex\:i.aghtex-accent-container-vec { top: -0.05em; }
 /*%%)*/
 
 /*----------------------------------------------------------
-		字体
+    字体
 ----------------------------------------------------------*/
 
 /* --- 数式フォント定義 --- */
 /* font:\mathit */
 /*%%if mode=="Trident" (*/
-  @font-face{
-    font-family:aghtex_mathit;
-    src:url(aghtex_mathit.eot);
+  @font-face {
+    font-family: aghtex_mathit;
+    src: url(aghtex_mathit.eot);
   }
 /*%%elif mode=="Opera" */
-  @font-face{
-    font-family:aghtex_mathit;
-    src:url('aghtex_mathit.ttf') format("truetype");
+  @font-face {
+    font-family: aghtex_mathit;
+    src: url('aghtex_mathit.ttf') format("truetype");
   }
-  @font-face{
-    font-family:aghtex_mathit;
-    font-style:italic;
-    src:url('aghtex_mathit.ttf') format("truetype");
+  @font-face {
+    font-family: aghtex_mathit;
+    font-style: italic;
+    src: url('aghtex_mathit.ttf') format("truetype");
   }
 /*%%elif mode=="WebKit" */
-  @font-face{
-    font-family:aghtex_mathit;
-    src:url('aghtex_mathit.ttf') format("truetype");
+  @font-face {
+    font-family: aghtex_mathit;
+    src: url('aghtex_mathit.ttf') format("truetype");
   }
-  @font-face{
-    font-family:aghtex_mathit;
-    font-style:italic;
-    src:url('aghtex_mathit.ttf') format("truetype");
+  @font-face {
+    font-family: aghtex_mathit;
+    font-style: italic;
+    src: url('aghtex_mathit.ttf') format("truetype");
   }
   /* 自動 synthesize がない為 */
-  @font-face{
-    font-family:aghtex_mathit;
-    font-weight:bold;
-    src:url('aghtex_mathbm.ttf') format("truetype");
+  @font-face {
+    font-family: aghtex_mathit;
+    font-weight: bold;
+    src: url('aghtex_mathbm.ttf') format("truetype");
   }
-  @font-face{
-    font-family:aghtex_mathit;
-    font-style:italic;
-    font-weight:bold;
-    src:url('aghtex_mathbm.ttf') format("truetype");
+  @font-face {
+    font-family: aghtex_mathit;
+    font-style: italic;
+    font-weight: bold;
+    src: url('aghtex_mathbm.ttf') format("truetype");
   }
 /*%%elif mode=="Gecko"*/
-  @font-face{
-    font-family:aghtex_mathit;
-    src:url('aghtex_mathit.woff') format("woff");
+  @font-face {
+    font-family: aghtex_mathit;
+    src: url('aghtex_mathit.woff') format("woff");
   }
-  @font-face{
-    font-family:aghtex_mathit;
-    font-style:italic;
-    src:url('aghtex_mathit.woff') format("woff");
+  @font-face {
+    font-family: aghtex_mathit;
+    font-style: italic;
+    src: url('aghtex_mathit.woff') format("woff");
   }
 /*%%)*/
 
 /* font:\mathcal */
-@font-face{
-  font-family:aghtex_mathcal;
+@font-face {
+  font-family: aghtex_mathcal;
   /*%%if mode=="Trident" (*/
-  src:url(aghtex_mathcal.eot);
+  src: url(aghtex_mathcal.eot);
   /*%%elif mode=="Opera"||mode=="WebKit"*/
-  src:url('aghtex_mathcal.ttf') format("truetype");
+  src: url('aghtex_mathcal.ttf') format("truetype");
   /*%%elif mode=="Gecko"*/
-  src:url('aghtex_mathcal.woff') format("woff");
+  src: url('aghtex_mathcal.woff') format("woff");
   /*%%)*/
-	/*local('cmsy10'),*/
+  /*local('cmsy10'),*/
 }
 /* font:\mathfrak */
-@font-face{
-  font-family:aghtex_mathfrak;
+@font-face {
+  font-family: aghtex_mathfrak;
   /*%%if mode=="Trident" (*/
-  src:url(aghtex_mathfrak.eot);
+  src: url(aghtex_mathfrak.eot);
   /*%%elif mode=="Opera"||mode=="WebKit"*/
-  src:url('aghtex_mathfrak.ttf') format("truetype");
+  src: url('aghtex_mathfrak.ttf') format("truetype");
   /*%%elif mode=="Gecko"*/
-  src:url('aghtex_mathfrak.woff') format("woff");
+  src: url('aghtex_mathfrak.woff') format("woff");
   /*%%)*/
-	/*local('eufm10'),*/
+  /*local('eufm10'),*/
 }
 /* font:\mathbb, aghtex-syma */
-@font-face{
-  font-family:aghtex_mathbb;
+@font-face {
+  font-family: aghtex_mathbb;
   /*%%if mode=="Trident" (*/
-  src:url(aghtex_mathbb.eot);
+  src: url(aghtex_mathbb.eot);
   /*%%elif mode=="Opera"||mode=="WebKit"*/
-  src:url('aghtex_mathbb.ttf') format("truetype");
+  src: url('aghtex_mathbb.ttf') format("truetype");
   /*%%elif mode=="Gecko"*/
-  src:url('aghtex_mathbb.woff') format("woff");
+  src: url('aghtex_mathbb.woff') format("woff");
   /*%%)*/
-	/*local('msbm10'),*/
+  /*local('msbm10'),*/
 }
 /* font:aghtex_mathrm, aghtex-symb */
-@font-face{
-  font-family:aghtex_mathrm;
+@font-face {
+  font-family: aghtex_mathrm;
   /*%%if mode=="Trident" (*/
-  src:url(aghtex_mathrm.eot);
+  src: url(aghtex_mathrm.eot);
   /*%%elif mode=="Opera"||mode=="WebKit"*/
-  src:url('aghtex_mathrm.ttf') format("truetype");
+  src: url('aghtex_mathrm.ttf') format("truetype");
   /*%%elif mode=="Gecko"*/
-  src:url('aghtex_mathrm.woff') format("woff");
+  src: url('aghtex_mathrm.woff') format("woff");
   /*%%)*/
 }
 /*%%if mode=="WebKit"*/
-@font-face{
-  font-family:aghtex_mathrm;
-  font-style:normal;
-  font-weight:bold;
-  src:url('aghtex_mathbf.ttf') format("truetype");
+@font-face {
+  font-family: aghtex_mathrm;
+  font-style: normal;
+  font-weight: bold;
+  src: url('aghtex_mathbf.ttf') format("truetype");
 }
 /*%%end*/
 
 /* font:aghtex_mathscr */
-@font-face{
-  font-family:aghtex_mathscr;
+@font-face {
+  font-family: aghtex_mathscr;
   /*%%if mode=="Trident" (*/
-  src:url(aghtex_mathscr.eot);
+  src: url(aghtex_mathscr.eot);
   /*%%elif mode=="Opera"||mode=="WebKit"*/
-  src:url('aghtex_mathscr.ttf') format("truetype");
+  src: url('aghtex_mathscr.ttf') format("truetype");
   /*%%elif mode=="Gecko"*/
-  src:url('aghtex_mathscr.woff') format("woff");
+  src: url('aghtex_mathscr.woff') format("woff");
   /*%%)*/
 }
 /* font:aghtex_mathbm */
-@font-face{
-  font-family:aghtex_mathbm;
+@font-face {
+  font-family: aghtex_mathbm;
   /*%%if mode=="Trident" (*/
-  src:url(aghtex_mathbm.eot);
+  src: url(aghtex_mathbm.eot);
   /*%%elif mode=="Opera"||mode=="WebKit"*/
-  src:url('aghtex_mathbm.ttf') format("truetype");
+  src: url('aghtex_mathbm.ttf') format("truetype");
   /*%%elif mode=="Gecko"*/
-  src:url('aghtex_mathbm.woff') format("woff");
+  src: url('aghtex_mathbm.woff') format("woff");
   /*%%)*/
 }
 
@@ -357,63 +357,63 @@ tex\:i.aghtex-accent-container-vec{top:-0.05em;}
 /* --- フォント --- */
 
 /* サイズ */
-tex\:f.aghtex-size-normal{font-size:100%;}
-tex\:f.aghtex-size-small1{font-size:90%;} /* \small */
-tex\:f.aghtex-size-small2{font-size:80%;} /* \footnotesize */
-tex\:f.aghtex-size-small3{font-size:75%;} /* \scriptsize */
-tex\:f.aghtex-size-small4{font-size:65%;} /* \tiny */
-tex\:f.aghtex-size-large1{font-size:120%;} /* \large */
-tex\:f.aghtex-size-large2{font-size:140%;} /* \Large */
-tex\:f.aghtex-size-large3{font-size:170%;} /* \LARGE */
-tex\:f.aghtex-size-large4{font-size:200%;} /* \huge */
-tex\:f.aghtex-size-large5{font-size:250%;} /* \Huge */
+tex\:f.aghtex-size-normal { font-size: 100%; }
+tex\:f.aghtex-size-small1 { font-size: 90%; } /* \small */
+tex\:f.aghtex-size-small2 { font-size: 80%; } /* \footnotesize */
+tex\:f.aghtex-size-small3 { font-size: 75%; } /* \scriptsize */
+tex\:f.aghtex-size-small4 { font-size: 65%; } /* \tiny */
+tex\:f.aghtex-size-large1 { font-size: 120%; } /* \large */
+tex\:f.aghtex-size-large2 { font-size: 140%; } /* \Large */
+tex\:f.aghtex-size-large3 { font-size: 170%; } /* \LARGE */
+tex\:f.aghtex-size-large4 { font-size: 200%; } /* \huge */
+tex\:f.aghtex-size-large5 { font-size: 250%; } /* \Huge */
 
 /* 字体 (text mode) */
-tex\:f.aghtex-textsy{font-family:Symbol;}
-tex\:f.aghtex-textmc{font-family:aghtex_mincho,serif;}
-tex\:f.aghtex-textgt{font-family:aghtex_gothic,sans-serif;}
-tex\:f.aghtex-textmr{font-family:aghtex_meiryo,sans-serif;}
-tex\:f.aghtex-textrm{font-family:aghtex_roman,aghtex_mincho,serif;}
+tex\:f.aghtex-textsy { font-family: Symbol; }
+tex\:f.aghtex-textmc { font-family: aghtex_mincho,serif; }
+tex\:f.aghtex-textgt { font-family: aghtex_gothic,sans-serif; }
+tex\:f.aghtex-textmr { font-family: aghtex_meiryo,sans-serif; }
+tex\:f.aghtex-textrm { font-family: aghtex_roman,aghtex_mincho,serif; }
 
-tex\:fcent{font-family:Century,aghtex_gothic,sans-serif;}
-tex\:fnorm{
-  font-family:aghtex_roman,aghtex_mincho,serif;
-  font-weight:normal;font-style:normal;}
+tex\:fcent { font-family: Century,aghtex_gothic,sans-serif; }
+tex\:fnorm {
+  font-family: aghtex_roman,aghtex_mincho,serif;
+  font-weight: normal; font-style: normal; }
 
 /* unused */
-tex\:f.aghtex-textui{font-family:'MS UI Gothic',aghtex_gothic,sans-serif;}
+tex\:f.aghtex-textui { font-family: 'MS UI Gothic',aghtex_gothic,sans-serif; }
 
-tex\:f.aghtex-textsf{font-family:sans-serif;}
-tex\:f.aghtex-texttt{font-family:"Courier New",monospace,serif;}
+tex\:f.aghtex-textsf { font-family: sans-serif; }
+tex\:f.aghtex-texttt { font-family: "Courier New",monospace,serif; }
 /* - Font Series */
-tex\:f.aghtex-textmd{font-weight:normal;}
-tex\:f.aghtex-textbf{font-weight:bold;}
+tex\:f.aghtex-textmd { font-weight: normal; }
+tex\:f.aghtex-textbf { font-weight: bold; }
 /* - Font Shape */
-tex\:f.aghtex-textup{font-style:normal;}
-tex\:f.aghtex-textsl{font-style:oblique;font-family:sans-serif;}
-tex\:f.aghtex-textsc{font-style:normal;font-variant:small-caps;} /* text-transform:uppercase; */
-tex\:f.aghtex-textit{font-style:italic;font-family:"Times New Roman";}
+tex\:f.aghtex-textup { font-style: normal; }
+tex\:f.aghtex-textsl { font-style: oblique; font-family: sans-serif; }
+tex\:f.aghtex-textsc { font-style: normal; font-variant: small-caps; } /* text-transform: uppercase; */
+tex\:f.aghtex-textit { font-style: italic; font-family: "Times New Roman"; }
 
 tex\:i.aghtex-emphasize,
 tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize,
 tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize
-{font-weight:normal;font-style:italic;font-family:aghtex_roman;}
+{ font-weight: normal; font-style: italic; font-family: aghtex_roman; }
 tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize,
 tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize
-{font-weight:bold;font-style:normal;font-family:aghtex_roman;}
+{ font-weight: bold; font-style: normal; font-family: aghtex_roman; }
 
 /* 記号類 */
-tex\:f.aghtex-symb-mincho{font-style:normal;font-family:aghtex_mathrm,aghtex_mincho,aghtex_roman,serif;}
-tex\:f.aghtex-symb-gothic{font-style:normal;font-family:aghtex_mathrm,aghtex_gothic,sans-serif;}
-tex\:f.aghtex-symb-roman{font-style:normal;font-family:aghtex_mathrm,aghtex_roman,serif;}
-tex\:f.aghtex-symb-meiryo{font-style:normal;font-family:aghtex_mathrm,aghtex_meiryo,sans-serif;}
-tex\:f.aghtex-symb-cent{font-family:aghtex_mathrm,Century,aghtex_gothic,sans-serif;}
-tex\:f.aghtex-syma-mincho{font-style:normal;font-family:aghtex_mathbb,aghtex_mathrm,aghtex_mincho,aghtex_roman,serif;}
-tex\:f.aghtex-binop{margin-left:0.2em;margin-right:0.2em;}
-tex\:f.aghtex-comma{margin-right:0.3ex;}
-tex\:f.aghtex-lbrace{margin-left:0.2ex;margin-right:0;}
-tex\:f.aghtex-rbrace{margin-left:0;margin-right:0.2ex;}
-tex\:f.aghtex-mbrace{margin-left:0.2ex;margin-right:0.2ex;}
+tex\:f.aghtex-symb-mincho { font-style: normal; font-family: aghtex_mathrm,aghtex_mincho,aghtex_roman,serif; }
+tex\:f.aghtex-symb-gothic { font-style: normal; font-family: aghtex_mathrm,aghtex_gothic,sans-serif; }
+tex\:f.aghtex-symb-roman { font-style: normal; font-family: aghtex_mathrm,aghtex_roman,serif; }
+tex\:f.aghtex-symb-meiryo { font-style: normal; font-family: aghtex_mathrm,aghtex_meiryo,sans-serif; }
+tex\:f.aghtex-symb-cent { font-family: aghtex_mathrm,Century,aghtex_gothic,sans-serif; }
+tex\:f.aghtex-syma-mincho { font-style: normal; font-family: aghtex_mathbb,aghtex_mathrm,aghtex_mincho,aghtex_roman,serif; }
+tex\:f.aghtex-binop { margin-left: 0.2em; margin-right: 0.2em; }
+tex\:f.aghtex-comma { margin-right: 0.3ex; }
+tex\:f.aghtex-lbrace { margin-left: 0.2ex; margin-right: 0; }
+tex\:f.aghtex-rbrace { margin-left: 0; margin-right: 0.2ex; }
+tex\:f.aghtex-mbrace { margin-left: 0.2ex; margin-right: 0.2ex; }
 /*%%if mode=="Opera"*/
   /* Opera 謎の記号空白対処 */
   tex\:f.aghtex-symb-mincho,
@@ -425,97 +425,97 @@ tex\:f.aghtex-mbrace{margin-left:0.2ex;margin-right:0.2ex;}
   tex\:f.aghtex-int,tex\:f.aghtex-dotsi,
   tex\:f.aghtex-digit,
   tex\:f.aghtex-alpha,
-  tex\:f.aghtex-greek{
-    line-height:1.2em!important;display:inline-block;
-    height:1.2em;overflow-y:hidden;overflow-x:visible;
-    vertical-align:middle;}
+  tex\:f.aghtex-greek {
+    line-height: 1.2em!important; display: inline-block;
+    height: 1.2em; overflow-y: hidden; overflow-x: visible;
+    vertical-align: middle; }
 /*%%end*/
 
 /* --- 数式フォント適用 --- */
 /* \mathit */
-tex\:f.aghtex-mathit{
-  font-family:aghtex_roman,serif;font-style:italic;font-weight:normal;
+tex\:f.aghtex-mathit {
+  font-family: aghtex_roman,serif; font-style: italic; font-weight: normal;
 }
-tex\:math tex\:f.aghtex-digit{ /* 数字は直立 (= mathrm) */
-  font-family:aghtex_mathrm,aghtex_roman,serif;font-style:normal;font-weight:normal;}
+tex\:math tex\:f.aghtex-digit { /* 数字は直立 (= mathrm) */
+  font-family: aghtex_mathrm,aghtex_roman,serif; font-style: normal; font-weight: normal; }
 tex\:math tex\:f.aghtex-greek,
 tex\:math tex\:f.aghtex-alpha,
 tex\:math tex\:f.aghtex-mathit tex\:f.aghtex-digit,
 tex\:math tex\:f.aghtex-mathit tex\:f.aghtex-greek,
-tex\:math tex\:f.aghtex-mathit tex\:f.aghtex-alpha{
-  font-family:aghtex_mathit,aghtex_roman,serif;font-style:normal;font-weight:normal;}
+tex\:math tex\:f.aghtex-mathit tex\:f.aghtex-alpha {
+  font-family: aghtex_mathit,aghtex_roman,serif; font-style: normal; font-weight: normal; }
 /* \bm */
-tex\:f.aghtex-mathbm{
-  font-family:aghtex_roman,serif;font-style:italic;font-weight:bold;
+tex\:f.aghtex-mathbm {
+  font-family: aghtex_roman,serif; font-style: italic; font-weight: bold;
 }
 tex\:math tex\:f.aghtex-mathbm tex\:f.aghtex-greek,
-tex\:math tex\:f.aghtex-mathbm tex\:f.aghtex-alpha{
-  font-family:aghtex_mathit,aghtex_roman,serif;font-style:normal;font-weight:bold;
+tex\:math tex\:f.aghtex-mathbm tex\:f.aghtex-alpha {
+  font-family: aghtex_mathit,aghtex_roman,serif; font-style: normal; font-weight: bold;
 }
-tex\:math tex\:f.aghtex-mathbm tex\:f.aghtex-digit{ /* 数字は直立太字 (= mathbf) */
-  font-family:aghtex_mathrm,aghtex_roman,serif;font-style:normal;font-weight:bold;}
+tex\:math tex\:f.aghtex-mathbm tex\:f.aghtex-digit { /* 数字は直立太字 (= mathbf) */
+  font-family: aghtex_mathrm,aghtex_roman,serif; font-style: normal; font-weight: bold; }
 /* \hm */
-tex\:f.aghtex-mathhm{
-  font-family:aghtex_roman,serif;font-style:italic;font-weight:900;
+tex\:f.aghtex-mathhm {
+  font-family: aghtex_roman,serif; font-style: italic; font-weight: 900;
 }
-tex\:math tex\:f.aghtex-mathhm tex\:f.aghtex-alpha{
-  font-family:aghtex_mathit,aghtex_roman,serif;font-style:normal;font-weight:900;
+tex\:math tex\:f.aghtex-mathhm tex\:f.aghtex-alpha {
+  font-family: aghtex_mathit,aghtex_roman,serif; font-style: normal; font-weight: 900;
 }
 /* \mathrm */
-tex\:f.aghtex-mathrm{
-  font-family:aghtex_roman,serif;font-style:normal;font-weight:normal;}
+tex\:f.aghtex-mathrm {
+  font-family: aghtex_roman,serif; font-style: normal; font-weight: normal; }
 tex\:math tex\:f.aghtex-mathrm tex\:f.aghtex-greek,
 tex\:math tex\:f.aghtex-mathrm tex\:f.aghtex-digit,
-tex\:math tex\:f.aghtex-mathrm tex\:f.aghtex-alpha{
-  font-family:aghtex_mathrm,aghtex_roman,serif;font-style:normal;font-weight:normal;}
+tex\:math tex\:f.aghtex-mathrm tex\:f.aghtex-alpha {
+  font-family: aghtex_mathrm,aghtex_roman,serif; font-style: normal; font-weight: normal; }
 /* \mathsf */
 tex\:f.aghtex-mathsf,
-tex\:math tex\:f.aghtex-mathsf tex\:f.aghtex-alpha{
-  font-family:sans-serif;font-style:normal;font-weight:normal;
+tex\:math tex\:f.aghtex-mathsf tex\:f.aghtex-alpha {
+  font-family: sans-serif; font-style: normal; font-weight: normal;
 }
 /* \mathtt */
 tex\:f.aghtex-mathtt,
-tex\:math tex\:f.aghtex-mathtt tex\:f.aghtex-alpha{
-  font-family:"Courier New",monospace,serif;font-style:normal;font-weight:normal;
+tex\:math tex\:f.aghtex-mathtt tex\:f.aghtex-alpha {
+  font-family: "Courier New",monospace,serif; font-style: normal; font-weight: normal;
 }
 /* \mathbf */
-tex\:f.aghtex-mathbf{
-  font-family:aghtex_roman,serif;font-style:normal;font-weight:bold;}
+tex\:f.aghtex-mathbf {
+  font-family: aghtex_roman,serif; font-style: normal; font-weight: bold; }
 tex\:math tex\:f.aghtex-mathbf tex\:f.aghtex-alpha,
-tex\:math tex\:f.aghtex-mathbf tex\:f.aghtex-digit{
-  font-family:aghtex_mathrm,aghtex_roman,serif;font-style:normal;font-weight:bold;}
+tex\:math tex\:f.aghtex-mathbf tex\:f.aghtex-digit {
+  font-family: aghtex_mathrm,aghtex_roman,serif; font-style: normal; font-weight: bold; }
 /* \mathcal */
 tex\:f.aghtex-mathcal,
-tex\:math tex\:f.aghtex-mathcal tex\:f.aghtex-alpha-lower{
-  font-family:'Monotype Corsiva','Script','HG正楷書体-PRO','HGP教科書体',cursive;
-  font-style:normal;
+tex\:math tex\:f.aghtex-mathcal tex\:f.aghtex-alpha-lower {
+  font-family: 'Monotype Corsiva','Script','HG正楷書体-PRO','HGP教科書体',cursive;
+  font-style: normal;
 }
-tex\:math tex\:f.aghtex-mathcal tex\:f.aghtex-alpha-upper{
-  font-family:aghtex_mathcal,'Monotype Corsiva','Script',cursive;
-  font-style:normal;
+tex\:math tex\:f.aghtex-mathcal tex\:f.aghtex-alpha-upper {
+  font-family: aghtex_mathcal,'Monotype Corsiva','Script',cursive;
+  font-style: normal;
 }
 /* \mathfrak */
-tex\:f.aghtex-mathfrak{
-  font-family:'Script','Monotype Corsiva','HGP行書体','HG行書体',cursive;}
+tex\:f.aghtex-mathfrak {
+  font-family: 'Script','Monotype Corsiva','HGP行書体','HG行書体',cursive; }
 tex\:math tex\:f.aghtex-mathfrak tex\:f.aghtex-alpha,
-tex\:math tex\:f.aghtex-mathfrak tex\:f.aghtex-digit{
-  font-family:aghtex_mathfrak,'Script','Monotype Corsiva',cursive;
-  font-style:normal;letter-spacing:-.1ex;
+tex\:math tex\:f.aghtex-mathfrak tex\:f.aghtex-digit {
+  font-family: aghtex_mathfrak,'Script','Monotype Corsiva',cursive;
+  font-style: normal; letter-spacing: -.1ex;
 /*%%if mode=="Trident" (*/
-  padding-right:.1ex;
+  padding-right: .1ex;
 /*%%)*/
 }
 
 /* --- 文字の大きさ --- */
-tex\:small1{font-size:85%;}
-tex\:small2{font-size:80%;}
-tex\:small3{font-size:75%;}
-tex\:small4{font-size:65%;}
+tex\:small1 { font-size: 85%; }
+tex\:small2 { font-size: 80%; }
+tex\:small3 { font-size: 75%; }
+tex\:small4 { font-size: 65%; }
 
 /* 1. 大きな括弧 (\bigl, \bigr, etc.) */
-tex\:i.aghtex-bigl{margin-left:0.12em;margin-right:0;}
-tex\:i.aghtex-bigr{margin-left:0;margin-right:0.12em;}
-tex\:i.aghtex-bigm{margin-left:0.12em;margin-right:0.12em;}
+tex\:i.aghtex-bigl { margin-left: 0.12em; margin-right: 0; }
+tex\:i.aghtex-bigr { margin-left: 0; margin-right: 0.12em; }
+tex\:i.aghtex-bigm { margin-left: 0.12em; margin-right: 0.12em; }
 tex\:i.aghtex-big1>tex\:f { margin-left: 0; margin-right: -0.05em; }
 tex\:i.aghtex-big2>tex\:f { margin-left: 0; margin-right: -0.05em; }
 tex\:i.aghtex-big3>tex\:f { margin-left: 0; margin-right: -0.05em; }
@@ -530,166 +530,166 @@ tex\:i.aghtex-big2>tex\:f.aghtex-big-variant { font-family: aghtex_mathscr,aghte
 tex\:i.aghtex-big3>tex\:f.aghtex-big-variant { font-family: aghtex_mathbm, aghtex_mathrm,aghtex_gothic,sans-serif; }
 tex\:i.aghtex-big4>tex\:f.aghtex-big-variant { font-family: aghtex_mathcal,aghtex_mathrm,aghtex_gothic,sans-serif; }
 
-tex\:fsize.aghtex-default{font-size:medium;}
-tex\:fsize.aghtex-script{font-size:75%;}
-tex\:fsize.aghtex-scriptscript{font-size:60%;}
+tex\:fsize.aghtex-default { font-size: medium; }
+tex\:fsize.aghtex-script { font-size: 75%; }
+tex\:fsize.aghtex-scriptscript { font-size: 60%; }
 
-tex\:close5{letter-spacing:-0.5ex;padding-right:0.5ex;}
-tex\:close4{letter-spacing:-0.4ex;padding-right:0.4ex;}
+tex\:close5 { letter-spacing: -0.5ex; padding-right: 0.5ex; }
+tex\:close4 { letter-spacing: -0.4ex; padding-right: 0.4ex; }
 
 /*%%if mode=="Trident" (*/
   /* 変形 */
-  tex\:trlong{
-    width:0px;height:0px;
-    filter:'progid:DXImageTransform.Microsoft.Matrix(M11=2,M12=0,M21=0,M22=0.75,sizingMethod="auto expand")';
-    -ms-filter:'progid:DXImageTransform.Microsoft.Matrix(M11=2,M12=0,M21=0,M22=0.75,sizingMethod="auto expand")';
+  tex\:trlong {
+    width: 0px; height: 0px;
+    filter: 'progid:DXImageTransform.Microsoft.Matrix(M11=2,M12=0,M21=0,M22=0.75,sizingMethod="auto expand")';
+    -ms-filter: 'progid:DXImageTransform.Microsoft.Matrix(M11=2,M12=0,M21=0,M22=0.75,sizingMethod="auto expand")';
   }
   /* IE7-Strict */
   html:first-child+html tex\:trlong,
-  html[xmlns] tex\:trlong{
-    width:auto;height:auto;
-    display:inline-block;
-    vertical-align:0.2ex;
-    filter:expression('progid:DXImageTransform.Microsoft.Matrix(M11=2,M12=0,M21=0,M22=0.75,sizingMethod="auto expand")');
+  html[xmlns] tex\:trlong {
+    width: auto; height: auto;
+    display: inline-block;
+    vertical-align: 0.2ex;
+    filter: expression('progid:DXImageTransform.Microsoft.Matrix(M11=2,M12=0,M21=0,M22=0.75,sizingMethod="auto expand")');
   }
 /*%%)*/
 
 /* --- 空白 --- */
-tex\:i.aghtex-hspace-slash {padding-right: 0.3ex;}
-tex\:i.aghtex-hspace-quad {padding-right: 2.4ex;}
-tex\:i.aghtex-hspace-qquad {padding-right: 4.8ex;}
+tex\:i.aghtex-hspace-slash { padding-right: 0.3ex; }
+tex\:i.aghtex-hspace-quad { padding-right: 2.4ex; }
+tex\:i.aghtex-hspace-qquad { padding-right: 4.8ex; }
 
 tex\:i.aghtex-phantom,
 tex\:i.aghtex-vphantom,
 tex\:i.aghtex-vphantom-middle,
 tex\:i.aghtex-vphantom-top,
 tex\:i.aghtex-vphantom-bottom,
-tex\:i.aghtex-hphantom{
-  display:inline-block;vertical-align:baseline;
-  /* Fx:  Workaround for "display:inline-block;overflow:hidden" Bug
+tex\:i.aghtex-hphantom {
+  display: inline-block; vertical-align: baseline;
+  /* Fx:  Workaround for "display: inline-block; overflow: hidden" Bug
    * Cr: どうやら overflow: hidden にすると baseline が正しく計算されない (2018-02-05) */
-  visibility:hidden;overflow:visible;
-  background-color:lightblue;}
-tex\:i.aghtex-hphantom{height:1px;}
+  visibility: hidden; overflow: visible;
+  background-color: lightblue; }
+tex\:i.aghtex-hphantom { height: 1px; }
 tex\:i.aghtex-vphantom,
 tex\:i.aghtex-vphantom-middle,
 tex\:i.aghtex-vphantom-top,
-tex\:i.aghtex-vphantom-bottom{width:1px;}  /*  0 を指定すると何も指定していないのと同じ? */
-tex\:i.aghtex-vphantom-middle{vertical-align:middle;}
-tex\:i.aghtex-vphantom-top{vertical-align:top;}
-tex\:i.aghtex-vphantom-bottom{vertical-align:bottom;}
-tex\:i.aghtex-vphantom-inner{display:block;white-space:nowrap;width:100em;}
+tex\:i.aghtex-vphantom-bottom { width: 1px; }  /*  0 を指定すると何も指定していないのと同じ? */
+tex\:i.aghtex-vphantom-middle { vertical-align: middle; }
+tex\:i.aghtex-vphantom-top { vertical-align: top; }
+tex\:i.aghtex-vphantom-bottom { vertical-align: bottom; }
+tex\:i.aghtex-vphantom-inner { display: block; white-space: nowrap; width: 100em; }
 
-tex\:i.aghtex-latex-allowbreak{white-espace:normal;}
+tex\:i.aghtex-latex-allowbreak { white-espace: normal; }
 
 /* -- 負の空白 -- */
 /*%%if mode=="Trident" (*/
-  tex\:i.aghtex-negative-space{margin-left:-0.4ex;}
-  tex\:i.aghtex-negative-space-ie6{letter-spacing:-2.0ex;margin-left:0px;}
+  tex\:i.aghtex-negative-space { margin-left: -0.4ex; }
+  tex\:i.aghtex-negative-space-ie6 { letter-spacing: -2.0ex; margin-left: 0px; }
 /*%%elif mode=="Opera"||mode=="WebKit"*/
-  tex\:i.aghtex-negative-space{margin-left:-0.4ex;}
+  tex\:i.aghtex-negative-space { margin-left: -0.4ex; }
 /*%%elif mode=="Gecko"*/
-  tex\:i.aghtex-negative-space{margin-left:-0.3ex;}
+  tex\:i.aghtex-negative-space { margin-left: -0.3ex; }
 /*%%)*/
 
-tex\:i.aghtex-nobr{white-space:nowrap;}
-tex\:i.aghtex-minipage{display:inline-block;vertical-align:middle;}
+tex\:i.aghtex-nobr { white-space: nowrap; }
+tex\:i.aghtex-minipage { display: inline-block; vertical-align: middle; }
 tex\:i.aghtex-hfill,
 tex\:i.aghtex-hfill-dot,
-tex\:i.aghtex-hfill-rule{padding-right:4em;font-size:1px;}
-tex\:i.aghtex-hfill-dot{position:relative;top:-4px;left:0;border-bottom:2px dotted $"borderColor";}
-tex\:i.aghtex-hfill-rule{position:relative;top:-2px;left:0;border-bottom:1px solid $"borderColor";}
+tex\:i.aghtex-hfill-rule { padding-right: 4em; font-size: 1px; }
+tex\:i.aghtex-hfill-dot { position: relative; top: -4px; left: 0; border-bottom: 2px dotted $"borderColor"; }
+tex\:i.aghtex-hfill-rule { position: relative; top: -2px; left: 0; border-bottom: 1px solid $"borderColor"; }
 
 /*--------------------------------------------------------------------
-		数式表現
+    数式表現
 --------------------------------------------------------------------*/
 /* 数式環境 \begin{equation} */
 
 tex\:math.aghtex-flalign,
-tex\:math.aghtex-displaymath{
-  display:block;text-align:center;margin-top:1ex;margin-bottom:1ex;
-  position:relative;left:0;top:0;
-  white-space:nowrap;
+tex\:math.aghtex-displaymath {
+  display: block; text-align: center; margin-top: 1ex; margin-bottom: 1ex;
+  position: relative; left: 0; top: 0;
+  white-space: nowrap;
   /*%%if mode=="Trident" (*/
-  zoom:1;
+  zoom: 1;
   /*%%)*/
 }
-tex\:math.aghtex-flalign{text-align:left;}
+tex\:math.aghtex-flalign { text-align: left; }
 
-td.aghtex-stretch{padding:0px!important;border-width:0px!important;}
+td.aghtex-stretch { padding: 0px!important; border-width: 0px!important; }
 /*%%if mode=="Opera"*/
-  td.aghtex-stretch{-o-background-size:100% 100%;background-size:100% 100%;background-repeat:no-repeat;}
+  td.aghtex-stretch { -o-background-size: 100% 100%; background-size: 100% 100%; background-repeat: no-repeat; }
 /*%%elif mode=="WebKit"*/
-  /* stretching image with background-image:url(...) */
-  td.aghtex-stretch-bg{
-    padding:0px!important;border-width:0px!important;
-    background-repeat:no-repeat;
-    -webkit-background-size:100%; /* Cr1+<3, Sf3+<4.1 */
-    background-size:100% 100%;
-    /* background-size:cover; Cr3+, Sf4.1+ これは等比拡大なので× */
-    -webkit-print-color-adjust:exact;}
+  /* stretching image with background-image: url(...) */
+  td.aghtex-stretch-bg {
+    padding: 0px!important; border-width: 0px!important;
+    background-repeat: no-repeat;
+    -webkit-background-size: 100%; /* Cr1+<3, Sf3+<4.1 */
+    background-size: 100% 100%;
+    /* background-size: cover; Cr3+, Sf4.1+ これは等比拡大なので× */
+    -webkit-print-color-adjust: exact; }
 
-  td.aghtex-stretch-bg-lparen{width:0.80ex;background-image:url(stretch_lparen.svg);}
-  td.aghtex-stretch-bg-rparen{width:0.80ex;background-image:url(stretch_rparen.svg);}
-  td.aghtex-stretch-bg-lbrace{width:0.96ex;background-image:url(stretch_lbrace.svg);}
-  td.aghtex-stretch-bg-rbrace{width:0.96ex;background-image:url(stretch_rbrace.svg);}
-  td.aghtex-stretch-bg-langle{width:0.80ex;background-image:url(stretch_langle.svg);}
-  td.aghtex-stretch-bg-rangle{width:0.80ex;background-image:url(stretch_rangle.svg);}
-  td.aghtex-stretch-bg-sqrt  {width:1.60ex;background-image:url(stretch_sqrt.svg);}
+  td.aghtex-stretch-bg-lparen { width: 0.80ex; background-image: url(stretch_lparen.svg); }
+  td.aghtex-stretch-bg-rparen { width: 0.80ex; background-image: url(stretch_rparen.svg); }
+  td.aghtex-stretch-bg-lbrace { width: 0.96ex; background-image: url(stretch_lbrace.svg); }
+  td.aghtex-stretch-bg-rbrace { width: 0.96ex; background-image: url(stretch_rbrace.svg); }
+  td.aghtex-stretch-bg-langle { width: 0.80ex; background-image: url(stretch_langle.svg); }
+  td.aghtex-stretch-bg-rangle { width: 0.80ex; background-image: url(stretch_rangle.svg); }
+  td.aghtex-stretch-bg-sqrt   { width: 1.60ex; background-image: url(stretch_sqrt.svg); }
 
 /*%%end*/
 /*%%if mode=="Gecko"||mode=="WebKit"*/
   /* stretching image with <svg> */
-  td.aghtex-stretch-svg{
-    padding:0px!important;border-width:0px!important;
-    width:1.0ex;height:100%;position:relative;}
-  td.aghtex-stretch-svg>svg{
-    width:1.0ex;height:100%;position:absolute;left:0;top:0;}
+  td.aghtex-stretch-svg {
+    padding: 0px!important; border-width: 0px!important;
+    width: 1.0ex; height: 100%; position: relative; }
+  td.aghtex-stretch-svg>svg {
+    width: 1.0ex; height: 100%; position: absolute; left: 0; top: 0; }
 
   td.aghtex-stretch-svg-lparen,td.aghtex-stretch-svg-lparen>svg,
-  td.aghtex-stretch-svg-rparen,td.aghtex-stretch-svg-rparen>svg{width:${.eval|mode=="Gecko"?"1.0":"0.8"}ex;}
+  td.aghtex-stretch-svg-rparen,td.aghtex-stretch-svg-rparen>svg { width: ${.eval|mode=="Gecko"?"1.0":"0.8"}ex; }
   td.aghtex-stretch-svg-lbrace,td.aghtex-stretch-svg-lbrace>svg,
-  td.aghtex-stretch-svg-rbrace,td.aghtex-stretch-svg-rbrace>svg{width:${.eval|mode=="Gecko"?"1.2":"0.96"}ex;}
+  td.aghtex-stretch-svg-rbrace,td.aghtex-stretch-svg-rbrace>svg { width: ${.eval|mode=="Gecko"?"1.2":"0.96"}ex; }
   td.aghtex-stretch-svg-langle,td.aghtex-stretch-svg-langle>svg,
-  td.aghtex-stretch-svg-rangle,td.aghtex-stretch-svg-rangle>svg{width:${.eval|mode=="Gecko"?"1.0":"0.8"}ex;}
+  td.aghtex-stretch-svg-rangle,td.aghtex-stretch-svg-rangle>svg { width: ${.eval|mode=="Gecko"?"1.0":"0.8"}ex; }
 /*%%if mode=="Gecko"*/
-  td.aghtex-stretch-svg-sqrt>svg{left:0.2px;top:-1.0px;}
+  td.aghtex-stretch-svg-sqrt>svg { left: 0.2px; top: -1.0px; }
 /*%%end*/
-  td.aghtex-stretch-svg-sqrt,td.aghtex-stretch-svg-sqrt>svg{width:${.eval|mode=="Gecko"?"2.0":"1.6"}ex;}
+  td.aghtex-stretch-svg-sqrt,td.aghtex-stretch-svg-sqrt>svg { width: ${.eval|mode=="Gecko"?"2.0":"1.6"}ex; }
 
 /*%%end*/
 /*%%if mode=="Trident"(*/
-td.aghtex-vstretch{position:relative;height:0px;}
-img.aghtex-stretch{position:absolute;left:0;top:0;width:100%;height:100%;}
+td.aghtex-vstretch { position: relative; height: 0px; }
+img.aghtex-stretch { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
 
 /*%%)*/
 
-tex\:lceil{width:.5ex;border-top:1px solid $"borderColor";border-left:1px solid $"borderColor";margin-left:.5ex;}
-tex\:lflor{width:.5ex;border-bottom:1px solid $"borderColor";border-left:1px solid $"borderColor";margin-left:.5ex;}
-tex\:rceil{width:.5ex;border-top:1px solid $"borderColor";border-right:1px solid $"borderColor";margin-right:.5ex;}
-tex\:rflor{width:.5ex;border-bottom:1px solid $"borderColor";border-right:1px solid $"borderColor";margin-right:.5ex;}
+tex\:lceil { width: .5ex; border-top: 1px solid $"borderColor"; border-left: 1px solid $"borderColor"; margin-left: .5ex; }
+tex\:lflor { width: .5ex; border-bottom: 1px solid $"borderColor"; border-left: 1px solid $"borderColor"; margin-left: .5ex; }
+tex\:rceil { width: .5ex; border-top: 1px solid $"borderColor"; border-right: 1px solid $"borderColor"; margin-right: .5ex; }
+tex\:rflor { width: .5ex; border-bottom: 1px solid $"borderColor"; border-right: 1px solid $"borderColor"; margin-right: .5ex; }
 
 /*------------------------------------------------------------------*/
 /* inline-table */
-table.aghtex-inline{
+table.aghtex-inline {
 /*%%if mode=="Trident" (*/
-  display:inline; /* white-space:nowrap は駄目 */
+  display: inline; /* white-space: nowrap は駄目 */
 /*%%elif mode=="WebKit"*/
-  display:inline-table;
+  display: inline-table;
 /*%%elif mode=="Opera"*/
-  display:inline-table;white-space:nowrap;
+  display: inline-table; white-space: nowrap;
 /*%%elif mode=="Gecko"*/
-  display:inline-table;
+  display: inline-table;
 /*%%)*/
-  vertical-align:middle;margin:0px;
+  vertical-align: middle; margin: 0px;
 }
 
 /*------------------------------------------------------------------*/
 /* 上付・下付 */
 
-tex\:i.aghtex-sub{font-size:75%;display:inline-block;margin-right:0.15ex;}
-tex\:i.aghtex-sup{font-size:75%;display:inline-block;}
-tex\:i.aghtex-sup-nest{display:inline-block;vertical-align:text-bottom;}
+tex\:i.aghtex-sub { font-size: 75%; display: inline-block; margin-right: 0.15ex; }
+tex\:i.aghtex-sup { font-size: 75%; display: inline-block; }
+tex\:i.aghtex-sup-nest { display: inline-block; vertical-align: text-bottom; }
 
 /*%%if mode=="WebKit"*/
   tex\:i.aghtex-sub { vertical-align: -0.35em; }
@@ -758,9 +758,9 @@ tex\:i.aghtex-sup-nest{display:inline-block;vertical-align:text-bottom;}
 
 tex\:i.aghtex-supsub,
 tex\:i.aghtex-supsub-d,
-tex\:i.aghtex-supsub-u{display:inline-block;text-align:left;text-indent:0px;padding:0px;margin:0px;}
+tex\:i.aghtex-supsub-u { display: inline-block; text-align: left; text-indent: 0px; padding: 0px; margin: 0px; }
 
-tex\:i.aghtex-supsub{font-size:75%;}
+tex\:i.aghtex-supsub { font-size: 75%; }
 /*%%if mode == "Opera"*/
   tex\:i.aghtex-supsub { vertical-align: -0.4em; }
   tex\:i.aghtex-supsub-big1 { vertical-align: -0.4em; }
@@ -775,281 +775,281 @@ tex\:i.aghtex-supsub{font-size:75%;}
   tex\:i.aghtex-supsub-big4 { vertical-align: -1.9em; }
 /*%%end*/
 
-tex\:i.aghtex-supsub-u{display:block;margin-bottom:-0.25em;}
+tex\:i.aghtex-supsub-u { display: block; margin-bottom: -0.25em; }
 tex\:i.aghtex-supsub-big1>tex\:i.aghtex-supsub-u { margin-bottom: -0.20em; }
 tex\:i.aghtex-supsub-big2>tex\:i.aghtex-supsub-u { margin-bottom: 0.7em; }
 tex\:i.aghtex-supsub-big3>tex\:i.aghtex-supsub-u { margin-bottom: 1.6em; }
 tex\:i.aghtex-supsub-big4>tex\:i.aghtex-supsub-u { margin-bottom: 2.4em; }
 
-tex\:i.aghtex-supsub-d{margin-right:0.15ex;}
+tex\:i.aghtex-supsub-d { margin-right: 0.15ex; }
 /*%%if mode != "Trident"*/
-  tex\:i.aghtex-supsub-d{vertical-align:text-top;}
+  tex\:i.aghtex-supsub-d { vertical-align: text-top; }
 /*%%end*/
 
 tex\:i.aghtex-supsub-textstyle { font-size: 100%; margin-top: -1ex; margin-bottom: -1ex; }
-tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-u{font-size:65%;}
-tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d{font-size:65%;}
-tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-u>tex\:i{display:block;margin-bottom:-0.0em;}
-tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d>tex\:i{display:block;margin-top:-0.0em;}
-.aghtex-tag-script tex\:i.aghtex-supsub-textstyle{margin-top:0;margin-bottom:0}
-.aghtex-tag-script tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-u{font-size:80%;}
-.aghtex-tag-script tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d{font-size:80%;}
+tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-u { font-size: 65%; }
+tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d { font-size: 65%; }
+tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-u>tex\:i { display: block; margin-bottom: -0.0em; }
+tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d>tex\:i { display: block; margin-top: -0.0em; }
+.aghtex-tag-script tex\:i.aghtex-supsub-textstyle { margin-top: 0; margin-bottom: 0}
+.aghtex-tag-script tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-u { font-size: 80%; }
+.aghtex-tag-script tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d { font-size: 80%; }
 /*%%if mode=="Gecko"*/
-  tex\:i.aghtex-supsub-textstyle{vertical-align:-0.6em;}
-  .aghtex-tag-script tex\:i.aghtex-supsub-textstyle{vertical-align:-0.7em;}
+  tex\:i.aghtex-supsub-textstyle { vertical-align: -0.6em; }
+  .aghtex-tag-script tex\:i.aghtex-supsub-textstyle { vertical-align: -0.7em; }
 /*%%end*/
 
 /*------------------------------------------------------------------*/
 /* \left-\right 括弧 */
 
-table.aghtex-cmdleft{
+table.aghtex-cmdleft {
   /* tex-inline */
 /*%%if mode=="Trident" (*/
-  display:inline;
+  display: inline;
 /*%%elif mode=="WebKit"||mode=="Opera"||mode=="Gecko" */
-  display:inline-table;
+  display: inline-table;
 /*%%)*/
 /*%%if mode=="Trident" (*/
-  vertical-align:middle;
+  vertical-align: middle;
 /*%%else*/
-  vertical-align:baseline;
+  vertical-align: baseline;
 /*%%)*/
-  margin:0 0.15em;
+  margin: 0 0.15em;
 /*%%if mode=="Opera" (*/
-  white-space:nowrap;
+  white-space: nowrap;
 /*%%elif mode=="Trident"*/
-  /* white-space:nowrap は駄目 */
+  /* white-space: nowrap は駄目 */
 /*%%)*/
 
 /*%%if mode!="Gecko" (*/
-  /* Fx では border-collapse:collapse; にすると border-bottom/right が表示されない */
-  border-collapse:separate;border-spacing:0;
+  /* Fx では border-collapse: collapse; にすると border-bottom/right が表示されない */
+  border-collapse: separate; border-spacing: 0;
 /*%%else*/
-  border-collapse:collapse;
+  border-collapse: collapse;
 /*%%)*/
 }
 /*%%if mode=="WebKit" (*/
-/* [Sf5] Sf5 は CSS2.1 table{vertical-align:baseline} に対応していない */
-table.aghtex-cmdleft-sf{vertical-align:middle;}
+/* [Sf5] Sf5 は CSS2.1 table { vertical-align: baseline } に対応していない */
+table.aghtex-cmdleft-sf { vertical-align: middle; }
 /*%%)*/
 
-tr.aghtex-cmdleft{height:0px;}
-td.aghtex-cmdleft-content{vertical-align:baseline;}
+tr.aghtex-cmdleft { height: 0px; }
+td.aghtex-cmdleft-content { vertical-align: baseline; }
 
 td.aghtex-left-kaku, td.aghtex-right-kaku,
 td.aghtex-left-ceil, td.aghtex-right-ceil,
 td.aghtex-left-flor, td.aghtex-right-flor,
 td.aghtex-left-vert,
-td.aghtex-left-pipe, td.aghtex-right-pipe{
-  border-style:solid!important;
-	width:.5ex;padding:0px!important;
+td.aghtex-left-pipe, td.aghtex-right-pipe {
+  border-style: solid!important;
+  width: .5ex; padding: 0px!important;
 }
-td.aghtex-left-kaku {border-width:1px 0px 1px 1px!important;}
-td.aghtex-right-kaku{border-width:1px 1px 1px 0px!important;}
-td.aghtex-left-ceil {border-width:1px 0px 0px 1px!important;}
-td.aghtex-right-ceil{border-width:1px 1px 0px 0px!important;}
-td.aghtex-left-flor {border-width:0px 0px 1px 1px!important;}
-td.aghtex-right-flor{border-width:0px 1px 1px 0px!important;}
-td.aghtex-left-vert {border-width:0px 1px 0px 1px!important;width:1px;font-size:1px;}
-td.aghtex-left-pipe {border-width:0px 0px 0px 1px!important;width:1px;font-size:1px;}
-td.aghtex-right-pipe{border-width:0px 1px 0px 0px!important;width:1px;font-size:1px;}
+td.aghtex-left-kaku  { border-width: 1px 0px 1px 1px!important; }
+td.aghtex-right-kaku { border-width: 1px 1px 1px 0px!important; }
+td.aghtex-left-ceil  { border-width: 1px 0px 0px 1px!important; }
+td.aghtex-right-ceil { border-width: 1px 1px 0px 0px!important; }
+td.aghtex-left-flor  { border-width: 0px 0px 1px 1px!important; }
+td.aghtex-right-flor { border-width: 0px 1px 1px 0px!important; }
+td.aghtex-left-vert  { border-width: 0px 1px 0px 1px!important; width: 1px; font-size: 1px; }
+td.aghtex-left-pipe  { border-width: 0px 0px 0px 1px!important; width: 1px; font-size: 1px; }
+td.aghtex-right-pipe { border-width: 0px 1px 0px 0px!important; width: 1px; font-size: 1px; }
 
-td.aghtex-cmdleft-sup{font-size:75%;padding:0px;vertical-align:top;}
+td.aghtex-cmdleft-sup { font-size: 75%; padding: 0px; vertical-align: top; }
 /*%%if mode=="Trident" (*/
-  span.aghtex-cmdleft-sup{position:relative;top:-0.6em;margin-bottom:-0.6em;display:block;}
+  span.aghtex-cmdleft-sup { position: relative; top: -0.6em; margin-bottom: -0.6em; display: block; }
 /*%%elif mode=="WebKit"*/
-  span.aghtex-cmdleft-sup{position:relative;top:-0.5em;margin-bottom:-0.5em;display:block;}
+  span.aghtex-cmdleft-sup { position: relative; top: -0.5em; margin-bottom: -0.5em; display: block; }
 /*%%elif mode=="Opera"*/
-  td.aghtex-cmdleft-sup{white-space:nowrap;}
-  span.aghtex-cmdleft-sup{position:relative;top:-0.7em;margin-bottom:-0.7em;display:block;}
+  td.aghtex-cmdleft-sup { white-space: nowrap; }
+  span.aghtex-cmdleft-sup { position: relative; top: -0.7em; margin-bottom: -0.7em; display: block; }
 /*%%elif mode=="Gecko"*/
-  span.aghtex-cmdleft-sup{position:relative;top:-0.7em;margin-bottom:-0.7em;display:block;}
+  span.aghtex-cmdleft-sup { position: relative; top: -0.7em; margin-bottom: -0.7em; display: block; }
 /*%%)*/
-td.aghtex-cmdleft-sub{font-size:75%;padding:0px;vertical-align:bottom;}
-span.aghtex-cmdleft-sub{position:relative;top:0.5em;margin-top:-0.5em;display:block;}
+td.aghtex-cmdleft-sub { font-size: 75%; padding: 0px; vertical-align: bottom; }
+span.aghtex-cmdleft-sub { position: relative; top: 0.5em; margin-top: -0.5em; display: block; }
 
 /*------------------------------------------------------------------*/
 /* 分数表記 */
-tex\:frac{display:inline-block;vertical-align:middle;text-align:center;padding-left:1px;padding-right:1px;}
-tex\:frac tex\:num{display:block;margin-bottom:0;margin-top:0px;padding-top:0px;}
-tex\:frac tex\:den{display:block;margin-top:0;border-top:1px solid $"borderColor";padding-top:1px;margin-bottom:0px;margin-top:0px;}
+tex\:frac { display: inline-block; vertical-align: middle; text-align: center; padding-left: 1px; padding-right: 1px; }
+tex\:frac tex\:num { display: block; margin-bottom: 0; margin-top: 0px; padding-top: 0px; }
+tex\:frac tex\:den { display: block; margin-top: 0; border-top: 1px solid $"borderColor"; padding-top: 1px; margin-bottom: 0px; margin-top: 0px; }
 table.aghtex-int tex\:num,
 table.aghtex-int tex\:den,
 tex\:i.aghtex-sup tex\:num,
 tex\:i.aghtex-sub tex\:num,
 tex\:i.aghtex-sup tex\:den,
-tex\:i.aghtex-sub tex\:den{padding:0px;font-size:80%;}
+tex\:i.aghtex-sub tex\:den { padding: 0px; font-size: 80%; }
 td.aghtex-genfrac-numerator,
-td.aghtex-genfrac-center{text-align:center;}
-td.aghtex-genfrac-numerator{border-bottom:1px solid $"borderColor";}
+td.aghtex-genfrac-center { text-align: center; }
+td.aghtex-genfrac-numerator { border-bottom: 1px solid $"borderColor"; }
 /*%%if mode=="Trident" (*/
-  table.aghtex-frac-ie6{display:inline;vertical-align:middle;margin:0px 0.2ex;border-collapse:collapse;}
+  table.aghtex-frac-ie6 { display: inline; vertical-align: middle; margin: 0px 0.2ex; border-collapse: collapse; }
   td.aghtex-frac-ie6-num,
-  td.aghtex-frac-ie6-den{padding:0px!important;border-width:0px!important;text-align:center!important;}
-  td.aghtex-frac-ie6-den{border-width:1px 0px 0px 0px!important;border-style:solid!important;}
+  td.aghtex-frac-ie6-den { padding: 0px!important; border-width: 0px!important; text-align: center!important; }
+  td.aghtex-frac-ie6-den { border-width: 1px 0px 0px 0px!important; border-style: solid!important; }
   table.aghtex-int td.aghtex-frac-ie6-num,
   table.aghtex-int td.aghtex-frac-ie6-den,
   tex\:i.aghtex-sup td.aghtex-frac-ie6-num,
   tex\:i.aghtex-sup td.aghtex-frac-ie6-den,
   tex\:i.aghtex-sub td.aghtex-frac-ie6-num,
-  tex\:i.aghtex-sub td.aghtex-frac-ie6-den{padding:0px;font-size:80%;}
+  tex\:i.aghtex-sub td.aghtex-frac-ie6-den { padding: 0px; font-size: 80%; }
 /*%%)*/
 
 /*%%if mode=="Gecko" (*/
-tex\:frac2{display:inline-block;vertical-align:-.75em;text-align:center;padding:0px 1px;}
+tex\:frac2 { display: inline-block; vertical-align: -.75em; text-align: center; padding: 0px 1px; }
 /*%%else*/
-tex\:frac2{display:inline-block;vertical-align:-.65em;text-align:center;padding:0px 1px;}
+tex\:frac2 { display: inline-block; vertical-align: -.65em; text-align: center; padding: 0px 1px; }
 /*%%)*/
-tex\:frac2>tex\:num{display:block;border-bottom:1px solid $"borderColor";padding:0px 1px;}
-tex\:frac2>tex\:den{display:inline-block;vertical-align:text-top;margin:0px 1px;padding-top:1px;}
+tex\:frac2>tex\:num { display: block; border-bottom: 1px solid $"borderColor"; padding: 0px 1px; }
+tex\:frac2>tex\:den { display: inline-block; vertical-align: text-top; margin: 0px 1px; padding-top: 1px; }
 
-tex\:frac2.aghtex-tag-script{margin-top:-0.2em;margin-bottom:-0.4em}
-tex\:frac2.aghtex-tag-script>tex\:num{font-size:60%;}
-tex\:frac2.aghtex-tag-script>tex\:den{font-size:60%;}
-tex\:frac2.aghtex-tag-script>tex\:num>tex\:i{display:block;margin-bottom:-0.3ex;}
-tex\:frac2.aghtex-tag-script>tex\:den>tex\:i{display:block;margin-top:-0.6ex;}
-tex\:frac2.aghtex-tag-script>tex\:den>tex\:i>table.aghtex-sqrt{margin-top:0.5ex;}
+tex\:frac2.aghtex-tag-script { margin-top: -0.2em; margin-bottom: -0.4em}
+tex\:frac2.aghtex-tag-script>tex\:num { font-size: 60%; }
+tex\:frac2.aghtex-tag-script>tex\:den { font-size: 60%; }
+tex\:frac2.aghtex-tag-script>tex\:num>tex\:i { display: block; margin-bottom: -0.3ex; }
+tex\:frac2.aghtex-tag-script>tex\:den>tex\:i { display: block; margin-top: -0.6ex; }
+tex\:frac2.aghtex-tag-script>tex\:den>tex\:i>table.aghtex-sqrt { margin-top: 0.5ex; }
 
 /* class=aghtex-tag-script は、既に数式中の小さい文字の中にある事を表し、
  * 内部の \tfrac が不必要に文字を小さくしたり余白を削ったりしない為にある。
  * 付加的な情報として tex:i.aghtex-sup 等の要素につけて出力する。
  */
-.aghtex-tag-script tex\:frac2.aghtex-tag-script{margin-top:0;margin-bottom:0}
-.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:num{font-size:95%;}
-.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:den{font-size:95%;}
-.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:num>tex\:i{display:block;margin-bottom:-0.3ex;}
-.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:den>tex\:i{display:block;margin-top:-0.3ex;}
-.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:den>tex\:i>table.aghtex-sqrt{margin-top:0.2ex;}
+.aghtex-tag-script tex\:frac2.aghtex-tag-script { margin-top: 0; margin-bottom: 0}
+.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:num { font-size: 95%; }
+.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:den { font-size: 95%; }
+.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:num>tex\:i { display: block; margin-bottom: -0.3ex; }
+.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:den>tex\:i { display: block; margin-top: -0.3ex; }
+.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:den>tex\:i>table.aghtex-sqrt { margin-top: 0.2ex; }
 
 /*------------------------------------------------------------------*/
 /* overbrace / underbrace */
 
 /* [version 1] */
-tex\:i.aghtex-underbrace{display:inline-block;vertical-align:baseline;}
-tex\:i.aghtex-underbrace-i{display:block;position:relative;top:0px;left:0px;}
-tex\:i.aghtex-underbrace-i tex\:ud{display:block;width:100%;text-align:center;position:absolute;top:1ex;left:0px;font-size:80%;}
-tex\:i.aghtex-underbrace-i img.aghtex-underbrace{position:absolute;top:0px;left:0px;width:100%;height:1ex;}
+tex\:i.aghtex-underbrace { display: inline-block; vertical-align: baseline; }
+tex\:i.aghtex-underbrace-i { display: block; position: relative; top: 0px; left: 0px; }
+tex\:i.aghtex-underbrace-i tex\:ud { display: block; width: 100%; text-align: center; position: absolute; top: 1ex; left: 0px; font-size: 80%; }
+tex\:i.aghtex-underbrace-i img.aghtex-underbrace { position: absolute; top: 0px; left: 0px; width: 100%; height: 1ex; }
 /*%%if mode=="Trident" (*/
-  tex\:i.aghtex-underbrace{vertical-align:-0.25em;}
+  tex\:i.aghtex-underbrace { vertical-align: -0.25em; }
   tex\:i.aghtex-underbrace-vphantom1,
-  tex\:i.aghtex-underbrace-vphantom2{width:1px;overflow:hidden;visibility:hidden;margin-right:-1px;}
-  tex\:i.aghtex-underbrace-vphantom1{vertical-align:-1ex;}
-  tex\:i.aghtex-underbrace-vphantom2{vertical-align:-2.6ex;}
+  tex\:i.aghtex-underbrace-vphantom2 { width: 1px; overflow: hidden; visibility: hidden; margin-right: -1px; }
+  tex\:i.aghtex-underbrace-vphantom1 { vertical-align: -1ex; }
+  tex\:i.aghtex-underbrace-vphantom2 { vertical-align: -2.6ex; }
 
-	/* IE の標準モードでは何故か上がうまく動かない… */
-	tex\:i.aghtex-underbrace-i tex\:ud,
-	tex\:i.aghtex-underbrace-i img.aghtex-underbrace{width:expression(this.parentElement.parentElement.clientWidth-2);}
+  /* IE の標準モードでは何故か上がうまく動かない… */
+  tex\:i.aghtex-underbrace-i tex\:ud,
+  tex\:i.aghtex-underbrace-i img.aghtex-underbrace { width: expression(this.parentElement.parentElement.clientWidth-2); }
 /*%%)*/
 
 /* [version 2] */
 
-table.aghtex-underbrace{
+table.aghtex-underbrace {
   /* extended table.aghtex-inline rule */
 /*%%if mode=="Trident" (*/
-  display:inline;vertical-align:middle;
+  display: inline; vertical-align: middle;
 /*%%else*/
-  display:inline-table;vertical-align:baseline;
+  display: inline-table; vertical-align: baseline;
 /*%%)*/
 /*%%if mode=="Opera" (*/
-  white-space:nowrap;
+  white-space: nowrap;
 /*%%)*/
-  margin:0;padding:0;border-collapse:collapse;
-  text-align:center;
+  margin: 0; padding: 0; border-collapse: collapse;
+  text-align: center;
 }
-td.aghtex-underbrace-b{padding:0;margin:0;vertical-align:baseline;}
-td.aghtex-underbrace-t{padding:0;margin:0;font-size:80%;}
-td.aghtex-underbrace-i{
-  margin:0px!important;padding:0px!important;border-width:0px!important;
-  position:relative;top:-0.25ex;
+td.aghtex-underbrace-b { padding: 0; margin: 0; vertical-align: baseline; }
+td.aghtex-underbrace-t { padding: 0; margin: 0; font-size: 80%; }
+td.aghtex-underbrace-i {
+  margin: 0px!important; padding: 0px!important; border-width: 0px!important;
+  position: relative; top: -0.25ex;
 /*%%if mode=="WebKit" (*/
-  -webkit-background-size:100%;
-  background-size:100% 100%;
-  -webkit-print-color-adjust:exact;
+  -webkit-background-size: 100%;
+  background-size: 100% 100%;
+  -webkit-print-color-adjust: exact;
 /*%%elif mode=="Opera" */
-  -o-background-size:100% 100%;background-size:100% 100%;background-repeat:no-repeat;
+  -o-background-size: 100% 100%; background-size: 100% 100%; background-repeat: no-repeat;
 /*%%)*/
 }
 
-tex\:i.aghtex-overbrace  {display:inline-block;vertical-align:baseline;}
-tex\:i.aghtex-overbrace-t{display:block;text-align:center;}
-tex\:i.aghtex-overbrace-u{display:block;margin-right:-1ex;margin-left:-1ex;font-size:80%;}
-tex\:i.aghtex-overbrace-i{display:block;position:relative;top:0;left:0;height:1ex;}
-   img.aghtex-overbrace  {position:absolute;top:0;left:0;width:100%;height:100%;}
-tex\:i.aghtex-overbrace-b{display:inline-block;vertical-align:baseline;}
+tex\:i.aghtex-overbrace   { display: inline-block; vertical-align: baseline; }
+tex\:i.aghtex-overbrace-t { display: block; text-align: center; }
+tex\:i.aghtex-overbrace-u { display: block; margin-right: -1ex; margin-left: -1ex; font-size: 80%; }
+tex\:i.aghtex-overbrace-i { display: block; position: relative; top: 0; left: 0; height: 1ex; }
+   img.aghtex-overbrace   { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+tex\:i.aghtex-overbrace-b { display: inline-block; vertical-align: baseline; }
 /*%%if mode=="Trident" (*/
-	/* IE の後方互換モードでは上が期待通りに動かない */
+  /* IE の後方互換モードでは上が期待通りに動かない */
   tex\:i.aghtex-overbrace-t,
   tex\:i.aghtex-overbrace-u,
-  tex\:i.aghtex-overbrace-i{width:expression(this.parentElement.clientWidth-2);} /* -2 にしないと横に広がる */
-     img.aghtex-overbrace  {width:expression(this.parentElement.clientWidth);}
+  tex\:i.aghtex-overbrace-i { width: expression(this.parentElement.clientWidth-2); } /* -2 にしないと横に広がる */
+     img.aghtex-overbrace   { width: expression(this.parentElement.clientWidth); }
 /*%%)*/
 
 /*%%if mode == "Gecko" | mode == "WebKit" */
-td.aghtex-underbrace-svg{position:relative;height:1ex;}
-tex\:i.aghtex-overbrace-i{position:relative;}
+td.aghtex-underbrace-svg { position: relative; height: 1ex; }
+tex\:i.aghtex-overbrace-i { position: relative; }
 td.aghtex-underbrace-svg>svg,
-tex\:i.aghtex-overbrace-i>svg{width:100%;height:100%;position:absolute;left:0;top:0;}
-tex\:i.aghtex-overbrace-widehat>tex\:i.aghtex-overbrace-i{height:0.3em;}
-tex\:i.aghtex-overbrace-widetilde>tex\:i.aghtex-overbrace-i{height:0.22em;}
+tex\:i.aghtex-overbrace-i>svg { width: 100%; height: 100%; position: absolute; left: 0; top: 0; }
+tex\:i.aghtex-overbrace-widehat>tex\:i.aghtex-overbrace-i { height: 0.3em; }
+tex\:i.aghtex-overbrace-widetilde>tex\:i.aghtex-overbrace-i { height: 0.22em; }
 /*%%end*/
 
 
 /*------------------------------------------------------------------*/
 /* 根号 */
-table.aghtex-sqrt{border-collapse:collapse;height:1em;vertical-align:baseline;}
-td.aghtex-sqrt-index{
-	border-width:0px!important;
-	padding:0px!important;
-	vertical-align:top;font-size:80%;
+table.aghtex-sqrt { border-collapse: collapse; height: 1em; vertical-align: baseline; }
+td.aghtex-sqrt-index {
+  border-width: 0px!important;
+  padding: 0px!important;
+  vertical-align: top; font-size: 80%;
 }
-td.aghtex-sqrt-index span{position:relative;top:-3px;left:6px;}
-td.aghtex-sqrt-body{
-	border-width:1px 0px 0px 0px!important;
-  border-style:solid!important;
+td.aghtex-sqrt-index span { position: relative; top: -3px; left: 6px; }
+td.aghtex-sqrt-body {
+  border-width: 1px 0px 0px 0px!important;
+  border-style: solid!important;
 /*%%if borderColor!=""*/
-  border-color:$"borderColor";
+  border-color: $"borderColor";
 /*%%end*/
-	padding:1px 2px 0px 0px!important;
-  vertical-align:baseline;
+  padding: 1px 2px 0px 0px!important;
+  vertical-align: baseline;
 }
 
 /*------------------------------------------------------------------*/
 /* 積分記号 */
-tex\:f.aghtex-int{
-  font-family:aghtex_mathbb,aghtex_mincho,aghtex_roman,serif;
-  font-size:250%;line-height:1.05;display:inline-block;
+tex\:f.aghtex-int {
+  font-family: aghtex_mathbb,aghtex_mincho,aghtex_roman,serif;
+  font-size: 250%; line-height: 1.05; display: inline-block;
 /*%%if mode=="Opera" (*/
   /* [Opera] font-size と vertical-align が同時に指定されている時、
    * vertical-align の em 単位は外側の font-size で測られている様だ。
    */
-  vertical-align:-0.5em;
+  vertical-align: -0.5em;
 /*%%elif mode=="WebKit" */
-  vertical-align:-0.18em;
-  margin-top:0.10em;
+  vertical-align: -0.18em;
+  margin-top: 0.10em;
 /*%%else*/
-  vertical-align:-0.18em;
+  vertical-align: -0.18em;
 /*%%)*/
 }
 /* \idotsint, \dotsi */
-tex\:f.aghtex-dotsi{
-  font-family:aghtex_mathrm,aghtex_mincho,aghtex_roman,serif;
-  font-size:150%;margin:0 -0.3ex;}
-tex\:f.aghtex-int>tex\:f.aghtex-dotsi{
-  vertical-align:0.7ex;margin:0 -0.3ex;
-  font-size:60%;margin:0 -0.3ex 0 -0.2ex;}
+tex\:f.aghtex-dotsi {
+  font-family: aghtex_mathrm,aghtex_mincho,aghtex_roman,serif;
+  font-size: 150%; margin: 0 -0.3ex; }
+tex\:f.aghtex-int>tex\:f.aghtex-dotsi {
+  vertical-align: 0.7ex; margin: 0 -0.3ex;
+  font-size: 60%; margin: 0 -0.3ex 0 -0.2ex; }
 
-img.aghtex-int{width:1em;height:2.5em;vertical-align:middle;}
-tex\:i.aghtex-sub-int{vertical-align:-1.7em;margin-left:-0.6em;}
-tex\:i.aghtex-sup-int{vertical-align:1.7em;margin-left:0.1em;margin-right:-0.1em;}
+img.aghtex-int { width: 1em; height: 2.5em; vertical-align: middle; }
+tex\:i.aghtex-sub-int { vertical-align: -1.7em; margin-left: -0.6em; }
+tex\:i.aghtex-sup-int { vertical-align: 1.7em; margin-left: 0.1em; margin-right: -0.1em; }
 
-table.aghtex-int{height:3.3em;border-collapse:collapse;font:inherit;margin-right:-0.2em;}
+table.aghtex-int { height: 3.3em; border-collapse: collapse; font: inherit; margin-right: -0.2em; }
 /*%%if mode=="Opera" (*/
-td.aghtex-int-sup{white-space:nowrap;}
+td.aghtex-int-sup { white-space: nowrap; }
 /*%%)*/
-td.aghtex-int-sub{font-size:75%;padding:0px;vertical-align:bottom;text-align:left;}
-td.aghtex-int-sup{font-size:75%;padding:0px;vertical-align:top;text-align:left;}
-tex\:i.aghtex-int-sup{position:relative;left:0ex;top:-0.2em;}
-tex\:i.aghtex-int-sub{position:relative;left:-0.6em;top:0em;margin-right:-0.6em;}
+td.aghtex-int-sub { font-size: 75%; padding: 0px; vertical-align: bottom; text-align: left; }
+td.aghtex-int-sup { font-size: 75%; padding: 0px; vertical-align: top; text-align: left; }
+tex\:i.aghtex-int-sup { position: relative; left: 0ex; top: -0.2em; }
+tex\:i.aghtex-int-sub { position: relative; left: -0.6em; top: 0em; margin-right: -0.6em; }
 
 /*------------------------------------------------------------------*/
 /* Σの表記 */
@@ -1065,110 +1065,110 @@ tex\:i.aghtex-int-sub{position:relative;left:-0.6em;top:0em;margin-right:-0.6em;
  *        <sub>sub</sub>
  *     </subcontainer></mathop>
  */
-tex\:i.aghtex-mathop{padding:0px 0.3ex;}
-tex\:i.aghtex-mathop-ie6container{display:inline-block;vertical-align:middle;text-align:center;}
-tex\:i.aghtex-mathop-subcontainer{display:inline-table;vertical-align:baseline;text-align:center;}
-tex\:i.aghtex-mathop-supcontainer{display:inline-block;vertical-align:baseline;text-align:center;}
-tex\:i.aghtex-mathop-text{display:inline-block;vertical-align:baseline;}
-tex\:i.aghtex-mathop-sub{font-size:75%;display:block;margin:0;position:relative;top:-0.2ex;}
-tex\:i.aghtex-mathop-sup{font-size:75%;display:block;margin:0;position:relative;top:0.2ex;}
+tex\:i.aghtex-mathop { padding: 0px 0.3ex; }
+tex\:i.aghtex-mathop-ie6container { display: inline-block; vertical-align: middle; text-align: center; }
+tex\:i.aghtex-mathop-subcontainer { display: inline-table; vertical-align: baseline; text-align: center; }
+tex\:i.aghtex-mathop-supcontainer { display: inline-block; vertical-align: baseline; text-align: center; }
+tex\:i.aghtex-mathop-text { display: inline-block; vertical-align: baseline; }
+tex\:i.aghtex-mathop-sub { font-size: 75%; display: block; margin: 0; position: relative; top: -0.2ex; }
+tex\:i.aghtex-mathop-sup { font-size: 75%; display: block; margin: 0; position: relative; top: 0.2ex; }
 /*%%if mode=="Gecko" (*/
-  tex\:i.aghtex-mathop-sub{top:-0.5ex;}
-  tex\:i.aghtex-mathop-sup{top:0.5ex;}
+  tex\:i.aghtex-mathop-sub { top: -0.5ex; }
+  tex\:i.aghtex-mathop-sup { top: 0.5ex; }
 /*%%)*/
 
-tex\:sum{display:inline-block;vertical-align:middle;text-align:center;font-size:180%;padding:0px 0.1ex;}
-tex\:sum2{display:inline-block;vertical-align:middle;text-align:center;padding:0px 0.2ex;}
-tex\:sum2u{display:block;margin:0;font-size:80%;}
-tex\:sum2d{display:block;margin:0;font-size:80%;}
-tex\:sum2m{display:block;margin:0;font-size:180%;line-height:0.70em;}
+tex\:sum { display: inline-block; vertical-align: middle; text-align: center; font-size: 180%; padding: 0px 0.1ex; }
+tex\:sum2 { display: inline-block; vertical-align: middle; text-align: center; padding: 0px 0.2ex; }
+tex\:sum2u { display: block; margin: 0; font-size: 80%; }
+tex\:sum2d { display: block; margin: 0; font-size: 80%; }
+tex\:sum2m { display: block; margin: 0; font-size: 180%; line-height: 0.70em; }
 
-tex\:i.aghtex-sum{display:inline-block;text-align:center;padding:0 0.2ex;}
-tex\:i.aghtex-sum-u{display:block;font-size:80%;position:relative;top:0em;margin-top:-0.05em;}
-table.aghtex-sum{
-  display:inline-table;
-  border-collapse:collapse;margin:0;padding:0;
-  vertical-align:baseline;
-  text-align:center;
-  margin-bottom:-0.25em;
+tex\:i.aghtex-sum { display: inline-block; text-align: center; padding: 0 0.2ex; }
+tex\:i.aghtex-sum-u { display: block; font-size: 80%; position: relative; top: 0em; margin-top: -0.05em; }
+table.aghtex-sum {
+  display: inline-table;
+  border-collapse: collapse; margin: 0; padding: 0;
+  vertical-align: baseline;
+  text-align: center;
+  margin-bottom: -0.25em;
 }
-td.aghtex-sum-m{
-  font-size:125%;vertical-align:baseline;
-  font-family:aghtex_mathrm,aghtex_roman,aghtex_mincho,serif;}
-tex\:i.aghtex-sum-m{display:block;line-height:1;vertical-align:-0.02em;}
-tex\:i.aghtex-sum-m1{
-  display:block;font-size:125%;vertical-align:baseline;
-  font-family:aghtex_mathrm,aghtex_roman,aghtex_mincho,serif;}
-tex\:i.aghtex-sum-m2{line-height:1;vertical-align:-0.02em;}
-td.aghtex-sum-d{font-size:80%;}
-tex\:i.aghtex-sum-d{position:relative;top:-0.1em;}
-tex\:i.aghtex-sum-strut{display:inline-block;overflow:hidden;width:1px;line-height:1em;}
+td.aghtex-sum-m {
+  font-size: 125%; vertical-align: baseline;
+  font-family: aghtex_mathrm,aghtex_roman,aghtex_mincho,serif; }
+tex\:i.aghtex-sum-m { display: block; line-height: 1; vertical-align: -0.02em; }
+tex\:i.aghtex-sum-m1 {
+  display: block; font-size: 125%; vertical-align: baseline;
+  font-family: aghtex_mathrm,aghtex_roman,aghtex_mincho,serif; }
+tex\:i.aghtex-sum-m2 { line-height: 1; vertical-align: -0.02em; }
+td.aghtex-sum-d { font-size: 80%; }
+tex\:i.aghtex-sum-d { position: relative; top: -0.1em; }
+tex\:i.aghtex-sum-strut { display: inline-block; overflow: hidden; width: 1px; line-height: 1em; }
 /*%%if mode=="WebKit" (*/
-tex\:i.aghtex-sum-WA1{vertical-align:-0.5em;}
-table.aghtex-sum-WA1{vertical-align:middle;}
+tex\:i.aghtex-sum-WA1 { vertical-align: -0.5em; }
+table.aghtex-sum-WA1 { vertical-align: middle; }
 /*%%elif mode=="Trident" (*/
-tex\:i.aghtex-sum-WA1{vertical-align:-0.5em;}
-table.aghtex-sum-WA1{display:inline;vertical-align:middle;}
+tex\:i.aghtex-sum-WA1 { vertical-align: -0.5em; }
+table.aghtex-sum-WA1 { display: inline; vertical-align: middle; }
 /*%%)*/
 
 /*------------------------------------------------------------------*/
 /* 中抜き文字 */
 
-tex\:i.aghtex-mathbb-old{display:inline-block;position:relative;padding:1px;}
+tex\:i.aghtex-mathbb-old { display: inline-block; position: relative; padding: 1px; }
 tex\:i.aghtex-mathbb-a,
 tex\:i.aghtex-mathbb-b,
 tex\:i.aghtex-mathbb-c,
 tex\:i.aghtex-mathbb-d,
-tex\:i.aghtex-mathbb-e{position:absolute;background-color:transparent;}
-tex\:i.aghtex-mathbb-a{left:1px;top:0px;}
-tex\:i.aghtex-mathbb-b{left:-1px;top:0px;}
-tex\:i.aghtex-mathbb-c{left:0px;top:1px;}
-tex\:i.aghtex-mathbb-d{left:0px;top:-1px;}
-tex\:i.aghtex-mathbb-e{left:0px;top:0px;color:white;}
+tex\:i.aghtex-mathbb-e { position: absolute; background-color: transparent; }
+tex\:i.aghtex-mathbb-a { left: 1px; top: 0px; }
+tex\:i.aghtex-mathbb-b { left: -1px; top: 0px; }
+tex\:i.aghtex-mathbb-c { left: 0px; top: 1px; }
+tex\:i.aghtex-mathbb-d { left: 0px; top: -1px; }
+tex\:i.aghtex-mathbb-e { left: 0px; top: 0px; color: white; }
 /*%%if mode=="Trident" (*/
-  tex\:i.aghtex-mathbb-glow{
-    height:0px;
-    color:white;font-style:normal;font-weight:bold;
-    filter:'Glow(color=black,strength=1)';
-    -ms-filter:'Glow(color=black,strength=1)';
+  tex\:i.aghtex-mathbb-glow {
+    height: 0px;
+    color: white; font-style: normal; font-weight: bold;
+    filter: 'Glow(color=black,strength=1)';
+    -ms-filter: 'Glow(color=black,strength=1)';
   }
 
   /* IE7-Strict */
   html:first-child+html tex\:i.aghtex-mathbb-glow,
-  html[xmlns] tex\:i.aghtex-mathbb-glow{
-    *width:auto;
-    *height:auto;
-    *display:inline-block;
-    *filter:Glow(color=black,strength=1);
+  html[xmlns] tex\:i.aghtex-mathbb-glow {
+    *width: auto;
+    *height: auto;
+    *display: inline-block;
+    *filter: Glow(color=black,strength=1);
   }
 /*%%elif mode=="WebKit"*/
   tex\:i.aghtex-mathbb-stroke-sf,
-  tex\:i.aghtex-mathbb-stroke{
-    -webkit-text-fill-color:transparent;
-    -webkit-text-stroke-color:currentColor;
-    -webkit-text-stroke-width:0.04em;
-    text-fill-color:transparent;
-    text-stroke-color:currentColor;
-    text-stroke-width:0.04em;
-    font-weight:900;
+  tex\:i.aghtex-mathbb-stroke {
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-color: currentColor;
+    -webkit-text-stroke-width: 0.04em;
+    text-fill-color: transparent;
+    text-stroke-color: currentColor;
+    text-stroke-width: 0.04em;
+    font-weight: 900;
   }
-  tex\:i.aghtex-mathbb-stroke-sf{
-    text-stroke-width:1px;
-    -webkit-text-stroke-width:1px;
+  tex\:i.aghtex-mathbb-stroke-sf {
+    text-stroke-width: 1px;
+    -webkit-text-stroke-width: 1px;
   }
 /*%%)*/
-tex\:i.aghtex-mathbb-shadow{
-  color:white;
-  font-weight:900;
-  text-shadow:black -1px -1px 0px, black 1px -1px 0px, black -1px 1px 0px, black 1px 1px 0px;
-  text-shadow:var(--aghtex-color, black) -1px -1px 0px, var(--aghtex-color, black) 1px -1px 0px, var(--aghtex-color, black) -1px 1px 0px, var(--aghtex-color, black) 1px 1px 0px;
+tex\:i.aghtex-mathbb-shadow {
+  color: white;
+  font-weight: 900;
+  text-shadow: black -1px -1px 0px, black 1px -1px 0px, black -1px 1px 0px, black 1px 1px 0px;
+  text-shadow: var(--aghtex-color, black) -1px -1px 0px, var(--aghtex-color, black) 1px -1px 0px, var(--aghtex-color, black) -1px 1px 0px, var(--aghtex-color, black) 1px 1px 0px;
 }
 
 /*%%if mode=="WebKit"*/
 tex\:math tex\:i.aghtex-mathbb-stroke-sf tex\:f.aghtex-alpha-upper,
-tex\:math tex\:i.aghtex-mathbb-stroke tex\:f.aghtex-alpha-upper{
-  font-family:aghtex_mathbb;
-  font-weight:normal;
+tex\:math tex\:i.aghtex-mathbb-stroke tex\:f.aghtex-alpha-upper {
+  font-family: aghtex_mathbb;
+  font-weight: normal;
   -webkit-text-fill-color: currentColor;
   -webkit-text-stroke-color: transparent;
   -webkit-text-stroke-width: 0;
@@ -1177,301 +1177,301 @@ tex\:math tex\:i.aghtex-mathbb-stroke tex\:f.aghtex-alpha-upper{
   text-stroke-width: 0;
 }
 /*%%end*/
-tex\:math tex\:i.aghtex-mathbb-shadow tex\:f.aghtex-alpha-upper{
-  font-family:aghtex_mathbb;
-  text-shadow:none;
-  color:var(--aghtex-color, black);
-  font-weight:normal;
+tex\:math tex\:i.aghtex-mathbb-shadow tex\:f.aghtex-alpha-upper {
+  font-family: aghtex_mathbb;
+  text-shadow: none;
+  color: var(--aghtex-color, black);
+  font-weight: normal;
 }
 
 /*------------------------------------------------------------------*/
 /* その他 */
 
 /*----------------------------------------------------------
-		例外
+    例外
 ----------------------------------------------------------*/
-tex\:error{color:crimson;background-color:#fee;font-family:monospace,serif;font-size:80%;}
-tex\:error.aghtex-core-msgbox{text-decoration:underline;cursor:pointer;}
+tex\:error { color: crimson; background-color: #fee; font-family: monospace,serif; font-size: 80%; }
+tex\:error.aghtex-core-msgbox { text-decoration: underline; cursor: pointer; }
 
 /*----------------------------------------------------------
-		mod_counter
+    mod_counter
 ----------------------------------------------------------*/
-tex\:i.aghtex-counter-ov{border-top:1px solid $"borderColor";}
-tex\:i.aghtex-counter-ovv{border-top:3px double $"borderColor";}
+tex\:i.aghtex-counter-ov { border-top: 1px solid $"borderColor"; }
+tex\:i.aghtex-counter-ovv { border-top: 3px double $"borderColor"; }
 
 /*----------------------------------------------------------
     mod_array (array 環境 1)
 ----------------------------------------------------------*/
-table.aghtex-array{
-  border-collapse:collapse;
-  margin:0px;
+table.aghtex-array {
+  border-collapse: collapse;
+  margin: 0px;
   /*%%if mode=="Trident" (*/
-  display:inline;
+  display: inline;
   /*%%elif mode=="WebKit"*/
-  display:inline-table;
+  display: inline-table;
   /*%%elif mode=="Opera"*/
-  display:inline-table;
-  white-space:nowrap;
+  display: inline-table;
+  white-space: nowrap;
   /*%%elif mode=="Gecko"*/
-  display:inline-table;
+  display: inline-table;
   /*%%)*/
 }
 
-table.aghtex-array-valign-t{vertical-align:top;}
-table.aghtex-array-valign-m{vertical-align:middle;}
-table.aghtex-array-valign-b{vertical-align:bottom;}
-table.aghtex-array-lrpad{
-  margin-left:0.15em;margin-right:0.15em;}
+table.aghtex-array-valign-t { vertical-align: top; }
+table.aghtex-array-valign-m { vertical-align: middle; }
+table.aghtex-array-valign-b { vertical-align: bottom; }
+table.aghtex-array-lrpad {
+  margin-left: 0.15em; margin-right: 0.15em; }
 
 /*----------------------------------------------------------
-		mod_array (array 環境 2)
+    mod_array (array 環境 2)
 ----------------------------------------------------------*/
 td.aghtex-array-border-txt,
-td.aghtex-array-border-zw{
-  border-style:solid;
-  border-color:currentColor;
-  padding:0px;vertical-align:baseline;
+td.aghtex-array-border-zw {
+  border-style: solid;
+  border-color: currentColor;
+  padding: 0px; vertical-align: baseline;
 }
-td.aghtex-array-border-zw{
-  font-size:0px;width:1px;
+td.aghtex-array-border-zw {
+  font-size: 0px; width: 1px;
 }
 
-td.aghtex-array-cell{
-  border-width:0px;border-style:solid!important;
-  border-color:currentColor;
-  padding:0.2ex .9ex;vertical-align:baseline;}
-tr.aghtex-array-first-row>td.aghtex-array-cell{padding-top:0;}
-tr.aghtex-array-last-row>td.aghtex-array-cell{padding-bottom:0;}
+td.aghtex-array-cell {
+  border-width: 0px; border-style: solid!important;
+  border-color: currentColor;
+  padding: 0.2ex .9ex; vertical-align: baseline; }
+tr.aghtex-array-first-row>td.aghtex-array-cell { padding-top: 0; }
+tr.aghtex-array-last-row>td.aghtex-array-cell { padding-bottom: 0; }
 
 
-td.aghtex-array-hdots-cell{
-  position:relative;height:1.3em;}
+td.aghtex-array-hdots-cell {
+  position: relative; height: 1.3em; }
 /*%%if mode=="Trident"*/
 tex\:i.aghtex-array-hdots-ie9,
 /*%%end*/
-tex\:i.aghtex-array-hdots{
-  display:block;position:absolute;width:100%;left:0;}
-tex\:i.aghtex-array-hdots{
-  height:1.0em;
+tex\:i.aghtex-array-hdots {
+  display: block; position: absolute; width: 100%; left: 0; }
+tex\:i.aghtex-array-hdots {
+  height: 1.0em;
   background-image: radial-gradient(0.15em, currentColor 50%, transparent 50%);
   background-position: center bottom;
   background-size: 0.5em 0.2em;
-  background-repeat: repeat-x;}
+  background-repeat: repeat-x; }
 /*%%if mode=="Trident"*/
-tex\:i.aghtex-array-hdots-ie9{
-  height:0.7em;
-  border-bottom-width:0.15em;
-  border-bottom-style:dotted;
-  border-bottom-color:currentColor; /* IE9+ */
+tex\:i.aghtex-array-hdots-ie9 {
+  height: 0.7em;
+  border-bottom-width: 0.15em;
+  border-bottom-style: dotted;
+  border-bottom-color: currentColor; /* IE9+ */
 }
 /*%%end*/
 
-td.aghtex-array-hline-t{height:1px;border-top:1px solid $"borderColor";font-size:1px;padding:0px;}
-td.aghtex-array-hline-b{height:1px;border-bottom:1px solid $"borderColor";font-size:1px;padding:0px;}
+td.aghtex-array-hline-t { height: 1px; border-top: 1px solid $"borderColor"; font-size: 1px; padding: 0px; }
+td.aghtex-array-hline-b { height: 1px; border-bottom: 1px solid $"borderColor"; font-size: 1px; padding: 0px; }
 /*%%if mode=="Opera"||mode=="Gecko" (*/
-td.aghtex-array-hline-t{height:0;padding-top:1px;}
-td.aghtex-array-hline-b{height:0;padding-bottom:1px;}
+td.aghtex-array-hline-t { height: 0; padding-top: 1px; }
+td.aghtex-array-hline-b { height: 0; padding-bottom: 1px; }
 /*%%elif mode=="Trident" (*/
-tex\:i.aghtex-array-hline-dummy{
-  display:block;
-  margin:0;padding:0;
-  height:1px;overflow:hidden;}
+tex\:i.aghtex-array-hline-dummy {
+  display: block;
+  margin: 0; padding: 0;
+  height: 1px; overflow: hidden; }
 /*%%)*/
 
 
 /*%%if mode=="Gecko" (*/
-  tr.aghtex-array-fxdummy{visibility:hidden;}
-  tr.aghtex-array-fxdummy>td{
-    padding:0px!important;border-width:0px!important;height:0px!important;
-    width:0px;overflow:hidden;
+  tr.aghtex-array-fxdummy { visibility: hidden; }
+  tr.aghtex-array-fxdummy>td {
+    padding: 0px!important; border-width: 0px!important; height: 0px!important;
+    width: 0px; overflow: hidden;
   }
-  tr.aghtex-array-fxdummy>td>div{
-    width:1px;height:0px;overflow:hidden;padding:0px;margin:0px;
+  tr.aghtex-array-fxdummy>td>div {
+    width: 1px; height: 0px; overflow: hidden; padding: 0px; margin: 0px;
   }
 /*%%)*/
 
 /*----------------------------------------------------------
-		mod_ref
+    mod_ref
 ----------------------------------------------------------*/
 /*%%if mode=="Trident"||mode=="Opera"||mode=="WebKit" (*/
-  tex\:i.aghtex-equation-eqno-right{position:absolute;right:1em;top:50%;margin-top:-0.7em;}
-  tex\:i.aghtex-equation-eqno-left{position:absolute;left:1em;top:50%;margin-top:-0.7em;}
+  tex\:i.aghtex-equation-eqno-right { position: absolute; right: 1em; top: 50%; margin-top: -0.7em; }
+  tex\:i.aghtex-equation-eqno-left { position: absolute; left: 1em; top: 50%; margin-top: -0.7em; }
 /*%%elif mode=="Gecko"*/
-  tex\:i.aghtex-equation-eqno-right{position:absolute;right:1em;top:50%;margin-top:-1em;}
-  tex\:i.aghtex-equation-eqno-left{position:absolute;left:1em;top:50%;margin-top:-1em;}
+  tex\:i.aghtex-equation-eqno-right { position: absolute; right: 1em; top: 50%; margin-top: -1em; }
+  tex\:i.aghtex-equation-eqno-left { position: absolute; left: 1em; top: 50%; margin-top: -1em; }
 /*%%)*/
-tex\:i.aghtex-eqno{display:inline-block;}
-tex\:i.aghtex-eqno-right{position:absolute;right:1em;}
-tex\:i.aghtex-eqno-left{position:absolute;left:1em;}
+tex\:i.aghtex-eqno { display: inline-block; }
+tex\:i.aghtex-eqno-right { position: absolute; right: 1em; }
+tex\:i.aghtex-eqno-left { position: absolute; left: 1em; }
 tex\:i.aghtex-table,
-tex\:i.aghtex-figure{display:block;margin:1em;}
+tex\:i.aghtex-figure { display: block; margin: 1em; }
 tex\:i.aghtex-table-caption,
-tex\:i.aghtex-figure-caption{display:block;text-align:center;}
+tex\:i.aghtex-figure-caption { display: block; text-align: center; }
 
-tex\:i.aghtex-toc-item{display:block;position:relative;top:0;left:0;padding-left:1em;padding-right:1em;}
-table.aghtex-toc-item{
-  font-size:inherit;color:inherit;background-color:inherit;
-  margin:0;border-collapse:collapse;}
-table.aghtex-toc-part{}
-table.aghtex-toc-section{}
-table.aghtex-toc-subsection{margin-left:2em;}
-table.aghtex-toc-subsubsection{margin-left:4em;}
-td.aghtex-toc-label{white-space:nowrap;padding:0 1em 0 0;}
-td.aghtex-toc-page{white-space:nowrap;padding:0 0 0 1em;vertical-align:bottom;}
-td.aghtex-toc-hfill{width:100%;padding:0;vertical-align:bottom;}
-tex\:i.aghtex-toc-hfill{
-  display:block;position:relative;top:-4px;left:0;font-size:1px;
-  border-bottom:dotted 3px gray;}
+tex\:i.aghtex-toc-item { display: block; position: relative; top: 0; left: 0; padding-left: 1em; padding-right: 1em; }
+table.aghtex-toc-item {
+  font-size: inherit; color: inherit; background-color: inherit;
+  margin: 0; border-collapse: collapse; }
+table.aghtex-toc-part {}
+table.aghtex-toc-section {}
+table.aghtex-toc-subsection { margin-left: 2em; }
+table.aghtex-toc-subsubsection { margin-left: 4em; }
+td.aghtex-toc-label { white-space: nowrap; padding: 0 1em 0 0; }
+td.aghtex-toc-page { white-space: nowrap; padding: 0 0 0 1em; vertical-align: bottom; }
+td.aghtex-toc-hfill { width: 100%; padding: 0; vertical-align: bottom; }
+tex\:i.aghtex-toc-hfill {
+  display: block; position: relative; top: -4px; left: 0; font-size: 1px;
+  border-bottom: dotted 3px gray; }
 
-a.aghtex-ref{
-  border:1px solid red;color:inherit;text-decoration:none;}
-a.aghtex-ref:hover{color:gray;}
+a.aghtex-ref {
+  border: 1px solid red; color: inherit; text-decoration: none; }
+a.aghtex-ref:hover { color: gray; }
 
-a.aghtex-cite{
-  border:1px solid lime;color:inherit;text-decoration:none;}
-a.aghtex-cite:hover{color:gray;}
+a.aghtex-cite {
+  border: 1px solid lime; color: inherit; text-decoration: none; }
+a.aghtex-cite:hover { color: gray; }
 
-a.aghtex-footnotemark{
-  position:relative;top:-1ex;font-size:75%;
-  border:1px solid red;color:inherit;text-decoration:none;}
-a.aghtex-footnotemark:hover{color:gray;}
-tex\:i.aghtex-footnotetext-inline{font-size:80%;color:green;}
-tex\:i.aghtex-footnote{
-  display:block;padding:1em;margin:1em;
-  border-bottom:1px solid $"borderColor";border-top:1px solid $"borderColor";
-  font-size:90%;}
-ul.aghtex-footnote{}
-li.aghtex-footnotetext{}
-tex\:i.aghtex-footnotetext-mark{position:relative;top:-1ex;font-size:80%;}
-
-/*----------------------------------------------------------
-		mod_para
-----------------------------------------------------------*/
-tex\:i.aghtex-cmd-line{display:block;text-align:justify;}
-tex\:i.aghtex-cmd-leftline{display:block;text-align:left;}
-tex\:i.aghtex-cmd-rightline{display:block;text-align:right;}
-tex\:i.aghtex-cmd-centerline{display:block;text-align:center;}
-
-h4.aghtex-latex-newtheorem{
-  font-size:120%;font-weight:bold;margin:1em 1ex 1ex;}
-tex\:i.aghtex-latex-theorem-content{
-  font-style:italic;}
+a.aghtex-footnotemark {
+  position: relative; top: -1ex; font-size: 75%;
+  border: 1px solid red; color: inherit; text-decoration: none; }
+a.aghtex-footnotemark:hover { color: gray; }
+tex\:i.aghtex-footnotetext-inline { font-size: 80%; color: green; }
+tex\:i.aghtex-footnote {
+  display: block; padding: 1em; margin: 1em;
+  border-bottom: 1px solid $"borderColor"; border-top: 1px solid $"borderColor";
+  font-size: 90%; }
+ul.aghtex-footnote {}
+li.aghtex-footnotetext {}
+tex\:i.aghtex-footnotetext-mark { position: relative; top: -1ex; font-size: 80%; }
 
 /*----------------------------------------------------------
-		\usepackage{url}
+    mod_para
 ----------------------------------------------------------*/
-a.aghtex-url-tt{
-  font-family:"Courier New",monospace,serif;font-style:normal;}
-a.aghtex-url-rm{
-  font-family:"Times New Roman",serif;font-style:normal;}
-a.aghtex-url-sf{
-  font-family:sans-serif;font-style:normal;}
+tex\:i.aghtex-cmd-line { display: block; text-align: justify; }
+tex\:i.aghtex-cmd-leftline { display: block; text-align: left; }
+tex\:i.aghtex-cmd-rightline { display: block; text-align: right; }
+tex\:i.aghtex-cmd-centerline { display: block; text-align: center; }
 
-a.aghtex-url-same{}
+h4.aghtex-latex-newtheorem {
+  font-size: 120%; font-weight: bold; margin: 1em 1ex 1ex; }
+tex\:i.aghtex-latex-theorem-content {
+  font-style: italic; }
+
+/*----------------------------------------------------------
+    \usepackage{url}
+----------------------------------------------------------*/
+a.aghtex-url-tt {
+  font-family: "Courier New",monospace,serif; font-style: normal; }
+a.aghtex-url-rm {
+  font-family: "Times New Roman",serif; font-style: normal; }
+a.aghtex-url-sf {
+  font-family: sans-serif; font-style: normal; }
+
+a.aghtex-url-same {}
 a.aghtex-url-tt,
 a.aghtex-url-rm,
 a.aghtex-url-sf,
 a.aghtex-url-same
-{border:1px solid cyan;color:inherit;text-decoration:none;}
+{ border: 1px solid cyan; color: inherit; text-decoration: none; }
 a.aghtex-url-tt:hover,
 a.aghtex-url-rm:hover,
 a.aghtex-url-sf:hover,
-a.aghtex-url-same:hover{color:gray;}
+a.aghtex-url-same:hover { color: gray; }
 
 /* \usepackage{color} */
-tex\:i.aghtex-color-box{padding:0.3em;}
+tex\:i.aghtex-color-box { padding: 0.3em; }
 
 /*----------------------------------------------------------
-		documentclass
+    documentclass
 ----------------------------------------------------------*/
 
 /* article.cls */
-h1.aghtex-article-title{
-  text-align:center;
-  padding-top:0.5em;padding-bottom:0.5em;
-  margin-top:0.5em;margin-bottom:0.5em;
-  font-size:250%;font-weight:normal;}
-tex\:i.aghtex-article-title{display:block;margin-bottom:0.5ex;}
-tex\:i.aghtex-article-author{display:block;font-size:60%;margin-bottom:0.5em;}
-tex\:i.aghtex-article-date{display:block;font-size:60%;}
-h1.aghtex-article-part{
-  margin-top:1em;margin-bottom:1em;text-align:left;
-  font-size:250%;font-weight:bold;}
-tex\:i.aghtex-article-part{
-  display:block;font-size:70%;margin-bottom:1ex;}
-h2.aghtex-article-section{
-  font-size:170%;font-weight:bold;margin:1em 1ex 1ex;}
-h3.aghtex-article-subsection{
-  font-size:150%;font-weight:bold;margin:1em 1ex 1ex;}
-h4.aghtex-article-subsubsection{
-  font-size:140%;font-weight:bold;margin:1em 1ex 1ex;}
-h5.aghtex-article-paragraph{
-  font-size:120%;font-weight:bold;margin:1em 1ex 1ex;}
-h6.aghtex-article-subparagraph{
+h1.aghtex-article-title {
+  text-align: center;
+  padding-top: 0.5em; padding-bottom: 0.5em;
+  margin-top: 0.5em; margin-bottom: 0.5em;
+  font-size: 250%; font-weight: normal; }
+tex\:i.aghtex-article-title { display: block; margin-bottom: 0.5ex; }
+tex\:i.aghtex-article-author { display: block; font-size: 60%; margin-bottom: 0.5em; }
+tex\:i.aghtex-article-date { display: block; font-size: 60%; }
+h1.aghtex-article-part {
+  margin-top: 1em; margin-bottom: 1em; text-align: left;
+  font-size: 250%; font-weight: bold; }
+tex\:i.aghtex-article-part {
+  display: block; font-size: 70%; margin-bottom: 1ex; }
+h2.aghtex-article-section {
+  font-size: 170%; font-weight: bold; margin: 1em 1ex 1ex; }
+h3.aghtex-article-subsection {
+  font-size: 150%; font-weight: bold; margin: 1em 1ex 1ex; }
+h4.aghtex-article-subsubsection {
+  font-size: 140%; font-weight: bold; margin: 1em 1ex 1ex; }
+h5.aghtex-article-paragraph {
+  font-size: 120%; font-weight: bold; margin: 1em 1ex 1ex; }
+h6.aghtex-article-subparagraph {
 /*%%if mode=="WebKit" (*/
-  display:run-in;
+  display: run-in;
 /*%%)*/
-  font-size:120%;font-weight:bold;text-indent:1em;margin:1ex 1.2ex 0.3ex 1ex;}
-h2.aghtex-article-abstract{
-  font-size:120%;font-weight:bold;text-align:center;margin:1ex 1ex 1ex;}
+  font-size: 120%; font-weight: bold; text-indent: 1em; margin: 1ex 1.2ex 0.3ex 1ex; }
+h2.aghtex-article-abstract {
+  font-size: 120%; font-weight: bold; text-align: center; margin: 1ex 1ex 1ex; }
 h2.aghtex-article-acknowledgement,
-h2.aghtex-article-toc{
-  font-size:170%;font-weight:bold;margin:1em 1ex 1ex;}
-tex\:i.aghtex-article-toc table.aghtex-toc-part{font-weight:bold;font-size:120%;margin-top:1em;margin-bottom:1ex;}
-tex\:i.aghtex-article-toc table.aghtex-toc-section{font-weight:bold;margin-top:1ex;}
+h2.aghtex-article-toc {
+  font-size: 170%; font-weight: bold; margin: 1em 1ex 1ex; }
+tex\:i.aghtex-article-toc table.aghtex-toc-part { font-weight: bold; font-size: 120%; margin-top: 1em; margin-bottom: 1ex; }
+tex\:i.aghtex-article-toc table.aghtex-toc-section { font-weight: bold; margin-top: 1ex; }
 tex\:i.aghtex-article-toc table.aghtex-toc-part    tex\:i.aghtex-toc-hfill,
-tex\:i.aghtex-article-toc table.aghtex-toc-section tex\:i.aghtex-toc-hfill{
-  border-bottom:solid 0px transparent;position:relative;top:0;left:0;}
-h2.aghtex-article-thebibliography{
-  font-size:170%;font-weight:bold;margin:1em 1ex 1ex;}
+tex\:i.aghtex-article-toc table.aghtex-toc-section tex\:i.aghtex-toc-hfill {
+  border-bottom: solid 0px transparent; position: relative; top: 0; left: 0; }
+h2.aghtex-article-thebibliography {
+  font-size: 170%; font-weight: bold; margin: 1em 1ex 1ex; }
 
 /* \documentclass{revtex4} ■未調整 */
-h1.aghtex-revtex-title{
-  text-align:center;
-  padding-top:0.5em;padding-bottom:0.5em;
-  margin-top:0.5em;margin-bottom:0.5em;
-  font-size:100%;font-weight:normal;}
-tex\:i.aghtex-revtex-title{display:block;margin-bottom:0.5ex;font-size:150%;font-weight:bold;}
-tex\:i.aghtex-revtex-author{display:block;margin-bottom:0.5em;font-size:120%;}
-tex\:i.aghtex-revtex-affiliation{display:block;font-style:italic;}
+h1.aghtex-revtex-title {
+  text-align: center;
+  padding-top: 0.5em; padding-bottom: 0.5em;
+  margin-top: 0.5em; margin-bottom: 0.5em;
+  font-size: 100%; font-weight: normal; }
+tex\:i.aghtex-revtex-title { display: block; margin-bottom: 0.5ex; font-size: 150%; font-weight: bold; }
+tex\:i.aghtex-revtex-author { display: block; margin-bottom: 0.5em; font-size: 120%; }
+tex\:i.aghtex-revtex-affiliation { display: block; font-style: italic; }
 tex\:i.aghtex-revtex-authorindex,
-tex\:i.aghtex-revtex-affiliationindex{position:relative;top:-1ex;font-size:75%;}
-tex\:i.aghtex-revtex-date{display:block;}
+tex\:i.aghtex-revtex-affiliationindex { position: relative; top: -1ex; font-size: 75%; }
+tex\:i.aghtex-revtex-date { display: block; }
 
-h1.aghtex-revtex-part{
-  margin-top:1em;margin-bottom:1em;text-align:left;
-  font-size:250%;font-weight:bold;}
-tex\:i.aghtex-revtex-part{
-  display:block;font-size:70%;margin-bottom:1ex;}
-h2.aghtex-revtex-section{
-  text-align:center;font-size:110%;font-weight:bold;margin:1em 1ex 1ex;text-transform:uppercase;}
-h3.aghtex-revtex-subsection{
-  text-align:center;font-size:110%;font-weight:bold;margin:1em 1ex 1ex;}
-h4.aghtex-revtex-subsubsection{
-  text-align:center;font-size:100%;font-weight:bold;margin:1em 1ex 1ex;}
-h5.aghtex-revtex-paragraph{
-  font-size:100%;font-weight:bold;margin:1em 1ex 1ex;}
-h6.aghtex-revtex-subparagraph{
+h1.aghtex-revtex-part {
+  margin-top: 1em; margin-bottom: 1em; text-align: left;
+  font-size: 250%; font-weight: bold; }
+tex\:i.aghtex-revtex-part {
+  display: block; font-size: 70%; margin-bottom: 1ex; }
+h2.aghtex-revtex-section {
+  text-align: center; font-size: 110%; font-weight: bold; margin: 1em 1ex 1ex; text-transform: uppercase; }
+h3.aghtex-revtex-subsection {
+  text-align: center; font-size: 110%; font-weight: bold; margin: 1em 1ex 1ex; }
+h4.aghtex-revtex-subsubsection {
+  text-align: center; font-size: 100%; font-weight: bold; margin: 1em 1ex 1ex; }
+h5.aghtex-revtex-paragraph {
+  font-size: 100%; font-weight: bold; margin: 1em 1ex 1ex; }
+h6.aghtex-revtex-subparagraph {
 /*%%if mode=="WebKit" (*/
-  display:run-in;
+  display: run-in;
 /*%%)*/
-  font-size:120%;font-weight:bold;text-indent:1em;margin:1ex 1.2ex 0.3ex 1ex;}
-h2.aghtex-revtex-abstract{
-  font-size:120%;font-weight:bold;text-align:center;margin:1ex 1ex 1ex;}
+  font-size: 120%; font-weight: bold; text-indent: 1em; margin: 1ex 1.2ex 0.3ex 1ex; }
+h2.aghtex-revtex-abstract {
+  font-size: 120%; font-weight: bold; text-align: center; margin: 1ex 1ex 1ex; }
 h2.aghtex-revtex-acknowledgement,
-h2.aghtex-revtex-toc{
-  font-size:170%;font-weight:bold;margin:1em 1ex 1ex;}
-tex\:i.aghtex-revtex-toc table.aghtex-toc-part{font-weight:bold;font-size:120%;margin-top:1em;margin-bottom:1ex;}
-tex\:i.aghtex-revtex-toc table.aghtex-toc-section{font-weight:bold;margin-top:1ex;}
+h2.aghtex-revtex-toc {
+  font-size: 170%; font-weight: bold; margin: 1em 1ex 1ex; }
+tex\:i.aghtex-revtex-toc table.aghtex-toc-part { font-weight: bold; font-size: 120%; margin-top: 1em; margin-bottom: 1ex; }
+tex\:i.aghtex-revtex-toc table.aghtex-toc-section { font-weight: bold; margin-top: 1ex; }
 tex\:i.aghtex-revtex-toc table.aghtex-toc-part    tex\:i.aghtex-toc-hfill,
-tex\:i.aghtex-revtex-toc table.aghtex-toc-section tex\:i.aghtex-toc-hfill{
-  border-bottom:solid 0px transparent;position:relative;top:0;left:0;}
-h2.aghtex-revtex-thebibliography{
-  font-size:170%;font-weight:bold;margin:1em 1ex 1ex;}
+tex\:i.aghtex-revtex-toc table.aghtex-toc-section tex\:i.aghtex-toc-hfill {
+  border-bottom: solid 0px transparent; position: relative; top: 0; left: 0; }
+h2.aghtex-revtex-thebibliography {
+  font-size: 170%; font-weight: bold; margin: 1em 1ex 1ex; }
 
 
 /*----------------------------------------------------------
-		<table> の style 継承
+    <table> の style 継承
 ----------------------------------------------------------*/
 table.aghtex-array,
 table.aghtex-frac-ie6,
@@ -1480,17 +1480,17 @@ table.aghtex-int,
 table.aghtex-inline,
 table.aghtex-cmdleft,
 table.aghtex-underbrace,
-table.aghtex-sum{font:inherit;color:inherit;border-color:$"borderColor:-inherit";}
+table.aghtex-sum { font: inherit; color: inherit; border-color: $"borderColor:-inherit"; }
 
 /*----------------------------------------------------------
-		agh.fly.js:tex で使用する物
+    agh.fly.js:tex で使用する物
 ----------------------------------------------------------*/
-div.aghfly-embedded-node{
-  display:inline-block;vertical-align:baseline;
-  margin:1px;font-size:medium;}
-tex\:container{
-  display:inline;vertical-align:baseline;
-  font-size:120%;}
+div.aghfly-embedded-node {
+  display: inline-block; vertical-align: baseline;
+  margin: 1px; font-size: medium; }
+tex\:container {
+  display: inline; vertical-align: baseline;
+  font-size: 120%; }
 /*%end*/
 /*%m expand_content*/
 /*%%x*/
