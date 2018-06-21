@@ -7,9 +7,7 @@
 //                     copyright (c) 2008-2013, K. Murase. All rights reserved.
 //
 //*****************************************************************************
-agh.scripts.register("agh.lang.tex.js", [
-  "agh.js", "agh.text.js"
-], function() {
+agh.scripts.register("agh.lang.tex.js", ["agh.js"], function() {
 /*===========================================================================*/
   var nsName = "agh.LaTeX";
   //var nsName = "agh.DHTeXML2";
@@ -379,7 +377,6 @@ agh.memcpy(ns.Scanner4.prototype, {
       src.index = reg.lastIndex;
       if (src.index < src.length) {
         var chnext = src.text.charCodeAt(src.index++);
-        console.log(chnext);
         if (chnext != 0x1F) {
           if (isTerminatorNL) {
             if (chnext == 0x0D && src.index < src.length && src.text.charCodeAt(src.index) == 0x0A) src.index++;
@@ -855,8 +852,8 @@ agh.memcpy(ns.Writer, {
           desc = v[1];
         } else if (v instanceof Array) {
           if (desc != null) {
-            title = v[0].format(desc);
-            desc = v[1].format(desc);
+            title = agh.Text.format(v[0], desc);
+            desc = agh.Text.format(v[1], desc);
           } else {
             title = v[0];
             desc = v[1];
@@ -948,6 +945,8 @@ ns.Document = function(text, context) {
   // 解析時に使用
   this.currentCtx = null;
   this.ctxStack = [];
+
+  this.option = {};
 };
 agh.memcpy(ns.Document.prototype, {
   Clone: function() {
@@ -1474,7 +1473,7 @@ ns.Document.prototype.ReadDimension = function() {
   /// この形式の文字列が読み取れない場合は null を返します。
   ///
   ///   <dimension> :
-  ///     - <sign>? <number> <unit>
+  ///     - <sign>? <number> 'true'? <unit>
   ///     | <sign>? <number>? <\dimension>
   ///
   ///   <sign> :- '-' | '+'
@@ -1494,6 +1493,7 @@ ns.Document.prototype.ReadDimension = function() {
    */
 
   var digits = [];
+  var trueFlag = false;
   var incompleteUnit = null;
 
   var mode = 0; // 0: 符号待ち, 1: 数値待ち, 2: 数値読み取り中, 3: 単位待ち, 4: 単位読み取り中
@@ -1545,17 +1545,24 @@ ns.Document.prototype.ReadDimension = function() {
       var text = this.scanner.word;
       if (incompleteUnit) text = incompleteUnit + text;
 
-      var m = /^(?:in|bp|cm|mm|pt|pc|sp|dd|cc|n[cd]|em|ex|zw|zh|mu|px)/i.exec(text);
+      if (/^true/i.test(text)) {
+        trueFlag = true;
+        this.scanner.ConsumePartialTxt(4);
+        mode = 3;
+        continue;
+      }
+
+      var m = /^(?:true|in|bp|cm|mm|pt|pc|sp|dd|cc|n[cd]|em|ex|zw|zh|mu|px)/i.exec(text);
       if (!m) {
-        if ((m = /^[bcdimnpsz]$/i.exec(text))) {
-          // 不完全な単位の場合 (未だ単位になる可能性がある)
+        if ((m = /^[bcdimnpsz]|(?:t|tr|tru)$/i.exec(text))) {
+          // 不完全な単位の場合 (未だ単位 or "true" になる可能性がある)
           incompleteUnit = m[0];
           this.scanner.Next();
           mode = 4;
           continue;
         } else {
           // 既知の単位名にはなりえない場合
-          error_invalid_unit(doc, text);
+          error_invalid_unit(this, text);
           return null;
         }
       }
@@ -1566,7 +1573,7 @@ ns.Document.prototype.ReadDimension = function() {
       return new ns.Length(value, unit);
     } else if (this.scanner.wordtype === SCAN_WT_CMD) {
       if (mode === 4) {
-        error_invalid_unit(doc, incompleteUnit);
+        error_invalid_unit(this, incompleteUnit);
         return null;
       }
 
@@ -1826,14 +1833,13 @@ var COMMAND2_REG_ARGDEF = new RegExp(
   // $3 = 0               // @ (旧形式)
   // $4 = [1-9DL]         // 引数番号 or D = <dimension>, L = <length>
   // $Tc | $Tt | $Tl      // 後続のコマンド/文字列/記号
-  "([^\\#]*)\\#({0})?({1})?(0)?([1-9DL])(?:\\\\({2}+|.)|({3}+)|([^#\\\\]))?".format(
+  agh.Text.format(
+    "([^\\#]*)\\#({0})?({1})?(0)?([1-9DL])(?:\\\\({2}+|.)|({3}+)|([^#\\\\]))?",
     /\[(?:[^\]]*|\{[^\{\}]*\})\]/.source,
     /[^\!\>\#]*[\!\>]|\@/.source,
     REG_ISCMDCHAR.source,
-    REG_ISTXTCHAR.source
-  ),
-  "g"
-);
+    REG_ISTXTCHAR.source), "g");
+
 var COMMAND2_READTYPE = {
   "@": "raw",
   ">": "htm",
@@ -2560,7 +2566,7 @@ new function(){
     doc.scanner.m_makeatletter = true;
     doc.scanner.Next();
   });
-  _Ctx.AddCommandHandler('makeatletter', function(doc, cmdName) {
+  _Ctx.AddCommandHandler('makeatother', function(doc, cmdName) {
     doc.scanner.m_makeatletter = false;
     doc.scanner.Next();
   });
@@ -3167,14 +3173,14 @@ new function(){
   _Mod.OutputStretchBracketTd = (function() {
     var bracket_dict = {
       // 括弧
-      "(": stretchImg("paren1l.png", 1.0, "(", 'lparen'),
-      ")": stretchImg("paren1r.png", 1.0, ")", 'rparen'),
-      "{": stretchImg("paren2l.png", 1.2, "{", 'lbrace'),
-      "}": stretchImg("paren2r.png", 1.2, "}", 'rbrace'),
+      "(": stretchImg("stretch_lparen.png", 1.0, "(", 'lparen'),
+      ")": stretchImg("stretch_rparen.png", 1.0, ")", 'rparen'),
+      "{": stretchImg("stretch_lbrace.png", 1.2, "{", 'lbrace'),
+      "}": stretchImg("stretch_rbrace.png", 1.2, "}", 'rbrace'),
       "[": '<td rowspan="2" class="aghtex-left-kaku">&nbsp;</td>',
       "]": '<td rowspan="2" class="aghtex-right-kaku">&nbsp;</td>',
-      "〈": stretchImg("paren4l.png", 1, "〈", 'langle'),
-      "〉": stretchImg("paren4r.png", 1, "〉", 'rangle'),
+      "〈": stretchImg("stretch_langle.png", 1, "〈", 'langle'),
+      "〉": stretchImg("stretch_rangle.png", 1, "〉", 'rangle'),
 
       // 拡張
       "〔": stretchImg("paren5l.png", 1, "〔"),
@@ -3475,11 +3481,12 @@ agh.memcpy(ns.Counter.prototype, {
       return ns.Writer.get_error(
         "mod:counter.cmd:roman.CounterOutOfRange",
         null, "Counter#roman (mod:counter)");
+    if (this.val == 0) return 'nulla';
 
     var x = this.val.toString();
     var r = [];
     for (var i = x.length - 1; i >= 0; i--) {
-      switch (x.substr(i, 1)) {
+      switch (x.substr(x.length - 1 - i, 1)) {
       case "0": break;
       case "1": r.push(rm1[i]); break;
       case "2": r.push(rm1[i], rm1[i]); break;
@@ -3653,13 +3660,13 @@ var _Mod = ns.Modules["mod:length"] = {};
 
 agh.memcpy(ns.Modules["core"].ErrorMessages, {
   'mod:length.InvalidLengthName': [
-    "InvalidLengthName", "The name '{name}' is not avalid name for lengths. The length name should have a command form."],
+    "InvalidLengthName", "The name '{name}' is not a valid name for lengths. The length name should have a command form."],
   'mod:lentgh.InvalidCommandArgument': [
     "InvalidCommandArgument", "The specified argument '{value}' does not have a command form."],
   'mod:lentgh.UnrecognizedLengthName': [
-    "UnrecognizedLengthName", "The specified name '{value}' does not name a length/dimension/skip."],
+    "{value}", "The specified name '{value}' does not name a length/dimension/skip."],
   'mod:length.cmd:the.UnknownRegister': [
-    '\\the: UnknownRegister', "The name '{value}' does not name any of registers, such as count/dimension/skip/etc."]
+    '\\the{value}', "The name '{value}' does not name any of registers, such as count/dimension/skip/etc."]
 });
 
 /* 注意: 利用できる単位については以下でハードコーディングされている事に注意する。
@@ -3721,6 +3728,10 @@ ns.Length = function(value, unit) {
       // 例: new ns.Length(0.5, textwidth);
       this.val = unit.val * value;
       this.unit = unit.unit;
+      if (unit.plus instanceof ns.Length)
+        this.plus = new ns.Length(value, unit.plus);
+      if (unit.minus instanceof ns.Length)
+        this.minus = new ns.Length(value, unit.plus);
     } else {
       // 例: new ns.Length(2.0, "cm");
       this.val = value;
@@ -4083,10 +4094,10 @@ agh.memcpy(mod_core.ErrorMessages, {
       + "\\newcommand cannot override the existing commands/environments\n"
       + "you can override the existing commands with \\renewcommand, or the environments with \\renewenvironment"],
   'mod:common.cmd:renewcommand.NotYetDefined': [
-    "\\renewcommand NotYetDefined",
-    "the specified command/environment '{cmd}' has not yet been defined anywhere\n"
-      + "\\renewcommand/\\renewenvironment should override an existing commands/environments\n"
-      + "you can declare new commands with \\newcommand, or new environments with \\newenvironment"],
+    "{cmd}",
+    "The specified command/environment '{cmd}' has not yet been defined anywhere. "
+      + "\\renewcommand/\\renewenvironment should override existing commands/environments."
+      + "You can declare new commands with \\newcommand, or new environments with \\newenvironment."],
   "mod:common.cmd:string.EndOfDocument": [
     '\\string EndOfDocument',
     "reached the end of document. An argument of \\string cannot be read."],
@@ -4229,7 +4240,7 @@ new function(){
     case "renewcommand":
       if (getExistingCommandHandler(doc,name) == null) {
         doc.currentCtx.output.error(
-          'mod:common.cmd:renewcommand.NotYetDefined',{cmd:name},
+          'mod:common.cmd:renewcommand.NotYetDefined',{cmd: '\\' + name},
           '\\renewcommand @ mod:common');
         return;
       }
@@ -4378,21 +4389,34 @@ new function(){
   //---------------------------------------------------------------------------
   // 空白・改行
 
-  _Ctx.DefineCommand({"hspace":['s@;#1','<span style="padding-right:#1;"></span>']});
-  _Ctx.DefineCommand({"hspace*":['s@;#1','<span style="padding-right:#1;"></span>']});
-  _Ctx.DefineCommand({"vspace":['s@;#1','<p class="aghtex-vspace" style="font-size:#1">&nbsp;</p>']});
-  _Ctx.DefineCommand({"vspace*":['s@;#1','<p class="aghtex-vspace" style="font-size:#1">&nbsp;</p>']});
+  _Ctx.DefineCommand({"hspace":['s@;#D','<tex:i style="padding-right:#1;"></tex:i>']});
+  _Ctx.DefineCommand({"hspace*":['s@;#D','<tex:i style="padding-right:#1;"></tex:i>']});
+  _Ctx.DefineCommand({"vspace":['s@;#D','<p class="aghtex-vspace" style="font-size:#1">&nbsp;</p>']});
+  _Ctx.DefineCommand({"vspace*":['s@;#D','<p class="aghtex-vspace" style="font-size:#1">&nbsp;</p>']});
 
   _Ctx.DefineCommand({"enspace":['s>','\\hspace{0.5em}']}); // from plain-TeX, kerning
 
   _Ctx.DefineCommand({" ":['s@','&nbsp;']});
   _Ctx.DefineCommand({"enskip":['s@','&nbsp;']});
-  _Ctx.DefineCommand({"/":['s>',"\\hspace{0.3ex}"]});
-  _Ctx.DefineCommand({"quad":['s>',"\\hspace{2.4ex}"]});
-  _Ctx.DefineCommand({"qquad":['s>',"\\hspace{4.8ex}"]});
-  _Ctx.DefineCommand({"phantom":['s@;#>1',"<tex:phantom>#1</tex:phantom>"]});
-  _Ctx.DefineCommand({"hphantom":['s@;#>1',"<tex:hphantom>#1</tex:hphantom>"]});
-  _Ctx.DefineCommand({"vphantom":['s@;#[_]!1#>2','<tex:vphantom class="aghtex-vphantom-align-#1"><tex:vphantom2>#2</tex:vphantom2></tex:vphantom>']});
+  _Ctx.DefineCommand({"/":['s@','<tex:i class="aghtex-hspace-slash"></tex:i>']});
+  _Ctx.DefineCommand({"quad":['s@','<tex:i class="aghtex-hspace-quad"></tex:i>']});
+  _Ctx.DefineCommand({"qquad":['s@','<tex:i class="aghtex-hspace-qquad"></tex:i>']});
+  _Ctx.DefineCommand({"phantom":['s@;#>1','<tex:i class="aghtex-phantom">#1</tex:i>']});
+  _Ctx.DefineCommand({"hphantom":['s@;#>1','<tex:i class="aghtex-hphantom">#1</tex:i>']});
+  _Ctx.DefineCommand({"vphantom":['f;#[]!1#>2',function(doc,argv){
+    var className = 'aghtex-vphantom';
+    switch (argv[1]) {
+    case 't': className = 'aghtex-vphantom-top';    break;
+    case 'b': className = 'aghtex-vphantom-bottom'; break;
+    case 'm': className = 'aghtex-vphantom-middle'; break;
+    case '': break;
+    default:
+      doc.currentCtx.output.error('mod:common.cmd:vphantom.UnrecogizedAlign', null, '\\vphantom (mod:common)');
+      break;
+    }
+    doc.currentCtx.output.buff.push(
+      '<tex:i class="', className, '"><tex:i class="aghtex-vphantom-inner">', argv[2], '</tex:i></tex:i>');
+  }]});
 
   _Ctx.DefineCommand({"hfill":['s@','<tex:i class="aghtex-hfill"></tex:i>']});
   _Ctx.DefineCommand({"dotfill":['s@','<tex:i class="aghtex-hfill-dot"></tex:i>']});
@@ -4594,8 +4618,8 @@ new function(){
  *  @section 公開オブジェクト
  *    ※以下 mod_math = ns.Modules["mod:math"] とする。
  *
- *    @fn mod_math.CreateCommandOverStretch(imgsrc,alttxt);
- *    @fn mod_math.CreateCommandUnderStretch(imgsrc,alttxt);
+ *    @fn mod_math.CreateCommandOverStretch({commandName, imageSrc, svg});
+ *    @fn mod_math.CreateCommandUnderStretch({commandName, imageSrc, svg});
  *    @fn mod_math.CreateCommandSummation(content);
  *    @fn mod_math.CreateAccentCommandQksB(height,htSymbol);
  *    @fn mod_math.CreateAccentCommand(type,htsymb,ismath);
@@ -4694,23 +4718,47 @@ new function(){
     mathnormal: ['s@;#>1', '<tex:f class="aghtex-mathit">#1</tex:f>'],
     mathcal   : ['s@;#>1', '<tex:f class="aghtex-mathcal">#1</tex:f>'],
 
-    // 括弧の大きさ
-    big       : ['s@;#>1', '<tex:big class="aghtex-big1">#1</tex:big>'],
-    Big       : ['s@;#>1', '<tex:big class="aghtex-big2">#1</tex:big>'],
-    bigg      : ['s@;#>1', '<tex:big class="aghtex-big3">#1</tex:big>'],
-    Bigg      : ['s@;#>1', '<tex:big class="aghtex-big4">#1</tex:big>'],
-    bigl      : ['s@;#>1', '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
-    Bigl      : ['s@;#>1', '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
-    biggl     : ['s@;#>1', '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
-    Biggl     : ['s@;#>1', '<tex:big class="aghtex-bigl"><tex:big class="aghtex-big4">#1</tex:big></tex:big>'],
-    bigr      : ['s@;#>1', '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
-    Bigr      : ['s@;#>1', '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
-    biggr     : ['s@;#>1', '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
-    Biggr     : ['s@;#>1', '<tex:big class="aghtex-bigr"><tex:big class="aghtex-big4">#1</tex:big></tex:big>'],
-    bigm      : ['s@;#>1', '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big1">#1</tex:big></tex:big>'],
-    Bigm      : ['s@;#>1', '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big2">#1</tex:big></tex:big>'],
-    biggm     : ['s@;#>1', '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big3">#1</tex:big></tex:big>'],
-    Biggm     : ['s@;#>1', '<tex:big class="aghtex-bigm"><tex:big class="aghtex-big4">#1</tex:big></tex:big>']
+  });
+
+  // 括弧の大きさ
+
+  var create_big_delimiter_with_supsub = function(size, lmr) {
+    return ns.Command2("f", "#>1", function(doc, args) {
+      var sbsp = doc.GetSubSup();
+
+      // 上付き・下付きがある時は右側の空白は無効にする。
+      if (sbsp.sup || sbsp.sub) {
+        switch (lmr) {
+        case 'bigr': lmr = null; break;
+        case 'bigm': lmr = 'bigl'; break;
+        }
+      }
+
+      var buff = doc.currentCtx.output.buff;
+      if (lmr) buff.push('<tex:i class="aghtex-', lmr, '">');
+      buff.push('<tex:i class="aghtex-', size, '">', args[1], '</tex:i>');
+      if (lmr) buff.push('</tex:i>');
+      _Mod.OutputSupSubScripts(doc, sbsp.sup, sbsp.sub, size);
+    });
+  };
+
+  _Ctx.DefineCommand({
+    big  : create_big_delimiter_with_supsub('big1', null),
+    Big  : create_big_delimiter_with_supsub('big2', null),
+    bigg : create_big_delimiter_with_supsub('big3', null),
+    Bigg : create_big_delimiter_with_supsub('big4', null),
+    bigl : create_big_delimiter_with_supsub('big1', 'bigl'),
+    Bigl : create_big_delimiter_with_supsub('big2', 'bigl'),
+    biggl: create_big_delimiter_with_supsub('big3', 'bigl'),
+    Biggl: create_big_delimiter_with_supsub('big4', 'bigl'),
+    bigr : create_big_delimiter_with_supsub('big1', 'bigr'),
+    Bigr : create_big_delimiter_with_supsub('big2', 'bigr'),
+    biggr: create_big_delimiter_with_supsub('big3', 'bigr'),
+    Biggr: create_big_delimiter_with_supsub('big4', 'bigr'),
+    bigm : create_big_delimiter_with_supsub('big1', 'bigm'),
+    Bigm : create_big_delimiter_with_supsub('big2', 'bigm'),
+    biggm: create_big_delimiter_with_supsub('big3', 'bigm'),
+    Biggm: create_big_delimiter_with_supsub('big4', 'bigm')
   });
 
   //---------------------------------------------------------------
@@ -4724,15 +4772,15 @@ new function(){
   _Ctx.DefineLetter({"+":['s@','<tex:f class="aghtex-binop aghtex-symb-gothic">＋</tex:f>']});
   _Ctx.DefineLetter({"-":['s@','<tex:f class="aghtex-binop aghtex-symb-gothic">－</tex:f>']});
   _Ctx.DefineLetter({"=":['s@','<tex:f class="aghtex-binop aghtex-symb-gothic">＝</tex:f>']});
-  _Ctx.DefineLetter({"/":['s@','<tex:f class="aghtex-binop aghtex-symb-gothic">/</tex:f>']});
+  _Ctx.DefineLetter({"/":['s@','<tex:f class="aghtex-binop aghtex-symb-gothic aghtex-big-variant">/</tex:f>']});
 
   // 数式フォントで再定義
-  _Ctx.DefineLetter({'[':['s@','<tex:f class="aghtex-lbrace aghtex-symb-gothic">[</tex:f>']});
-  _Ctx.DefineLetter({']':['s@','<tex:f class="aghtex-rbrace aghtex-symb-gothic">]</tex:f>']});
-  _Ctx.DefineLetter({'(':['s@','<tex:f class="aghtex-lbrace aghtex-symb-gothic">(</tex:f>']});
-  _Ctx.DefineLetter({')':['s@','<tex:f class="aghtex-rbrace aghtex-symb-gothic">)</tex:f>']});
-  _Ctx.DefineCommand({"{":['s@','<tex:f class="aghtex-lbrace aghtex-symb-gothic">{</tex:f>']});
-  _Ctx.DefineCommand({"}":['s@','<tex:f class="aghtex-rbrace aghtex-symb-gothic">}</tex:f>']});
+  _Ctx.DefineLetter({'[':['s@','<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">[</tex:f>']});
+  _Ctx.DefineLetter({']':['s@','<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">]</tex:f>']});
+  _Ctx.DefineLetter({'(':['s@','<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">(</tex:f>']});
+  _Ctx.DefineLetter({')':['s@','<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">)</tex:f>']});
+  _Ctx.DefineCommand({"{":['s@','<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">{</tex:f>']});
+  _Ctx.DefineCommand({"}":['s@','<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">}</tex:f>']});
   _Ctx.DefineCommand({"&":['s@','<tex:f class="aghtex-symb-gothic">&amp;</tex:f>']});
   _Ctx.DefineCommand({"%":['s@','<tex:f class="aghtex-symb-gothic">%</tex:f>']});
   _Ctx.DefineCommand({"_":['s@','<tex:f class="aghtex-symb-gothic">_</tex:f>']});
@@ -4784,41 +4832,48 @@ new function(){
   // letter
 
   if (agh.browser.vIE <= 6 || ns.compatMode == "IE-qks") {
-    _Ctx.DefineLetter({"^":['s@;#>1','<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">#1</tex:i></tex:sup>']});
-    _Ctx.DefineLetter({"_":['s@;#>1','<tex:sub class="aghtex-tag-script">#1</tex:sub>']});
-    var output_supsub_scripts = function(doc, sup, sub) {
+    _Ctx.DefineLetter({"^":['s@;#>1','<tex:i class="aghtex-sup aghtex-tag-script"><tex:i class="aghtex-sup-nest">#1</tex:i></tex:i>']});
+    _Ctx.DefineLetter({"_":['s@;#>1','<tex:i class="aghtex-sub aghtex-tag-script">#1</tex:i>']});
+    var output_supsub_scripts = function(doc, sup, sub, size) {
       var buff = doc.currentCtx.output.buff;
-      if (sub !== null)
-        buff.push('<tex:sub class="aghtex-tag-script">', sub, '</tex:sub>');
-      if (sup !== null)
-        buff.push('<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">', sup, '</tex:i></tex:sup>');
+      if (sub !== null) {
+        var cls = size ? ' aghtex-sub-' + size : '';
+        buff.push('<tex:i class="aghtex-sub', cls, ' aghtex-tag-script">', sub, '</tex:i>');
+      } else if (sup !== null) {
+        var cls = size ? ' aghtex-sup-' + size : '';
+        buff.push('<tex:i class="aghtex-sup', cls, ' aghtex-tag-script"><tex:i class="aghtex-sup-nest">', sup, '</tex:i></tex:i>');
+      }
     };
   } else {
-    var output_supsub_scripts = function(doc, sup, sub) {
+    var output_supsub_scripts = function(doc, sup, sub, size) {
       var buff = doc.currentCtx.output.buff;
       if (sup === null || sub === null) {
-        if (sup !== null)
-          buff.push('<tex:sup class="aghtex-tag-script"><tex:i class="aghtex-sup-nest">', sup, '</tex:i></tex:sup>');
-        else if (sub !== null)
-          buff.push('<tex:sub class="aghtex-tag-script">', sub, '</tex:sub>');
+        if (sub !== null) {
+          var cls = size ? ' aghtex-sub-' + size : '';
+          buff.push('<tex:i class="aghtex-sub', cls, ' aghtex-tag-script">', sub, '</tex:i>');
+        } else if (sup !== null) {
+          var cls = size ? ' aghtex-sup-' + size : '';
+          buff.push('<tex:i class="aghtex-sup', cls, ' aghtex-tag-script"><tex:i class="aghtex-sup-nest">', sup, '</tex:i></tex:i>');
+        }
         return;
       }
 
+      var cls = size ? ' aghtex-supsub-' + size : '';
       if (!_Mod.GetMathStyle(doc))
         buff.push(
-          '<tex:supsub class="aghtex-tag-script"><tex:supsub-u>', sup,
-          '</tex:supsub-u><tex:supsub-d>', sub,
-          '</tex:supsub-d></tex:supsub>');
+          '<tex:i class="aghtex-supsub', cls, ' aghtex-tag-script">',
+          '<tex:i class="aghtex-supsub-u">', sup, '</tex:i>',
+          '<tex:i class="aghtex-supsub-d">', sub, '</tex:i></tex:i>');
       else
         buff.push(
-          '<tex:supsub class="aghtex-textstyle aghtex-tag-script"><tex:supsub-u><tex:i>', sup,
-          '</tex:i></tex:supsub-u><tex:supsub-d><tex:i>', sub,
-          '</tex:i></tex:supsub-d></tex:supsub>');
+          '<tex:i class="aghtex-supsub', cls, ' aghtex-supsub-textstyle aghtex-tag-script">',
+          '<tex:i class="aghtex-supsub-u"><tex:i>', sup, '</tex:i></tex:i>',
+          '<tex:i class="aghtex-supsub-d"><tex:i>', sub, '</tex:i></tex:i></tex:i>');
     };
     _Ctx.DefineLetter({"^":['f;#>1',function(doc,argv){
       doc.skipSpaceAndComment();
       var sub = null;
-      if (doc.scanner.is(mod_core.SCAN_WT_LTR,"_")) {
+      if (doc.scanner.is(mod_core.SCAN_WT_LTR, "_")) {
         doc.scanner.Next();
         sub = doc.GetArgumentHtml();
       }
@@ -4827,7 +4882,7 @@ new function(){
     _Ctx.DefineLetter({"_":['f;#>1',function(doc,argv){
       doc.skipSpaceAndComment();
       var sup = null;
-      if (doc.scanner.is(mod_core.SCAN_WT_LTR,"^")) {
+      if (doc.scanner.is(mod_core.SCAN_WT_LTR, "^")) {
         doc.scanner.Next();
         sup = doc.GetArgumentHtml();
       }
@@ -4860,7 +4915,7 @@ new function(){
   //---------------------------------------------------------------
   //    他
   //---------------------------------------------------------------
-  var HT_SQRT_STRETCH_IMAGE = mod_base.GetStretchImageTd("root.png", 2, "√", 'sqrt');
+  var HT_SQRT_STRETCH_IMAGE = mod_base.GetStretchImageTd("stretch_sqrt.png", 2, "√", 'sqrt');
   _Ctx.DefineCommand({"sqrt":['f;#[]>1#>2',function(doc,argv){
     var buff = doc.currentCtx.output.buff;
     buff.push('<table cellpadding="0" class="aghtex-inline aghtex-sqrt"><tr style="height:0px;">');
@@ -4912,6 +4967,7 @@ new function(){
     }
   })();
 
+  // image を指定する時は、IE/Sf では画像要素で、それ以外では <td> 要素でなければならない。
   function output_underbrace(buff, content, image, undertxt) {
     if (agh.browser.vIE || agh.browser.vSf) {
       if (agh.browser.vIE) {
@@ -4938,8 +4994,10 @@ new function(){
       buff.push('</table>');
     }
   }
-  function output_overbrace(buff, content, image, overtext) {
-    buff.push('<tex:i class="aghtex-overbrace">');
+  function output_overbrace(buff, content, image, overtext, className) {
+    buff.push('<tex:i class="aghtex-overbrace');
+    if (className) buff.push(' ', className);
+    buff.push('">');
     if (overtext)
       buff.push('<tex:i class="aghtex-overbrace-t"><tex:i class="aghtex-overbrace-u">', overtext, '</tex:i></tex:i>');
     if (image)
@@ -4949,60 +5007,110 @@ new function(){
   _Mod.OutputUnderbrace = output_underbrace;
   _Mod.OutputOverbrace = output_overbrace;
 
-  var ht_img_overbrace = '<img alt="\\overbrace" class="aghtex-overbrace" src="' + ns.BaseUrl + 'paren2ov.png" />';
-  var ht_img_underbrace;
-  if (agh.browser.vIE || agh.browser.vSf)
-    ht_img_underbrace = '<img alt="\\underbrace" class="aghtex-underbrace" src="' + ns.BaseUrl + 'paren2ud.png" />';
-  else
-    ht_img_underbrace = GenerateHtmlUndertextImage("paren2ud.png", 1, "\\underbrace");
+  _Mod.CreateCommandOverStretch = function(info) {
+    var className = 'aghtex-overbrace-' + info.commandName;
+    var image;
+    if (info.svg && /^(Sf|Fx)-/.test(ns.compatMode))
+      image = info.svg;
+    else
+      image = '<img alt="\\' + info.commandName + '" class="aghtex-overbrace" src="' + ns.BaseUrl + info.imageSrc + '" />';
 
-  _Ctx.DefineCommand({"underbrace":['f;#>1',function(doc,argv){
-    var undertxt = null;
-    doc.skipSpaceAndComment();
-    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "_")) {
-      doc.scanner.Next();
-      undertxt=doc.GetArgumentHtml();
-    }
-
-    var buff = doc.currentCtx.output.buff;
-    output_underbrace(buff, argv[1], ht_img_underbrace, undertxt);
-  }]});
-  _Ctx.DefineCommand({"overbrace":['f;#>1',function(doc,argv){
-    var overtxt = null;
-    doc.skipSpaceAndComment();
-    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "^")) {
-      doc.scanner.Next();
-      overtxt = doc.GetArgumentHtml();
-    }
-
-    var buff = doc.currentCtx.output.buff;
-    output_overbrace(buff, argv[1], ht_img_overbrace, overtxt);
-  }]});
-
-  _Mod.CreateCommandOverStretch = function(imgsrc, alttxt) {
-    var image = '<img alt="\\' + alttxt + '" class="aghtex-overbrace" src="' + ns.BaseUrl + imgsrc + '" />';
     return new ns.Command2("f", "#>1", function(doc, argv) {
+      var text = null;
+      if (info.overText) {
+        doc.skipSpaceAndComment();
+        if (doc.scanner.is(mod_core.SCAN_WT_LTR, "^")) {
+          doc.scanner.Next();
+          text = doc.GetArgumentHtml();
+        }
+      }
       var buff = doc.currentCtx.output.buff;
-      output_overbrace(buff, argv[1], image);
+      output_overbrace(buff, argv[1], image, text, className);
     });
-  }
-  _Mod.CreateCommandUnderStretch = function(imgsrc, alttxt) {
+  };
+  _Mod.CreateCommandUnderStretch = function(info) {
     var image;
     if (agh.browser.vIE || agh.browser.vSf)
-      image = '<img alt="\\' + alttxt + '" class="aghtex-underbrace" src="' + ns.BaseUrl + imgsrc + '" />';
+      image = '<img alt="\\' + info.commandName + '" class="aghtex-underbrace" src="' + ns.BaseUrl + info.imageSrc + '" />';
+    else if (info.svg && /^(Sf|Fx)-/.test(ns.compatMode))
+      image = '<td class="aghtex-underbrace-svg">' + info.svg + '</td>';
     else
-      image = GenerateHtmlUndertextImage(imgsrc, 1, '\\' + alttxt);
+      image = GenerateHtmlUndertextImage(info.imageSrc, 1, '\\' + info.commandName);
 
     return new ns.Command2("f", "#>1", function(doc, argv) {
+      var text = null;
+      if (info.underText) {
+        doc.skipSpaceAndComment();
+        if (doc.scanner.is(mod_core.SCAN_WT_LTR, "_")) {
+          doc.scanner.Next();
+          text = doc.GetArgumentHtml();
+        }
+      }
       var buff = doc.currentCtx.output.buff;
-      output_underbrace(buff, argv[1], image);
+      output_underbrace(buff, argv[1], image, text);
     });
-  }
+  };
 
-  _Ctx.AddCommandHandler("widehat", _Mod.CreateCommandOverStretch("stretch_hat.png", "widehat"));
-  _Ctx.AddCommandHandler("widetilde", _Mod.CreateCommandOverStretch("stretch_tilde.png", "widetilde"));
-  _Ctx.AddCommandHandler("overrightarrow", _Mod.CreateCommandOverStretch("stretch_rarr.png", "overrightarrow"));
-  _Ctx.AddCommandHandler("overleftarrow", _Mod.CreateCommandOverStretch("stretch_larr.png", "overleftarrow"));
+  var generateSvgSource = function(svg) {
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + svg.width + ' ' + svg.height + '" preserveAspectRatio="none">'
+      + '<g transform="matrix(1 0 0 -1 0 768)"><path fill="currentColor" d="' + svg.path + '" /></g></svg>';
+  };
+  _Mod["svg:stretch_underbrace"] = generateSvgSource({
+    width: 2048, height: 1024,
+    path: "M1024 -256c-8 0 -14 6 -16 10c-42 214 -118 370 -216 414h-562c-184 78 -230 508 -230 582"
+      + "c0 10 4 18 18 18s18 -8 18 -18c0 -68 56 -342 194 -416h562c148 -70 200 -308 232 -496"
+      + "c32 188 84 426 232 496h562c138 74 194 348 194 416c0 10 4 18 18 18s18 -8 18 -18"
+      + "c0 -74 -46 -504 -230 -582h-562c-98 -44 -174 -200 -216 -414c-2 -4 -8 -10 -16 -10z"
+  });
+  _Mod["svg:stretch_overbrace"] = generateSvgSource({
+    width: 2048, height: 1024,
+    path: "M1024 768c8 0 14 -6 16 -10c42 -214 118 -370 216 -414h562c184 -78 230 -508 230 -582"
+      + "c0 -10 -4 -18 -18 -18s-18 8 -18 18c0 68 -56 342 -194 416h-562c-148 70 -200 308 -232 496"
+      + "c-32 -188 -84 -426 -232 -496h-562c-138 -74 -194 -348 -194 -416c0 -10 -4 -18 -18 -18s-18 8 -18 18"
+      + "c0 74 46 504 230 582h562c98 44 174 200 216 414c2 4 8 10 16 10z"
+  });
+  _Mod["svg:stretch_hat"] = generateSvgSource({
+    width: 2048, height: 1024,
+    path: "M9 -256l-9 122l1024 902l1024 -898l-9 -126l-1015 727z"
+  });
+  _Mod["svg:stretch_tilde"] = generateSvgSource({
+    width: 2140, height: 1024,
+    path: "M0 -90c246 470 488 858 720 858h1c313 -3 435 -737 739 -740h1c264 0 559 550 669 736"
+      + "l10 -172c-340 -613 -539 -848 -725 -848h-2c-320 3 -424 751 -735 752c-176 0 -422 -306 -668 -749z"
+  });
+  _Mod["svg:stretch_rarr"] = generateSvgSource({
+    width: 2048, height: 1024,
+    path: "M-0 256c0 34 8 85 18 85l1887 -4c-69 92 -110 295 -126 365c-1 6 -2 12 -2 18c0 25 12 48 25 48"
+      + "c12 0 20 -1 31 -48c25 -105 28 -136 63 -223c32 -79 90 -161 144 -216c6 -6 8 -12 8 -25s-2 -19 -8 -25"
+      + "c-54 -55 -112 -136 -144 -215c-35 -87 -38 -118 -63 -223c-11 -47 -19 -48 -31 -48c-13 0 -25 22 -25 47"
+      + "c0 6 1 12 2 18c16 70 57 274 126 366l-1887 -4c-10 0 -18 50 -18 84z"
+  });
+  _Mod["svg:stretch_larr"] = generateSvgSource({
+    width: 2048, height: 1024,
+    path: "M2048 256c0 -34 -8 -84 -18 -84l-1887 4c69 -92 110 -296 126 -366c1 -6 2 -12 2 -18"
+      + "c0 -25 -12 -47 -25 -47c-12 0 -20 1 -31 48c-25 105 -28 136 -63 223c-32 79 -90 160 -144 215"
+      + "c-6 6 -8 12 -8 25s2 19 8 25c54 55 112 137 144 216c35 87 38 118 63 223c11 47 19 48 31 48"
+      + "c13 0 25 -23 25 -48c0 -6 -1 -12 -2 -18c-16 -70 -57 -273 -126 -365l1887 4c10 0 18 -51 18 -85z"
+  });
+  _Mod["svg:stretch_lrarr"] = generateSvgSource({
+    width: 2048, height: 1024,
+    path: "M144 174c69 -92 109 -294 125 -364c1 -6 2 -12 2 -18c0 -25 -12 -47 -25 -47c-12 0 -20 1 -31 48"
+      + "c-25 105 -28 136 -63 223c-32 79 -90 160 -144 215c-6 6 -8 12 -8 25s2 19 8 25c54 55 112 137 144 216"
+      + "c35 87 38 118 63 223c11 47 19 48 31 48c13 0 25 -23 25 -48c0 -6 -1 -12 -2 -18c-16 -70 -57 -273 -126 -365"
+      + "h1762c-69 92 -110 295 -126 365c-1 6 -2 12 -2 18c0 25 12 48 25 48c12 0 20 -1 31 -48c25 -105 28 -136 63 -223"
+      + "c32 -79 90 -161 144 -216c6 -6 8 -12 8 -25s-2 -19 -8 -25c-54 -55 -112 -136 -144 -215"
+      + "c-35 -87 -38 -118 -63 -223c-11 -47 -19 -48 -31 -48c-13 0 -25 22 -25 47c0 6 1 12 2 18c16 70 57 274 126 366z"
+  });
+
+  _Ctx.DefineCommand({
+    underbrace: _Mod.CreateCommandUnderStretch({commandName: "underbrace", imageSrc: "stretch_underbrace.png", svg: _Mod["svg:stretch_underbrace"], underText: true}),
+    overbrace: _Mod.CreateCommandOverStretch({commandName: "overbrace", imageSrc: "stretch_overbrace.png", svg: _Mod["svg:stretch_overbrace"], overText: true}),
+    widehat: _Mod.CreateCommandOverStretch({commandName: "widehat", imageSrc: "stretch_widehat.png", svg: _Mod["svg:stretch_hat"]}),
+    widetilde: _Mod.CreateCommandOverStretch({commandName: "widetilde", imageSrc: "stretch_widetilde.png", svg: _Mod["svg:stretch_tilde"]}),
+    overrightarrow: _Mod.CreateCommandOverStretch({commandName: "overrightarrow", imageSrc: "stretch_rarr.png", svg: _Mod["svg:stretch_rarr"]}),
+    overleftarrow: _Mod.CreateCommandOverStretch({commandName: "overleftarrow", imageSrc: "stretch_larr.png", svg: _Mod["svg:stretch_larr"]})
+  });
+
   //---------------------------------------------------------------
   //    分数 / atop
   //---------------------------------------------------------------
@@ -5212,10 +5320,10 @@ new function(){
       var sbsp = doc.GetSubSup();
       switch ((sbsp.sub ? 1 : 0) + (sbsp.sup ? 2 : 0)) {
       case 1:
-        buff.push('<tex:sub class="aghtex-int">', sbsp.sub, '</tex:sub>');
+        buff.push('<tex:i class="aghtex-sub aghtex-sub-int">', sbsp.sub, '</tex:i>');
         break;
       case 2:
-        buff.push('<tex:sup class="aghtex-int">', sbsp.sup, '</tex:sup>');
+        buff.push('<tex:i class="aghtex-sup aghtex-sup-int">', sbsp.sup, '</tex:i>');
         break;
       case 3:
         buff.push(
@@ -5398,8 +5506,8 @@ new function(){
     ddagger : ['s@', '<tex:f class="aghtex-binop aghtex-symb-roman">‡</tex:f>'],
     sqcap   : ['s@', '<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2293;</tex:f>'],
     sqcup   : ['s@', '<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2294;</tex:f>'],
-    vee     : ['s@', '<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22C1;</tex:f>'],
-    wedge   : ['s@', '<tex:f class="aghtex-binop aghtex-symb-mincho">&#x22C0;</tex:f>'],
+    vee     : ['s@', '<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2228;</tex:f>'],
+    wedge   : ['s@', '<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2227;</tex:f>'],
     amalg   : ['s@', '<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2210;</tex:f>'],
     wr      : ['s@', '<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2240;</tex:f>'],
     odot    : ['s@', '<tex:f class="aghtex-binop aghtex-symb-mincho">&#x2299;</tex:f>'],
@@ -5510,12 +5618,12 @@ new function(){
     varsigma:  ['s@', '<tex:f class="aghtex-greek">&#x03C2;</tex:f>'],
 
     // 括弧
-    lceil        : ['s@', '<tex:f class="aghtex-lbrace aghtex-symb-gothic">&#x2308;</tex:f>'],
-    rceil        : ['s@', '<tex:f class="aghtex-rbrace aghtex-symb-gothic">&#x2309;</tex:f>'],
-    lfloor       : ['s@', '<tex:f class="aghtex-lbrace aghtex-symb-gothic">&#x230A;</tex:f>'],
-    rfloor       : ['s@', '<tex:f class="aghtex-rbrace aghtex-symb-gothic">&#x230B;</tex:f>'],
-    langle       : ['s@', '<tex:f class="aghtex-lbrace aghtex-symb-gothic">〈</tex:f>'], // u3008=cjklangle (c.f. u27e8=bra, u2329=lpointing langle; 対応フォント稀少)
-    rangle       : ['s@', '<tex:f class="aghtex-rbrace aghtex-symb-gothic">〉</tex:f>'], // u3009=cjkrangle (c.f. u27e9=ket, u232a=rpointing rangle; 対応フォント稀少)
+    lceil        : ['s@', '<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">&#x2308;</tex:f>'],
+    rceil        : ['s@', '<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">&#x2309;</tex:f>'],
+    lfloor       : ['s@', '<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">&#x230A;</tex:f>'],
+    rfloor       : ['s@', '<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">&#x230B;</tex:f>'],
+    langle       : ['s@', '<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">〈</tex:f>'], // u3008=cjklangle (c.f. u27e8=bra, u2329=lpointing langle; 対応フォント稀少)
+    rangle       : ['s@', '<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">〉</tex:f>'], // u3009=cjkrangle (c.f. u27e9=ket, u232a=rpointing rangle; 対応フォント稀少)
     '|'          : ['s@', '<tex:f class="aghtex-mbrace aghtex-symb-roman">&#x2225;</tex:f>'], // 平行
     vert         : ['s@', '<tex:f class="aghtex-mbrace aghtex-symb-gothic">|</tex:f>'],
     Vert         : ['s@', '<tex:f class="aghtex-mbrace aghtex-symb-roman">&#x2225;</tex:f>'],
@@ -5626,7 +5734,7 @@ new function(){
     bot         : ['s@', '<tex:f class="aghtex-symb-gothic">⊥</tex:f>'], // u22a5
     angle       : ['s@', '<tex:f class="aghtex-symb-gothic">∠</tex:f>'], // u2220
     triangle    : ['s@', '<tex:f class="aghtex-syma-mincho">△</tex:f>'], // u25b3
-    backslash   : ['s@', '<tex:f class="aghtex-symb-cent">\\</tex:f>'], // u005c
+    backslash   : ['s@', '<tex:f class="aghtex-symb-cent aghtex-big-variant">\\</tex:f>'], // u005c
     forall      : ['s@', '<tex:f class="aghtex-symb-gothic">∀</tex:f>'], // u2200
     exists      : ['s@', '<tex:f class="aghtex-symb-gothic">∃</tex:f>'], // u2203
     neg         : ['s@', '<tex:f class="aghtex-symb-gothic">&#x00ac;</tex:f>'], // 全角=uffe2
@@ -5750,7 +5858,7 @@ new function(){
     normalfont: mod_common.CreateCommandTagFollowing('<tex:fnorm>', '</tex:fnorm>'),
 
     // 太字斜体
-    boldmath: ['s@#>1', '<tex:f class="aghtex-mathbm">#1</tex:f>'],
+    boldmath: ['s@;#>1', '<tex:f class="aghtex-mathbm">#1</tex:f>'],
 
     // アクセント
     "'": mod_math.CreateAccentCommand('acc', '<tex:f class="aghtex-symb-mincho">&#x00B4;</tex:f>'), // alt = &#x02CA;
@@ -8461,8 +8569,8 @@ function getDateString(date) {
 function getDateStringOfToday() {
   return getDateString(new Date);
 }
-function getDateStringOflastModified() {
-  var date = new Date(document.lastModified);
+function getDateStringOflastModified(doc) {
+  var date = new Date(doc && doc.option.lastModified || document.lastModified);
   if (!(date.getTime() > 0)) date = new Date; // date.getTime() may be NaN
   return getDateString(date);
 }
@@ -8553,7 +8661,7 @@ new function(){
     if (date)
       buff.push(date);
     else
-      buff.push(getDateStringOflastModified());
+      buff.push(getDateStringOflastModified(doc));
 
     buff.push('</tex:i></h1>');
   }]});
@@ -8733,12 +8841,12 @@ new function(){
     httag: 'h1', htclass: 'aghtex-revtex-part', html: '<tex:i class="aghtex-revtex-part">Part #</tex:i> #'
   }));
   _Ctx.AddCommandHandler("section", mod_ref.CreateSectionCommand({
-    counter: "section", refname: '\\Roman{section}.\\quad', toctype: "section", emitnote: true,
-    httag: 'h2', htclass: 'aghtex-revtex-section', html: '# #'
+    counter: "section", refname: '\\Roman{section}.', toctype: "section", emitnote: true,
+    httag: 'h2', htclass: 'aghtex-revtex-section', html: '#<tex:i class="aghtex-hspace-quad"></tex:i> #'
   }));
   _Ctx.AddCommandHandler("subsection", mod_ref.CreateSectionCommand({
-    counter: "subsection", refname: '\\Alph{subsection}.\\quad', toctype: "subsection", emitnote: true,
-    httag: 'h3', htclass: 'aghtex-revtex-subsection', html: '# #'
+    counter: "subsection", refname: '\\Alph{subsection}.', toctype: "subsection", emitnote: true,
+    httag: 'h3', htclass: 'aghtex-revtex-subsection', html: '#<tex:i class="aghtex-hspace-quad"></tex:i> #'
   }));
   _Ctx.AddCommandHandler("subsubsection", mod_ref.CreateSectionCommand({
     counter: "subsubsection", refname: '\\arabic{section}.\\arabic{subsection}.\\arabic{subsubsection}', emitnote: true,
@@ -8774,7 +8882,7 @@ new function(){
     if (date)
       buff.push(date);
     else
-      buff.push(getDateStringOflastModified());
+      buff.push(getDateStringOflastModified(doc));
 
     buff.push(')</tex:i></h1>');
 
@@ -9409,10 +9517,10 @@ new function(){
     // \underrightarrow
     // \underleftarrow
     // \underleftrightarrow
-    overleftrightarrow : mod_math.CreateCommandOverStretch("stretch_lrarr.png", "overleftrightarrow"),
-    underrightarrow    : mod_math.CreateCommandUnderStretch("stretch_rarr.png", "underrightarrow"),
-    underleftarrow     : mod_math.CreateCommandUnderStretch("stretch_larr.png", "underleftarrow"),
-    underleftrightarrow: mod_math.CreateCommandUnderStretch("stretch_lrarr.png", "underleftrightarrow"),
+    overleftrightarrow : mod_math.CreateCommandOverStretch({commandName: "overleftrightarrow", imageSrc: "stretch_lrarr.png", svg: mod_math["svg:stretch_lrarr"]}),
+    underrightarrow    : mod_math.CreateCommandUnderStretch({commandName: "underrightarrow", imageSrc: "stretch_rarr.png", svg: mod_math["svg:stretch_rarr"]}),
+    underleftarrow     : mod_math.CreateCommandUnderStretch({commandName: "underleftarrow", imageSrc: "stretch_larr.png", svg: mod_math["svg:stretch_larr"]}),
+    underleftrightarrow: mod_math.CreateCommandUnderStretch({commandName: "underleftrightarrow", imageSrc: "stretch_lrarr.png", svg: mod_math["svg:stretch_lrarr"]}),
 
     // \dddot,  \dddot
     dddot : mod_math.CreateAccentCommand('vec', '<tex:f class="aghtex-syma-mincho">&#x22EF;</tex:f>', true), // combining = &#x20DB;

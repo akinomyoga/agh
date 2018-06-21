@@ -47,6 +47,7 @@ pre.agh-prog-txt{
   border:1px solid silver;border-width:1px 0px;padding-top:0px;padding-bottom:1ex;background-color:white;
 }
 
+pre.agh-prog-framed,
 pre.result:before,
 pre.agh-prog-c:before,
 pre.agh-prog-cpp:before,

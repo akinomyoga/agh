@@ -7,15 +7,24 @@
 /// <reference path="agh.dom.js"/>
 /// <reference path="agh.class.js"/>
 /// <reference path="agh.forms.js"/>
-agh.scripts.register("agh.debug.js",[
-  "agh.js","agh.dom.js",
-  "agh.text.color.js","prog.std.css",
+agh.scripts.register("agh.debug.js", [
+  "agh.js", "agh.dom.js",
+  "agh.text.color.js", "prog.std.css",
   "agh.debug.css",
-  "agh.class.js","agh.forms.js"
-],function(){
+  "agh.class.js", "agh.forms.js"
+], function() {
 //==============================================================================
 
   agh.Namespace('debug',agh);
+
+  agh.debug.measure = function(func, self, args) {
+    var t0 = new Date;
+    var result = func.apply(self, args);
+    var t1 = new Date;
+    var time = t1.getTime() - t0.getTime();
+    console.log("agh.debug.measure: " + time + "ms");
+    return result;
+  };
 
   agh.debug.benchmark=(function(){
     function single_measure(func,factor){
@@ -49,7 +58,7 @@ agh.scripts.register("agh.debug.js",[
   // utility functions
   function in_s(name,obj){
     try {
-      return name in obj
+      return name in obj;
     }catch(ex){
       return false;
     }

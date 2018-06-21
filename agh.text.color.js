@@ -1,4 +1,4 @@
-//                                                     -*- coding:utf-8-dos -*-
+//                                          -*- mode: js; coding: utf-8-dos -*-
 //*****************************************************************************
 //
 //    Ageha 3.0 - agh.text.color
@@ -14,8 +14,8 @@
 /// <reference path="agh.text.js"/>
 /// <reference path="agh.regex.js"/>
 agh.scripts.register("agh.text.color.js",[
-  "agh.js","agh.text.js","agh.regex.js","agh.text.color.css"
-],function(){
+  "agh.js", "agh.text.js", "agh.regex.js", "agh.text.color.css"
+], function(){
 
 var agh=this;
 var ns=agh.Text;
@@ -2024,7 +2024,9 @@ nsColor.cpp=function(str,option){
       function(G,C){return '<span class="agh-syntax-bash-prompt">'+_h(G[1])+'</span> '+agh.Text.Color.bash(G[2]);}
     ],ruleHtmlEscape
   ]);
-  registerSyntaxHighlighter("bash-interactive",createSyntaxHighligher(bash));
+  registerSyntaxHighlighter(["bash-interactive", "ibash"], createSyntaxHighligher(bash));
+
+
 
   //---------------------------------------------------------------------------
   // 試験実装

@@ -7,11 +7,11 @@
 /// <reference path="agh.dom1.js"/>
 /// <reference path="agh.class.js"/>
 // ToDo agh.dom1.js から agh.dom.js (ver2) に乗り換える。
-agh.scripts.register("agh.forms.js",[
+agh.scripts.register("agh.forms.js", [
   "agh.js",
-  "agh.dom.js",
-  "agh.class.js"
-],function(){
+  "agh.class.js",
+  "agh.dom.js"
+], function() {
 //==============================================================================
 var agh=this;
 agh.Namespace("Forms",agh);
