@@ -2024,7 +2024,9 @@ nsColor.cpp=function(str,option){
       function(G,C){return '<span class="agh-syntax-bash-prompt">'+_h(G[1])+'</span> '+agh.Text.Color.bash(G[2]);}
     ],ruleHtmlEscape
   ]);
-  registerSyntaxHighlighter("bash-interactive",createSyntaxHighligher(bash));
+  registerSyntaxHighlighter(["bash-interactive", "ibash"], createSyntaxHighligher(bash));
+
+
 
   //---------------------------------------------------------------------------
   // 試験実装
