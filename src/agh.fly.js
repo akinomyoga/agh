@@ -509,10 +509,15 @@
             }
           }
 
-          if (!/(?:^|\s)aghfly-tex-suppress(?:\s|$)/.test(elem.className)) {
+          if (/(?:^|\s)aghfly-tex-suppress(?:\s|$)/.test(elem.className)) return;
+
+          // 再帰的に探索
+          {
             var original_regex = params.regexInlineMath;
 
-            if (/(?:^|\s)(?:aghfly-tex-imath|tex\:dollared)(?:\s|$)/.test(elem.className))
+            if (/^(?:pre|code)$/i.test(elem.tagName))
+              params.regexInlineMath = /[^\s\S]/g; // 何にも一致させない
+            else if (/(?:^|\s)(?:aghfly-tex-imath|tex\:dollared)(?:\s|$)/.test(elem.className))
               params.regexInlineMath = /\`?\$((?=[^$\s])[^$]*[^$\s])\$/g; // /\$([^\$]+)\$/g;
             else if (/(?:^|\s)aghfly-tex-imathbq(?:\s|$)/.test(elem.className))
               params.regexInlineMath = /\`\$([^\$]+)\$/g;
