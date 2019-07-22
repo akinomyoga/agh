@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<html
+  lang="ja"
+  xml:lang="ja"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:vml="urn:schemas-microsoft-com:vml"
+>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link charset="utf-8" type="text/css" rel="stylesheet" href="../../mwg.std.css" />
+  <link charset="utf-8" type="text/css" rel="stylesheet" href="../../prog.std.css" />
+  <title>mwg.PostScript Samples</title>
+<!-- Initialize Vml -->
+<style type="text/css">
+vml\:* { behavior: url(#default#VML); display: inline-block; }
+
+#output{ padding: 1ex; }
+#output * { margin: 1ex; text-indent: 0px; font-size: 80%; }
+
+#source {
+	font-family: MS Gothic; font-size: 11px;
+	height: 100%; width: 500px;
+	margin: 0px; padding: 2px 0px 0px 1ex;
+	border: 1px solid gray;
+	overflow: scroll;
+}
+</style>
+<script type="text/javascript">
+if (navigator.userAgent.match(/MSIE 7.0/) && document.compatMode == "CSS1Compat") {
+  document.body.style.position = "relative";
+}
+</script>
+<script id="mwg_scr" type="text/javascript" charset="utf-8" src="../../agh.js"></script>
+<script type="text/javascript">
+agh.scripts.wait([
+  "agh.js",
+  "agh.dom.js",
+  "agh.text.js",
+  "agh.lang.ps.js",
+  "event:onload"
+], function() {
+  function log(text) {
+    var p = document.createElement('p');
+    if (agh.browser.vFx)
+      p.innerHTML = agh.Text.Escape(text, "html");
+    else
+      p.innerText = "" + text;
+    document.getElementById('output').appendChild(p);
+  }
+  window.log = log;
+  function log_html(text) {
+    var p = document.createElement('div');
+    p.innerHTML = "" + text;
+    document.getElementById('output').appendChild(p);
+  }
+  
+  window.apply = function() {
+    var textarea = document.getElementById('source');
+    var p = new agh.PostScript.Processor({
+      // target: agh.browser.vIE ? "vml" : "svg",
+      target: agh.browser.vIE ? "vml" : document.getElementById('outcanvas'),
+      bb: [0, 0, 610, 790],
+      size: ['500px', '500px']
+    });
+    p.outstream = window.log;
+    p.Run(textarea.value);
+
+    var result = p.graphics.GetResult();
+    if (result != null)
+      document.getElementById('outcanvas').innerHTML = result;
+  };
+});
+</script>
+</head>
+<body>
+<table>
+<tr><td style="width:516px;height:516px;position:relative;padding:0px;">
+  <textarea id="source" style="width:516px;height:532px" rows="100"></textarea>
+</td><td style="width:516px;padding:0px;">
+  <div id="outcanvas" style="width:516px;height:516px;background-color:white;overflow:scroll;position:relative;">
+  </div>
+  <div id="time_panel" style="background-color:black;color:#0f0;">total -s</div>
+</td></tr>
+</table>
+<h4>GhostScript Examples</h4>
+<p><button onclick="apply();">Apply</button></p>
+<div id="output" style="font-family:MS Gothic;border:2px dotted silver;position:relative;min-height:10em;margin:2em;">
+</div>
+</body>
+</html>
+
+
+
+
