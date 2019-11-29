@@ -1,0 +1,7 @@
+# -*- mode: makefile-gmake -*-
+
+enable_addon_aghtex4ie :=
+ifeq ($(OSTYPE),win)
+  enable_addon_aghtex4ie = yes
+endif
+

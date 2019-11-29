@@ -211,7 +211,7 @@ copy_file: $(copy_file)
 .PHONY: "Name"
 all: "Name"
 "Name": "Dir"/Makefile "Deps"
-	make -C "Dir"
+	+make -C "Dir"
 "Dir"/Makefile: "Dir"/Makefile.pp
 	$(MWGPP) $< > $@
 #%end

@@ -20,7 +20,7 @@ $(OUTDIR)/ctxc.exe: ctxc.cs ctxc.frame.js | $(OUTDIR)
 
 all: $(OUTDIR)/gzjs.exe
 $(OUTDIR)/gzjs.exe:
-	make -C gzjs
+	+make -C gzjs
 
 all: $(OUTDIR)/reptxt.exe
 $(OUTDIR)/reptxt.exe: reptxt.cs | $(OUTDIR)
@@ -29,7 +29,7 @@ $(OUTDIR)/reptxt.exe: reptxt.cs | $(OUTDIR)
 .PHONY: make-unidata
 all: make-unidata
 make-unidata:
-	make -C ext/unidata
+	+make -C ext/unidata
 
 #------------------------------------------------------------------------------
 # on koichi@gauge

@@ -3,6 +3,10 @@
 all:
 .PHONY: all dist doc
 
+Makefile: | config.mk
+config.mk:
+	cp config.mk.new $@
+
 dist_excludes= \
  --exclude=./$(AGHDIR)/.git \
  --exclude=./$(AGHDIR)/dist \
@@ -25,7 +29,6 @@ dist_excludes= \
  --exclude=*.20[0-9][0-9][01][0-9][0-3][0-9].* \
  --exclude=*~ 
 
-
 AGHDIR:=$(shell echo $${PWD\#\#*/})
 dist:
 	cd ../ && tar cavf ./$(AGHDIR)/dist/agh.`date +%Y%m%d`.tar.xz ./$(AGHDIR) $(dist_excludes)
@@ -43,9 +46,9 @@ doc: ChangeLog.txt
 .PHONY: make-tools make-src
 all: make-src
 make-tools:
-	make -C tools all
+	+make -C tools all
 make-src: make-tools src/Makefile
-	make -C src all
+	+make -C src all
 src/Makefile: src/Makefile.pp
 	tools/ext/mwg_pp.awk $< > $@
 

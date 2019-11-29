@@ -6,13 +6,14 @@ all:
 BASE=../..
 OUTDIR:=$(BASE)/out
 MWGPP:=$(BASE)/tools/ext/mwg_pp.awk
+include $(BASE)/config.mk
 
 OSTYPE:=$(shell bash -c 'case "$$OSTYPE" in (cygwin*|win*) echo win;; (*) echo "$$OSTYPE";; esac')
 
 all: $(OUTDIR)/addon $(OUTDIR)/addon/index.html
 all: aghtex4chrome
 all: aghtex4thunderbird aghtex4firefox aghtex4seahorse
-ifeq ($(OSTYPE),win)
+ifneq "$(enable_addon_aghtex4ie)" ""
 all: aghtex4ie
 endif
 

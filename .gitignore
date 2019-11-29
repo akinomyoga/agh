@@ -8,6 +8,7 @@
 /src/agh.lang.ps/mat
 
 # generated files
+/config.mk
 /ChangeLog.htm
 /ChangeLog.txt
 /src/Makefile
