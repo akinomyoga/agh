@@ -335,7 +335,7 @@ context "pkg:amsmath/mode.para" new() {
 
   _Ctx.DefineCommand({
     // \AmS
-    "AmS": ['s@', '<tex:AmS>A<span>M</span>S</tex:AmS>'],
+    "AmS": ['s@', '<tex:i class="aghtex-latex-ams">A<tex:i class="aghtex-latex-ams-m">M</tex:i>S</tex:i>'],
 
     // CHK: 以下は paragraph mode でも使えるのか?
     dots : ['s@', '<tex:f class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:f>'],
