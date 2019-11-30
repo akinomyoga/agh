@@ -62,8 +62,6 @@ ns.Modules["core"] = _Mod;
 //--------------------------------------------------------------------
 // Constants
 
-agh.Namespace("Constants", ns);
-var _C = ns.Constants;
 var MACRO_LOOP_THRESH = 128;
 var MACRO_NEST_THRESH = 256;
 var REG_ISCMDCHAR = /[^!"#$&'()=~|\-\^`{\[;:\]+},.\/<>?_ \n\t\r\v\f\b　\\%0-9]/;
@@ -75,6 +73,18 @@ function texctype_isspace(ch) {
 }
 function aghtex_assert(condition, message) {
   if (!condition) throw new Error(message);
+}
+
+if (agh.browser.isWk || agh.browser.vFx) {
+  _Mod.TAG_TABLE = 'tex:table';
+  _Mod.TAG_TBODY = 'tex:tbody';
+  _Mod.TAG_TR = 'tex:tr';
+  _Mod.TAG_TD = 'tex:td';
+} else {
+  _Mod.TAG_TABLE = 'table';
+  _Mod.TAG_TBODY = 'tbody';
+  _Mod.TAG_TR = 'tr';
+  _Mod.TAG_TD = 'td';
 }
 
 //◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆

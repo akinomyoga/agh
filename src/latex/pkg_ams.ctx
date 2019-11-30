@@ -374,9 +374,10 @@ context "pkg:amsmath/mode.math" new() {
   var cfrac_html = null;
   if (agh.browser.vIE) {
     cfrac_html = (
-      '<table cellspacing="0" class="aghtex-frac-ie6-table">'
-      + '<tr><td class="aghtex-frac-ie6-num" style="text-align:$!important;">$</td></tr>'
-      + '<tr><td class="aghtex-frac-ie6-den" style="text-align:$!important;">$</td></tr></table>'
+      '<' + mod_core.TAG_TABLE + ' cellspacing="0" class="aghtex-frac-ie6-table"><' + mod_core.TAG_TBODY + '>'
+        + '<' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-frac-ie6-num" style="text-align:$!important;">$</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '>'
+        + '<' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-frac-ie6-den" style="text-align:$!important;">$</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '>'
+        + '</' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>'
     ).split(/\$/g);
   } else {
     cfrac_html = (
@@ -417,19 +418,20 @@ context "pkg:amsmath/mode.math" new() {
 
     var output = doc.currentCtx.output;
     var buff = output.buff;
-    buff.push('<table cellspacing="0" class="aghtex-inline-table"><tr class="aghtex-cmdleft-row">');
+    buff.push('<', mod_core.TAG_TABLE, ' cellspacing="0" class="aghtex-inline-table"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 
     var hasBar = barWidth && barWidth;
-    buff.push('<td align="center" class="', hasBar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
+    buff.push('<', mod_core.TAG_TD, ' align="center" class="', hasBar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
     if (hasBar && barWidth !== '1px')
       buff.push(' style="border-bottom-width:', barWidth, ';"');
-    buff.push('>', htNumerator, '</td>');
+    buff.push('>', htNumerator, '</', mod_core.TAG_TD, '>');
 
     if (right)
       mod_base.OutputStretchBracketTd(output, right, 2);
-    buff.push('</tr><tr><td align="center" class="aghtex-genfrac-center">', htDenominator, '</td></tr></table>');
+    buff.push('</', mod_core.TAG_TR, '><', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' align="center" class="aghtex-genfrac-center">', htDenominator, '</', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>');
+    buff.push('</', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '>');
   }
 
   _Ctx.DefineCommand({

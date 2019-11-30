@@ -647,7 +647,7 @@ context "mode.math" new("global") {
       case "Fx-qks":
         return function(imgsrc, width, alt) {
           width = width.toString() + "ex";
-          return '<td class="aghtex-stretch" rowspan="2" style="height:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="width:' + width + ';height:100%;"/></td>';
+          return '<' + mod_core.TAG_TD + ' class="aghtex-stretch" rowspan="2" style="height:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="width:' + width + ';height:100%;"/></' + mod_core.TAG_TD + '>';
         };
       case "IE-std":
         if (agh.browser.vIE<8) {
@@ -660,13 +660,13 @@ context "mode.math" new("global") {
             width = width.toString() + "ex";
             var style = 'width:' + width + ';height:expression(' + ns.namespaceName + '.expression_height(this));';
             //var style = 'width:' + width + ';height:expression(this.parentElement.parentElement.parentElement.parentElement.clientHeight-4);';
-            return '<td class="aghtex-stretch" rowspan="2" style="height:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></td>';
+            return '<' + mod_core.TAG_TD + ' class="aghtex-stretch" rowspan="2" style="height:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></' + mod_core.TAG_TD + '>';
           };
         } else {
           return function(imgsrc, width, alt) {
             width = width.toString() + "ex";
             var style = 'width:' + width + ';'
-            return '<td class="aghtex-vstretch" rowspan="2" style="' + style + '"><img class="aghtex-stretch-img" src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></td>';
+            return '<' + mod_core.TAG_TD + ' class="aghtex-vstretch" rowspan="2" style="' + style + '"><img class="aghtex-stretch-img" src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></' + mod_core.TAG_TD + '>';
           };
         }
       case "Fx-std":
@@ -674,12 +674,12 @@ context "mode.math" new("global") {
           if (className in stretchSvgPath) {
             // .svg を用いた表示
             var svg = stretchSvgHead + stretchSvgPath[className] + stretchSvgTail;
-            return '<td rowspan="2" class="aghtex-stretch-svg aghtex-stretch-svg-' + className + '">' + svg + '</td>';
+            return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch-svg aghtex-stretch-svg-' + className + '">' + svg + '</' + mod_core.TAG_TD + '>';
           } else {
             // 旧来の .png を用いた表示
             width = width.toString() + "ex";
-            //return '<td rowspan="2" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');-moz-background-size:100%;"></td>';
-            return '<td rowspan="2" class="aghtex-stretch" style="height:100%;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="width:' + width + ';height:100%;"/></td>';
+            //return '<' + mod_core.TAG_TD + ' rowspan="2" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');-moz-background-size:100%;"></' + mod_core.TAG_TD + '>';
+            return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch" style="height:100%;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="width:' + width + ';height:100%;"/></' + mod_core.TAG_TD + '>';
           }
         };
       case "Sf-qks":
@@ -687,40 +687,45 @@ context "mode.math" new("global") {
         return function(imgsrc, width, alt, className) {
           if (className in stretchSvgPath) {
             var svg = stretchSvgHead + stretchSvgPath[className] + stretchSvgTail;
-            return '<td rowspan="2" class="aghtex-stretch-svg aghtex-stretch-svg-' + className + '">' + svg + '</td>';
+            return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch-svg aghtex-stretch-svg-' + className + '">' + svg + '</' + mod_core.TAG_TD + '>';
           } else {
             width = (width * 0.8).toString() + "ex";
             if (className)
-              return '<td rowspan="2" class="aghtex-stretch-bg aghtex-stretch-bg-' + className + '"></td>';
+              return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch-bg aghtex-stretch-bg-' + className + '"></' + mod_core.TAG_TD + '>';
             else
-              return '<td rowspan="2" class="aghtex-stretch-bg" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');"></td>';
+              return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch-bg" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');"></' + mod_core.TAG_TD + '>';
           }
         };
       case "Op-qks":
       case "Op-std":
         return function(imgsrc, width, alt) {
           width = (width * 0.8).toString() + "ex";
-          return '<td rowspan="2" class="aghtex-stretch" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');"></td>';
+          return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');"></' + mod_core.TAG_TD + '>';
         };
       default:
         return function(imgsrc, width, alt) {
           width = (width * 0.8).toString() + "ex";
-          return '<td rowspan="2" class="aghtex-stretch" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');background-size:100% 100%;"></td>';
+          return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');background-size:100% 100%;"></' + mod_core.TAG_TD + '>';
         };
     }
   })();
+  function stretchTd(className, content) {
+    if (!content) content = '&nbsp;';
+    return '<' + mod_core.TAG_TD + ' rowspan="2" class="' + className + '">' + content + '</' + mod_core.TAG_TD + '>';
+  }
   //------------------------------------------------------------
   _Mod.GetStretchImageTd = stretchImg;
 
   _Mod.OutputStretchBracketTd = (function() {
+
     var bracket_dict = {
       // 括弧
       "(": stretchImg("stretch_lparen.png", 1.0, "(", 'lparen'),
       ")": stretchImg("stretch_rparen.png", 1.0, ")", 'rparen'),
       "{": stretchImg("stretch_lbrace.png", 1.2, "{", 'lbrace'),
       "}": stretchImg("stretch_rbrace.png", 1.2, "}", 'rbrace'),
-      "[": '<td rowspan="2" class="aghtex-left-kaku">&nbsp;</td>',
-      "]": '<td rowspan="2" class="aghtex-right-kaku">&nbsp;</td>',
+      "[": stretchTd('aghtex-left-kaku'),
+      "]": stretchTd('aghtex-right-kaku'),
       "〈": stretchImg("stretch_langle.png", 1, "〈", 'langle'),
       "〉": stretchImg("stretch_rangle.png", 1, "〉", 'rangle'),
 
@@ -729,32 +734,32 @@ context "mode.math" new("global") {
       "〕": stretchImg("paren5r.png", 1, "〕"),
 
       // 共通
-      "|": agh.browser.vIE ? '<td rowspan="2" class="aghtex-left-pipe">&nbsp;</td>' :
-        '<td rowspan="2" class="aghtex-left-pipe"></td>',
-      "∥": agh.browser.vIE ? '<td rowspan="2" class="aghtex-left-vert">&nbsp;</td>' :
-        '<td rowspan="2" class="aghtex-left-vert"></td>',
+      "|": agh.browser.vIE ? stretchTd('aghtex-left-pipe') :
+        stretchTd('aghtex-left-pipe', ""),
+      "∥": agh.browser.vIE ? stretchTd('aghtex-left-vert') :
+        stretchTd('aghtex-left-vert', ""),
 
       // ceiling / floor
-      "\u2308": '<td rowspan="2" class="aghtex-left-ceil">&nbsp;</td>', //
-      "\uF0E9": '<td rowspan="2" class="aghtex-left-ceil">&nbsp;</td>', // Symbol Font
-      "\u00E9": '<td rowspan="2" class="aghtex-left-ceil">&nbsp;</td>', // Symbol Font
-      "\u230A": '<td rowspan="2" class="aghtex-left-flor">&nbsp;</td>', //
-      "\uF0EB": '<td rowspan="2" class="aghtex-left-flor">&nbsp;</td>', // Symbol Font
-      "\u00EB": '<td rowspan="2" class="aghtex-left-flor">&nbsp;</td>', // Symbol Font
-      "\u2309": '<td rowspan="2" class="aghtex-right-ceil">&nbsp;</td>', //
-      "\uF0F9": '<td rowspan="2" class="aghtex-right-ceil">&nbsp;</td>', // Symbol Font
-      "\u00F9": '<td rowspan="2" class="aghtex-right-ceil">&nbsp;</td>', // Symbol Font
-      "\u230B": '<td rowspan="2" class="aghtex-right-flor">&nbsp;</td>', //
-      "\uF0FB": '<td rowspan="2" class="aghtex-right-flor">&nbsp;</td>', // Symbol Font
-      "\u00FB": '<td rowspan="2" class="aghtex-right-flor">&nbsp;</td>', // Symbol Font
-      //"<tex:f>&#xF0E9;</tex:f>": '<td rowspan="2" class="aghtex-left-ceil">&nbsp;</td>',
-      //"<tex:f>&#xE9;</tex:f>": '<td rowspan="2" class="aghtex-left-ceil">&nbsp;</td>',
-      //"<tex:f>&#xF0EB;</tex:f>": '<td rowspan="2" class="aghtex-left-flor">&nbsp;</td>',
-      //"<tex:f>&#xEB;</tex:f>": '<td rowspan="2" class="aghtex-left-flor">&nbsp;</td>',
-      //"<tex:f>&#xF0F9;</tex:f>": '<td rowspan="2" class="aghtex-right-ceil">&nbsp;</td>',
-      //"<tex:f>&#xF9;</tex:f>": '<td rowspan="2" class="aghtex-right-ceil">&nbsp;</td>',
-      //"<tex:f>&#xF0FB;</tex:f>": '<td rowspan="2" class="aghtex-right-flor">&nbsp;</td>',
-      //"<tex:f>&#xFB;</tex:f>": '<td rowspan="2" class="aghtex-right-flor">&nbsp;</td>',
+      "\u2308": stretchTd('aghtex-left-ceil'), //
+      "\uF0E9": stretchTd('aghtex-left-ceil'), // Symbol Font
+      "\u00E9": stretchTd('aghtex-left-ceil'), // Symbol Font
+      "\u230A": stretchTd('aghtex-left-flor'), //
+      "\uF0EB": stretchTd('aghtex-left-flor'), // Symbol Font
+      "\u00EB": stretchTd('aghtex-left-flor'), // Symbol Font
+      "\u2309": stretchTd('aghtex-right-ceil'), //
+      "\uF0F9": stretchTd('aghtex-right-ceil'), // Symbol Font
+      "\u00F9": stretchTd('aghtex-right-ceil'), // Symbol Font
+      "\u230B": stretchTd('aghtex-right-flor'), //
+      "\uF0FB": stretchTd('aghtex-right-flor'), // Symbol Font
+      "\u00FB": stretchTd('aghtex-right-flor'), // Symbol Font
+      //"<tex:f>&#xF0E9;</tex:f>": stretchTd('aghtex-left-ceil'),
+      //"<tex:f>&#xE9;</tex:f>": stretchTd('aghtex-left-ceil'),
+      //"<tex:f>&#xF0EB;</tex:f>": stretchTd('aghtex-left-flor'),
+      //"<tex:f>&#xEB;</tex:f>": stretchTd('aghtex-left-flor'),
+      //"<tex:f>&#xF0F9;</tex:f>": stretchTd('aghtex-right-ceil'),
+      //"<tex:f>&#xF9;</tex:f>": stretchTd('aghtex-right-ceil'),
+      //"<tex:f>&#xF0FB;</tex:f>": stretchTd('aghtex-right-flor'),
+      //"<tex:f>&#xFB;</tex:f>": stretchTd('aghtex-right-flor'),
 
       // arrows
       "↑"    : stretchImg("stretch_uarr.png",   1.2, "↑"),
@@ -780,9 +785,9 @@ context "mode.math" new("global") {
             buff.push(bracket_dict[c].replace(/\browspan="2"/, 'rowspan="' + rowspan + '"'));
           return true;
         } else {
-          buff.push('<td rowspan="', rowspan, '">');
+          buff.push('<', mod_core.TAG_TD, ' rowspan="', rowspan, '">');
           output.error('mod:base.cmd:left.NotSupportedSymbol', {ch: c}, 'mod:base.OutputStretchBracketTd');
-          buff.push(content, '</td>');
+          buff.push(content, '</', mod_core.TAG_TD, '>');
           return false;
         }
       }
@@ -798,14 +803,14 @@ context "mode.math" new("global") {
     function proc_subsup() {
       switch ((sbsp.sup ? 1 : 0) + (sbsp.sub ? 2 : 0)) {
         case 1: // 上付
-          buff.push('<td rowspan="2" class="aghtex-cmdleft-cell-sup aghtex-tag-script"><span class="aghtex-cmdleft-sup">', sbsp.sup, '</span></td>');
+          buff.push('<', mod_core.TAG_TD, ' rowspan="2" class="aghtex-cmdleft-cell-sup aghtex-tag-script"><span class="aghtex-cmdleft-sup">', sbsp.sup, '</span></', mod_core.TAG_TD, '>');
           break;
         case 2: // 下付
-          buff.push('<td rowspan="2" class="aghtex-cmdleft-cell-sub aghtex-tag-script"><span class="aghtex-cmdleft-sub">', sbsp.sub, '</span></td>');
+          buff.push('<', mod_core.TAG_TD, ' rowspan="2" class="aghtex-cmdleft-cell-sub aghtex-tag-script"><span class="aghtex-cmdleft-sub">', sbsp.sub, '</span></', mod_core.TAG_TD, '>');
           break;
         case 3: // 両方
-          buff.push('<td class="aghtex-cmdleft-cell-sup aghtex-tag-script"><span class="aghtex-cmdleft-sup">', sbsp.sup, '</span></td>');
-          bottom_row += '<td class="aghtex-cmdleft-cell-sub aghtex-tag-script"><span class="aghtex-cmdleft-sub">' + sbsp.sub + '</span></td>';
+          buff.push('<', mod_core.TAG_TD, ' class="aghtex-cmdleft-cell-sup aghtex-tag-script"><span class="aghtex-cmdleft-sup">', sbsp.sup, '</span></', mod_core.TAG_TD, '>');
+          bottom_row += '<' + mod_core.TAG_TD + ' class="aghtex-cmdleft-cell-sub aghtex-tag-script"><span class="aghtex-cmdleft-sub">' + sbsp.sub + '</span></' + mod_core.TAG_TD + '>';
           break;
       }
     }
@@ -818,19 +823,19 @@ context "mode.math" new("global") {
     if (agh.browser.vFx)
       // Fx では border-collapse:collapse; にすると border-bottom/right が表示されない
       // 代わりに cellSpacing="0px" を利用
-      buff.push('<table class="aghtex-cmdleft-table" cellSpacing="0px"><tr class="aghtex-cmdleft-row">');
+      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-cmdleft-table" cellSpacing="0px"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
     else if (agh.browser.vSf)
       // Sf5 では CSS2.1 table{vertical-align:baseline;} に対応していない (Cr では OK なのに。。)
-      buff.push('<table class="aghtex-cmdleft-table aghtex-cmdleft-table-sf"><tr class="aghtex-cmdleft-row">');
+      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-cmdleft-table aghtex-cmdleft-table-sf"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
     else
-      buff.push('<table class="aghtex-cmdleft-table"><tr class="aghtex-cmdleft-row">');
+      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-cmdleft-table"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
 
     _Mod.OutputStretchBracketTd(output, ltr, 2);
 
     proc_subsup();
 
     //-- [content]
-    buff.push('<td class="aghtex-cmdleft-cell" rowspan="2">');
+    buff.push('<', mod_core.TAG_TD, ' class="aghtex-cmdleft-cell" rowspan="2">');
 
     // setup context and read under the context
     var ctx = doc.wrap_context(doc.currentCtx);
@@ -843,7 +848,7 @@ context "mode.math" new("global") {
     buff.push(doc.Read(ctx));
 
     //-- [epilogue]
-    buff.push('</td>');
+    buff.push('</', mod_core.TAG_TD, '>');
 
     _Mod.OutputStretchBracketTd(output, ltr, 2);
 
@@ -851,10 +856,10 @@ context "mode.math" new("global") {
 
     //-- [レイアウト用の二行目がある時]
     if (bottom_row != "") {
-      buff.push('</tr><tr>', bottom_row);
+      buff.push('</', mod_core.TAG_TR, '><', mod_core.TAG_TR, '>', bottom_row);
     }
 
-    buff.push('</tr></table>');
+    buff.push('</', mod_core.TAG_TR, '></', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '>');
   });
   _Ctx.AddCommandHandler("right", CH_EXIT_WITH_ERROR);
 };
