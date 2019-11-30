@@ -361,6 +361,8 @@ tex\:i.aghtex-accent-container-vec { top: -0.05em; }
 
 /* --- フォント --- */
 
+tex\:f { line-height: 1; }
+
 /* サイズ */
 tex\:f.aghtex-size-normal { font-size: 100%; }
 tex\:f.aghtex-size-small1 { font-size: 90%; } /* \small */
