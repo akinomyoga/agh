@@ -31,16 +31,18 @@ all: make-unidata
 make-unidata:
 	+make -C ext/unidata
 
-#------------------------------------------------------------------------------
-# on koichi@gauge
-
-ifeq ($(USER)@$(HOSTNAME)/$(OSTYPE),koichi@gauge/win)
-
-KCHBIN:=$(shell cygpath -u c:/usr/koichi/bin)
-all: $(KCHBIN)/reptxt.exe
-$(KCHBIN)/reptxt.exe: $(OUTDIR)/reptxt.exe
+all: $(OUTDIR)/ttf2eot.exe
+$(OUTDIR)/ttf2eot.exe: ext/ttf2eot/ttf2eot.exe
 	cp $< $@
+ext/ttf2eot/ttf2eot.exe:
+	+make -C ext/ttf2eot
 
-endif
+all: $(OUTDIR)/sfnt2woff.exe
+$(OUTDIR)/sfnt2woff.exe: ext/woff/sfnt2woff.exe
+	cp $< $@
+ext/woff/sfnt2woff.exe: | ext/woff
+	+make -C ext/woff
+ext/woff:
+	mkdir -p $@ && cd $@ && unzip ../woff-code-latest.zip
 
 #------------------------------------------------------------------------------

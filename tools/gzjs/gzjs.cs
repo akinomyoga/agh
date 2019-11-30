@@ -1038,9 +1038,9 @@ public static class IO {
 
     long mtime = (long)(System.DateTime.Now - UNIX_EPOCH).TotalSeconds;
     s.WriteByte((byte)(0xFF & mtime));
-    s.WriteByte((byte)(0xFF & mtime > >8));
-    s.WriteByte((byte)(0xFF & mtime > >16));
-    s.WriteByte((byte)(0xFF & mtime > >24));
+    s.WriteByte((byte)(0xFF & mtime >> 8));
+    s.WriteByte((byte)(0xFF & mtime >> 16));
+    s.WriteByte((byte)(0xFF & mtime >> 24));
 
     s.WriteByte(2); // highest compression
     s.WriteByte(3); // line break = unix style '\n'
@@ -1049,14 +1049,14 @@ public static class IO {
 
     uint crc32 = Deflator.CalculateCrc32(data);
     s.WriteByte((byte)(0xFF & crc32));
-    s.WriteByte((byte)(0xFF & crc32 > >8));
-    s.WriteByte((byte)(0xFF & crc32 > >16));
-    s.WriteByte((byte)(0xFF & crc32 > >24));
+    s.WriteByte((byte)(0xFF & crc32 >> 8));
+    s.WriteByte((byte)(0xFF & crc32 >> 16));
+    s.WriteByte((byte)(0xFF & crc32 >> 24));
     uint isize = (uint) data.Length;
     s.WriteByte((byte)(0xFF & isize));
-    s.WriteByte((byte)(0xFF & isize > >8));
-    s.WriteByte((byte)(0xFF & isize > >16));
-    s.WriteByte((byte)(0xFF & isize > >24));
+    s.WriteByte((byte)(0xFF & isize >> 8));
+    s.WriteByte((byte)(0xFF & isize >> 16));
+    s.WriteByte((byte)(0xFF & isize >> 24));
   }
   public static void SaveAsGzipFile(string dest, string content) {
     using(System.IO.FileStream s = new System.IO.FileStream(dest, System.IO.FileMode.Create, System.IO.FileAccess.Write))

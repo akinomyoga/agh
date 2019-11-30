@@ -14,8 +14,8 @@ GZJS:=$(MONO) $(BASE)/tools/ext/gzjs.exe
 CTXC:=$(MONO) $(BASE)/tools/out/ctxc.exe
 MWGPP:=$(BASE)/tools/ext/mwg_pp.awk
 
-TTF2EOT   := ttf2eot
-SFNT2WOFF := sfnt2woff
+TTF2EOT   := $(BASE)/tools/out/ttf2eot
+SFNT2WOFF := $(BASE)/tools/out/sfnt2woff
 
 ifeq ($(USER)@$(HOSTNAME),koichi@gauge)
 TTF2EOT:=lib/ttf2eot

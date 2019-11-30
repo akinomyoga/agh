@@ -15,7 +15,7 @@ $(OUTDIR):
 .PHONY: inflate
 inflate/out/sfxframe-a85-v3.js inflate/out/sfxframe-20090728.js: inflate
 inflate: inflate/Makefile
-	make -C inflate all
+	+make -C inflate all
 inflate/Makefile: inflate/Makefile.pp
 	$(MWGPP) < $< > $@
 
