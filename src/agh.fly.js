@@ -27,16 +27,54 @@
     });
   }
 
+  var getTextContent, setTextContent;
+  function initializeTextContentFunctions() {
+    if (isIE) {
+      getTextContent = function(node) {
+        if (node.nodeType === 3)
+          return node.data;
+        else
+          return node.innerText;
+      };
+      setTextContent = function(node, value) {
+        if (node.nodeType === 3)
+          node.data = value;
+        else
+          node.innerText = value;
+      };
+    }else{
+      getTextContent = function(node) {
+        return node.textContent;
+      };
+      setTextContent = function(node,value) {
+        node.textContent = value;
+      };
+    }
+  }
+  getTextContent = function(node) {
+    initializeTextContentFunctions();
+    return getTextContent(node);
+  };
+  setTextContent = function(node, value) {
+    initializeTextContentFunctions();
+    getTextContent(node, value);
+  };
+
   //----------------------------------------------------------------------------
   //  Loader
+  var script_hash = '';
   (function() {
     if (window.agh && window.agh.scripts) return window.agh;
     var aghjs = "https://akinomyoga.github.io/agh/agh.js";
     var scripts = document.getElementsByTagName("script");
     for (var i = 0; i < scripts.length; i++) {
-      var src = scripts[i].src;
-      var rep = src.replace(/agh\.fly\.(js|jgz|js\.gz|min\.js)$/, "agh.$1");
-      if (src != rep) { aghjs = rep; break; }
+      var hash = '';
+      var src = scripts[i].src.replace(/#.*$/, function($0) { hash = $0; return ''; });
+      var rep = src.replace(/agh\.fly\.((?:js|jgz|js\.gz|min\.js)(?:\?.*)?)$/, "agh.$1");
+      if (src == rep) continue;
+      aghjs = rep;
+      script_hash = hash;
+      break;
     }
     document.write('<script type="text/javascript" charset="utf-8" src="' + aghjs + '"></script>\r\n');
   })();
@@ -68,7 +106,7 @@
     agh.Array.each(elem.getElementsByTagName(tagName), proc);
   }
 
-  function read_meta(name,defaultValue) {
+  function read_meta(name, defaultValue) {
     name = name.toLowerCase();
     var metas = document.getElementsByTagName("meta");
     for(var i = 0; i < metas.length; i++) {
@@ -365,39 +403,6 @@
       m_preamble: ""
     };
 
-    var getTextContent, setTextContent;
-    function initializeTextContentFunctions() {
-      if (agh.browser.vIE) {
-        getTextContent = function(node) {
-          if (node.nodeType === 3)
-            return node.data;
-          else
-            return node.innerText;
-        };
-        setTextContent = function(node, value) {
-          if (node.nodeType === 3)
-            node.data = value;
-          else
-            node.innerText = value;
-        };
-      }else{
-        getTextContent = function(node) {
-          return node.textContent;
-        };
-        setTextContent = function(node,value) {
-          node.textContent = value;
-        };
-      }
-    }
-    getTextContent = function(node) {
-      initializeTextContentFunctions();
-      return getTextContent(node);
-    };
-    setTextContent = function(node, value) {
-      initializeTextContentFunctions();
-      getTextContent(node, value);
-    };
-
     //---------------------------------------------------
     // 1 変換対象の収集
 
@@ -433,7 +438,7 @@
 
       function processNodes(children, elementOnly) {
         if (!(children instanceof Array))
-          children = agh(children,Array); // 内容固定
+          children = agh(children, Array); // 内容固定
 
         for (var i = 0, iN = children.length; i < iN; i++) {
           var child = children[i];
@@ -628,22 +633,15 @@
       return CMDH_EMBEDDED;
     }
 
+    // @param params.targets
+    // @param params.regexInlineMath
+    // @param params.preamble
+    // @param params.flag_revert_symbols
     agh.fly.latex_v2.transform = function latex_v2_transform(elem, params) {
       if (!elem) elem = document.body;
       if (!params) params = {};
 
-      if (!params.regexInlineMath) {
-        if (/(?:^|\s)aghfly-inline-math(?:\s|$)/.test(document.body.className)) {
-          // class="aghfly-inline-math"
-          params.regexInlineMath=/\`?\$((?!\s)[^$]*[^$\s])\$/g;
-        } else if(/(?:^|\s)(?:aghfly-inline-math-bqd|tex\:math_bqd)(?:\s|$)/.test(document.body.className)) {
-          // class="aghfly-inline-math-bqd"
-          // class="tex:math_bqd" (obsolete)
-          params.regexInlineMath=/\`\$([^\$]+)\$/g;
-        }
-      }
-
-      if (read_meta("aghfly-reverts-symbols", false)) {
+      if (params.flag_revert_symbols) {
         var symbolsTable = {
           Α: '{A}',        Β: '{B}',         Γ: '{\\Gamma}',  Δ: '{\\Delta}',
           Ε: '{E}',        Ζ: '{Z}',         Η: '{H}',        Θ: '{\\Theta}',
@@ -658,18 +656,20 @@
           ν: '{\\nu}',       ξ: '{\\xi}',       ο: '{o}',          π: '{\\pi}',
           ρ: '{\\rho}',      ς:  '{\\varsigma}', σ: '{\\sigma}',    τ: '{\\tau}',
           υ: '{\\upsilon}',  φ: '{\\varphi}',   χ: '{\\chi}',      ψ: '{\\psi}',
-          ω: '{\\omega}'
+          ω: '{\\omega}',
+
+          '±': '{\\pm}', '∂': '{\\partial}', '∇': '{\\nabla}'
         };
         params.filterSource = function(tex) {
-          return tex.replace(/[Α-ω]/g, function($0) { return symbolsTable[$0] || $0; });
+          return tex.replace(/[Α-ω±∂∇]/g, function($0) { return symbolsTable[$0] || $0; });
         };
       }
 
-      var targets = extractAllTargets(elem,params);
+      var targets = params.targets || extractAllTargets(elem, params);
 
       var buff = [];
       buff.push('\\usepackage{amsmath,amssymb,bm}');
-      buff.push(agh.fly.latex_v2.m_preamble);
+      if (params.preamble) buff.push(params.preamble);
       targets_constructFullTeXSource(targets, buff, params);
 
       //console.log("dbg: buff.join()=" + buff.join(""));
@@ -754,20 +754,131 @@
     ], function() {
       initialize();
 
-      //----------------------------------------------------------------
-      // 共通の TeX Header の読込・設定
-      var elem = document.getElementById("tex-preamble") || document.getElementById("tex-default");
-      if (elem != null) {
-        var preamble = elem.innerHTML;
-        agh.fly.latex_v1.m_preamble = preamble;
-        agh.fly.latex_v2.m_preamble = preamble;
+      var params = {};
+      {
+        // set params.flag_revert_symbols
+        params.flag_revert_symbols = read_meta("aghfly-reverts-symbols", false);
+
+        // set params.preamble
+        var elem = document.getElementById("tex-preamble") || document.getElementById("tex-default");
+        if (elem != null) {
+          var preamble = elem.innerHTML;
+          agh.fly.latex_v1.m_preamble = preamble;
+          params.preamble = preamble;
+        }
+
+        // set params.regexInlineMath
+        if (/(?:^|\s)aghfly-inline-math(?:\s|$)/.test(document.body.className)) {
+          // class="aghfly-inline-math"
+          params.regexInlineMath = /\`?\$((?!\s)[^$]*[^$\s])\$/g;
+        } else if(/(?:^|\s)(?:aghfly-inline-math-bqd|tex\:math_bqd)(?:\s|$)/.test(document.body.className)) {
+          // class="aghfly-inline-math-bqd"
+          // class="tex:math_bqd" (obsolete)
+          params.regexInlineMath = /\`\$([^\$]+)\$/g;
+        }
       }
 
-      agh.fly.latex_v2.transform(document.body);
+      agh.fly.latex_v2.transform(document.body, params);
+      agh.fly.defineContentsProcessor(function(target) {
+        return agh.fly.latex_v2.transform(target, params);
+      });
       if (agh.is(agh.onlatexkickready, Function))
         agh.onlatexkickready(agh.fly.latex_v1);
+    });
+  }
 
-      agh.fly.defineContentsProcessor(agh.fly.latex_v2.transform);
+  if (script_hash == '#hatena') {
+    delayed_wait(0, [
+      "agh.js", "agh.lang.tex.js",
+      "latex/latex." + (isIE ? 'ie' : isFx ? 'fx' : isOp ? 'op' : 'sf') + ".css"
+    ], function() {
+      initialize();
+
+      var params = {};
+      {
+        params.preamble = '\\documentclass{article}';
+        params.flag_revert_symbols = true;
+
+        function extractAllTargets(elem, params) {
+          params.targets = [];
+
+          function processNodes(children, elementOnly) {
+            if (!(children instanceof Array))
+              children = agh(children, Array); // 内容固定
+
+            for (var i = 0, iN = children.length; i < iN; i++) {
+              var child = children[i];
+              if (elementOnly && child.nodeType !== 1) continue;
+
+              if(child.nodeType === 1) {
+                processElementNode(child);
+              }
+            }
+          }
+
+          function processElementNode_code(code) {
+            var tnode = code.previousSibling;
+            if (!tnode || tnode.nodeType != 3) return;
+            var text = getTextContent(tnode);
+            if (!text.endsWith("$")) return;
+            setTextContent(tnode, text.substr(0, text.length - 1));
+
+            var source = getTextContent(code);
+            var span = code.ownerDocument.createElement('span');
+            span.title = source;
+            setTextContent(span, source);
+            code.parentNode.insertBefore(span, code);
+            code.style.display = 'none';
+            params.targets.push({type: "imath", target: span});
+          }
+
+          function processElementNode_pre(pre) {
+            var ent;
+            var lang = pre.dataset.lang;
+            if (lang == "tex:preamble") {
+              params.preamble += getTextContent(elem);
+              pre.style.display = 'none';
+            } else if (lang == "tex:plain") {
+              ent = {type: "para"};
+            } else if (lang.startsWith('tex:')) {
+              ent = {type: "begin", envname: lang.substr(4)};
+            }
+
+            if (ent) {
+              var source = getTextContent(pre);
+              var div = pre.ownerDocument.createElement('div');
+              div.title = source;
+              setTextContent(div, source);
+              pre.parentNode.insertBefore(div, pre);
+              pre.style.display = 'none';
+              ent.target = div;
+              params.targets.push(ent);
+            }
+          }
+
+          function processElementNode(elem) {
+            if (/^code$/i.test(elem.tagName)) {
+              processElementNode_code(elem);
+            } else if (/^pre$/i.test(elem.tagName)) {
+              processElementNode_pre(elem);
+            } else if (/^div$/i.test(elem.tagName) && /(?:^|\s)aghtex(?:\s|$)/.test(elem.className)) {
+              params.targets.push({type: "begin", envname: "align", target: elem});
+              processNodes(elem.childNodes);
+            } else if (/^span$/i.test(elem.tagName) && /(?:^|\s)aghtex(?:\s|$)/.test(elem.className)) {
+              params.targets.push({type: "imath", target: elem});
+              processNodes(elem.childNodes);
+            } else {
+              processNodes(elem.childNodes);
+            }
+          }
+
+          processElementNode(elem);
+        }
+
+        extractAllTargets(document.body, params);
+      }
+
+      agh.fly.latex_v2.transform(document.body, params);
     });
   }
 })();
