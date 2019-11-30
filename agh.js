@@ -1308,14 +1308,15 @@ agh.memcpy(String.prototype, {
     /// <returns type="String">部分文字列を返します。</returns>
     return this.slice(length == null ? -1 : -length);
   },
-  startsWith: function(str) {
+  startsWith: function(str, position) {
     /// <returns type="Boolean">
     /// 文字列が指定した始まり方をしている場合に true を返します。
     /// </returns>
+    if (position == null) position = 0;
     if (agh.is(str, String)) {
-      return this.length >= str.length && this.substr(0, str.length) == str;
+      return this.length >= str.length && this.substr(position, str.length) == str;
     } else if (agh.is(str, RegExp)) {
-      return this.search(str) == 0;
+      return this.search(str) == position;
     } else if (agh.is(str, Array)) {
       for (var i = 0; i < str.length; i++)
         if (this.startsWith(str[i])) return true;
@@ -1323,18 +1324,19 @@ agh.memcpy(String.prototype, {
     }
     return false;
   },
-  endsWith: function(str) {
+  endsWith: function(str, length) {
     /// <returns type="Boolean">
     /// 文字列が指定した終わり方をしている場合に true を返します。
     /// </returns>
+    var target = length == null ? this.valueOf() : this.substr(0, length);
     if (agh.is(str, String)) {
-      return this.length >= str.length && this.last(str.length) == str;
+      return target.length >= str.length && target.last(str.length) == str;
     } else if (agh.is(str, RegExp)) {
       str = new RegExp("(?:" + str.source + ")$");
-      return str.test(this);
+      return str.test(target);
     } else if (agh.is(str, Array)) {
       for (var i = 0; i < str.length; i++)
-        if (this.endsWith(str[i])) return true;
+        if (target.endsWith(str[i])) return true;
       return false;
     }
     return false;
