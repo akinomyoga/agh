@@ -168,7 +168,7 @@
         if (fDIRTY) pre.innerHTML = content;
       });
 
-      for_tag(target, "dl", function(dl){
+      for_tag(target, "dl", function(dl) {
         if (!dl.className.match(/\bprog-items\b/)) return;
         for_tag(dl, "dt", function(dt) {
           dt.innerHTML = agh.Text.Color(dt.innerHTML, "cpp", "/html");
@@ -185,7 +185,7 @@
   }
 
   if (/\bcolor\b/.test(kick_type)) {
-    _fly_attach(window, "load", function(){
+    _fly_attach(window, "load", function() {
       process_color(document);
       initialize_aghfly();
       agh.fly.defineContentsProcessor(process_color);
@@ -206,7 +206,7 @@
       }
     }
     var utils = {
-      tex_transform:function(target,mode,option){
+      tex_transform: function(target, mode, option) {
         /// <summary>
         /// 指定された全ての要素について TeX 置換を実行します。
         /// </summary>
@@ -218,7 +218,7 @@
         mode = utils.tex_modes[mode];
         if (mode == null) mode = utils.tex_modes["full"];
 
-        if (agh.is(target, String)){
+        if (agh.is(target, String)) {
           return mode.transform(target, option);
         } else if(agh.is(target, Array)) {
           var elems = target;
@@ -236,7 +236,7 @@
           mode.sethtml(span, result);
         }
       },
-      tex_modes: (function(){
+      tex_modes: (function() {
         var sethtml_para = function(elem, html) {
           elem.innerHTML = '<tex:container class="aghfly-tex aghtex-para"></tex:container>';
           elem.firstChild.innerHTML=html;
@@ -252,25 +252,25 @@
 
         return {
           full: {
-            transform: function(source){
+            transform: function(source) {
               return new agh.LaTeX.Document(preambleSource + source, "global").Parse();
             },
             sethtml: sethtml_para
           },
           para: {
-            transform: function(source){
+            transform: function(source) {
               return new agh.LaTeX.Document(preambleSource + source, paraContext).Parse();
             },
             sethtml: sethtml_para
           },
           math: {
-            transform: function(source){
+            transform: function(source) {
               return new agh.LaTeX.Document(preambleSource + source, mathContext).Parse();
             },
             sethtml: sethtml_math
           },
           eqnarr: {
-            transform: function(source, option){
+            transform: function(source, option) {
               source = "\\begin{array}[t]{r@{\\;}c@{\\;}l}" + source + "\\end{array}";
               if(/\bbraced\b/.test(option))
                 source = "\\left\\{" + source + "\\right.";
@@ -280,7 +280,7 @@
             sethtml: sethtml_math
           },
           begin: {
-            transform: function(source, option){
+            transform: function(source, option) {
               var envname = option.envname;
               source = "\\usepackage{amsmath,amssymb,bm}\\begin{" + envname + "}" + source + "\\end{" + envname + "}";
               var html = new agh.LaTeX.Document(preambleSource + source, paraContext).Parse();
@@ -316,7 +316,7 @@
           var html = t[pText].replace(/[\<\>\"\&]/g, function($0) {
             // escape html (改行は変換しない)
             return {'<': '&lt;', '>': '&gt;', '"': '&quot;', '&': '&amp;'}[$0];
-          }).replace(reg_range, function($0, $1){
+          }).replace(reg_range, function($0, $1) {
             // tagging tex:math
             itex++;
             return '<tex:container class="aghfly-tex aghfly-tex-' + mode + '" title="' + $1 + '">' + $1 + '</tex:container>';
@@ -418,7 +418,7 @@
 
       var escapeEntityMap = {'<': '&lt;', '>': '&gt;', '"': '&quot;', '&': '&amp;'};
       function escapeEntity(text) {
-        return text.replace(/[\<\>\"\&]/g, function($0){ return escapeEntityMap[$0]; });
+        return text.replace(/[\<\>\"\&]/g, function($0) { return escapeEntityMap[$0]; });
       }
 
       function extractAllTargets(elem, params) {
@@ -454,7 +454,7 @@
             var child = children[i];
             if (elementOnly && child.nodeType !== 1) continue;
 
-            if (child.nodeType === 3){
+            if (child.nodeType === 3) {
               processTextNode(child);
             } else if(child.nodeType === 1) {
               processElementNode(child);
