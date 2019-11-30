@@ -845,7 +845,14 @@ tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d>tex\:i { display: block; m
 /*%%)*/
 
 .aghtex-cmdleft-row { height: 0px; }
-.aghtex-cmdleft-cell { vertical-align: baseline; }
+.aghtex-cmdleft-cell { vertical-align: baseline; height: 1em; min-height: 1em; }
+
+/*%%if mode!="Trident"*/
+  /* 不格好なので括弧の高さを少し小さくする */
+  .aghtex-cmdleft-table { margin-top: 0.2em; margin-bottom: 0.2em; }
+  .aghtex-cmdleft-tmargin { display: block; margin-bottom: -0.2em; }
+  .aghtex-cmdleft-bmargin { display: block; margin-top: -0.2em; }
+/*%%end*/
 
 .aghtex-left-kaku ,
 .aghtex-right-kaku,

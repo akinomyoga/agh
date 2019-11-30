@@ -835,7 +835,7 @@ context "mode.math" new("global") {
     proc_subsup();
 
     //-- [content]
-    buff.push('<', mod_core.TAG_TD, ' class="aghtex-cmdleft-cell" rowspan="2">');
+    buff.push('<', mod_core.TAG_TD, ' class="aghtex-cmdleft-cell" rowspan="2"><tex:i class="aghtex-cmdleft-tmargin"></tex:i>');
 
     // setup context and read under the context
     var ctx = doc.wrap_context(doc.currentCtx);
@@ -848,7 +848,7 @@ context "mode.math" new("global") {
     buff.push(doc.Read(ctx));
 
     //-- [epilogue]
-    buff.push('</', mod_core.TAG_TD, '>');
+    buff.push('<tex:i class="aghtex-cmdleft-bmargin"></tex:i></', mod_core.TAG_TD, '>');
 
     _Mod.OutputStretchBracketTd(output, ltr, 2);
 
