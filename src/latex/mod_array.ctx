@@ -1122,6 +1122,7 @@ _Mod.eqno_output = function(doc, actx, output) {
   // 式番号
   var buff = output.buff;
   if (!actx.dataV[CTXV_NONUMBER]) {
+    buff.push('<tex:i class="aghtex-eqno-margin"></tex:i>');
     buff.push('<tex:i class="aghtex-eqno">&nbsp;<tex:i class="aghtex-eqno-right">');
     if (counter == null) {
       buff.push('(?)');
