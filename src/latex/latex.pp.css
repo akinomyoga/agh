@@ -67,6 +67,11 @@ tex\:math { display: inline-block; }
 tex\:container.aghtex-math table,
 tex\:math table { border: 0px; border-collapse: separate; }
 */
+tex\:table { display: table; border-collapse: collapse; }
+tex\:tbody { display: table-row-group; border-color: inherit; vertical-align: middle; }
+tex\:tr { display: table-row; vertical-align: inherit; border-color: inherit; }
+tex\:td { display: table-cell; vertical-align: inherit; }
+tex\:td,
 tex\:container.aghtex-math td,
 tex\:math td { padding: 0px; border-width: 0px; white-space: nowrap; }
 
@@ -620,12 +625,12 @@ tex\:math.aghtex-displaymath {
 }
 tex\:math.aghtex-flalign { text-align: left; }
 
-td.aghtex-stretch { padding: 0px!important; border-width: 0px!important; }
+.aghtex-stretch { padding: 0px!important; border-width: 0px!important; }
 /*%%if mode=="Opera"*/
-  td.aghtex-stretch { -o-background-size: 100% 100%; background-size: 100% 100%; background-repeat: no-repeat; }
+  .aghtex-stretch { -o-background-size: 100% 100%; background-size: 100% 100%; background-repeat: no-repeat; }
 /*%%elif mode=="WebKit"*/
   /* stretching image with background-image: url(...) */
-  td.aghtex-stretch-bg {
+  .aghtex-stretch-bg {
     padding: 0px!important; border-width: 0px!important;
     background-repeat: no-repeat;
     -webkit-background-size: 100%; /* Cr1+<3, Sf3+<4.1 */
@@ -633,38 +638,38 @@ td.aghtex-stretch { padding: 0px!important; border-width: 0px!important; }
     /* background-size: cover; Cr3+, Sf4.1+ これは等比拡大なので× */
     -webkit-print-color-adjust: exact; }
 
-  td.aghtex-stretch-bg-lparen { width: 0.80ex; background-image: url(stretch_lparen.svg); }
-  td.aghtex-stretch-bg-rparen { width: 0.80ex; background-image: url(stretch_rparen.svg); }
-  td.aghtex-stretch-bg-lbrace { width: 0.96ex; background-image: url(stretch_lbrace.svg); }
-  td.aghtex-stretch-bg-rbrace { width: 0.96ex; background-image: url(stretch_rbrace.svg); }
-  td.aghtex-stretch-bg-langle { width: 0.80ex; background-image: url(stretch_langle.svg); }
-  td.aghtex-stretch-bg-rangle { width: 0.80ex; background-image: url(stretch_rangle.svg); }
-  td.aghtex-stretch-bg-sqrt   { width: 1.60ex; background-image: url(stretch_sqrt.svg); }
+  .aghtex-stretch-bg-lparen { width: 0.80ex; background-image: url(stretch_lparen.svg); }
+  .aghtex-stretch-bg-rparen { width: 0.80ex; background-image: url(stretch_rparen.svg); }
+  .aghtex-stretch-bg-lbrace { width: 0.96ex; background-image: url(stretch_lbrace.svg); }
+  .aghtex-stretch-bg-rbrace { width: 0.96ex; background-image: url(stretch_rbrace.svg); }
+  .aghtex-stretch-bg-langle { width: 0.80ex; background-image: url(stretch_langle.svg); }
+  .aghtex-stretch-bg-rangle { width: 0.80ex; background-image: url(stretch_rangle.svg); }
+  .aghtex-stretch-bg-sqrt   { width: 1.60ex; background-image: url(stretch_sqrt.svg); }
 
 /*%%end*/
 /*%%if mode=="Gecko"||mode=="WebKit"*/
   /* stretching image with <svg> */
-  td.aghtex-stretch-svg {
+  .aghtex-stretch-svg {
     padding: 0px!important; border-width: 0px!important;
     width: 1.0ex; height: 100%; position: relative; }
-  td.aghtex-stretch-svg>svg {
+  .aghtex-stretch-svg>svg {
     width: 1.0ex; height: 100%; position: absolute; left: 0; top: 0; }
 
-  td.aghtex-stretch-svg-lparen,td.aghtex-stretch-svg-lparen>svg,
-  td.aghtex-stretch-svg-rparen,td.aghtex-stretch-svg-rparen>svg { width: ${.eval|mode=="Gecko"?"1.0":"0.8"}ex; }
-  td.aghtex-stretch-svg-lbrace,td.aghtex-stretch-svg-lbrace>svg,
-  td.aghtex-stretch-svg-rbrace,td.aghtex-stretch-svg-rbrace>svg { width: ${.eval|mode=="Gecko"?"1.2":"0.96"}ex; }
-  td.aghtex-stretch-svg-langle,td.aghtex-stretch-svg-langle>svg,
-  td.aghtex-stretch-svg-rangle,td.aghtex-stretch-svg-rangle>svg { width: ${.eval|mode=="Gecko"?"1.0":"0.8"}ex; }
+  .aghtex-stretch-svg-lparen, .aghtex-stretch-svg-lparen>svg,
+  .aghtex-stretch-svg-rparen, .aghtex-stretch-svg-rparen>svg { width: ${.eval|mode=="Gecko"?"1.0":"0.8"}ex; }
+  .aghtex-stretch-svg-lbrace, .aghtex-stretch-svg-lbrace>svg,
+  .aghtex-stretch-svg-rbrace, .aghtex-stretch-svg-rbrace>svg { width: ${.eval|mode=="Gecko"?"1.2":"0.96"}ex; }
+  .aghtex-stretch-svg-langle, .aghtex-stretch-svg-langle>svg,
+  .aghtex-stretch-svg-rangle, .aghtex-stretch-svg-rangle>svg { width: ${.eval|mode=="Gecko"?"1.0":"0.8"}ex; }
 /*%%if mode=="Gecko"*/
-  td.aghtex-stretch-svg-sqrt>svg { left: 0.2px; top: -1.0px; }
+  .aghtex-stretch-svg-sqrt>svg { left: 0.2px; top: -1.0px; }
 /*%%end*/
-  td.aghtex-stretch-svg-sqrt,td.aghtex-stretch-svg-sqrt>svg { width: ${.eval|mode=="Gecko"?"2.0":"1.6"}ex; }
+  .aghtex-stretch-svg-sqrt, .aghtex-stretch-svg-sqrt>svg { width: ${.eval|mode=="Gecko"?"2.0":"1.6"}ex; }
 
 /*%%end*/
 /*%%if mode=="Trident"(*/
-td.aghtex-vstretch { position: relative; height: 0px; }
-img.aghtex-stretch { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.aghtex-vstretch { position: relative; height: 0px; }
+.aghtex-stretch-img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
 
 /*%%)*/
 
@@ -675,7 +680,7 @@ tex\:rflor { width: .5ex; border-bottom: 1px solid $"borderColor"; border-right:
 
 /*------------------------------------------------------------------*/
 /* inline-table */
-table.aghtex-inline {
+.aghtex-inline-table {
 /*%%if mode=="Trident" (*/
   display: inline; /* white-space: nowrap は駄目 */
 /*%%elif mode=="WebKit"*/
@@ -806,7 +811,7 @@ tex\:i.aghtex-supsub-textstyle>tex\:i.aghtex-supsub-d>tex\:i { display: block; m
 /*------------------------------------------------------------------*/
 /* \left-\right 括弧 */
 
-table.aghtex-cmdleft {
+.aghtex-cmdleft-table {
   /* tex-inline */
 /*%%if mode=="Trident" (*/
   display: inline;
@@ -834,42 +839,46 @@ table.aghtex-cmdleft {
 }
 /*%%if mode=="WebKit" (*/
 /* [Sf5] Sf5 は CSS2.1 table { vertical-align: baseline } に対応していない */
-table.aghtex-cmdleft-sf { vertical-align: middle; }
+.aghtex-cmdleft-table-sf { vertical-align: middle; }
 /*%%)*/
 
-tr.aghtex-cmdleft { height: 0px; }
-td.aghtex-cmdleft-content { vertical-align: baseline; }
+.aghtex-cmdleft-row { height: 0px; }
+.aghtex-cmdleft-cell { vertical-align: baseline; }
 
-td.aghtex-left-kaku, td.aghtex-right-kaku,
-td.aghtex-left-ceil, td.aghtex-right-ceil,
-td.aghtex-left-flor, td.aghtex-right-flor,
-td.aghtex-left-vert,
-td.aghtex-left-pipe, td.aghtex-right-pipe {
+.aghtex-left-kaku ,
+.aghtex-right-kaku,
+.aghtex-left-ceil ,
+.aghtex-right-ceil,
+.aghtex-left-flor ,
+.aghtex-right-flor,
+.aghtex-left-vert ,
+.aghtex-left-pipe ,
+.aghtex-right-pipe {
   border-style: solid!important;
   width: .5ex; padding: 0px!important;
 }
-td.aghtex-left-kaku  { border-width: 1px 0px 1px 1px!important; }
-td.aghtex-right-kaku { border-width: 1px 1px 1px 0px!important; }
-td.aghtex-left-ceil  { border-width: 1px 0px 0px 1px!important; }
-td.aghtex-right-ceil { border-width: 1px 1px 0px 0px!important; }
-td.aghtex-left-flor  { border-width: 0px 0px 1px 1px!important; }
-td.aghtex-right-flor { border-width: 0px 1px 1px 0px!important; }
-td.aghtex-left-vert  { border-width: 0px 1px 0px 1px!important; width: 1px; font-size: 1px; }
-td.aghtex-left-pipe  { border-width: 0px 0px 0px 1px!important; width: 1px; font-size: 1px; }
-td.aghtex-right-pipe { border-width: 0px 1px 0px 0px!important; width: 1px; font-size: 1px; }
+.aghtex-left-kaku  { border-width: 1px 0px 1px 1px!important; }
+.aghtex-right-kaku { border-width: 1px 1px 1px 0px!important; }
+.aghtex-left-ceil  { border-width: 1px 0px 0px 1px!important; }
+.aghtex-right-ceil { border-width: 1px 1px 0px 0px!important; }
+.aghtex-left-flor  { border-width: 0px 0px 1px 1px!important; }
+.aghtex-right-flor { border-width: 0px 1px 1px 0px!important; }
+.aghtex-left-vert  { border-width: 0px 1px 0px 1px!important; width: 1px; font-size: 1px; }
+.aghtex-left-pipe  { border-width: 0px 0px 0px 1px!important; width: 1px; font-size: 1px; }
+.aghtex-right-pipe { border-width: 0px 1px 0px 0px!important; width: 1px; font-size: 1px; }
 
-td.aghtex-cmdleft-sup { font-size: 75%; padding: 0px; vertical-align: top; }
+.aghtex-cmdleft-cell-sup { font-size: 75%; padding: 0px; vertical-align: top; }
 /*%%if mode=="Trident" (*/
   span.aghtex-cmdleft-sup { position: relative; top: -0.6em; margin-bottom: -0.6em; display: block; }
 /*%%elif mode=="WebKit"*/
   span.aghtex-cmdleft-sup { position: relative; top: -0.5em; margin-bottom: -0.5em; display: block; }
 /*%%elif mode=="Opera"*/
-  td.aghtex-cmdleft-sup { white-space: nowrap; }
+  .aghtex-cmdleft-cell-sup { white-space: nowrap; }
   span.aghtex-cmdleft-sup { position: relative; top: -0.7em; margin-bottom: -0.7em; display: block; }
 /*%%elif mode=="Gecko"*/
   span.aghtex-cmdleft-sup { position: relative; top: -0.7em; margin-bottom: -0.7em; display: block; }
 /*%%)*/
-td.aghtex-cmdleft-sub { font-size: 75%; padding: 0px; vertical-align: bottom; }
+.aghtex-cmdleft-cell-sub { font-size: 75%; padding: 0px; vertical-align: bottom; }
 span.aghtex-cmdleft-sub { position: relative; top: 0.5em; margin-top: -0.5em; display: block; }
 
 /*------------------------------------------------------------------*/
@@ -877,26 +886,26 @@ span.aghtex-cmdleft-sub { position: relative; top: 0.5em; margin-top: -0.5em; di
 tex\:frac { display: inline-block; vertical-align: middle; text-align: center; padding-left: 1px; padding-right: 1px; }
 tex\:frac tex\:num { display: block; margin-bottom: 0; margin-top: 0px; padding-top: 0px; }
 tex\:frac tex\:den { display: block; margin-top: 0; border-top: 1px solid $"borderColor"; padding-top: 1px; margin-bottom: 0px; margin-top: 0px; }
-table.aghtex-int tex\:num,
-table.aghtex-int tex\:den,
+.aghtex-int-table tex\:num,
+.aghtex-int-table tex\:den,
 tex\:i.aghtex-sup tex\:num,
 tex\:i.aghtex-sub tex\:num,
 tex\:i.aghtex-sup tex\:den,
 tex\:i.aghtex-sub tex\:den { padding: 0px; font-size: 80%; }
-td.aghtex-genfrac-numerator,
-td.aghtex-genfrac-center { text-align: center; }
-td.aghtex-genfrac-numerator { border-bottom: 1px solid $"borderColor"; }
+.aghtex-genfrac-numerator,
+.aghtex-genfrac-center { text-align: center; }
+.aghtex-genfrac-numerator { border-bottom: 1px solid $"borderColor"; }
 /*%%if mode=="Trident" (*/
-  table.aghtex-frac-ie6 { display: inline; vertical-align: middle; margin: 0px 0.2ex; border-collapse: collapse; }
-  td.aghtex-frac-ie6-num,
-  td.aghtex-frac-ie6-den { padding: 0px!important; border-width: 0px!important; text-align: center!important; }
-  td.aghtex-frac-ie6-den { border-width: 1px 0px 0px 0px!important; border-style: solid!important; }
-  table.aghtex-int td.aghtex-frac-ie6-num,
-  table.aghtex-int td.aghtex-frac-ie6-den,
-  tex\:i.aghtex-sup td.aghtex-frac-ie6-num,
-  tex\:i.aghtex-sup td.aghtex-frac-ie6-den,
-  tex\:i.aghtex-sub td.aghtex-frac-ie6-num,
-  tex\:i.aghtex-sub td.aghtex-frac-ie6-den { padding: 0px; font-size: 80%; }
+  .aghtex-frac-ie6-table { display: inline; vertical-align: middle; margin: 0px 0.2ex; border-collapse: collapse; }
+  .aghtex-frac-ie6-num,
+  .aghtex-frac-ie6-den { padding: 0px!important; border-width: 0px!important; text-align: center!important; }
+  .aghtex-frac-ie6-den { border-width: 1px 0px 0px 0px!important; border-style: solid!important; }
+  .aghtex-int-table .aghtex-frac-ie6-num,
+  .aghtex-int-table .aghtex-frac-ie6-den,
+  tex\:i.aghtex-sup .aghtex-frac-ie6-num,
+  tex\:i.aghtex-sup .aghtex-frac-ie6-den,
+  tex\:i.aghtex-sub .aghtex-frac-ie6-num,
+  tex\:i.aghtex-sub .aghtex-frac-ie6-den { padding: 0px; font-size: 80%; }
 /*%%)*/
 
 /*%%if mode=="Gecko" (*/
@@ -912,7 +921,7 @@ tex\:frac2.aghtex-tag-script>tex\:num { font-size: 60%; }
 tex\:frac2.aghtex-tag-script>tex\:den { font-size: 60%; }
 tex\:frac2.aghtex-tag-script>tex\:num>tex\:i { display: block; margin-bottom: -0.3ex; }
 tex\:frac2.aghtex-tag-script>tex\:den>tex\:i { display: block; margin-top: -0.6ex; }
-tex\:frac2.aghtex-tag-script>tex\:den>tex\:i>table.aghtex-sqrt { margin-top: 0.5ex; }
+tex\:frac2.aghtex-tag-script>tex\:den>tex\:i>.aghtex-sqrt-table { margin-top: 0.5ex; }
 
 /* class=aghtex-tag-script は、既に数式中の小さい文字の中にある事を表し、
  * 内部の \tfrac が不必要に文字を小さくしたり余白を削ったりしない為にある。
@@ -923,7 +932,7 @@ tex\:frac2.aghtex-tag-script>tex\:den>tex\:i>table.aghtex-sqrt { margin-top: 0.5
 .aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:den { font-size: 95%; }
 .aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:num>tex\:i { display: block; margin-bottom: -0.3ex; }
 .aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:den>tex\:i { display: block; margin-top: -0.3ex; }
-.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:den>tex\:i>table.aghtex-sqrt { margin-top: 0.2ex; }
+.aghtex-tag-script tex\:frac2.aghtex-tag-script>tex\:den>tex\:i>.aghtex-sqrt-table { margin-top: 0.2ex; }
 
 /*------------------------------------------------------------------*/
 /* overbrace / underbrace */
@@ -947,8 +956,8 @@ tex\:i.aghtex-underbrace-i img.aghtex-underbrace { position: absolute; top: 0px;
 
 /* [version 2] */
 
-table.aghtex-underbrace {
-  /* extended table.aghtex-inline rule */
+.aghtex-underbrace-table {
+  /* extended .aghtex-inline-table rule */
 /*%%if mode=="Trident" (*/
   display: inline; vertical-align: middle;
 /*%%else*/
@@ -960,9 +969,9 @@ table.aghtex-underbrace {
   margin: 0; padding: 0; border-collapse: collapse;
   text-align: center;
 }
-td.aghtex-underbrace-b { padding: 0; margin: 0; vertical-align: baseline; }
-td.aghtex-underbrace-t { padding: 0; margin: 0; font-size: 80%; }
-td.aghtex-underbrace-i {
+.aghtex-underbrace-cell-b { padding: 0; margin: 0; vertical-align: baseline; }
+.aghtex-underbrace-cell-t { padding: 0; margin: 0; font-size: 80%; }
+.aghtex-underbrace-cell-i {
   margin: 0px!important; padding: 0px!important; border-width: 0px!important;
   position: relative; top: -0.25ex;
 /*%%if mode=="WebKit" (*/
@@ -989,9 +998,9 @@ tex\:i.aghtex-overbrace-b { display: inline-block; vertical-align: baseline; }
 /*%%)*/
 
 /*%%if mode == "Gecko" | mode == "WebKit" */
-td.aghtex-underbrace-svg { position: relative; height: 1ex; }
+.aghtex-underbrace-cell-svg { position: relative; height: 1ex; }
 tex\:i.aghtex-overbrace-i { position: relative; }
-td.aghtex-underbrace-svg>svg,
+.aghtex-underbrace-cell-svg>svg,
 tex\:i.aghtex-overbrace-i>svg { width: 100%; height: 100%; position: absolute; left: 0; top: 0; }
 tex\:i.aghtex-overbrace-widehat>tex\:i.aghtex-overbrace-i { height: 0.3em; }
 tex\:i.aghtex-overbrace-widetilde>tex\:i.aghtex-overbrace-i { height: 0.22em; }
@@ -1000,14 +1009,14 @@ tex\:i.aghtex-overbrace-widetilde>tex\:i.aghtex-overbrace-i { height: 0.22em; }
 
 /*------------------------------------------------------------------*/
 /* 根号 */
-table.aghtex-sqrt { border-collapse: collapse; height: 1em; vertical-align: baseline; }
-td.aghtex-sqrt-index {
+.aghtex-sqrt-table { border-collapse: collapse; height: 1em; vertical-align: baseline; }
+.aghtex-sqrt-index {
   border-width: 0px!important;
   padding: 0px!important;
   vertical-align: top; font-size: 80%;
 }
-td.aghtex-sqrt-index span { position: relative; top: -3px; left: 6px; }
-td.aghtex-sqrt-body {
+.aghtex-sqrt-index span { position: relative; top: -3px; left: 6px; }
+.aghtex-sqrt-body {
   border-width: 1px 0px 0px 0px!important;
   border-style: solid!important;
 /*%%if borderColor!=""*/
@@ -1046,12 +1055,12 @@ img.aghtex-int { width: 1em; height: 2.5em; vertical-align: middle; }
 tex\:i.aghtex-sub-int { vertical-align: -1.7em; margin-left: -0.6em; }
 tex\:i.aghtex-sup-int { vertical-align: 1.7em; margin-left: 0.1em; margin-right: -0.1em; }
 
-table.aghtex-int { height: 3.3em; border-collapse: collapse; font: inherit; margin-right: -0.2em; }
+.aghtex-int-table { height: 3.3em; border-collapse: collapse; font: inherit; margin-right: -0.2em; }
 /*%%if mode=="Opera" (*/
-td.aghtex-int-sup { white-space: nowrap; }
+.aghtex-int-cell-sup { white-space: nowrap; }
 /*%%)*/
-td.aghtex-int-sub { font-size: 75%; padding: 0px; vertical-align: bottom; text-align: left; }
-td.aghtex-int-sup { font-size: 75%; padding: 0px; vertical-align: top; text-align: left; }
+.aghtex-int-cell-sub { font-size: 75%; padding: 0px; vertical-align: bottom; text-align: left; }
+.aghtex-int-cell-sup { font-size: 75%; padding: 0px; vertical-align: top; text-align: left; }
 tex\:i.aghtex-int-sup { position: relative; left: 0ex; top: -0.2em; }
 tex\:i.aghtex-int-sub { position: relative; left: -0.6em; top: 0em; margin-right: -0.6em; }
 
@@ -1089,14 +1098,14 @@ tex\:sum2m { display: block; margin: 0; font-size: 180%; line-height: 0.70em; }
 
 tex\:i.aghtex-sum { display: inline-block; text-align: center; padding: 0 0.2ex; }
 tex\:i.aghtex-sum-u { display: block; font-size: 80%; position: relative; top: 0em; margin-top: -0.05em; }
-table.aghtex-sum {
+.aghtex-sum-table {
   display: inline-table;
   border-collapse: collapse; margin: 0; padding: 0;
   vertical-align: baseline;
   text-align: center;
   margin-bottom: -0.25em;
 }
-td.aghtex-sum-m {
+.aghtex-sum-m-cell {
   font-size: 125%; vertical-align: baseline;
   font-family: aghtex_mathrm,aghtex_roman,aghtex_mincho,serif; }
 tex\:i.aghtex-sum-m { display: block; line-height: 1; vertical-align: -0.02em; }
@@ -1104,15 +1113,15 @@ tex\:i.aghtex-sum-m1 {
   display: block; font-size: 125%; vertical-align: baseline;
   font-family: aghtex_mathrm,aghtex_roman,aghtex_mincho,serif; }
 tex\:i.aghtex-sum-m2 { line-height: 1; vertical-align: -0.02em; }
-td.aghtex-sum-d { font-size: 80%; }
+.aghtex-sum-d-cell { font-size: 80%; }
 tex\:i.aghtex-sum-d { position: relative; top: -0.1em; }
 tex\:i.aghtex-sum-strut { display: inline-block; overflow: hidden; width: 1px; line-height: 1em; }
 /*%%if mode=="WebKit" (*/
 tex\:i.aghtex-sum-WA1 { vertical-align: -0.5em; }
-table.aghtex-sum-WA1 { vertical-align: middle; }
+.aghtex-sum-WA1-table { vertical-align: middle; }
 /*%%elif mode=="Trident" (*/
 tex\:i.aghtex-sum-WA1 { vertical-align: -0.5em; }
-table.aghtex-sum-WA1 { display: inline; vertical-align: middle; }
+.aghtex-sum-WA1-table { display: inline; vertical-align: middle; }
 /*%%)*/
 
 /*------------------------------------------------------------------*/
@@ -1206,7 +1215,7 @@ tex\:i.aghtex-counter-ovv { border-top: 3px double $"borderColor"; }
 /*----------------------------------------------------------
     mod_array (array 環境 1)
 ----------------------------------------------------------*/
-table.aghtex-array {
+.aghtex-array-table {
   border-collapse: collapse;
   margin: 0px;
   /*%%if mode=="Trident" (*/
@@ -1221,34 +1230,34 @@ table.aghtex-array {
   /*%%)*/
 }
 
-table.aghtex-array-valign-t { vertical-align: top; }
-table.aghtex-array-valign-m { vertical-align: middle; }
-table.aghtex-array-valign-b { vertical-align: bottom; }
-table.aghtex-array-lrpad {
+.aghtex-array-valign-t { vertical-align: top; }
+.aghtex-array-valign-m { vertical-align: middle; }
+.aghtex-array-valign-b { vertical-align: bottom; }
+.aghtex-array-lrpad {
   margin-left: 0.15em; margin-right: 0.15em; }
 
 /*----------------------------------------------------------
     mod_array (array 環境 2)
 ----------------------------------------------------------*/
-td.aghtex-array-border-txt,
-td.aghtex-array-border-zw {
+.aghtex-array-border-txt,
+.aghtex-array-border-zw {
   border-style: solid;
   border-color: currentColor;
   padding: 0px; vertical-align: baseline;
 }
-td.aghtex-array-border-zw {
+.aghtex-array-border-zw {
   font-size: 0px; width: 1px;
 }
 
-td.aghtex-array-cell {
+.aghtex-array-cell {
   border-width: 0px; border-style: solid!important;
   border-color: currentColor;
   padding: 0.2ex .9ex; vertical-align: baseline; }
-tr.aghtex-array-first-row>td.aghtex-array-cell { padding-top: 0; }
-tr.aghtex-array-last-row>td.aghtex-array-cell { padding-bottom: 0; }
+.aghtex-array-first-row>.aghtex-array-cell { padding-top: 0; }
+.aghtex-array-last-row>.aghtex-array-cell { padding-bottom: 0; }
 
 
-td.aghtex-array-hdots-cell {
+.aghtex-array-hdots-cell {
   position: relative; height: 1.3em; }
 /*%%if mode=="Trident"*/
 tex\:i.aghtex-array-hdots-ie9,
@@ -1270,11 +1279,11 @@ tex\:i.aghtex-array-hdots-ie9 {
 }
 /*%%end*/
 
-td.aghtex-array-hline-t { height: 1px; border-top: 1px solid $"borderColor"; font-size: 1px; padding: 0px; }
-td.aghtex-array-hline-b { height: 1px; border-bottom: 1px solid $"borderColor"; font-size: 1px; padding: 0px; }
+.aghtex-array-hline-t { height: 1px; border-top: 1px solid $"borderColor"; font-size: 1px; padding: 0px; }
+.aghtex-array-hline-b { height: 1px; border-bottom: 1px solid $"borderColor"; font-size: 1px; padding: 0px; }
 /*%%if mode=="Opera"||mode=="Gecko" (*/
-td.aghtex-array-hline-t { height: 0; padding-top: 1px; }
-td.aghtex-array-hline-b { height: 0; padding-bottom: 1px; }
+.aghtex-array-hline-t { height: 0; padding-top: 1px; }
+.aghtex-array-hline-b { height: 0; padding-bottom: 1px; }
 /*%%elif mode=="Trident" (*/
 tex\:i.aghtex-array-hline-dummy {
   display: block;
@@ -1284,12 +1293,15 @@ tex\:i.aghtex-array-hline-dummy {
 
 
 /*%%if mode=="Gecko" (*/
-  tr.aghtex-array-fxdummy { visibility: hidden; }
-  tr.aghtex-array-fxdummy>td {
+  .aghtex-array-fxdummy-row { visibility: hidden; }
+  .aghtex-array-fxdummy-border,
+  .aghtex-array-fxdummy-cell {
     padding: 0px!important; border-width: 0px!important; height: 0px!important;
-    width: 0px; overflow: hidden;
+    overflow: hidden;
   }
-  tr.aghtex-array-fxdummy>td>div {
+  .aghtex-array-fxdummy-border { width: 0px; }
+  .aghtex-array-fxdummy-cell { width: auto; }
+  .aghtex-array-fxdummy-cell>div {
     width: 1px; height: 0px; overflow: hidden; padding: 0px; margin: 0px;
   }
 /*%%)*/
@@ -1313,16 +1325,16 @@ tex\:i.aghtex-table-caption,
 tex\:i.aghtex-figure-caption { display: block; text-align: center; }
 
 tex\:i.aghtex-toc-item { display: block; position: relative; top: 0; left: 0; padding-left: 1em; padding-right: 1em; }
-table.aghtex-toc-item {
+.aghtex-toc-item-table {
   font-size: inherit; color: inherit; background-color: inherit;
   margin: 0; border-collapse: collapse; }
-table.aghtex-toc-part {}
-table.aghtex-toc-section {}
-table.aghtex-toc-subsection { margin-left: 2em; }
-table.aghtex-toc-subsubsection { margin-left: 4em; }
-td.aghtex-toc-label { white-space: nowrap; padding: 0 1em 0 0; }
-td.aghtex-toc-page { white-space: nowrap; padding: 0 0 0 1em; vertical-align: bottom; }
-td.aghtex-toc-hfill { width: 100%; padding: 0; vertical-align: bottom; }
+.aghtex-toc-table-part {}
+.aghtex-toc-table-section {}
+.aghtex-toc-table-subsection { margin-left: 2em; }
+.aghtex-toc-table-subsubsection { margin-left: 4em; }
+.aghtex-toc-cell-label { white-space: nowrap; padding: 0 1em 0 0; }
+.aghtex-toc-cell-page { white-space: nowrap; padding: 0 0 0 1em; vertical-align: bottom; }
+.aghtex-toc-cell-hfill { width: 100%; padding: 0; vertical-align: bottom; }
 tex\:i.aghtex-toc-hfill {
   display: block; position: relative; top: -4px; left: 0; font-size: 1px;
   border-bottom: dotted 3px gray; }
@@ -1421,10 +1433,10 @@ h2.aghtex-article-abstract {
 h2.aghtex-article-acknowledgement,
 h2.aghtex-article-toc {
   font-size: 170%; font-weight: bold; margin: 1em 1ex 1ex; }
-tex\:i.aghtex-article-toc table.aghtex-toc-part { font-weight: bold; font-size: 120%; margin-top: 1em; margin-bottom: 1ex; }
-tex\:i.aghtex-article-toc table.aghtex-toc-section { font-weight: bold; margin-top: 1ex; }
-tex\:i.aghtex-article-toc table.aghtex-toc-part    tex\:i.aghtex-toc-hfill,
-tex\:i.aghtex-article-toc table.aghtex-toc-section tex\:i.aghtex-toc-hfill {
+tex\:i.aghtex-article-toc .aghtex-toc-table-part { font-weight: bold; font-size: 120%; margin-top: 1em; margin-bottom: 1ex; }
+tex\:i.aghtex-article-toc .aghtex-toc-table-section { font-weight: bold; margin-top: 1ex; }
+tex\:i.aghtex-article-toc .aghtex-toc-table-part    tex\:i.aghtex-toc-hfill,
+tex\:i.aghtex-article-toc .aghtex-toc-table-section tex\:i.aghtex-toc-hfill {
   border-bottom: solid 0px transparent; position: relative; top: 0; left: 0; }
 h2.aghtex-article-thebibliography {
   font-size: 170%; font-weight: bold; margin: 1em 1ex 1ex; }
@@ -1465,10 +1477,10 @@ h2.aghtex-revtex-abstract {
 h2.aghtex-revtex-acknowledgement,
 h2.aghtex-revtex-toc {
   font-size: 170%; font-weight: bold; margin: 1em 1ex 1ex; }
-tex\:i.aghtex-revtex-toc table.aghtex-toc-part { font-weight: bold; font-size: 120%; margin-top: 1em; margin-bottom: 1ex; }
-tex\:i.aghtex-revtex-toc table.aghtex-toc-section { font-weight: bold; margin-top: 1ex; }
-tex\:i.aghtex-revtex-toc table.aghtex-toc-part    tex\:i.aghtex-toc-hfill,
-tex\:i.aghtex-revtex-toc table.aghtex-toc-section tex\:i.aghtex-toc-hfill {
+tex\:i.aghtex-revtex-toc .aghtex-toc-table-part { font-weight: bold; font-size: 120%; margin-top: 1em; margin-bottom: 1ex; }
+tex\:i.aghtex-revtex-toc .aghtex-toc-table-section { font-weight: bold; margin-top: 1ex; }
+tex\:i.aghtex-revtex-toc .aghtex-toc-table-part    tex\:i.aghtex-toc-hfill,
+tex\:i.aghtex-revtex-toc .aghtex-toc-table-section tex\:i.aghtex-toc-hfill {
   border-bottom: solid 0px transparent; position: relative; top: 0; left: 0; }
 h2.aghtex-revtex-thebibliography {
   font-size: 170%; font-weight: bold; margin: 1em 1ex 1ex; }
@@ -1477,14 +1489,14 @@ h2.aghtex-revtex-thebibliography {
 /*----------------------------------------------------------
     <table> の style 継承
 ----------------------------------------------------------*/
-table.aghtex-array,
-table.aghtex-frac-ie6,
-table.aghtex-sqrt,
-table.aghtex-int,
-table.aghtex-inline,
-table.aghtex-cmdleft,
-table.aghtex-underbrace,
-table.aghtex-sum { font: inherit; color: inherit; border-color: $"borderColor:-inherit"; }
+.aghtex-inline-table,
+.aghtex-array-table,
+.aghtex-frac-ie6-table,
+.aghtex-sqrt-table,
+.aghtex-int-table,
+.aghtex-cmdleft-table,
+.aghtex-underbrace-table,
+.aghtex-sum-table { font: inherit; color: inherit; border-color: $"borderColor:-inherit"; }
 
 /*----------------------------------------------------------
     agh.fly.js:tex で使用する物

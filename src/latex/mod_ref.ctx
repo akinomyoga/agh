@@ -175,9 +175,9 @@ ns.Document.prototype.AddContentsLine = function(doc, file, type, content, id) {
   case "toc":
     var f = get_contents_file(this, DOCV_FILE_TOC);
     f.buff.push(
-      '<tex:i class="aghtex-toc-item"><table class="aghtex-toc-item aghtex-toc-', type,
-      '"><tr><td class="aghtex-toc-label">', content,
-      '</td><td class="aghtex-toc-hfill"><tex:i class="aghtex-toc-hfill">&nbsp;</tex:i></td><td class="aghtex-toc-page">');
+      '<tex:i class="aghtex-toc-item"><table class="aghtex-toc-item-table aghtex-toc-table-', type,
+      '"><tr><td class="aghtex-toc-cell-label">', content,
+      '</td><td class="aghtex-toc-cell-hfill"><tex:i class="aghtex-toc-hfill">&nbsp;</tex:i></td><td class="aghtex-toc-cell-page">');
 
     if (id)
       f.buff.push('<a class="aghtex-ref" href="#', id, '">', page, '</a>');

@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:tex="https://akinomyoga.github.io/agh/aghtex">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="agh-fly-type" content="tex" />
+<script type="text/javascript" charset="utf-8" src="../out/agh.js"></script>
+<script type="text/javascript" charset="utf-8" src="../out/agh.lang.tex.js"></script>
 <script type="text/javascript" charset="utf-8" src="../out/agh.fly.js?1.2.3#hatena"></script>
 <script type="application/x-tex" id="tex-preamble">
 \documentclass{article}
 </script>
+<style type="text/css">
+tex\:td { border: 1px solid black; }
+</style>
 </head>
 <body class="aghfly-inline-math">
 <h1>Test $hello$</h1>
@@ -36,6 +41,14 @@
 <div class="aghtex">rC=\frac{∂C}{∂t}+\frac12σ^2S_t^2\frac{∂^2C}{∂S_t^2}+rS_t\frac{∂C}{∂S_t}</div>
 </div></td></tr>
 </table>
+
+<h2>Test for table</h2>
+<tex:table>
+<tex:tbody>
+<tex:tr><tex:td>a_11</tex:td><tex:td>a_12</tex:td></tex:tr>
+<tex:tr><tex:td>a_21</tex:td><tex:td>a_22</tex:td></tex:tr>
+</tex:tbody>
+</tex:table>
 
 </body>
 </html>

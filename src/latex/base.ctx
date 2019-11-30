@@ -666,7 +666,7 @@ context "mode.math" new("global") {
           return function(imgsrc, width, alt) {
             width = width.toString() + "ex";
             var style = 'width:' + width + ';'
-            return '<td class="aghtex-vstretch" rowspan="2" style="' + style + '"><img class="aghtex-stretch" src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></td>';
+            return '<td class="aghtex-vstretch" rowspan="2" style="' + style + '"><img class="aghtex-stretch-img" src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></td>';
           };
         }
       case "Fx-std":
@@ -798,14 +798,14 @@ context "mode.math" new("global") {
     function proc_subsup() {
       switch ((sbsp.sup ? 1 : 0) + (sbsp.sub ? 2 : 0)) {
         case 1: // 上付
-          buff.push('<td rowspan="2" class="aghtex-cmdleft-sup aghtex-tag-script"><span class="aghtex-cmdleft-sup">', sbsp.sup, '</span></td>');
+          buff.push('<td rowspan="2" class="aghtex-cmdleft-cell-sup aghtex-tag-script"><span class="aghtex-cmdleft-sup">', sbsp.sup, '</span></td>');
           break;
         case 2: // 下付
-          buff.push('<td rowspan="2" class="aghtex-cmdleft-sub aghtex-tag-script"><span class="aghtex-cmdleft-sub">', sbsp.sub, '</span></td>');
+          buff.push('<td rowspan="2" class="aghtex-cmdleft-cell-sub aghtex-tag-script"><span class="aghtex-cmdleft-sub">', sbsp.sub, '</span></td>');
           break;
         case 3: // 両方
-          buff.push('<td class="aghtex-cmdleft-sup aghtex-tag-script"><span class="aghtex-cmdleft-sup">', sbsp.sup, '</span></td>');
-          bottom_row += '<td class="aghtex-cmdleft-sub aghtex-tag-script"><span class="aghtex-cmdleft-sub">' + sbsp.sub + '</span></td>';
+          buff.push('<td class="aghtex-cmdleft-cell-sup aghtex-tag-script"><span class="aghtex-cmdleft-sup">', sbsp.sup, '</span></td>');
+          bottom_row += '<td class="aghtex-cmdleft-cell-sub aghtex-tag-script"><span class="aghtex-cmdleft-sub">' + sbsp.sub + '</span></td>';
           break;
       }
     }
@@ -818,19 +818,19 @@ context "mode.math" new("global") {
     if (agh.browser.vFx)
       // Fx では border-collapse:collapse; にすると border-bottom/right が表示されない
       // 代わりに cellSpacing="0px" を利用
-      buff.push('<table class="aghtex-cmdleft" cellSpacing="0px"><tr class="aghtex-cmdleft">');
+      buff.push('<table class="aghtex-cmdleft-table" cellSpacing="0px"><tr class="aghtex-cmdleft-row">');
     else if (agh.browser.vSf)
       // Sf5 では CSS2.1 table{vertical-align:baseline;} に対応していない (Cr では OK なのに。。)
-      buff.push('<table class="aghtex-cmdleft aghtex-cmdleft-sf"><tr class="aghtex-cmdleft">');
+      buff.push('<table class="aghtex-cmdleft-table aghtex-cmdleft-table-sf"><tr class="aghtex-cmdleft-row">');
     else
-      buff.push('<table class="aghtex-cmdleft"><tr class="aghtex-cmdleft">');
+      buff.push('<table class="aghtex-cmdleft-table"><tr class="aghtex-cmdleft-row">');
 
     _Mod.OutputStretchBracketTd(output, ltr, 2);
 
     proc_subsup();
 
     //-- [content]
-    buff.push('<td class="aghtex-cmdleft-content" rowspan="2">');
+    buff.push('<td class="aghtex-cmdleft-cell" rowspan="2">');
 
     // setup context and read under the context
     var ctx = doc.wrap_context(doc.currentCtx);

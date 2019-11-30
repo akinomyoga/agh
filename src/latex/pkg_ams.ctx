@@ -374,7 +374,7 @@ context "pkg:amsmath/mode.math" new() {
   var cfrac_html = null;
   if (agh.browser.vIE) {
     cfrac_html = (
-      '<table cellspacing="0" class="aghtex-frac-ie6">'
+      '<table cellspacing="0" class="aghtex-frac-ie6-table">'
       + '<tr><td class="aghtex-frac-ie6-num" style="text-align:$!important;">$</td></tr>'
       + '<tr><td class="aghtex-frac-ie6-den" style="text-align:$!important;">$</td></tr></table>'
     ).split(/\$/g);
@@ -417,7 +417,7 @@ context "pkg:amsmath/mode.math" new() {
 
     var output = doc.currentCtx.output;
     var buff = output.buff;
-    buff.push('<table cellspacing="0" class="aghtex-inline"><tr class="aghtex-cmdleft">');
+    buff.push('<table cellspacing="0" class="aghtex-inline-table"><tr class="aghtex-cmdleft-row">');
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 

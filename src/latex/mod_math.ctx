@@ -304,7 +304,7 @@ context "mode.math" {
   var HT_SQRT_STRETCH_IMAGE = mod_base.GetStretchImageTd("stretch_sqrt.png", 2, "√", 'sqrt');
   command f\sqrt(#[]>1#>2) {
     var buff = doc.currentCtx.output.buff;
-    buff.push('<table cellpadding="0" class="aghtex-inline aghtex-sqrt"><tr style="height:0px;">');
+    buff.push('<table cellpadding="0" class="aghtex-inline-table aghtex-sqrt-table"><tr style="height:0px;">');
     if (argv[1].length > 0)
       buff.push('<td class="aghtex-sqrt-index aghtex-tag-script"><span>', argv[1], '</span></td>');
     buff.push(HT_SQRT_STRETCH_IMAGE, '<td class="aghtex-sqrt-body">', argv[2], '</td></tr></table>');
@@ -319,7 +319,7 @@ context "mode.math" {
       case "Fx-qks":
         return function(imgsrc, height, alt) {
           height = height.toString() + "ex";
-          return '<td class="aghtex-underbrace-i" style="width:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="height:' + height + ';width:100%;"/></td>';
+          return '<td class="aghtex-underbrace-cell-i" style="width:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="height:' + height + ';width:100%;"/></td>';
         };
       case "IE-std":
         ns.expression_width = function(elem) {
@@ -331,24 +331,24 @@ context "mode.math" {
           height = height.toString() + "ex";
           var style = 'height:' + height + ';width:expression(' + ns.namespaceName + '.expression_width(this));';
           //var style = 'height:' + height + ';width:expression(this.parentElement.parentElement.parentElement.parentElement.clientHeight-4);';
-          return '<td class="aghtex-underbrace-i" style="width:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></td>';
+          return '<td class="aghtex-underbrace-cell-i" style="width:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></td>';
         };
       case "Fx-std":
         return function(imgsrc, height, alt) {
           height = height.toString() + "ex";
           //return '<td style="height:' + height + ';background-image:url('+ns.BaseUrl+imgsrc+');-moz-background-size:100%;"></td>';
-          return '<td class="aghtex-underbrace-i" style="width:100%;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="height:' + height + ';width:100%;"/></td>';
+          return '<td class="aghtex-underbrace-cell-i" style="width:100%;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="height:' + height + ';width:100%;"/></td>';
         };
       case "Sf-qks": case "Sf-std": // css による switching あり
       case "Op-qks": case "Op-std": // css による switching あり
         return function(imgsrc, height, alt) {
           height = height.toString() + "ex";
-          return '<td class="aghtex-underbrace-i" style="height:' + height + ';background-image:url(' + ns.BaseUrl + imgsrc + ');"></td>';
+          return '<td class="aghtex-underbrace-cell-i" style="height:' + height + ';background-image:url(' + ns.BaseUrl + imgsrc + ');"></td>';
         };
       default:
         return function(imgsrc,height,alt) {
           height = height.toString() + "ex";
-          return '<td class="aghtex-underbrace-i" style="height:' + height + ';background-image:url(' + ns.BaseUrl + imgsrc + ');background-size:100% 100%;"></td>';
+          return '<td class="aghtex-underbrace-cell-i" style="height:' + height + ';background-image:url(' + ns.BaseUrl + imgsrc + ');background-size:100% 100%;"></td>';
         };
     }
   })();
@@ -372,11 +372,11 @@ context "mode.math" {
       buff.push('</tex:i>');
     } else {
       // image ~ <td>
-      buff.push('<table class="aghtex-underbrace"><tr><td class="aghtex-underbrace-b">', content, '</td></tr>');
+      buff.push('<table class="aghtex-underbrace-table"><tr><td class="aghtex-underbrace-cell-b">', content, '</td></tr>');
       if (image)
         buff.push('<tr>', image, '</tr>');
       if (undertxt)
-        buff.push('<tr><td class="aghtex-underbrace-t">', undertxt, '</td></tr>');
+        buff.push('<tr><td class="aghtex-underbrace-cell-t">', undertxt, '</td></tr>');
       buff.push('</table>');
     }
   }
@@ -419,7 +419,7 @@ context "mode.math" {
     if (agh.browser.vIE || agh.browser.vSf)
       image = '<img alt="\\' + info.commandName + '" class="aghtex-underbrace" src="' + ns.BaseUrl + info.imageSrc + '" />';
     else if (info.svg && /^(Sf|Fx)-/.test(ns.compatMode))
-      image = '<td class="aghtex-underbrace-svg">' + info.svg + '</td>';
+      image = '<td class="aghtex-underbrace-cell-svg">' + info.svg + '</td>';
     else
       image = GenerateHtmlUndertextImage(info.imageSrc, 1, '\\' + info.commandName);
 
@@ -501,12 +501,12 @@ context "mode.math" {
   //    分数 / atop
   //---------------------------------------------------------------
   if (agh.browser.vIE <= 8 || ns.compatMode == "IE-qks") {
-    command s@\frac(#>1#>2) '<table cellspacing="0" class="aghtex-frac-ie6"><tr><td class="aghtex-frac-ie6-num">#1</td></tr><tr><td class="aghtex-frac-ie6-den">#2</td></tr></table>';
+    command s@\frac(#>1#>2) '<table cellspacing="0" class="aghtex-frac-ie6-table"><tr><td class="aghtex-frac-ie6-num">#1</td></tr><tr><td class="aghtex-frac-ie6-den">#2</td></tr></table>';
     command f\over() {
       var output = doc.currentCtx.output;
       var former = output.toHtml();
       output.clear();
-      output.buff.push('<table cellspacing="0" class="aghtex-frac-ie6"><tr><td class="aghtex-frac-ie6-num">', former, '</td></tr><tr><td class="aghtex-frac-ie6-den">');
+      output.buff.push('<table cellspacing="0" class="aghtex-frac-ie6-table"><tr><td class="aghtex-frac-ie6-num">', former, '</td></tr><tr><td class="aghtex-frac-ie6-den">');
       output.appendPost('</td></tr></table>');
     };
   } else {
@@ -537,7 +537,7 @@ context "mode.math" {
     output.clear();
 
     var buff = output.buff;
-    buff.push('<table cellspacing="0" class="aghtex-inline"><tr style="height:0px;">');
+    buff.push('<table cellspacing="0" class="aghtex-inline-table"><tr style="height:0px;">');
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 
@@ -630,8 +630,8 @@ context "mode.math" {
 
   _Mod.CreateCommandSummation = (function InitCreateCommandSummation() {
     var _ht_strut = '<tex:i class="aghtex-sum-strut">&nbsp;</tex:i>'
-    var ht_table_beg = '<table class="aghtex-sum"><tr><td class="aghtex-sum-m"><tex:i class="aghtex-sum-m">';
-    var ht_table_mid = '</tex:i></td></tr><tr><td class="aghtex-sum-d"><tex:i class="aghtex-sum-d aghtex-tag-script">'+_ht_strut;
+    var ht_table_beg = '<table class="aghtex-sum-table"><tr><td class="aghtex-sum-m-cell"><tex:i class="aghtex-sum-m">';
+    var ht_table_mid = '</tex:i></td></tr><tr><td class="aghtex-sum-d-cell"><tex:i class="aghtex-sum-d aghtex-tag-script">'+_ht_strut;
     var ht_table_end = _ht_strut+'</tex:i></td></tr></table>';
     var ht_sum_begin = '<tex:i class="aghtex-sum">';
 
@@ -640,7 +640,7 @@ context "mode.math" {
       // WorkAround - 'CSS2.1 table{vertical-align:baseline;}'
       var fWA = true;
       var ht_sum_beginWA = ht_sum_begin.replace('"aghtex-sum"','"aghtex-sum aghtex-sum-WA1"');
-      ht_table_beg = ht_table_beg.replace('"aghtex-sum"', '"aghtex-sum aghtex-sum-WA1"');
+      ht_table_beg = ht_table_beg.replace('"aghtex-sum-table"', '"aghtex-sum-table aghtex-sum-WA1-table"');
       if (agh.browser.vIE) {
         // 何故か、空文字列がないと vertical-align:-0.02 した分だけ、Σの下端が切れてしまう。
         ht_table_mid = ht_table_mid.replace('</tex:i>', '</tex:i>\n');
@@ -713,8 +713,8 @@ context "mode.math" {
         break;
       case 3:
         buff.push(
-          '<table class="aghtex-inline aghtex-int"><tr><td class="aghtex-int-sup aghtex-tag-script"><tex:i class="aghtex-int-sup">', sbsp.sup,
-          '</tex:i></td></tr><tr><td class="aghtex-int-sub aghtex-tag-script"><tex:i class="aghtex-int-sub">', sbsp.sub,
+          '<table class="aghtex-inline-table aghtex-int-table"><tr><td class="aghtex-int-cell-sup aghtex-tag-script"><tex:i class="aghtex-int-sup">', sbsp.sup,
+          '</tex:i></td></tr><tr><td class="aghtex-int-cell-sub aghtex-tag-script"><tex:i class="aghtex-int-sub">', sbsp.sub,
           '</tex:i></td></tr></table>');
         break;
       }

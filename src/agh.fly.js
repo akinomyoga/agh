@@ -64,7 +64,6 @@
   //  Loader
   var script_hash = '';
   (function() {
-    if (window.agh && window.agh.scripts) return window.agh;
     var aghjs = "https://akinomyoga.github.io/agh/agh.js";
     var scripts = document.getElementsByTagName("script");
     for (var i = 0; i < scripts.length; i++) {
@@ -76,6 +75,7 @@
       script_hash = hash;
       break;
     }
+    if (window.agh && window.agh.scripts) return;
     document.write('<script type="text/javascript" charset="utf-8" src="' + aghjs + '"></script>\r\n');
   })();
 
@@ -788,10 +788,8 @@
   }
 
   if (script_hash == '#hatena') {
-    delayed_wait(0, [
-      "agh.js", "agh.lang.tex.js",
-      "latex/latex." + (isIE ? 'ie' : isFx ? 'fx' : isOp ? 'op' : 'sf') + ".css"
-    ], function() {
+    // 直接 agh.js, agh.lang.tex.js を読み込んでいると仮定
+    _fly_attach(document, "DOMContentLoaded", function() {
       initialize();
 
       var params = {};

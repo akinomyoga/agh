@@ -846,9 +846,9 @@ agh.memcpy(_at.Table.prototype, {
     // header
     var buff = output.buff;
     if (this.param_bracket)
-      buff.push('<table class="aghtex-array aghtex-array-valign-', this.valign, ' aghtex-array-lrpad">\r\n');
+      buff.push('<table class="aghtex-array-table aghtex-array-valign-', this.valign, ' aghtex-array-lrpad">\r\n');
     else
-      buff.push('<table class="aghtex-array aghtex-array-valign-', this.valign, '">\r\n');
+      buff.push('<table class="aghtex-array-table aghtex-array-valign-', this.valign, '">\r\n');
 
     // thead (colgroups or dummy-row)
     this.write_thead(output);
@@ -856,7 +856,7 @@ agh.memcpy(_at.Table.prototype, {
     // enclosing brackets
     if (this.param_bracket) {
       var trCount = 1 + this.getHtmlRowCount();
-      buff.push('<tr class="aghtex-cmdleft">');
+      buff.push('<tr class="aghtex-cmdleft-row">');
       mod_base.OutputStretchBracketTd(output, this.param_bracket[0], trCount);
       buff.push('\n <td colspan="', tdc_total, '"></td>\n');
       mod_base.OutputStretchBracketTd(output, this.param_bracket[1], trCount);
@@ -887,13 +887,13 @@ agh.memcpy(_at.Table.prototype, {
     var buff = output.buff;
 
     if (agh.browser.vFx) {
-      buff.push('<tr class="aghtex-array-fxdummy">\n');
+      buff.push('<tr class="aghtex-array-fxdummy-row">\n');
       for (var y = 0; y < this.yM; y++) {
         var col = this.col(y);
         buff.push(' ');
-        for (var i = 0; i < col.tdcL; i++) buff.push('<td />');
-        buff.push('<td style="width:auto;"><div>.</div></td>');
-        for (var i = 0; i < col.tdcR; i++) buff.push('<td />');
+        for (var i = 0; i < col.tdcL; i++) buff.push('<td class="aghtex-array-fxdummy-border" />');
+        buff.push('<td class="aghtex-array-fxdummy-cell" style="width:auto;"><div>.</div></td>');
+        for (var i = 0; i < col.tdcR; i++) buff.push('<td class="aghtex-array-fxdummy-border" />');
         buff.push('\n');
       }
       buff.push('</tr>\n');
