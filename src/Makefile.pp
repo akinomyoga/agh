@@ -43,7 +43,7 @@ $(OUTDIR)/%name%.js.gz: $(OUTDIR)/%name%.js
 $(OUTDIR)/%name%.jgz: $(OUTDIR)/%name%.js.gz
 	cp $< $@
 #%end
-#%m agh::js_from (
+#%m agh::js_from
 jsfiles += $(OUTDIR)/%name%.js
 $(OUTDIR)/%name%.js: %from%
 	cp $< $@
@@ -51,7 +51,7 @@ $(OUTDIR)/%name%.js.gz: $(OUTDIR)/%name%.js
 	$(GZJS) -o $@ $<
 $(OUTDIR)/%name%.jgz: $(OUTDIR)/%name%.js.gz
 	cp $< $@
-#%)
+#%end
 #%m registerPreprocessedJs
 jsfiles += $(OUTDIR)/%file%
 ##%[name="%file%".replace(".js$","")]
@@ -83,16 +83,16 @@ $(OUTDIR)/${name}.jgz: $(OUTDIR)/${name}.js.gz
 #-------------------------------------------------------------------------------
 #	.css files
 #-------------------------------------------------------------------------------
-#%define simple_copy_file (
+#%define simple_copy_file
 copy_file+=$(OUTDIR)/%filename%
 $(OUTDIR)/%filename%: %filename%
 	cp -p $< $@
-#%)
-#%m copy_file (
+#%end
+#%m copy_file
 copy_file+=$(OUTDIR)/%dst%
 $(OUTDIR)/%dst%: %src%
 	cp -p $< $@
-#%)
+#%end
 
 #%x simple_copy_file.r|%filename%|.htaccess|
 #%x simple_copy_file.r|%filename%|agh.text.color.css|
@@ -116,7 +116,7 @@ directory += $(OUTDIR)/icons
 $(OUTDIR)/icons:
 	mkdir -p $@
 
-#%x (
+#%expand
 i file-asm.png
 i file-back.png
 i file-c.png
@@ -158,7 +158,7 @@ i prog-prop.png
 i prog-sentence.png
 i prog-struct.png
 i prog-type.png
-#%).R~i ([^\r\n]+)~#%x copy_file.r|%dst%|icons/$1|.r|%src%|icons/bin/$1|~
+#%end.R~i ([^\r\n]+)~#%x copy_file.r|%dst%|icons/$1|.r|%src%|icons/bin/$1|~
 
 #-------------------------------------------------------------------------------
 # agh.dom

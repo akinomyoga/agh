@@ -383,25 +383,28 @@ ns.ContextFactory["mode.para"].AddEnvironment("thebibliography", {
 });
 
 agh.memcpy(ns.Document.prototype, {
+  getReferenceText: function get_reference_text(type, name) {
+    switch (type) {
+    case "ref":
+      return this.references.displayedText['ref@' + name] || null;
+    case "bib":
+      return this.references.displayedText['bib@' + name] || null;
+    case "contents":
+      if (name == "toc" || name == "lof" || name == "lot") {
+        var f = this["mod:ref/" + name];
+        if (f != null) return f.toHtml();
+      }
+      return null;
+    default:
+      return null;
+    }
+  },
   ResolveReferences: function() {
     if (this.html == null) return;
     var self = this;
     return this.html = this.html.replace(/<tex:ref ref="(\w+)\.([^"<>]+)">\?<\/tex:ref>|<a class="aghtex-ref" href="#aghtex\.([^"]+)">/g, function($0, $1, $2, $B1) { //
       if ($1 != null && $1 != "") {
-        switch ($1) {
-        case "ref":
-          return self.references.displayedText['ref@' + $2] || $0;
-        case "bib":
-          return self.references.displayedText['bib@' + $2] || $0;
-        case "contents":
-          if ($2 == "toc" || $2 == "lof" || $2 == "lot") {
-            var f = self["mod:ref/" + $2];
-            if (f != null) return f.toHtml();
-          }
-          return $0;
-        default:
-          return $0;
-        }
+        return this.getReferenceText($1, $2) || $0;
       } else if ($B1 != "" && $B1) {
         if ($B1 in self.references.label_id_map)
           return '<a class="aghtex-ref" href="#' + self.references.label_id_map[$B1] + '">';
@@ -410,6 +413,32 @@ agh.memcpy(ns.Document.prototype, {
       } else
         return $0;
     });
+  },
+  ResolveReference: function(target) {
+    // a.aghtex-ref
+    var elems = target.getElementsByTagName('a');
+    for (var i = 0, iN = elems.length; i < iN; i++) {
+      var elem = elems[i];
+      if (!/(?:^|\s)aghtex-ref(?:\s|$)/.test(elem.className)) continue;
+      if (!elem.href.startsWith('#aghtex.')) continue;
+      var label = elem.href.substr(8);
+      if (label in this.references.label_id_map)
+        elem.href = '#' + this.references.label_id_map[label];
+    }
+
+    // tex:ref
+    var elems = target.getElementsByTagName('tex:ref');
+    for (var i = 0, iN = elems.length; i < iN; i++) {
+      var elem = elems[i], m;
+      var ref = elem.getAttribute("ref");
+      if (!ref) continue;
+      var m = ref.match(/^(\w+)\.(.*)$/);
+      if (!m) continue;
+      var text = this.getReferenceText(m[1], m[2]);
+      if (!text) continue;
+      elem.removeAttribute("ref");
+      elem.innerHTML = agh.Text.Escape(text, "html");
+    }
   }
 });
 
