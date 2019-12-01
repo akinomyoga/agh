@@ -710,7 +710,7 @@ context "mode.math" new("global") {
     }
   })();
   function stretchTd(className, content) {
-    if (!content) content = '&nbsp;';
+    if (content == null) content = '&nbsp;';
     return '<td rowspan="2" class="aghtex-css-td ' + className + '">' + content + '</td>';
   }
   //------------------------------------------------------------
@@ -795,12 +795,12 @@ context "mode.math" new("global") {
     };
   })();
 
-  _Ctx.AddCommandHandler("left", function(doc) {
+  _Mod.OutputBracketedContent = function(output, content, ltr1, ltr2, sbsp1, sbsp2) {
     //==== 補助変数 ==========================
-    var output = doc.currentCtx.output;
     var buff = output.buff;
     var bottom_row = "";
-    function proc_subsup() {
+    function proc_subsup(sbsp) {
+      if (sbsp == null) return;
       switch ((sbsp.sup ? 1 : 0) + (sbsp.sub ? 2 : 0)) {
         case 1: // 上付
           buff.push('<td rowspan="2" class="aghtex-css-td aghtex-cmdleft-cell-sup aghtex-tag-script"><tex:i class="aghtex-cmdleft-sup">', sbsp.sup, '</tex:i></td>');
@@ -815,9 +815,6 @@ context "mode.math" new("global") {
       }
     }
     //========================================
-    doc.scanner.Next();
-    var ltr = doc.GetArgumentHtml();
-    var sbsp = doc.GetSubSup();
 
     //-- [prologue]
     if (agh.browser.vFx)
@@ -830,36 +827,48 @@ context "mode.math" new("global") {
     else
       buff.push('<table class="aghtex-css-table-inline aghtex-cmdleft-table"><tbody><tr class="aghtex-css-tr aghtex-cmdleft-row">');
 
-    _Mod.OutputStretchBracketTd(output, ltr, 2);
-
-    proc_subsup();
+    _Mod.OutputStretchBracketTd(output, ltr1, 2);
+    proc_subsup(sbsp1);
 
     //-- [content]
     buff.push('<td class="aghtex-css-td aghtex-cmdleft-cell" rowspan="2"><tex:i class="aghtex-cmdleft-tmargin"></tex:i>');
 
-    // setup context and read under the context
-    var ctx = doc.wrap_context(doc.currentCtx);
-    ctx.AddCommandHandler("right", function(doc) {
-      doc.scanner.Next();
-      ltr = doc.GetArgumentHtml();
-      sbsp = doc.GetSubSup();
-      doc.currentCtx.BREAK = true;
-    });
-    buff.push(doc.Read(ctx));
+    if (agh.is(content, Function))
+      content(output);
+    else
+      buff.push(content);
 
     //-- [epilogue]
     buff.push('<tex:i class="aghtex-cmdleft-bmargin"></tex:i></td>');
 
-    _Mod.OutputStretchBracketTd(output, ltr, 2);
-
-    proc_subsup();
+    _Mod.OutputStretchBracketTd(output, ltr2, 2);
+    proc_subsup(sbsp2);
 
     //-- [レイアウト用の二行目がある時]
-    if (bottom_row != "") {
+    if (bottom_row != "")
       buff.push('</tr><tr class="aghtex-css-tr">', bottom_row);
-    }
 
     buff.push('</tr></tbody></table>');
+  };
+
+  _Ctx.AddCommandHandler("left", function(doc) {
+    var output = doc.currentCtx.output;
+    doc.scanner.Next();
+    var ltr1 = doc.GetArgumentHtml();
+    var sbsp1 = doc.GetSubSup();
+
+    var ltr2 = null, sbsp2 = null;
+    // setup context and read under the context
+    var ctx = doc.wrap_context(doc.currentCtx);
+    ctx.AddCommandHandler("right", function(doc) {
+      doc.scanner.Next();
+      ltr2 = doc.GetArgumentHtml();
+      sbsp2 = doc.GetSubSup();
+      doc.currentCtx.BREAK = true;
+    });
+    var coantent = doc.Read(ctx);
+
+    _Mod.OutputBracketedContent(output, content, ltr1, ltr2, sbsp1, sbsp2);
   });
   _Ctx.AddCommandHandler("right", CH_EXIT_WITH_ERROR);
 };

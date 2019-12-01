@@ -44,6 +44,26 @@ tex\:table.aghfly-test1 tex\:td { border: 1px solid black; }
 </div></td></tr>
 </table>
 
+<pre data-lang="tex:align">
+  \left\|
+    \begin{pmatrix} v_{i_1,j_1} \\ v_{i_2,j_1} \\ \vdots \\ v_{i_\Lambda,j_1} \end{pmatrix}
+    \wedge \dots \wedge
+    \begin{pmatrix} v_{i_1,j_P} \\ v_{i_2,j_P} \\ \vdots \\ v_{i_\Lambda,j_P} \end{pmatrix}
+  \right\|^2
+  &= \frac{\displaystyle
+    \sum_{j_{P+1} < \dots < j_\Lambda\atop \{j_p\}_{p=1}^P \cap \{j_p\}_{p=P+1}^\Lambda = \emptyset}
+    \prod_{k=1}^{n-\Lambda}[\lambda - \lambda_k(M_{j_1,\dots,j_\Lambda})]
+  }{\displaystyle
+    \prod_{k=1 \atop \lambda_k(A) \neq \lambda}^n [\lambda - \lambda_k(A)]} \\
+  &= \frac{c_{n-\Lambda}\{\lambda - \lambda_k(M_{j_1,\dots,j_P})\}_{k=1}^{n-P}}{
+    \displaystyle
+    \prod_{k=1 \atop \lambda_k(A) \neq \lambda}^n [\lambda - \lambda_k(A)]}.
+</pre>
+
+<pre data-lang="tex:align">
+  X &= \left\|\left\|\left\|\frac1{1+\frac1{2+x}}\right\|\right\|\right\|
+</pre>
+
 <h2>Test for table</h2>
 <tex:table class="aghfly-test1">
 <tex:tbody>

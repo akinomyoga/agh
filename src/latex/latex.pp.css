@@ -890,7 +890,7 @@ td.aghtex-cmdleft-cell { vertical-align: baseline!important; height: 1em!importa
 
 /*%%if mode!="Trident"*/
   /* 不格好なので括弧の高さを少し小さくする */
-  table.aghtex-cmdleft-table { margin: 0.2em 0!important; }
+  table.aghtex-cmdleft-table { margin-top: 0.2em!important; margin-bottom: 0.2em!important; }
   .aghtex-cmdleft-tmargin { display: block; margin-bottom: -0.2em; }
   .aghtex-cmdleft-bmargin { display: block; margin-top: -0.2em; }
 /*%%end*/
