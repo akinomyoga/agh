@@ -426,11 +426,11 @@ context "pkg:amsmath/mode.math" new() {
     buff.push('<td align="center" class="aghtex-css-td ', hasBar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
     if (hasBar && barWidth !== '1px')
       buff.push(' style="border-bottom-width:', barWidth, '!important;"');
-    buff.push('>', htNumerator, '</td>');
+    buff.push('><tex:i class="aghtex-cmdleft-tmargin"></tex:i>', htNumerator, '</td>');
 
     if (right)
       mod_base.OutputStretchBracketTd(output, right, 2);
-    buff.push('</tr><tr class="aghtex-css-tr"><td align="center" class="aghtex-css-td aghtex-genfrac-center">', htDenominator, '</td></tr>');
+    buff.push('</tr><tr class="aghtex-css-tr"><td align="center" class="aghtex-css-td aghtex-genfrac-center">', htDenominator, '<tex:i class="aghtex-cmdleft-bmargin"></tex:i></td></tr>');
     buff.push('</tbody></table>');
   }
 

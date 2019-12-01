@@ -1,49 +1,105 @@
 <!DOCTYPE html>
 <html xmlns:tex="https://akinomyoga.github.io/agh/aghtex">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="agh-fly-type" content="tex" />
-<script type="text/javascript" charset="utf-8" src="../out/agh.js"></script>
-<script type="text/javascript" charset="utf-8" src="../out/agh.lang.tex.js"></script>
-<script type="text/javascript" charset="utf-8" src="../out/agh.fly.js?1.2.3#hatena"></script>
-<script type="application/x-tex" id="tex-preamble">
-\documentclass{article}
-</script>
-<style type="text/css">
-tex\:table.aghfly-test1 tex\:td { border: 1px solid black; }
-.test1-hello { color: red!important; }
-.test2-monospace { font: normal 1.0em/1 'MS Gothic'!important; }
-</style>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <style type="text/css">
+  table.test-table { margin: 0 auto; border-collapse: collapse; }
+  table.test-table>tbody>tr>th,
+  table.test-table>tbody>tr>td { border: 1px solid gray; }
+  span.MJXc-display { background-color: #ffdddd; }
+  div.math-render { background-color: #ddffff; }
+  tex\:container { background-color: #ddffdd; }
+  tex\:para,
+  tex\:math { background-color: inherit; }
+
+  tex\:table.aghfly-test1 tex\:td { border: 1px solid black; }
+  .test1-hello { color: red!important; }
+  .test2-monospace { font: normal 1.0em/1 'MS Gothic'!important; }
+  </style>
+
+  <meta name="agh-fly-type" content="tex" />
+  <script type="text/javascript" charset="utf-8" src="../out/agh.js"></script>
+  <script type="text/javascript" charset="utf-8" src="../out/agh.lang.tex.js"></script>
+  <script type="text/javascript" charset="utf-8" src="../out/agh.fly.js?20191201#hatena"></script>
+
+  <!-- From http://genkuroki.web.fc2.com/ -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: { inlineMath: [['J%{','}%'], ["\\(","\\)"]] } });
+  </script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
+
+  <!-- From http://7shi.hateblo.jp/entry/2018/07/27/185311 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.css" integrity="sha384-bsHo4/LA+lkZv61JspMDQB9QP1TtO4IgOf2yYS+J6VdAYLVyx1c3XKcsHh0Vy8Ws" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.js" integrity="sha384-4z8mjH4yIpuK9dIQGR1JwbrfYsStrNK6MP+2Enhue4eyo0XlBDXOIPc8b6ZU0ajz" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function() {
+    agh.Array.each(document.getElementsByClassName("math-render"), function(e) {
+      if (e.mathRendered) return;
+      e.mathRendered = true;
+      try {
+        katex.render(e.textContent, e, { displayMode: true });
+      } catch (ex) {
+        e.textContent = ex.message;
+      }
+    });
+    agh.Array.each(document.getElementsByClassName("entry-content"), function(e) {
+      renderMathInElement(e, { delimiters: [{ left: "K%{", right: "}%", display: false }] });
+    });
+  });
+  </script>
+
 </head>
-<body class="aghfly-inline-math">
+<body>
 <h1>Test $hello$</h1>
 <p>This is a test $\frac12$. 以下の定義 $\eqref{eq:defsA}$ と $\eqref{eq:defsB}$ を考える。</p>
-<p class="aghfly-begin-align">
+<pre data-lang="tex:align">
   A_n^k &= \sqrt{\langle a_n^k\rangle_{\rm ev}}, \label{eq:defsA} \\
   B_n^k &= \sqrt{\langle b_n^k\rangle_{\rm ev}}. \label{eq:defsB}
-</p>
-
+</pre>
 <p>$<code>c=\pm\sqrt{a^2+b^2}</code></p>
-<pre data-lang="tex:equation">x=\frac{-b±\sqrt{b^2-4ac}}{2a}</pre>
-<pre data-lang="tex:equation">f(x)=\frac1{\sqrt{2πσ^2}}\exp\left(-\frac{(x-μ)^2}{2σ^2}\right)</pre>
-<pre data-lang="tex:equation">i\hbar\frac∂{∂t}ψ=\left(\frac{(-i\hbar∇)^2}{2m}+V\right)ψ</pre>
-<pre data-lang="tex:equation">rC=\frac{∂C}{∂t}+\frac12σ^2S_t^2\frac{∂^2C}{∂S_t^2}+rS_t\frac{∂C}{∂S_t}</pre>
 
-<table>
-<tr align="center"><th>MathJax</th><th>aghtex</th></tr>
-<tr><td>
-<div>\[x=\frac{-b±\sqrt{b^2-4ac}}{2a}\]</div>
-<div>\[f(x)=\frac1{\sqrt{2πσ^2}}\exp\left(-\frac{(x-μ)^2}{2σ^2}\right)\]</div>
-<div>\[i\hbar\frac∂{∂t}ψ=\left(\frac{(-i\hbar∇)^2}{2m}+V\right)ψ\]</div>
-<div>\[rC=\frac{∂C}{∂t}+\frac12σ^2S_t^2\frac{∂^2C}{∂S_t^2}+rS_t\frac{∂C}{∂S_t}\]</div>
-</td><td>
-<div class="aghtex">x=\frac{-b±\sqrt{b^2-4ac}}{2a}</div>
-<div class="aghtex">f(x)=\frac1{\sqrt{2πσ^2}}\exp\left(-\frac{(x-μ)^2}{2σ^2}\right)</div>
-<div class="aghtex">i\hbar\frac∂{∂t}ψ=\left(\frac{(-i\hbar∇)^2}{2m}+V\right)ψ</div>
-<div class="aghtex">rC=\frac{∂C}{∂t}+\frac12σ^2S_t^2\frac{∂^2C}{∂S_t^2}+rS_t\frac{∂C}{∂S_t}</div>
-</div></td></tr>
+<table class="test-table">
+<tr align="center"><th>MathJax</th><th>aghtex</th><th>KaTeX</th></tr>
+<tr>
+<td>
+  <div>\[x=\frac{-b±\sqrt{b^2-4ac}}{2a}\]</div>
+  <div>\[f(x)=\frac1{\sqrt{2πσ^2}}\exp\left(-\frac{(x-μ)^2}{2σ^2}\right)\]</div>
+  <div>\[i\hbar\frac∂{∂t}ψ=\left(\frac{(-i\hbar∇)^2}{2m}+V\right)ψ\]</div>
+  <div>\[rC=\frac{∂C}{∂t}+\frac12σ^2S_t^2\frac{∂^2C}{∂S_t^2}+rS_t\frac{∂C}{∂S_t}\]</div>
+</td>
+<td>
+  <div class="aghtex">x=\frac{-b±\sqrt{b^2-4ac}}{2a}</div>
+  <div class="aghtex">f(x)=\frac1{\sqrt{2πσ^2}}\exp\left(-\frac{(x-μ)^2}{2σ^2}\right)</div>
+  <div class="aghtex">i\hbar\frac∂{∂t}ψ=\left(\frac{(-i\hbar∇)^2}{2m}+V\right)ψ</div>
+  <div class="aghtex">rC=\frac{∂C}{∂t}+\frac12σ^2S_t^2\frac{∂^2C}{∂S_t^2}+rS_t\frac{∂C}{∂S_t}</div>
+</td>
+<td>
+  <div class="math-render">x=\frac{-b±\sqrt{b^2-4ac}}{2a}</div>
+  <div class="math-render">f(x)=\frac1{\sqrt{2πσ^2}}\exp\left(-\frac{(x-μ)^2}{2σ^2}\right)</div>
+  <div class="math-render">i\hbar\frac∂{∂t}ψ=\left(\frac{(-i\hbar∇)^2}{2m}+V\right)ψ</div>
+  <div class="math-render">rC=\frac{∂C}{∂t}+\frac12σ^2S_t^2\frac{∂^2C}{∂S_t^2}+rS_t\frac{∂C}{∂S_t}</div>
+</td>  
+</tr>
 </table>
 
+<div>
+\begin{align}
+  \left\|
+    \begin{pmatrix} v_{i_1,j_1} \\ v_{i_2,j_1} \\ \vdots \\ v_{i_\Lambda,j_1} \end{pmatrix}
+    \wedge \dots \wedge
+    \begin{pmatrix} v_{i_1,j_P} \\ v_{i_2,j_P} \\ \vdots \\ v_{i_\Lambda,j_P} \end{pmatrix}
+  \right\|^2
+  &= \frac{\displaystyle
+    \sum_{j_{P+1} < \dots < j_\Lambda\atop \{j_p\}_{p=1}^P \cap \{j_p\}_{p=P+1}^\Lambda = \emptyset}
+    \prod_{k=1}^{n-\Lambda}[\lambda - \lambda_k(M_{j_1,\dots,j_\Lambda})]
+  }{\displaystyle
+    \prod_{k=1 \atop \lambda_k(A) \neq \lambda}^n [\lambda - \lambda_k(A)]} \\
+  &= \frac{c_{n-\Lambda}\{\lambda - \lambda_k(M_{j_1,\dots,j_P})\}_{k=1}^{n-P}}{
+    \displaystyle
+    \prod_{k=1 \atop \lambda_k(A) \neq \lambda}^n [\lambda - \lambda_k(A)]}.
+\end{align}
+</div>
 <pre data-lang="tex:align">
   \left\|
     \begin{pmatrix} v_{i_1,j_1} \\ v_{i_2,j_1} \\ \vdots \\ v_{i_\Lambda,j_1} \end{pmatrix}
@@ -59,6 +115,23 @@ tex\:table.aghfly-test1 tex\:td { border: 1px solid black; }
     \displaystyle
     \prod_{k=1 \atop \lambda_k(A) \neq \lambda}^n [\lambda - \lambda_k(A)]}.
 </pre>
+<div class="math-render">
+\begin{aligned}
+  \left\|
+    \begin{pmatrix} v_{i_1,j_1} \\ v_{i_2,j_1} \\ \vdots \\ v_{i_\Lambda,j_1} \end{pmatrix}
+    \wedge \dots \wedge
+    \begin{pmatrix} v_{i_1,j_P} \\ v_{i_2,j_P} \\ \vdots \\ v_{i_\Lambda,j_P} \end{pmatrix}
+  \right\|^2
+  &= \frac{\displaystyle
+    \sum_{j_{P+1} < \dots < j_\Lambda\atop \{j_p\}_{p=1}^P \cap \{j_p\}_{p=P+1}^\Lambda = \emptyset}
+    \prod_{k=1}^{n-\Lambda}[\lambda - \lambda_k(M_{j_1,\dots,j_\Lambda})]
+  }{\displaystyle
+    \prod_{k=1 \atop \lambda_k(A) \neq \lambda}^n [\lambda - \lambda_k(A)]} \\
+  &= \frac{c_{n-\Lambda}\{\lambda - \lambda_k(M_{j_1,\dots,j_P})\}_{k=1}^{n-P}}{
+    \displaystyle
+    \prod_{k=1 \atop \lambda_k(A) \neq \lambda}^n [\lambda - \lambda_k(A)]}.
+\end{aligned}
+</div>
 
 <pre data-lang="tex:align">
   X &= \left\|\left\|\left\|\frac1{1+\frac1{2+x}}\right\|\right\|\right\|

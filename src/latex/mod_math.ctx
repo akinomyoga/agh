@@ -551,13 +551,13 @@ context "mode.math" {
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 
-    buff.push('<td align="center" class="aghtex-css-td ', bar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
-    buff.push('>', former, '</td>');
+    buff.push('<td align="center" class="aghtex-css-td ', bar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '">');
+    buff.push('<tex:i class="aghtex-cmdleft-tmargin"></tex:i>', former, '</td>');
 
     if (right)
       mod_base.OutputStretchBracketTd(output, right, 2);
     buff.push('</tr><tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-genfrac-center">');
-    output.appendPost('</td></tr></tbody></table>');
+    output.appendPost('<tex:i class="aghtex-cmdleft-bmargin"></tex:i></td></tr></tbody></table>');
   }
   command f\atopwithdelims("#!1#!2") {
     Atop(doc.currentCtx.output, argv[1], argv[2]);

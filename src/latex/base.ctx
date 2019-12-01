@@ -735,9 +735,9 @@ context "mode.math" new("global") {
 
       // 共通
       "|": agh.browser.vIE ? stretchTd('aghtex-left-pipe') :
-        stretchTd('aghtex-left-pipe', ""),
+        stretchTd('aghtex-left-pipe', '<tex:i class="aghtex-left-span"></tex:i>'),
       "∥": agh.browser.vIE ? stretchTd('aghtex-left-vert') :
-        stretchTd('aghtex-left-vert', ""),
+        stretchTd('aghtex-left-vert', '<tex:i class="aghtex-left-span"></tex:i>'),
 
       // ceiling / floor
       "\u2308": stretchTd('aghtex-left-ceil'), //
@@ -831,7 +831,7 @@ context "mode.math" new("global") {
     proc_subsup(sbsp1);
 
     //-- [content]
-    buff.push('<td class="aghtex-css-td aghtex-cmdleft-cell" rowspan="2"><tex:i class="aghtex-cmdleft-tmargin"></tex:i>');
+    buff.push('<td class="aghtex-css-td aghtex-cmdleft-cell" rowspan="2"><tex:i class="aghtex-cmdleft-tmargin"></tex:i><tex:i class="aghtex-cmdleft-vspan"></tex:i>');
 
     if (agh.is(content, Function))
       content(output);
