@@ -629,7 +629,7 @@ context "mode.math" new("global") {
   //============================================================
   var stretchImg = (function() {
     var stretchSvgHead = '<svg class="aghtex-css-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 1024" preserveAspectRatio="none"><g transform="matrix(1 0 0 -1 0 768)"><path fill="currentColor" d="';
-    var stretchSvgTail = '" /></g></svg>';
+    var stretchSvgTail = '" /></g></svg><tex:i class="aghtex-stretch-svg-hspan"></tex:i>';
     var stretchSvgPath = {
       lparen: 'M124 256c0 -242 204 -387 388 -492l-43 -20c-142 77 -469 234 -469 512s327 435 469 512l43 -20c-184 -105 -388 -250 -388 -492z',
       rparen: 'M388 256c0 242 -204 387 -388 492l43 20c142 -77 469 -234 469 -512s-327 -435 -469 -512l-43 20c184 105 388 250 388 492z',
