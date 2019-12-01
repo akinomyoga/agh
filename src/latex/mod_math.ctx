@@ -440,7 +440,7 @@ context "mode.math" {
   };
 
   var generateSvgSource = function(svg) {
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + svg.width + ' ' + svg.height + '" preserveAspectRatio="none">'
+    return '<svg class="aghtex-css-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + svg.width + ' ' + svg.height + '" preserveAspectRatio="none">'
       + '<g transform="matrix(1 0 0 -1 0 768)"><path fill="currentColor" d="' + svg.path + '" /></g></svg>';
   };
   _Mod["svg:stretch_underbrace"] = generateSvgSource({

@@ -89,7 +89,6 @@ table.aghtex-css-table-inline {
 }
 
 td.aghtex-css-td {
-  /*width background height border padding */
   width: auto!important; height: auto!important;
   position: static!important; left: auto!important; top: auto!important;
   vertical-align: middle!important;
@@ -107,6 +106,11 @@ td.aghtex-css-td {
 /*%%elif mode=="Opera"*/
   -o-background-size: auto!important;
 /*%%end*/
+}
+
+svg.aghtex-css-svg {
+  width: auto!important; height: auto!important;
+  position: static!important; left: auto!important; top: auto!important;
 }
 
 /*----------------------------------------------------------
