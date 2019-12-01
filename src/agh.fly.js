@@ -411,30 +411,28 @@
       return text.replace(/[\<\>\"\&]/g, function($0) { return escapeEntityMap[$0]; });
     }
 
+    agh.fly.latex_v2.extractInlineMathFromTextNode = function(targets, node, reg_range) {
+      var itex = 0;
+      var html = escapeEntity(getTextContent(node)).replace(reg_range, function($0, $1) {
+        itex++;
+        return '<tex:target class="aghfly-tex-math" title="' + $1 + '">' + $1 + '</tex:target>';
+      });
+      if (itex == 0) return;
+
+      var span = document.createElement("span");
+      span.innerHTML = html;
+      node.parentNode.insertBefore(span, node);
+      setTextContent(node, "");
+
+      for (var i = 0, iN = span.childNodes.length; i < iN; i++) {
+        var target = span.childNodes[i];
+        if (target.nodeType == 1)
+          targets.push({type: "imath", target: target});
+      }
+    };
+
     function extractAllTargets(elem, params) {
       var targets = [];
-
-      function processTextNode_inlineMath(node, reg_range) {
-        var itex = 0;
-        var html = escapeEntity(getTextContent(node)).replace(reg_range, function($0, $1) {
-          // tagging tex:math
-          itex++;
-          return '<tex:target class="aghfly-tex-math" title="' + $1 + '">' + $1 + '</tex:target>';
-        });
-
-        if (itex == 0) return;
-
-        var span = document.createElement("span");
-        span.innerHTML = html;
-        node.parentNode.insertBefore(span, node);
-        setTextContent(node, "");
-
-        for (var i = 0, iN = span.childNodes.length; i < iN; i++) {
-          var target = span.childNodes[i];
-          if (target.nodeType == 1)
-            targets.push({type: "imath", target: target});
-        }
-      }
 
       function processNodes(children, elementOnly) {
         if (!(children instanceof Array))
@@ -454,7 +452,7 @@
 
       function processTextNode(node) {
         if (params.regexInlineMath)
-          processTextNode_inlineMath(node, params.regexInlineMath);
+          agh.fly.latex_v2.extractInlineMathFromTextNode(targets, node, params.regexInlineMath);
       }
 
       function processElementNode(elem) {
@@ -788,31 +786,43 @@
   }
 
   if (script_hash == '#hatena') {
+    // 参考: agh.dom.js
+    var css_add = (function() {
+      var sheet;
+      if (agh.browser.vIE && document.createStyleSheet) {
+        try {
+          sheet = document.createStyleSheet();
+        }catch(ex){}
+      }
+      if (!sheet) {
+        var style = document.createElement("style");
+        style.type = "text/css";
+        style.appendChild(document.createTextNode(""));
+        var head = document.getElementsByTagName("head")[0] || document.documentElement;
+        head.appendChild(style);
+        sheet = style.sheet;
+      }
+
+      var rules = sheet.cssRules || sheet.rules;
+      return function(selector, css) {
+        console.log(selector, css, rules.length);
+        return sheet.insertRule(selector + "{" + css + "}", rules.length);
+      };
+    })();
+    css_add('.entry-content pre[lang^="tex:"]', 'background-color: #eee; color: black; white-space: normal; border: 1px dashed gray; padding: 0; font-size: 70%;');
+
+
     // 直接 agh.js, agh.lang.tex.js を読み込んでいると仮定
     _fly_attach(document, "DOMContentLoaded", function() {
       initialize();
 
       var params = {};
       {
-        params.preamble = '\\documentclass{article}';
+        params.preamble = '\\documentclass{revtex4}';
         params.flag_revert_symbols = true;
 
         function extractAllTargets(elem, params) {
           params.targets = [];
-
-          function processNodes(children, elementOnly) {
-            if (!(children instanceof Array))
-              children = agh(children, Array); // 内容固定
-
-            for (var i = 0, iN = children.length; i < iN; i++) {
-              var child = children[i];
-              if (elementOnly && child.nodeType !== 1) continue;
-
-              if(child.nodeType === 1) {
-                processElementNode(child);
-              }
-            }
-          }
 
           function processElementNode_code(code) {
             var tnode = code.previousSibling;
@@ -867,6 +877,21 @@
               processNodes(elem.childNodes);
             } else {
               processNodes(elem.childNodes);
+            }
+          }
+
+          function processNodes(children, elementOnly) {
+            if (!(children instanceof Array))
+              children = agh(children, Array); // 内容固定
+
+            for (var i = 0, iN = children.length; i < iN; i++) {
+              var child = children[i];
+              if (elementOnly && child.nodeType !== 1) continue;
+
+              if(child.nodeType === 3)
+                agh.fly.latex_v2.extractInlineMathFromTextNode(params.targets, child, /\`?\$((?!\n)[^$]*[^$\n])\$/g);
+              else if(child.nodeType === 1)
+                processElementNode(child);
             }
           }
 

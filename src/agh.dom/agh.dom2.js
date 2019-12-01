@@ -268,6 +268,7 @@ agh.scripts.register("agh.dom.js", ["agh.js", "agh.text.js"], function(){
         for(var key in selector)
           this.add(key,selector[key]);
       }
+      return null;
     },
     _remove_implSelector:function(selector){
       var selectorText=this.m_seltext[selector]||selector;
