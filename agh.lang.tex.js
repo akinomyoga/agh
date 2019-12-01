@@ -92,17 +92,6 @@ function aghtex_assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-_Mod.TAG_TABLE = 'table';
-_Mod.TAG_TBODY = 'tbody';
-_Mod.TAG_TR = 'tr';
-_Mod.TAG_TD = 'td';
-// if (agh.browser.isWk || agh.browser.vFx) {
-//   _Mod.TAG_TABLE = 'tex:table';
-//   _Mod.TAG_TBODY = 'tex:tbody';
-//   _Mod.TAG_TR = 'tex:tr';
-//   _Mod.TAG_TD = 'tex:td';
-// }
-
 //◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 //
 //            class Scanner4
@@ -3095,7 +3084,7 @@ new function(){
   //    \left ～ \right
   //============================================================
   var stretchImg = (function() {
-    var stretchSvgHead = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 1024" preserveAspectRatio="none"><g transform="matrix(1 0 0 -1 0 768)"><path fill="currentColor" d="';
+    var stretchSvgHead = '<svg class="aghtex-css-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 1024" preserveAspectRatio="none"><g transform="matrix(1 0 0 -1 0 768)"><path fill="currentColor" d="';
     var stretchSvgTail = '" /></g></svg>';
     var stretchSvgPath = {
       lparen: 'M124 256c0 -242 204 -387 388 -492l-43 -20c-142 77 -469 234 -469 512s327 435 469 512l43 -20c-184 -105 -388 -250 -388 -492z',
@@ -3110,75 +3099,75 @@ new function(){
     };
 
     switch (ns.compatMode) {
-      case "IE-qks":
-      case "Fx-qks":
+    case "IE-qks":
+    case "Fx-qks":
+      return function(imgsrc, width, alt) {
+        width = width.toString() + "ex";
+        return '<td class="aghtex-css-td aghtex-stretch" rowspan="2" style="height:0px!important;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="width:' + width + ';height:100%;"/></td>';
+      };
+    case "IE-std":
+      if (agh.browser.vIE<8) {
+        ns.expression_height = function(elem) {
+          var tr = elem.parentElement.parentElement;
+          var table = tr.parentElement.parentElement;
+          return (table.clientHeight-4) + "px";
+        };
         return function(imgsrc, width, alt) {
           width = width.toString() + "ex";
-          return '<' + mod_core.TAG_TD + ' class="aghtex-stretch" rowspan="2" style="height:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="width:' + width + ';height:100%;"/></' + mod_core.TAG_TD + '>';
+          var style = 'width:' + width + ';height:expression(' + ns.namespaceName + '.expression_height(this));';
+          //var style = 'width:' + width + ';height:expression(this.parentElement.parentElement.parentElement.parentElement.clientHeight-4);';
+          return '<td class="aghtex-css-td aghtex-stretch" rowspan="2" style="height:0px!important;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></td>';
         };
-      case "IE-std":
-        if (agh.browser.vIE<8) {
-          ns.expression_height = function(elem) {
-            var tr = elem.parentElement.parentElement;
-            var table = tr.parentElement.parentElement;
-            return (table.clientHeight-4) + "px";
-          };
-          return function(imgsrc, width, alt) {
-            width = width.toString() + "ex";
-            var style = 'width:' + width + ';height:expression(' + ns.namespaceName + '.expression_height(this));';
-            //var style = 'width:' + width + ';height:expression(this.parentElement.parentElement.parentElement.parentElement.clientHeight-4);';
-            return '<' + mod_core.TAG_TD + ' class="aghtex-stretch" rowspan="2" style="height:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></' + mod_core.TAG_TD + '>';
-          };
+      } else {
+        return function(imgsrc, width, alt) {
+          width = width.toString() + "ex";
+          var style = 'width:' + width + ';'
+          return '<td class="aghtex-css-td aghtex-vstretch" rowspan="2" style="' + style + '"><img class="aghtex-stretch-img" src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></td>';
+        };
+      }
+    case "Fx-std":
+      return function(imgsrc, width, alt, className) {
+        if (className in stretchSvgPath) {
+          // .svg を用いた表示
+          var svg = stretchSvgHead + stretchSvgPath[className] + stretchSvgTail;
+          return '<td rowspan="2" class="aghtex-css-td aghtex-stretch-svg aghtex-stretch-svg-' + className + '">' + svg + '</td>';
         } else {
-          return function(imgsrc, width, alt) {
-            width = width.toString() + "ex";
-            var style = 'width:' + width + ';'
-            return '<' + mod_core.TAG_TD + ' class="aghtex-vstretch" rowspan="2" style="' + style + '"><img class="aghtex-stretch-img" src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></' + mod_core.TAG_TD + '>';
-          };
+          // 旧来の .png を用いた表示
+          width = width.toString() + "ex";
+          //return '<td rowspan="2" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');-moz-background-size:100%;"></td>';
+          return '<td rowspan="2" class="aghtex-css-td aghtex-stretch" style="height:100%!important;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="width:' + width + ';height:100%;"/></td>';
         }
-      case "Fx-std":
-        return function(imgsrc, width, alt, className) {
-          if (className in stretchSvgPath) {
-            // .svg を用いた表示
-            var svg = stretchSvgHead + stretchSvgPath[className] + stretchSvgTail;
-            return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch-svg aghtex-stretch-svg-' + className + '">' + svg + '</' + mod_core.TAG_TD + '>';
-          } else {
-            // 旧来の .png を用いた表示
-            width = width.toString() + "ex";
-            //return '<' + mod_core.TAG_TD + ' rowspan="2" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');-moz-background-size:100%;"></' + mod_core.TAG_TD + '>';
-            return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch" style="height:100%;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="width:' + width + ';height:100%;"/></' + mod_core.TAG_TD + '>';
-          }
-        };
-      case "Sf-qks":
-      case "Sf-std":
-        return function(imgsrc, width, alt, className) {
-          if (className in stretchSvgPath) {
-            var svg = stretchSvgHead + stretchSvgPath[className] + stretchSvgTail;
-            return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch-svg aghtex-stretch-svg-' + className + '">' + svg + '</' + mod_core.TAG_TD + '>';
-          } else {
-            width = (width * 0.8).toString() + "ex";
-            if (className)
-              return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch-bg aghtex-stretch-bg-' + className + '"></' + mod_core.TAG_TD + '>';
-            else
-              return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch-bg" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');"></' + mod_core.TAG_TD + '>';
-          }
-        };
-      case "Op-qks":
-      case "Op-std":
-        return function(imgsrc, width, alt) {
+      };
+    case "Sf-qks":
+    case "Sf-std":
+      return function(imgsrc, width, alt, className) {
+        if (className in stretchSvgPath) {
+          var svg = stretchSvgHead + stretchSvgPath[className] + stretchSvgTail;
+          return '<td rowspan="2" class="aghtex-css-td aghtex-stretch-svg aghtex-stretch-svg-' + className + '">' + svg + '</td>';
+        } else {
           width = (width * 0.8).toString() + "ex";
-          return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');"></' + mod_core.TAG_TD + '>';
-        };
-      default:
-        return function(imgsrc, width, alt) {
-          width = (width * 0.8).toString() + "ex";
-          return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');background-size:100% 100%;"></' + mod_core.TAG_TD + '>';
-        };
+          if (className)
+            return '<td rowspan="2" class="aghtex-css-td aghtex-stretch-bg aghtex-stretch-bg-' + className + '"></td>';
+          else
+            return '<td rowspan="2" class="aghtex-css-td aghtex-stretch-bg" style="width:' + width + '!important;background-image:url(' + ns.BaseUrl + imgsrc + ')!important;"></td>';
+        }
+      };
+    case "Op-qks":
+    case "Op-std":
+      return function(imgsrc, width, alt) {
+        width = (width * 0.8).toString() + "ex";
+        return '<td rowspan="2" class="aghtex-css-td aghtex-stretch" style="width:' + width + '!important;background-image:url(' + ns.BaseUrl + imgsrc + ')!important;"></td>';
+      };
+    default:
+      return function(imgsrc, width, alt) {
+        width = (width * 0.8).toString() + "ex";
+        return '<td rowspan="2" class="aghtex-css-td aghtex-stretch" style="width:' + width + '!important;background-image:url(' + ns.BaseUrl + imgsrc + ')!important;background-size:100% 100%!important;"></td>';
+      };
     }
   })();
   function stretchTd(className, content) {
     if (!content) content = '&nbsp;';
-    return '<' + mod_core.TAG_TD + ' rowspan="2" class="' + className + '">' + content + '</' + mod_core.TAG_TD + '>';
+    return '<td rowspan="2" class="aghtex-css-td ' + className + '">' + content + '</td>';
   }
   //------------------------------------------------------------
   _Mod.GetStretchImageTd = stretchImg;
@@ -3252,9 +3241,9 @@ new function(){
             buff.push(bracket_dict[c].replace(/\browspan="2"/, 'rowspan="' + rowspan + '"'));
           return true;
         } else {
-          buff.push('<', mod_core.TAG_TD, ' rowspan="', rowspan, '">');
+          buff.push('<td rowspan="', rowspan, '" class="aghtex-css-td">');
           output.error('mod:base.cmd:left.NotSupportedSymbol', {ch: c}, 'mod:base.OutputStretchBracketTd');
-          buff.push(content, '</', mod_core.TAG_TD, '>');
+          buff.push(content, '</td>');
           return false;
         }
       }
@@ -3270,14 +3259,14 @@ new function(){
     function proc_subsup() {
       switch ((sbsp.sup ? 1 : 0) + (sbsp.sub ? 2 : 0)) {
         case 1: // 上付
-          buff.push('<', mod_core.TAG_TD, ' rowspan="2" class="aghtex-cmdleft-cell-sup aghtex-tag-script"><span class="aghtex-cmdleft-sup">', sbsp.sup, '</span></', mod_core.TAG_TD, '>');
+          buff.push('<td rowspan="2" class="aghtex-css-td aghtex-cmdleft-cell-sup aghtex-tag-script"><tex:i class="aghtex-cmdleft-sup">', sbsp.sup, '</tex:i></td>');
           break;
         case 2: // 下付
-          buff.push('<', mod_core.TAG_TD, ' rowspan="2" class="aghtex-cmdleft-cell-sub aghtex-tag-script"><span class="aghtex-cmdleft-sub">', sbsp.sub, '</span></', mod_core.TAG_TD, '>');
+          buff.push('<td rowspan="2" class="aghtex-css-td aghtex-cmdleft-cell-sub aghtex-tag-script"><tex:i class="aghtex-cmdleft-sub">', sbsp.sub, '</tex:i></td>');
           break;
         case 3: // 両方
-          buff.push('<', mod_core.TAG_TD, ' class="aghtex-cmdleft-cell-sup aghtex-tag-script"><span class="aghtex-cmdleft-sup">', sbsp.sup, '</span></', mod_core.TAG_TD, '>');
-          bottom_row += '<' + mod_core.TAG_TD + ' class="aghtex-cmdleft-cell-sub aghtex-tag-script"><span class="aghtex-cmdleft-sub">' + sbsp.sub + '</span></' + mod_core.TAG_TD + '>';
+          buff.push('<td class="aghtex-css-td aghtex-cmdleft-cell-sup aghtex-tag-script"><tex:i class="aghtex-cmdleft-sup">', sbsp.sup, '</tex:i></td>');
+          bottom_row += '<td class="aghtex-css-td aghtex-cmdleft-cell-sub aghtex-tag-script"><tex:i class="aghtex-cmdleft-sub">' + sbsp.sub + '</tex:i></td>';
           break;
       }
     }
@@ -3290,19 +3279,19 @@ new function(){
     if (agh.browser.vFx)
       // Fx では border-collapse:collapse; にすると border-bottom/right が表示されない
       // 代わりに cellSpacing="0px" を利用
-      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-cmdleft-table" cellSpacing="0px"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
+      buff.push('<table class="aghtex-css-table-inline aghtex-cmdleft-table" cellSpacing="0px"><tbody><tr class="aghtex-css-tr aghtex-cmdleft-row">');
     else if (agh.browser.vSf)
       // Sf5 では CSS2.1 table{vertical-align:baseline;} に対応していない (Cr では OK なのに。。)
-      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-cmdleft-table aghtex-cmdleft-table-sf"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
+      buff.push('<table class="aghtex-css-table-inline aghtex-cmdleft-table aghtex-cmdleft-table-sf"><tbody><tr class="aghtex-css-tr aghtex-cmdleft-row">');
     else
-      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-cmdleft-table"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
+      buff.push('<table class="aghtex-css-table-inline aghtex-cmdleft-table"><tbody><tr class="aghtex-css-tr aghtex-cmdleft-row">');
 
     _Mod.OutputStretchBracketTd(output, ltr, 2);
 
     proc_subsup();
 
     //-- [content]
-    buff.push('<', mod_core.TAG_TD, ' class="aghtex-cmdleft-cell" rowspan="2"><tex:i class="aghtex-cmdleft-tmargin"></tex:i>');
+    buff.push('<td class="aghtex-css-td aghtex-cmdleft-cell" rowspan="2"><tex:i class="aghtex-cmdleft-tmargin"></tex:i>');
 
     // setup context and read under the context
     var ctx = doc.wrap_context(doc.currentCtx);
@@ -3315,7 +3304,7 @@ new function(){
     buff.push(doc.Read(ctx));
 
     //-- [epilogue]
-    buff.push('<tex:i class="aghtex-cmdleft-bmargin"></tex:i></', mod_core.TAG_TD, '>');
+    buff.push('<tex:i class="aghtex-cmdleft-bmargin"></tex:i></td>');
 
     _Mod.OutputStretchBracketTd(output, ltr, 2);
 
@@ -3323,10 +3312,10 @@ new function(){
 
     //-- [レイアウト用の二行目がある時]
     if (bottom_row != "") {
-      buff.push('</', mod_core.TAG_TR, '><', mod_core.TAG_TR, '>', bottom_row);
+      buff.push('</tr><tr class="aghtex-css-tr">', bottom_row);
     }
 
-    buff.push('</', mod_core.TAG_TR, '></', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '>');
+    buff.push('</tr></tbody></table>');
   });
   _Ctx.AddCommandHandler("right", CH_EXIT_WITH_ERROR);
 };
@@ -4506,7 +4495,7 @@ new function(){
       var align = {l: 'left', r: 'right', c: 'center'}[argv[2]];
       if (align == null) {
         doc.currentCtx.output.error('mod:common.cmd:framebox.UnknownAlignment', {align: argv[2]}, '\\framebox (mod:common)');
-        align=center;
+        align = center;
       }
 
       doc.currentCtx.output.buff.push(
@@ -4932,11 +4921,11 @@ new function(){
   var HT_SQRT_STRETCH_IMAGE = mod_base.GetStretchImageTd("stretch_sqrt.png", 2, "√", 'sqrt');
   _Ctx.DefineCommand({"sqrt":['f;#[]>1#>2',function(doc,argv){
     var buff = doc.currentCtx.output.buff;
-    buff.push('<', mod_core.TAG_TABLE, ' cellpadding="0" class="aghtex-inline-table aghtex-sqrt-table"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' style="height:0px;">');
+    buff.push('<table class="aghtex-css-table-inline aghtex-sqrt-table" cellpadding="0"><tbody><tr class="aghtex-css-tr" style="height:0px!important;">');
     if (argv[1].length > 0)
-      buff.push('<', mod_core.TAG_TD, ' class="aghtex-sqrt-index aghtex-tag-script"><span>', argv[1], '</span></', mod_core.TAG_TD, '>');
-    buff.push(HT_SQRT_STRETCH_IMAGE, '<', mod_core.TAG_TD, ' class="aghtex-sqrt-body">', argv[2], '</', mod_core.TAG_TD, '>');
-    buff.push('</', mod_core.TAG_TR, '></', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '>');
+      buff.push('<td class="aghtex-css-td aghtex-sqrt-index-cell aghtex-tag-script"><tex:i class="aghtex-sqrt-index">', argv[1], '</tex:i></td>');
+    buff.push(HT_SQRT_STRETCH_IMAGE, '<td class="aghtex-css-td aghtex-sqrt-body">', argv[2], '</td>');
+    buff.push('</tr></tbody></table>');
   }]});
 
   //---------------------------------------------------------------------------
@@ -4948,7 +4937,7 @@ new function(){
       case "Fx-qks":
         return function(imgsrc, height, alt) {
           height = height.toString() + "ex";
-          return '<' + mod_core.TAG_TD + ' class="aghtex-underbrace-cell-i" style="width:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="height:' + height + ';width:100%;"/></' + mod_core.TAG_TD + '>';
+          return '<td class="aghtex-css-td aghtex-underbrace-cell-i" style="width:0px!important;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="height:' + height + ';width:100%;"/></td>';
         };
       case "IE-std":
         ns.expression_width = function(elem) {
@@ -4960,24 +4949,24 @@ new function(){
           height = height.toString() + "ex";
           var style = 'height:' + height + ';width:expression(' + ns.namespaceName + '.expression_width(this));';
           //var style = 'height:' + height + ';width:expression(this.parentElement.parentElement.parentElement.parentElement.clientHeight-4);';
-          return '<' + mod_core.TAG_TD + ' class="aghtex-underbrace-cell-i" style="width:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></' + mod_core.TAG_TD + '>';
+          return '<td class="aghtex-css-td aghtex-underbrace-cell-i" style="width:0px!important;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></td>';
         };
       case "Fx-std":
         return function(imgsrc, height, alt) {
           height = height.toString() + "ex";
-          //return '<' + mod_core.TAG_TD + ' style="height:' + height + ';background-image:url('+ns.BaseUrl+imgsrc+');-moz-background-size:100%;"></' + mod_core.TAG_TD + '>';
-          return '<' + mod_core.TAG_TD + ' class="aghtex-underbrace-cell-i" style="width:100%;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="height:' + height + ';width:100%;"/></' + mod_core.TAG_TD + '>';
+          //return '<td class="aghtex-css-td" style="height:' + height + '!important;background-image:url('+ns.BaseUrl+imgsrc+')!important;-moz-background-size:100%!important;"></td>';
+          return '<td class="aghtex-css-td aghtex-underbrace-cell-i" style="width:100%!important;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="height:' + height + ';width:100%;"/></td>';
         };
       case "Sf-qks": case "Sf-std": // css による switching あり
       case "Op-qks": case "Op-std": // css による switching あり
         return function(imgsrc, height, alt) {
           height = height.toString() + "ex";
-          return '<' + mod_core.TAG_TD + ' class="aghtex-underbrace-cell-i" style="height:' + height + ';background-image:url(' + ns.BaseUrl + imgsrc + ');"></' + mod_core.TAG_TD + '>';
+          return '<td class="aghtex-css-td aghtex-underbrace-cell-i" style="height:' + height + '!important;background-image:url(' + ns.BaseUrl + imgsrc + ')!important;"></td>';
         };
       default:
         return function(imgsrc,height,alt) {
           height = height.toString() + "ex";
-          return '<' + mod_core.TAG_TD + ' class="aghtex-underbrace-cell-i" style="height:' + height + ';background-image:url(' + ns.BaseUrl + imgsrc + ');background-size:100% 100%;"></' + mod_core.TAG_TD + '>';
+          return '<td class="aghtex-css-td aghtex-underbrace-cell-i" style="height:' + height + '!important;background-image:url(' + ns.BaseUrl + imgsrc + ')!important;background-size:100% 100%!important;"></td>';
         };
     }
   })();
@@ -5001,13 +4990,13 @@ new function(){
       buff.push('</tex:i>');
     } else {
       // image ~ <td>
-      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-underbrace-table"><', mod_core.TAG_TBODY, '>');
-      buff.push('<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-underbrace-cell-b">', content, '</', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>');
+      buff.push('<table class="aghtex-css-table-inline aghtex-underbrace-table"><tbody>');
+      buff.push('<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-underbrace-cell-b">', content, '</td></tr>');
       if (image)
-        buff.push('<', mod_core.TAG_TR, '>', image, '</', mod_core.TAG_TR, '>');
+        buff.push('<tr class="aghtex-css-tr">', image, '</tr>');
       if (undertxt)
-        buff.push('<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-underbrace-cell-t">', undertxt, '</', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>');
-      buff.push('</', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '>');
+        buff.push('<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-underbrace-cell-t">', undertxt, '</td></tr>');
+      buff.push('</tbody></table>');
     }
   }
   function output_overbrace(buff, content, image, overtext, className) {
@@ -5049,7 +5038,7 @@ new function(){
     if (agh.browser.vIE || agh.browser.vSf)
       image = '<img alt="\\' + info.commandName + '" class="aghtex-underbrace" src="' + ns.BaseUrl + info.imageSrc + '" />';
     else if (info.svg && /^(Sf|Fx)-/.test(ns.compatMode))
-      image = '<' + mod_core.TAG_TD + ' class="aghtex-underbrace-cell-svg">' + info.svg + '</' + mod_core.TAG_TD + '>';
+      image = '<td class="aghtex-css-td aghtex-underbrace-cell-svg">' + info.svg + '</td>';
     else
       image = GenerateHtmlUndertextImage(info.imageSrc, 1, '\\' + info.commandName);
 
@@ -5068,7 +5057,7 @@ new function(){
   };
 
   var generateSvgSource = function(svg) {
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + svg.width + ' ' + svg.height + '" preserveAspectRatio="none">'
+    return '<svg class="aghtex-css-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + svg.width + ' ' + svg.height + '" preserveAspectRatio="none">'
       + '<g transform="matrix(1 0 0 -1 0 768)"><path fill="currentColor" d="' + svg.path + '" /></g></svg>';
   };
   _Mod["svg:stretch_underbrace"] = generateSvgSource({
@@ -5133,19 +5122,19 @@ new function(){
   if (agh.browser.vIE <= 8 || ns.compatMode == "IE-qks") {
     _Ctx.DefineCommand({
       frac: ['s@;#>1#>2',
-             '<' + mod_core.TAG_TABLE + ' cellspacing="0" class="aghtex-frac-ie6-table"><' + mod_core.TAG_TBODY + '>'
-             + '<' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-frac-ie6-num">#1</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '>'
-             + '<' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-frac-ie6-den">#2</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '>'
-             + '</' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>']
+             '<table class="aghtex-css-table-inline aghtex-frac-ie6-table" cellspacing="0"><tbody>'
+             + '<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-frac-ie6-num">#1</td></tr>'
+             + '<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-frac-ie6-den">#2</td></tr>'
+             + '</tbody></table>']
     });
     _Ctx.DefineCommand({"over":['f',function(doc,argv){
       var output = doc.currentCtx.output;
       var former = output.toHtml();
       output.clear();
-      output.buff.push('<', mod_core.TAG_TABLE, ' cellspacing="0" class="aghtex-frac-ie6-table"><', mod_core.TAG_TBODY, '>');
-      output.buff.push('<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-frac-ie6-num">', former, '</', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>');
-      output.buff.push('<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-frac-ie6-den">');
-      output.appendPost('</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '></' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>');
+      output.buff.push('<table class="aghtex-css-table-inline aghtex-frac-ie6-table" cellspacing="0"><tbody>');
+      output.buff.push('<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-frac-ie6-num">', former, '</td></tr>');
+      output.buff.push('<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-frac-ie6-den">');
+      output.appendPost('</td></tr></tbody></table>');
     }]});
   } else {
     function cmd_frac(doc, argv) {
@@ -5175,17 +5164,17 @@ new function(){
     output.clear();
 
     var buff = output.buff;
-    buff.push('<', mod_core.TAG_TABLE, ' cellspacing="0" class="aghtex-inline-table"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' style="height:0px;">');
+    buff.push('<table class="aghtex-css-table-inline aghtex-genfrac-table" cellspacing="0"><tbody><tr class="aghtex-css-tr" style="height:0px!important;">');
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 
-    buff.push('<', mod_core.TAG_TD, ' class="', bar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
-    buff.push('>', former, '</', mod_core.TAG_TD, '>');
+    buff.push('<td align="center" class="aghtex-css-td ', bar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
+    buff.push('>', former, '</td>');
 
     if (right)
       mod_base.OutputStretchBracketTd(output, right, 2);
-    buff.push('</', mod_core.TAG_TR, '><', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-genfrac-center">');
-    output.appendPost('</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '></' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>');
+    buff.push('</tr><tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-genfrac-center">');
+    output.appendPost('</td></tr></tbody></table>');
   }
   _Ctx.DefineCommand({"atopwithdelims":['f;#!1#!2',function(doc,argv){
     Atop(doc.currentCtx.output, argv[1], argv[2]);
@@ -5268,9 +5257,9 @@ new function(){
 
   _Mod.CreateCommandSummation = (function InitCreateCommandSummation() {
     var _ht_strut = '<tex:i class="aghtex-sum-strut">&nbsp;</tex:i>'
-    var ht_table_beg = '<' + mod_core.TAG_TABLE + ' class="aghtex-sum-table"><' + mod_core.TAG_TBODY + '><' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-sum-m-cell"><tex:i class="aghtex-sum-m">';
-    var ht_table_mid = '</tex:i></' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '><' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-sum-d-cell"><tex:i class="aghtex-sum-d aghtex-tag-script">'+_ht_strut;
-    var ht_table_end = _ht_strut+'</tex:i></' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '></' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>';
+    var ht_table_beg = '<table class="aghtex-css-table-inline aghtex-sum-table"><tbody><tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-sum-m-cell"><tex:i class="aghtex-sum-m">';
+    var ht_table_mid = '</tex:i></td></tr><tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-sum-d-cell"><tex:i class="aghtex-sum-d aghtex-tag-script">' + _ht_strut;
+    var ht_table_end = _ht_strut + '</tex:i></td></tr></tbody></table>';
     var ht_sum_begin = '<tex:i class="aghtex-sum">';
 
     var fWA = false;
@@ -5278,7 +5267,7 @@ new function(){
       // WorkAround - 'CSS2.1 table{vertical-align:baseline;}'
       var fWA = true;
       var ht_sum_beginWA = ht_sum_begin.replace('"aghtex-sum"','"aghtex-sum aghtex-sum-WA1"');
-      ht_table_beg = ht_table_beg.replace('"aghtex-sum-table"', '"aghtex-sum-table aghtex-sum-WA1-table"');
+      ht_table_beg = ht_table_beg.replace('"aghtex-sum-table"', '"aghtex-sum-table aghtex-sum-table--WA1"');
       if (agh.browser.vIE) {
         // 何故か、空文字列がないと vertical-align:-0.02 した分だけ、Σの下端が切れてしまう。
         ht_table_mid = ht_table_mid.replace('</tex:i>', '</tex:i>\n');
@@ -5351,10 +5340,10 @@ new function(){
         break;
       case 3:
         buff.push(
-          '<', mod_core.TAG_TABLE, ' class="aghtex-inline-table aghtex-int-table"><', mod_core.TAG_TBODY, '>',
-          '<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-int-cell-sup aghtex-tag-script"><tex:i class="aghtex-int-sup">', sbsp.sup, '</tex:i></', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>',
-          '<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-int-cell-sub aghtex-tag-script"><tex:i class="aghtex-int-sub">', sbsp.sub, '</tex:i></', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>',
-          '</', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '>');
+          '<table class="aghtex-css-table-inline aghtex-int-table"><tbody>',
+          '<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-int-cell-sup aghtex-tag-script"><tex:i class="aghtex-int-sup">', sbsp.sup, '</tex:i></td></tr>',
+          '<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-int-cell-sub aghtex-tag-script"><tex:i class="aghtex-int-sub">', sbsp.sub, '</tex:i></td></tr>',
+          '</tbody></table>');
         break;
       }
     } else {
@@ -6530,17 +6519,17 @@ ns.Document.prototype.AddContentsLine = function(doc, file, type, content, id) {
   case "toc":
     var f = get_contents_file(this, DOCV_FILE_TOC);
     f.buff.push(
-      '<tex:i class="aghtex-toc-item"><', mod_core.TAG_TABLE, ' class="aghtex-toc-item-table aghtex-toc-table-', type, '"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, '>',
-      '<', mod_core.TAG_TD, ' class="aghtex-toc-cell-label">', content, '</', mod_core.TAG_TD, '>',
-      '<', mod_core.TAG_TD, ' class="aghtex-toc-cell-hfill"><tex:i class="aghtex-toc-hfill">&nbsp;</tex:i></', mod_core.TAG_TD, '>',
-      '<', mod_core.TAG_TD, ' class="aghtex-toc-cell-page">');
+      '<tex:i class="aghtex-toc-item"><table class="aghtex-css-table aghtex-toc-table aghtex-toc-table--', type, '"><tbody><tr class="aghtex-css-tr">',
+      '<td class="aghtex-css-td aghtex-toc-cell-label">', content, '</td>',
+      '<td class="aghtex-css-td aghtex-toc-cell-hfill"><tex:i class="aghtex-toc-hfill">&nbsp;</tex:i></td>',
+      '<td class="aghtex-css-td aghtex-toc-cell-page">');
 
     if (id)
       f.buff.push('<a class="aghtex-ref" href="#', id, '">', page, '</a>');
     else
       f.buff.push(page);
 
-    f.buff.push('</', mod_core.TAG_TD, '></', mod_core.TAG_TR, '></', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '></tex:i>');
+    f.buff.push('</td></tr></tbody></table></tex:i>');
     f.data.push({type: type, content: content, id: id});
     break;
   case "lof":
@@ -7079,6 +7068,12 @@ _at.toAlign = (function() {
     return "";
   };
 })();
+_at.toAlignClassName = function(ltr) {
+  if (ltr == "r") return ' aghtex-array-cell--right';
+  if (ltr == "c") return ' aghtex-array-cell--center';
+  if (ltr == "l") return ' aghtex-array-cell--left';
+  return "";
+};
 //********************************************************************
 //
 //    class Cell
@@ -7219,19 +7214,19 @@ agh.memcpy(_at.Cell.prototype, {
     var bbT = this.get_bT();
     var bbB = this.get_bB();
     if (bbL || bbR || bbT || bbB) {
-      sbuff.push('border-width:', bbT ? 1 : 0, 'px ', bbR ? 1 : 0, 'px ', bbB ? 1 : 0, 'px ', bbL ? 1 : 0, 'px;');
+      sbuff.push('border-width:', bbT ? 1 : 0, 'px ', bbR ? 1 : 0, 'px ', bbB ? 1 : 0, 'px ', bbL ? 1 : 0, 'px!important;');
       if (bbL) bL = bL.slice(0, -1);
       if (bbR) bR = bR.slice(1);
     }
 
     var pL = this.get_pL();
-    if (pL != null) sbuff.push('padding-left:', pL, ';');
+    if (pL != null) sbuff.push('padding-left:', pL, '!important;');
     var pR = this.get_pR();
-    if (pR != null) sbuff.push('padding-right:', pR, ';');
+    if (pR != null) sbuff.push('padding-right:', pR, '!important;');
     var pB = this.get_pB();
-    if (pB != null) sbuff.push('padding-bottom:', pB, ';');
+    if (pB != null) sbuff.push('padding-bottom:', pB, '!important;');
     var width = this.get_width();
-    if (width != null) sbuff.push('width:', width, ';');
+    if (width != null) sbuff.push('width:', width, '!important;');
 
     this.write_bL(output, bL, bbT, bbB);
 
@@ -7242,11 +7237,12 @@ agh.memcpy(_at.Cell.prototype, {
       var hdots_type = 'hdots';
       if (agh.browser.vIE < 10) hdots_type = 'hdots-ie9';
       content = '<tex:i class="aghtex-array-' + hdots_type + '"></tex:i>' + content;
-      className += ' aghtex-array-hdots-cell';
+      className += ' aghtex-array-cell--hdots';
     }
+    className += _at.toAlignClassName(this.get_align());
 
     var buff = output.buff;
-    buff.push(' <', mod_core.TAG_TD, ' class="', className, '"');
+    buff.push(' <td class="aghtex-css-td ', className, '"');
     buff.push(_at.toAlign(this.get_align()));
     if (tdspan > 1) buff.push(' colspan="', tdspan, '"');
     var style = sty.toHtml();
@@ -7254,7 +7250,7 @@ agh.memcpy(_at.Cell.prototype, {
       buff.push(' style="', style, '"');
       // ■ padding
     }
-    buff.push('>', content, '</', mod_core.TAG_TD, '>\n');
+    buff.push('>', content, '</td>\n');
 
     this.write_bR(output, bR, bbT, bbB);
   },
@@ -7269,16 +7265,16 @@ agh.memcpy(_at.Cell.prototype, {
       var border = bL[i];
       if (typeof border == "string" || border instanceof String) {
         buff.push(
-          ' <', mod_core.TAG_TD, ' class="aghtex-array-border-txt" style="border-width:',
-          bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px;">',
-          border, '</', mod_core.TAG_TD, '>\n');
+          ' <td class="aghtex-css-td aghtex-array-border-txt" style="border-width:',
+          bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px!important;">',
+          border, '</td>\n');
 
         bw_left = 0;
       } else if (border === 1) {
         if (bw_left > 0) {
           buff.push(
-            ' <', mod_core.TAG_TD, ' class="aghtex-array-border-zw" style="border-width:',
-            bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px;"></', mod_core.TAG_TD, '>\n');
+            ' <td class="aghtex-css-td aghtex-array-border-zw" style="border-width:',
+            bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px!important;"></td>\n');
         }
 
         bw_left = 1;
@@ -7292,8 +7288,8 @@ agh.memcpy(_at.Cell.prototype, {
 
     if (bw_left > 0) {
       buff.push(
-        ' <', mod_core.TAG_TD, ' class="aghtex-array-border-zw" style="border-width:',
-        bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px;"></', mod_core.TAG_TD, '>\n');
+        ' <td class="aghtex-css-td aghtex-array-border-zw" style="border-width:',
+        bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px!important;"></td>\n');
     }
   },
   write_bR: function(output, bR, bT, bB) {
@@ -7306,16 +7302,16 @@ agh.memcpy(_at.Cell.prototype, {
     function emit_cell() {
       if (td_content != null) {
         buff.push(
-          ' <', mod_core.TAG_TD, ' class="aghtex-array-border-txt" style="border-width:',
-          bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px;">',
-          td_content, '</', mod_core.TAG_TD, '>\n');
+          ' <td class="aghtex-css-td aghtex-array-border-txt" style="border-width:',
+          bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px!important;">',
+          td_content, '</td>\n');
 
         bw_right = 0;
         td_content = null;
       } else {
         buff.push(
-          ' <', mod_core.TAG_TD, ' class="aghtex-array-border-zw" style="border-width:',
-          bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px;"></', mod_core.TAG_TD, '>\n');
+          ' <td class="aghtex-css-td aghtex-array-border-zw" style="border-width:',
+          bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px!important;"></td>\n');
 
         bw_right = 0;
       }
@@ -7849,9 +7845,9 @@ agh.memcpy(_at.Table.prototype, {
     // header
     var buff = output.buff;
     if (this.param_bracket)
-      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-array-table aghtex-array-valign-', this.valign, ' aghtex-array-lrpad"><', mod_core.TAG_TBODY, '>\n');
+      buff.push('<table class="aghtex-css-table-inline aghtex-array-table aghtex-array-valign-', this.valign, ' aghtex-array-lrpad"><tbody>\n');
     else
-      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-array-table aghtex-array-valign-', this.valign, '"><', mod_core.TAG_TBODY, '>\n');
+      buff.push('<table class="aghtex-css-table-inline aghtex-array-table aghtex-array-valign-', this.valign, '"><tbody>\n');
 
     // thead (colgroups or dummy-row)
     this.write_thead(output);
@@ -7859,47 +7855,47 @@ agh.memcpy(_at.Table.prototype, {
     // enclosing brackets
     if (this.param_bracket) {
       var trCount = 1 + this.getHtmlRowCount();
-      buff.push('<', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
+      buff.push('<tr class="aghtex-css-tr aghtex-cmdleft-row">');
       mod_base.OutputStretchBracketTd(output, this.param_bracket[0], trCount);
-      buff.push('\n <', mod_core.TAG_TD, ' colspan="', tdc_total, '"></', mod_core.TAG_TD, '>\n');
+      buff.push('\n <td colspan="', tdc_total, '" class="aghtex-css-td"></td>\n');
       mod_base.OutputStretchBracketTd(output, this.param_bracket[1], trCount);
-      buff.push('\n</', mod_core.TAG_TR, '>\n');
+      buff.push('\n</tr>\n');
     }
 
     // content
     this.write_bT(output, tdc_total);
     for (var x = 0; x < this.xM; x++) {
       if (x == 0)
-        buff.push('<', mod_core.TAG_TR, ' class="aghtex-array-first-row">\n');
+        buff.push('<tr class="aghtex-css-tr aghtex-array-first-row">\n');
       else if (x == this.xM - 1)
-        buff.push('<', mod_core.TAG_TR, ' class="aghtex-array-last-row">\n');
+        buff.push('<tr class="aghtex-css-tr aghtex-array-last-row">\n');
       else
-        buff.push('<', mod_core.TAG_TR, '>\n');
+        buff.push('<tr class="aghtex-css-tr">\n');
 
       for (var y = 0; y < this.yM; y++) {
         if (this.cells[x][y])
           this.cells[x][y].write(output);
       }
-      buff.push('</', mod_core.TAG_TR, '>\n');
+      buff.push('</tr>\n');
 
       this.write_bB(output, tdc_total, x);
     }
-    buff.push('</', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '>');
+    buff.push('</tbody></table>');
   },
   write_thead: function(output) {
     var buff = output.buff;
 
     if (agh.browser.vFx) {
-      buff.push('<', mod_core.TAG_TR, ' class="aghtex-array-fxdummy-row">\n');
+      buff.push('<tr class="aghtex-css-tr aghtex-array-fxdummy-row">\n');
       for (var y = 0; y < this.yM; y++) {
         var col = this.col(y);
         buff.push(' ');
-        for (var i = 0; i < col.tdcL; i++) buff.push('<', mod_core.TAG_TD, ' class="aghtex-array-fxdummy-border" />');
-        buff.push('<', mod_core.TAG_TD, ' class="aghtex-array-fxdummy-cell" style="width:auto;"><div>.</div></', mod_core.TAG_TD, '>');
-        for (var i = 0; i < col.tdcR; i++) buff.push('<', mod_core.TAG_TD, ' class="aghtex-array-fxdummy-border" />');
+        for (var i = 0; i < col.tdcL; i++) buff.push('<td class="aghtex-css-td aghtex-array-fxdummy-border" />');
+        buff.push('<td class="aghtex-css-td aghtex-array-fxdummy-cell" style="width:auto!important;"><tex:i class="aghtex-array-fxdummy-content">.</tex:i></td>');
+        for (var i = 0; i < col.tdcR; i++) buff.push('<td class="aghtex-css-td aghtex-array-fxdummy-border" />');
         buff.push('\n');
       }
-      buff.push('</', mod_core.TAG_TR, '>\n');
+      buff.push('</tr>\n');
     }
   },
   write_bT: function(output, tdc_total) {
@@ -7907,16 +7903,16 @@ agh.memcpy(_at.Table.prototype, {
     var h = this.getHorizontalLines(0) - 1;
     while (h-- > 0) {
       output.buff.push(
-        '<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-array-hline-t" colspan="', tdc_total,
-        '"><tex:i class="aghtex-array-hline-dummy">&nbsp;</tex:i></', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>\n');
+        '<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-array-hline-t" colspan="', tdc_total,
+        '"><tex:i class="aghtex-array-hline-dummy">&nbsp;</tex:i></td></tr>\n');
     }
   },
   write_bB: function(output, tdc_total, x) {
     var h = this.getHorizontalLines(x + 1) - 1;
     while (h-- > 0) {
       output.buff.push(
-        '<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-array-hline-b" colspan="', tdc_total,
-        '"><tex:i class="aghtex-array-hline-dummy">&nbsp;</tex:i></', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>\n');
+        '<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-array-hline-b" colspan="', tdc_total,
+        '"><tex:i class="aghtex-array-hline-dummy">&nbsp;</tex:i></td></tr>\n');
     }
   },
   "0": 0
@@ -9365,10 +9361,10 @@ new function(){
   var cfrac_html = null;
   if (agh.browser.vIE) {
     cfrac_html = (
-      '<' + mod_core.TAG_TABLE + ' cellspacing="0" class="aghtex-frac-ie6-table"><' + mod_core.TAG_TBODY + '>'
-        + '<' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-frac-ie6-num" style="text-align:$!important;">$</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '>'
-        + '<' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-frac-ie6-den" style="text-align:$!important;">$</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '>'
-        + '</' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>'
+      '<table class="aghtex-css-table-inline aghtex-frac-ie6-table" cellspacing="0"><tbody>'
+        + '<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-frac-ie6-num" style="text-align:$!important;">$</td></tr>'
+        + '<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-frac-ie6-den" style="text-align:$!important;">$</td></tr>'
+        + '</tbody></table>'
     ).split(/\$/g);
   } else {
     cfrac_html = (
@@ -9409,20 +9405,20 @@ new function(){
 
     var output = doc.currentCtx.output;
     var buff = output.buff;
-    buff.push('<', mod_core.TAG_TABLE, ' cellspacing="0" class="aghtex-inline-table"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
+    buff.push('<table class="aghtex-css-table-inline aghtex-genfrac-table" cellspacing="0"><tbody><tr class="aghtex-css-tr aghtex-cmdleft-row">');
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 
     var hasBar = barWidth && barWidth;
-    buff.push('<', mod_core.TAG_TD, ' align="center" class="', hasBar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
+    buff.push('<td align="center" class="aghtex-css-td ', hasBar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
     if (hasBar && barWidth !== '1px')
       buff.push(' style="border-bottom-width:', barWidth, ';"');
-    buff.push('>', htNumerator, '</', mod_core.TAG_TD, '>');
+    buff.push('>', htNumerator, '</td>');
 
     if (right)
       mod_base.OutputStretchBracketTd(output, right, 2);
-    buff.push('</', mod_core.TAG_TR, '><', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' align="center" class="aghtex-genfrac-center">', htDenominator, '</', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>');
-    buff.push('</', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '>');
+    buff.push('</tr><tr class="aghtex-css-tr"><td align="center" class="aghtex-css-td aghtex-genfrac-center">', htDenominator, '</td></tr>');
+    buff.push('</tbody></table>');
   }
 
   _Ctx.DefineCommand({
