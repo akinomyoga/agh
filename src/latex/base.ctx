@@ -866,7 +866,7 @@ context "mode.math" new("global") {
       sbsp2 = doc.GetSubSup();
       doc.currentCtx.BREAK = true;
     });
-    var coantent = doc.Read(ctx);
+    var content = doc.Read(ctx);
 
     _Mod.OutputBracketedContent(output, content, ltr1, ltr2, sbsp1, sbsp2);
   });

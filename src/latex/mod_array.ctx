@@ -1056,6 +1056,7 @@ _Mod.ArrayEnvironmentDefaultCatcher = function(doc, ctx) {
 };
 
 _Mod.ArrayEnvironmentMathEpilogue = function(doc, ctx) {
+  var table = ctx.ENVDATA;
   table.setSubSup(doc.GetSubSup());
   _Mod.ArrayEnvironmentDefaultEpilogue(doc, ctx);
 }

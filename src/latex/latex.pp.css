@@ -1032,13 +1032,13 @@ tex\:i.aghtex-overbrace-u { display: block; margin-right: -1ex; margin-left: -1e
 tex\:i.aghtex-overbrace-i { display: block; position: relative; top: 0; left: 0; height: 1ex; }
    img.aghtex-overbrace   { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 tex\:i.aghtex-overbrace-b { display: inline-block; vertical-align: baseline; }
-/*%%if mode=="Trident" (*/
+/*%%if mode=="Trident" */
   /* IE の後方互換モードでは上が期待通りに動かない */
   tex\:i.aghtex-overbrace-t,
   tex\:i.aghtex-overbrace-u,
   tex\:i.aghtex-overbrace-i { width: expression(this.parentElement.clientWidth-2); } /* -2 にしないと横に広がる */
      img.aghtex-overbrace   { width: expression(this.parentElement.clientWidth); }
-/*%%)*/
+/*%%end*/
 
 /*%%if mode == "Gecko" | mode == "WebKit" */
 td.aghtex-underbrace-cell-svg { position: relative!important; height: 1ex!important; }
@@ -1052,7 +1052,12 @@ tex\:i.aghtex-overbrace-widetilde>tex\:i.aghtex-overbrace-i { height: 0.22em; }
 
 /*------------------------------------------------------------------*/
 /* 根号 */
-table.aghtex-sqrt-table { vertical-align: middle!important; height: 1em!important; }
+table.aghtex-sqrt-table {
+  height: 1em!important;
+/*%%if mode=="Trident" */
+  vertical-align: middle!important;
+/*%%end*/
+}
 td.aghtex-sqrt-index-cell {
   vertical-align: top!important; font-size: 80%!important;
 }
