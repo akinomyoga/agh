@@ -19,7 +19,7 @@ cat $src|awk '
     #close(file);
   }
 
-  /^\s*src\:url\('$SQ'[a-zA-Z_0-9]+\.woff'$SQ'\)\s*format\("woff"\)\s*;\s*$/{
+  /^\s*src:url\('$SQ'[a-zA-Z_0-9]+\.woff'$SQ'\)\s*format\("woff"\)\s*;\s*$/{
     if(match($0,/([a-zA-Z_0-9]+\.woff)/,caps)>0){
       printf("  src:url('$SQ'");
       print_woff_base64("'$dir'" caps[1]);

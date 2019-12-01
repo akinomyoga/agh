@@ -374,7 +374,7 @@ context "pkg:amsmath/mode.math" new() {
   var cfrac_html = null;
   if (agh.browser.vIE) {
     cfrac_html = (
-      '<' + mod_core.TAG_TABLE + ' cellspacing="0" class="aghtex-frac-ie6-table"><' + mod_core.TAG_TBODY + '>'
+      '<' + mod_core.TAG_TABLE + ' class="aghtex-css-table-inline aghtex-frac-ie6-table" cellspacing="0"><' + mod_core.TAG_TBODY + '>'
         + '<' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-frac-ie6-num" style="text-align:$!important;">$</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '>'
         + '<' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-frac-ie6-den" style="text-align:$!important;">$</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '>'
         + '</' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>'
@@ -418,7 +418,7 @@ context "pkg:amsmath/mode.math" new() {
 
     var output = doc.currentCtx.output;
     var buff = output.buff;
-    buff.push('<', mod_core.TAG_TABLE, ' cellspacing="0" class="aghtex-inline-table"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
+    buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-genfrac-table" cellspacing="0"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 

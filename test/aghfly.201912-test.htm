@@ -11,6 +11,8 @@
 </script>
 <style type="text/css">
 tex\:table.aghfly-test1 tex\:td { border: 1px solid black; }
+.test1-hello { color: red!important; }
+.test2-monospace { font: normal 1.0em/1 'MS Gothic'!important; }
 </style>
 </head>
 <body class="aghfly-inline-math">
@@ -50,10 +52,22 @@ tex\:table.aghfly-test1 tex\:td { border: 1px solid black; }
 </tex:tbody>
 </tex:table>
 <div class="aghtex">
-  3 \left(\int_{-\infty}^\infty dx \frac1{2+\frac1{3+x}} + 2\right) + \left(\right).
+  X &= 3 \left(\int_{-\infty}^\infty dx \frac1{2+\frac1{3+x}} + 2\right) + \left(\right), \\
+  Y &= \alpha \begin{pmatrix}a & b & c \\ d & e & f \\ g & h & i \end{pmatrix}
 </div>
 
-<h2>Test for negative vspace</h2>
+<h2>Test CSS</h2>
+<p>+ <span class="test1-hello" style="color:green;">Is this Green?</span></p>
+<p>+ <span class="test2-monospace">Is this Bold?</span>
+    <span class="test2-monospace" style="font:bold 1.2em/1 'MS Mincho';">Is this Bold?</span>
+    <span class="test2-monospace" style="font-weight:bold;font-family: MS Mincho;">Is this Bold?</span>
+    <span style="font-weight:bold;font-family:MS Mincho;">Bold Serif</span></p>
+<table>
+<tbody>
+<tr><th>style</th><th>value</th></tr>
+<tr><td>color</td><td>test</td></tr>
+</tbody>
+</table>
 
 </body>
 </html>

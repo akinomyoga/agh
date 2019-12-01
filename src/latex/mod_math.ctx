@@ -304,7 +304,7 @@ context "mode.math" {
   var HT_SQRT_STRETCH_IMAGE = mod_base.GetStretchImageTd("stretch_sqrt.png", 2, "√", 'sqrt');
   command f\sqrt(#[]>1#>2) {
     var buff = doc.currentCtx.output.buff;
-    buff.push('<', mod_core.TAG_TABLE, ' cellpadding="0" class="aghtex-inline-table aghtex-sqrt-table"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' style="height:0px;">');
+    buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-sqrt-table" cellpadding="0"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' style="height:0px;">');
     if (argv[1].length > 0)
       buff.push('<', mod_core.TAG_TD, ' class="aghtex-sqrt-index aghtex-tag-script"><span>', argv[1], '</span></', mod_core.TAG_TD, '>');
     buff.push(HT_SQRT_STRETCH_IMAGE, '<', mod_core.TAG_TD, ' class="aghtex-sqrt-body">', argv[2], '</', mod_core.TAG_TD, '>');
@@ -373,7 +373,7 @@ context "mode.math" {
       buff.push('</tex:i>');
     } else {
       // image ~ <td>
-      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-underbrace-table"><', mod_core.TAG_TBODY, '>');
+      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-underbrace-table"><', mod_core.TAG_TBODY, '>');
       buff.push('<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-underbrace-cell-b">', content, '</', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>');
       if (image)
         buff.push('<', mod_core.TAG_TR, '>', image, '</', mod_core.TAG_TR, '>');
@@ -505,7 +505,7 @@ context "mode.math" {
   if (agh.browser.vIE <= 8 || ns.compatMode == "IE-qks") {
     _Ctx.DefineCommand({
       frac: ['s@;#>1#>2',
-             '<' + mod_core.TAG_TABLE + ' cellspacing="0" class="aghtex-frac-ie6-table"><' + mod_core.TAG_TBODY + '>'
+             '<' + mod_core.TAG_TABLE + ' class="aghtex-css-table-inline aghtex-frac-ie6-table" cellspacing="0"><' + mod_core.TAG_TBODY + '>'
              + '<' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-frac-ie6-num">#1</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '>'
              + '<' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-frac-ie6-den">#2</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '>'
              + '</' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>']
@@ -514,7 +514,7 @@ context "mode.math" {
       var output = doc.currentCtx.output;
       var former = output.toHtml();
       output.clear();
-      output.buff.push('<', mod_core.TAG_TABLE, ' cellspacing="0" class="aghtex-frac-ie6-table"><', mod_core.TAG_TBODY, '>');
+      output.buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-frac-ie6-table" cellspacing="0"><', mod_core.TAG_TBODY, '>');
       output.buff.push('<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-frac-ie6-num">', former, '</', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>');
       output.buff.push('<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-frac-ie6-den">');
       output.appendPost('</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '></' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>');
@@ -547,7 +547,7 @@ context "mode.math" {
     output.clear();
 
     var buff = output.buff;
-    buff.push('<', mod_core.TAG_TABLE, ' cellspacing="0" class="aghtex-inline-table"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' style="height:0px;">');
+    buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-genfrac-table" cellspacing="0"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' style="height:0px;">');
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 
@@ -640,9 +640,9 @@ context "mode.math" {
 
   _Mod.CreateCommandSummation = (function InitCreateCommandSummation() {
     var _ht_strut = '<tex:i class="aghtex-sum-strut">&nbsp;</tex:i>'
-    var ht_table_beg = '<' + mod_core.TAG_TABLE + ' class="aghtex-sum-table"><' + mod_core.TAG_TBODY + '><' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-sum-m-cell"><tex:i class="aghtex-sum-m">';
-    var ht_table_mid = '</tex:i></' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '><' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-sum-d-cell"><tex:i class="aghtex-sum-d aghtex-tag-script">'+_ht_strut;
-    var ht_table_end = _ht_strut+'</tex:i></' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '></' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>';
+    var ht_table_beg = '<' + mod_core.TAG_TABLE + ' class="aghtex-css-table-inline aghtex-sum-table"><' + mod_core.TAG_TBODY + '><' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-sum-m-cell"><tex:i class="aghtex-sum-m">';
+    var ht_table_mid = '</tex:i></' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '><' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-sum-d-cell"><tex:i class="aghtex-sum-d aghtex-tag-script">' + _ht_strut;
+    var ht_table_end = _ht_strut + '</tex:i></' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '></' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>';
     var ht_sum_begin = '<tex:i class="aghtex-sum">';
 
     var fWA = false;
@@ -650,7 +650,7 @@ context "mode.math" {
       // WorkAround - 'CSS2.1 table{vertical-align:baseline;}'
       var fWA = true;
       var ht_sum_beginWA = ht_sum_begin.replace('"aghtex-sum"','"aghtex-sum aghtex-sum-WA1"');
-      ht_table_beg = ht_table_beg.replace('"aghtex-sum-table"', '"aghtex-sum-table aghtex-sum-WA1-table"');
+      ht_table_beg = ht_table_beg.replace('"aghtex-sum-table"', '"aghtex-sum-table aghtex-sum-table--WA1"');
       if (agh.browser.vIE) {
         // 何故か、空文字列がないと vertical-align:-0.02 した分だけ、Σの下端が切れてしまう。
         ht_table_mid = ht_table_mid.replace('</tex:i>', '</tex:i>\n');
@@ -723,7 +723,7 @@ context "mode.math" {
         break;
       case 3:
         buff.push(
-          '<', mod_core.TAG_TABLE, ' class="aghtex-inline-table aghtex-int-table"><', mod_core.TAG_TBODY, '>',
+          '<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-int-table"><', mod_core.TAG_TBODY, '>',
           '<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-int-cell-sup aghtex-tag-script"><tex:i class="aghtex-int-sup">', sbsp.sup, '</tex:i></', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>',
           '<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-int-cell-sub aghtex-tag-script"><tex:i class="aghtex-int-sub">', sbsp.sub, '</tex:i></', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>',
           '</', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '>');

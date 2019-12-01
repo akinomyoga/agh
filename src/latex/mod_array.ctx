@@ -846,9 +846,9 @@ agh.memcpy(_at.Table.prototype, {
     // header
     var buff = output.buff;
     if (this.param_bracket)
-      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-array-table aghtex-array-valign-', this.valign, ' aghtex-array-lrpad"><', mod_core.TAG_TBODY, '>\n');
+      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-array-table aghtex-array-valign-', this.valign, ' aghtex-array-lrpad"><', mod_core.TAG_TBODY, '>\n');
     else
-      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-array-table aghtex-array-valign-', this.valign, '"><', mod_core.TAG_TBODY, '>\n');
+      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-array-table aghtex-array-valign-', this.valign, '"><', mod_core.TAG_TBODY, '>\n');
 
     // thead (colgroups or dummy-row)
     this.write_thead(output);

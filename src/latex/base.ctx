@@ -823,12 +823,12 @@ context "mode.math" new("global") {
     if (agh.browser.vFx)
       // Fx では border-collapse:collapse; にすると border-bottom/right が表示されない
       // 代わりに cellSpacing="0px" を利用
-      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-cmdleft-table" cellSpacing="0px"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
+      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-cmdleft-table" cellSpacing="0px"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
     else if (agh.browser.vSf)
       // Sf5 では CSS2.1 table{vertical-align:baseline;} に対応していない (Cr では OK なのに。。)
-      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-cmdleft-table aghtex-cmdleft-table-sf"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
+      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-cmdleft-table aghtex-cmdleft-table-sf"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
     else
-      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-cmdleft-table"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
+      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-cmdleft-table"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
 
     _Mod.OutputStretchBracketTd(output, ltr, 2);
 

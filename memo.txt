@@ -591,6 +591,109 @@ latex
     取り敢えず現在のところは WebKit だけで修正を行っている。
     Fx でも動作確認した。Fx でも tex:* を使う事にした。
 
+    →実際に動かしてみるとどうも変である。
+      期待通りになるものとならない物がある。
+      tex:table を table にするだけで正しく表示できる様になるので、
+      問題は書き換えの失敗によって起こった物ではないと判断できる。
+
+      うーん。colspan, rowspan, align が効いていない、ということか。
+      調べてみると確かに tex:table を使っていると rowspan, colspan は使えないという事が話題になっている。
+      https://qiita.com/yosukesannohe/items/b6eda6a7ce6cc9877266
+      https://www.doe.co.jp/hp-tips/css3/css-table-display%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E8%A6%8B%E7%9B%B4%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B/
+      https://www.onenaught.com/posts/201/use-css-displaytable-for-layout
+      https://stackoverflow.com/questions/9277661/colspan-rowspan-for-elements-whose-display-is-set-to-table-cell
+
+    うーん。tex:table が使えないとなると他に方法はあるだろうか。
+    巧妙に設定する事で何とか親ページのスタイルが適用されない様にしたい。
+
+    a 例えば !important を全てに設定する? → style="" で指定する時に上書きできなくなる。
+      style="" で指定するときにも全て !important をつけるという手もあるがそれは汚い。
+
+    b 或いは優先度の高い CSS selector で上書きするか。
+      これは元のウェブサイトがもっと強い設定をしていた場合に勝てないし、
+      現在の class 指定による設定よりも強いと上書きされてしまう。
+
+      と思ったが CSS の点数を見るとクラス属性による指定でない限りはそんなに強くない?
+      と思ったが親要素にクラス指定があるとやはり駄目なのでは…。
+
+    c うーん。親ページの table に対する指定で :not(.aghtex) という物を付加する?
+      そして生成時には必ず class="aghtex" を含める様にする?
+
+      然し、親ページのCSS指定を書き換える方法は果たして存在するのか…。
+      どうも他のスクリプトによって生成された style sheet については、
+      ルールを後で削除する事ができない様になっている気がする。
+
+      何れにしても今後 aghtex を広める為には、親ページの CSS を変更してなんとかする、
+      という方法は取りづらいのは確かである。という事を考えると、
+      最終的には rowspan や colspan を使わずに実行する方法を考える事になるのだろうか。。
+      然し…。うーん。全体を囲む () の場合には rowspan colspan は使わなくて良いが。。
+      うーん。multicol だとかを実装するにはやはり rowspan colspan は必須である。
+
+    要するに他から干渉されないルールを作成する為には。
+
+    1 一つの table に一種類のセレクタしか適用されない様にする。
+      複数のセレクタによって上書きされたりする設計になっていると、
+      !important 等で強制させる事ができなくなってしまうので。
+      或いは何がどうなっているのか分からなくなってしまう元である。
+
+      うーん。然し。同じ詳細度のセレクタであれば複数あっても良いのでは?
+      と思ったが。考えてみると何かの入れ子になっている場合には
+      別の規則を適用する等のルールが色々ある気がする。
+      それらを考え合わせると難しい。。。
+      後 !important は style="" よりも優先されるのだろうか??
+      なんと !important は style="" よりも優先される。。
+      従って !important はまあ使えないなという感じがする。
+
+
+      と思ったが、親ドキュメントが #content ... table の様に指定していたらどうなるのか。
+      対抗する為には aghtex の側でも同様に何らかの id を設定するか、
+      或いは !important を使うしかない。
+
+      a id を設定するとしても CSS に記録する為には名前を一つ決めなければならない。
+        という事は id は一か所にしか設定することができない。
+          (実は複数個所に設定しても有効になるという説もあるが…
+          やはり調べるとそういう状況はあってはならない事になっているので、
+          振る舞いとしては規定されていない気がする。
+          だとすれば今動いてもいつ動かなくなるか分からないので同じ id を複数の要素に指定する
+          という事は考えない事にする。)
+        そうすると html か body に設定しなければならないが、
+        これらに既に親ページの側で別の id が付けられていた場合に困る。
+        元々あった id を書き換えてしまってはやはり問題が発生する。
+
+      b その様に考えると !important に頼るしかない気がしてくる。
+        所で !important を適用した場合、子要素の属性への継承も強制される
+        等という事はない…と思って良いだろうか。もしそうでないと !important は危険すぎて使う事ができない。
+        →試してみたところ子要素は子要素でちゃんと自身に適用されるセレクタだけで決定する様だ。
+        親の値が !important であっても強制的に inherit するという事はない。なので安心して良い。
+
+      c 或いは親ドキュメントで #id を用いたセレクタで table の振る舞いが書き換えられている時は
+        諦めるという手もある。もし完全に対応する事ができないのであれば中途半端なことをするよりは
+        諦めた方がましなのである。
+
+      取り敢えず table について !important で指定する事にした。
+      指定が複雑になっているので整理する事にする。
+
+      - aghtex-cmdleft-table
+      - aghtex-array-table
+      - aghtex-inline-table aghtex-sqrt-table
+      - aghtex-underbrace-table
+      - aghtex-frac-ie6-table (IE)
+      - aghtex-sum-table
+      - aghtex-inline-table
+      - aghtex-inline-table aghtex-int-table
+      - aghtex-toc-item-table
+
+      display, white-space について確認する。
+      IE だけ inline で他は inline-table。
+      Op だけ nowrap を指定する。
+      - cmdleft, inline, ie6, underbrace もそう。
+      - sum は全て inline-table。 nowrap は指定しない。
+        →これは IE だけ inline にして良い。
+        Op も nowrap を指定して良い気がする。
+      - array は nowrap を指定していない。と思ったら指定していた。
+      - toc-item に関しては display も norwap も指定していないのである。
+
+
 2018-02-06
 
   * 2016-06-10 aghfonts の取り込みとツール群の確認
