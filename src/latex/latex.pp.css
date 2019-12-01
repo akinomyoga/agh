@@ -72,7 +72,7 @@ table.aghtex-css-table-inline {
 
   font: inherit!important;
   color: inherit!important; background-color: inherit!important;
-  white-space: normal!important; text-align: inherit!important;
+  white-space: inherit!important; text-align: inherit!important;
   overflow: visible!important;
 }
 table.aghtex-css-table-inline {
@@ -98,7 +98,7 @@ td.aghtex-css-td {
 
   font: inherit!important;
   text-align: inherit!important;
-  white-space: normal!important;
+  white-space: inherit!important;
 
 /*%%if mode=="WebKit"*/
   -webkit-background-size: auto!important;
@@ -106,6 +106,17 @@ td.aghtex-css-td {
 /*%%elif mode=="Opera"*/
   -o-background-size: auto!important;
 /*%%end*/
+}
+
+td.aghtex-css-tr {
+  visibility: inherit!important;
+  width: auto!important; height: auto!important;
+  border: 0 solid $"borderColor:-inherit"!important;
+  padding: 0!important; margin: 0!important;
+  background: inherit!important;
+  font: inherit!important;
+  text-align: inherit!important;
+  white-space: inherit!important;
 }
 
 svg.aghtex-css-svg {
@@ -874,7 +885,7 @@ table.aghtex-cmdleft-table {
 table.aghtex-cmdleft-table-sf { vertical-align: middle!important; }
 /*%%)*/
 
-.aghtex-cmdleft-row { height: 0px; }
+tr.aghtex-cmdleft-row { height: 0px!important; }
 td.aghtex-cmdleft-cell { vertical-align: baseline!important; height: 1em!important; min-height: 1em!important; }
 
 /*%%if mode!="Trident"*/
@@ -1259,8 +1270,8 @@ td.aghtex-array-cell {
   border-width: 0px!important; border-style: solid!important;
   border-color: currentColor!important;
   padding: 0.2ex .9ex!important; vertical-align: baseline!important; }
-.aghtex-array-first-row>td.aghtex-array-cell { padding-top: 0!important; }
-.aghtex-array-last-row>td.aghtex-array-cell { padding-bottom: 0!important; }
+tr.aghtex-array-first-row>td.aghtex-array-cell { padding-top: 0!important; }
+tr.aghtex-array-last-row>td.aghtex-array-cell { padding-bottom: 0!important; }
 
 
 td.aghtex-array-cell--hdots {
@@ -1299,7 +1310,7 @@ tex\:i.aghtex-array-hline-dummy {
 
 
 /*%%if mode=="Gecko" (*/
-  .aghtex-array-fxdummy-row { visibility: hidden; }
+  tr.aghtex-array-fxdummy-row { visibility: hidden; }
   td.aghtex-array-fxdummy-border,
   td.aghtex-array-fxdummy-cell {
     padding: 0px!important; border-width: 0px!important; height: 0px!important;

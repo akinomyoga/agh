@@ -705,9 +705,11 @@ latex
 
     * done: span.aghtex-cmdleft-sup の類は tex:i に置き換える。
 
-    * svg?
+    * done: svg?
       position, left, top, width, height
       これは親ドキュメントで勝手に設定されるとは思えないが…。
+
+    * tr: height visibility
 
 2018-02-06
 
