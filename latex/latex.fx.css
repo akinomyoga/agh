@@ -504,13 +504,14 @@ tex\:math.aghtex-flalign { text-align: left; }
     width: 1.0ex!important; height: 100%!important; position: relative!important; }
   td.aghtex-stretch-svg>svg {
     width: 1.0ex!important; height: 100%!important; position: absolute!important; left: 0!important; top: 0!important; }
+  td.aghtex-stretch-svg>tex\:i { display: block; width: 1.0ex!important; height: 0!important; }
 
-  td.aghtex-stretch-svg-lparen, td.aghtex-stretch-svg-lparen>svg,
-  td.aghtex-stretch-svg-rparen, td.aghtex-stretch-svg-rparen>svg { width: 1.0ex!important; }
-  td.aghtex-stretch-svg-lbrace, td.aghtex-stretch-svg-lbrace>svg,
-  td.aghtex-stretch-svg-rbrace, td.aghtex-stretch-svg-rbrace>svg { width: 1.2ex!important; }
-  td.aghtex-stretch-svg-langle, td.aghtex-stretch-svg-langle>svg,
-  td.aghtex-stretch-svg-rangle, td.aghtex-stretch-svg-rangle>svg { width: 1.0ex!important; }
+  td.aghtex-stretch-svg-lparen, td.aghtex-stretch-svg-lparen>*,
+  td.aghtex-stretch-svg-rparen, td.aghtex-stretch-svg-rparen>* { width: 1.0ex!important; }
+  td.aghtex-stretch-svg-lbrace, td.aghtex-stretch-svg-lbrace>*,
+  td.aghtex-stretch-svg-rbrace, td.aghtex-stretch-svg-rbrace>* { width: 1.2ex!important; }
+  td.aghtex-stretch-svg-langle, td.aghtex-stretch-svg-langle>*,
+  td.aghtex-stretch-svg-rangle, td.aghtex-stretch-svg-rangle>* { width: 1.0ex!important; }
   td.aghtex-stretch-svg-sqrt>svg { left: 0.2px!important; top: -1.0px!important; }
   td.aghtex-stretch-svg-sqrt, td.aghtex-stretch-svg-sqrt>svg { width: 2.0ex!important; }
 
@@ -595,9 +596,11 @@ tr.aghtex-cmdleft-row { height: 0px!important; }
 td.aghtex-cmdleft-cell { vertical-align: baseline!important; height: 1em!important; min-height: 1em!important; }
 
   /* 不格好なので括弧の高さを少し小さくする */
+  table.aghtex-genfrac-table,
   table.aghtex-cmdleft-table { margin-top: 0.2em!important; margin-bottom: 0.2em!important; }
-  .aghtex-cmdleft-tmargin { display: block; margin-bottom: -0.2em; }
-  .aghtex-cmdleft-bmargin { display: block; margin-top: -0.2em; }
+  tex\:i.aghtex-cmdleft-tmargin { display: block; height: 0; margin-bottom: -0.2em; }
+  tex\:i.aghtex-cmdleft-bmargin { display: block; height: 0; margin-top: -0.2em; }
+  tex\:i.aghtex-cmdleft-vspan { display: inline-block; height: 1em; width: 0; vertical-align: -0.3em; }
 
 td.aghtex-left-kaku ,
 td.aghtex-right-kaku,
@@ -617,6 +620,7 @@ td.aghtex-right-flor { border-width: 0px 1px 1px 0px!important; }
 td.aghtex-left-vert  { border-width: 0px 1px 0px 1px!important; width: 1px!important; font-size: 1px!important; }
 td.aghtex-left-pipe  { border-width: 0px 0px 0px 1px!important; width: 1px!important; font-size: 1px!important; }
 td.aghtex-right-pipe { border-width: 0px 1px 0px 0px!important; width: 1px!important; font-size: 1px!important; }
+tex\:i.aghtex-left-span { display: block; width: 1px; }
 
 td.aghtex-cmdleft-cell-sup { font-size: 75%!important; vertical-align: top!important; }
   tex\:i.aghtex-cmdleft-sup { position: relative; top: -0.7em; margin-bottom: -0.7em; display: block; }
@@ -767,17 +771,20 @@ tex\:sum2d { display: block; margin: 0; font-size: 80%; }
 tex\:sum2m { display: block; margin: 0; font-size: 180%; line-height: 0.70em; }
 
 tex\:i.aghtex-sum { display: inline-block; text-align: center; padding: 0 0.2ex; }
-tex\:i.aghtex-sum-u { display: block; font-size: 80%; position: relative; top: 0em; margin-top: -0.05em; }
-table.aghtex-sum-table { text-align: center!important; margin-bottom: -0.25em!important; }
+tex\:i.aghtex-sum-u { display: block; font-size: 70%; position: relative; top: 0em; margin-top: -0.05em; }
+table.aghtex-sum-table {
+  text-align: center!important; margin-bottom: -0.10em!important;
+  vertical-align: -0.15em!important;
+}
 td.aghtex-sum-m-cell {
-  font-size: 125%!important; vertical-align: baseline!important;
+  font-size: 140%!important; vertical-align: baseline!important;
   font-family: aghtex_mathrm,aghtex_roman,aghtex_mincho,serif!important; }
-tex\:i.aghtex-sum-m { display: block; line-height: 1; vertical-align: -0.02em; }
+tex\:i.aghtex-sum-m { display: block; line-height: 1; }
 tex\:i.aghtex-sum-m1 {
-  display: block; font-size: 125%; vertical-align: baseline;
+  display: block; font-size: 140%; vertical-align: baseline;
   font-family: aghtex_mathrm,aghtex_roman,aghtex_mincho,serif; }
 tex\:i.aghtex-sum-m2 { line-height: 1; vertical-align: -0.02em; }
-td.aghtex-sum-d-cell { font-size: 80%!important; }
+td.aghtex-sum-d-cell { font-size: 70%!important; }
 tex\:i.aghtex-sum-d { position: relative; top: -0.1em; }
 tex\:i.aghtex-sum-strut { display: inline-block; overflow: hidden; width: 1px; line-height: 1em; }
 tex\:i.aghtex-sum-WA1 { vertical-align: -0.5em; }

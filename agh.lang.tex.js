@@ -3085,7 +3085,7 @@ new function(){
   //============================================================
   var stretchImg = (function() {
     var stretchSvgHead = '<svg class="aghtex-css-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 1024" preserveAspectRatio="none"><g transform="matrix(1 0 0 -1 0 768)"><path fill="currentColor" d="';
-    var stretchSvgTail = '" /></g></svg>';
+    var stretchSvgTail = '" /></g></svg><tex:i class="aghtex-stretch-svg-hspan"></tex:i>';
     var stretchSvgPath = {
       lparen: 'M124 256c0 -242 204 -387 388 -492l-43 -20c-142 77 -469 234 -469 512s327 435 469 512l43 -20c-184 -105 -388 -250 -388 -492z',
       rparen: 'M388 256c0 242 -204 387 -388 492l43 20c142 -77 469 -234 469 -512s-327 -435 -469 -512l-43 20c184 105 388 250 388 492z',
@@ -3191,9 +3191,9 @@ new function(){
 
       // 共通
       "|": agh.browser.vIE ? stretchTd('aghtex-left-pipe') :
-        stretchTd('aghtex-left-pipe', ""),
+        stretchTd('aghtex-left-pipe', '<tex:i class="aghtex-left-span"></tex:i>'),
       "∥": agh.browser.vIE ? stretchTd('aghtex-left-vert') :
-        stretchTd('aghtex-left-vert', ""),
+        stretchTd('aghtex-left-vert', '<tex:i class="aghtex-left-span"></tex:i>'),
 
       // ceiling / floor
       "\u2308": stretchTd('aghtex-left-ceil'), //
@@ -3287,7 +3287,7 @@ new function(){
     proc_subsup(sbsp1);
 
     //-- [content]
-    buff.push('<td class="aghtex-css-td aghtex-cmdleft-cell" rowspan="2"><tex:i class="aghtex-cmdleft-tmargin"></tex:i>');
+    buff.push('<td class="aghtex-css-td aghtex-cmdleft-cell" rowspan="2"><tex:i class="aghtex-cmdleft-tmargin"></tex:i><tex:i class="aghtex-cmdleft-vspan"></tex:i>');
 
     if (agh.is(content, Function))
       content(output);
@@ -5177,13 +5177,13 @@ new function(){
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 
-    buff.push('<td align="center" class="aghtex-css-td ', bar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
-    buff.push('>', former, '</td>');
+    buff.push('<td align="center" class="aghtex-css-td ', bar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '">');
+    buff.push('<tex:i class="aghtex-cmdleft-tmargin"></tex:i>', former, '</td>');
 
     if (right)
       mod_base.OutputStretchBracketTd(output, right, 2);
     buff.push('</tr><tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-genfrac-center">');
-    output.appendPost('</td></tr></tbody></table>');
+    output.appendPost('<tex:i class="aghtex-cmdleft-bmargin"></tex:i></td></tr></tbody></table>');
   }
   _Ctx.DefineCommand({"atopwithdelims":['f;#!1#!2',function(doc,argv){
     Atop(doc.currentCtx.output, argv[1], argv[2]);
@@ -9427,11 +9427,11 @@ new function(){
     buff.push('<td align="center" class="aghtex-css-td ', hasBar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
     if (hasBar && barWidth !== '1px')
       buff.push(' style="border-bottom-width:', barWidth, '!important;"');
-    buff.push('>', htNumerator, '</td>');
+    buff.push('><tex:i class="aghtex-cmdleft-tmargin"></tex:i>', htNumerator, '</td>');
 
     if (right)
       mod_base.OutputStretchBracketTd(output, right, 2);
-    buff.push('</tr><tr class="aghtex-css-tr"><td align="center" class="aghtex-css-td aghtex-genfrac-center">', htDenominator, '</td></tr>');
+    buff.push('</tr><tr class="aghtex-css-tr"><td align="center" class="aghtex-css-td aghtex-genfrac-center">', htDenominator, '<tex:i class="aghtex-cmdleft-bmargin"></tex:i></td></tr>');
     buff.push('</tbody></table>');
   }
 
