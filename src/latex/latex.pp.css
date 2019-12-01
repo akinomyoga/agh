@@ -1270,6 +1270,10 @@ td.aghtex-array-cell {
   border-width: 0px!important; border-style: solid!important;
   border-color: currentColor!important;
   padding: 0.2ex .9ex!important; vertical-align: baseline!important; }
+td.aghtex-array-cell--left   { text-align: left  !important; }
+td.aghtex-array-cell--center { text-align: center!important; }
+td.aghtex-array-cell--right  { text-align: right !important; }
+
 tr.aghtex-array-first-row>td.aghtex-array-cell { padding-top: 0!important; }
 tr.aghtex-array-last-row>td.aghtex-array-cell { padding-bottom: 0!important; }
 

@@ -78,6 +78,12 @@ _at.toAlign = (function() {
     return "";
   };
 })();
+_at.toAlignClassName = function(ltr) {
+  if (ltr == "r") return ' aghtex-array-cell--right';
+  if (ltr == "c") return ' aghtex-array-cell--center';
+  if (ltr == "l") return ' aghtex-array-cell--left';
+  return "";
+};
 //********************************************************************
 //
 //    class Cell
@@ -243,6 +249,7 @@ agh.memcpy(_at.Cell.prototype, {
       content = '<tex:i class="aghtex-array-' + hdots_type + '"></tex:i>' + content;
       className += ' aghtex-array-cell--hdots';
     }
+    className += _at.toAlignClassName(this.get_align());
 
     var buff = output.buff;
     buff.push(' <td class="aghtex-css-td ', className, '"');

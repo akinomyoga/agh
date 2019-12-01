@@ -551,7 +551,7 @@ context "mode.math" {
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 
-    buff.push('<td class="aghtex-css-td ', bar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
+    buff.push('<td align="center" class="aghtex-css-td ', bar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
     buff.push('>', former, '</td>');
 
     if (right)

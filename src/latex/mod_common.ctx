@@ -447,7 +447,7 @@ context "global" {
       var align = {l: 'left', r: 'right', c: 'center'}[argv[2]];
       if (align == null) {
         doc.currentCtx.output.error('mod:common.cmd:framebox.UnknownAlignment', {align: argv[2]}, '\\framebox (mod:common)');
-        align=center;
+        align = center;
       }
 
       doc.currentCtx.output.buff.push(
