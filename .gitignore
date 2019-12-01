@@ -29,6 +29,7 @@
 /src/agh.text.encode/mat
 
 /tools/out
+/tools/ext/woff
 
 # generated files for LaTeX experimental
 /src/latex/test/tmp
