@@ -3166,7 +3166,7 @@ new function(){
     }
   })();
   function stretchTd(className, content) {
-    if (!content) content = '&nbsp;';
+    if (content == null) content = '&nbsp;';
     return '<td rowspan="2" class="aghtex-css-td ' + className + '">' + content + '</td>';
   }
   //------------------------------------------------------------
@@ -3251,12 +3251,12 @@ new function(){
     };
   })();
 
-  _Ctx.AddCommandHandler("left", function(doc) {
+  _Mod.OutputBracketedContent = function(output, content, ltr1, ltr2, sbsp1, sbsp2) {
     //==== 補助変数 ==========================
-    var output = doc.currentCtx.output;
     var buff = output.buff;
     var bottom_row = "";
-    function proc_subsup() {
+    function proc_subsup(sbsp) {
+      if (sbsp == null) return;
       switch ((sbsp.sup ? 1 : 0) + (sbsp.sub ? 2 : 0)) {
         case 1: // 上付
           buff.push('<td rowspan="2" class="aghtex-css-td aghtex-cmdleft-cell-sup aghtex-tag-script"><tex:i class="aghtex-cmdleft-sup">', sbsp.sup, '</tex:i></td>');
@@ -3271,9 +3271,6 @@ new function(){
       }
     }
     //========================================
-    doc.scanner.Next();
-    var ltr = doc.GetArgumentHtml();
-    var sbsp = doc.GetSubSup();
 
     //-- [prologue]
     if (agh.browser.vFx)
@@ -3286,36 +3283,48 @@ new function(){
     else
       buff.push('<table class="aghtex-css-table-inline aghtex-cmdleft-table"><tbody><tr class="aghtex-css-tr aghtex-cmdleft-row">');
 
-    _Mod.OutputStretchBracketTd(output, ltr, 2);
-
-    proc_subsup();
+    _Mod.OutputStretchBracketTd(output, ltr1, 2);
+    proc_subsup(sbsp1);
 
     //-- [content]
     buff.push('<td class="aghtex-css-td aghtex-cmdleft-cell" rowspan="2"><tex:i class="aghtex-cmdleft-tmargin"></tex:i>');
 
-    // setup context and read under the context
-    var ctx = doc.wrap_context(doc.currentCtx);
-    ctx.AddCommandHandler("right", function(doc) {
-      doc.scanner.Next();
-      ltr = doc.GetArgumentHtml();
-      sbsp = doc.GetSubSup();
-      doc.currentCtx.BREAK = true;
-    });
-    buff.push(doc.Read(ctx));
+    if (agh.is(content, Function))
+      content(output);
+    else
+      buff.push(content);
 
     //-- [epilogue]
     buff.push('<tex:i class="aghtex-cmdleft-bmargin"></tex:i></td>');
 
-    _Mod.OutputStretchBracketTd(output, ltr, 2);
-
-    proc_subsup();
+    _Mod.OutputStretchBracketTd(output, ltr2, 2);
+    proc_subsup(sbsp2);
 
     //-- [レイアウト用の二行目がある時]
-    if (bottom_row != "") {
+    if (bottom_row != "")
       buff.push('</tr><tr class="aghtex-css-tr">', bottom_row);
-    }
 
     buff.push('</tr></tbody></table>');
+  };
+
+  _Ctx.AddCommandHandler("left", function(doc) {
+    var output = doc.currentCtx.output;
+    doc.scanner.Next();
+    var ltr1 = doc.GetArgumentHtml();
+    var sbsp1 = doc.GetSubSup();
+
+    var ltr2 = null, sbsp2 = null;
+    // setup context and read under the context
+    var ctx = doc.wrap_context(doc.currentCtx);
+    ctx.AddCommandHandler("right", function(doc) {
+      doc.scanner.Next();
+      ltr2 = doc.GetArgumentHtml();
+      sbsp2 = doc.GetSubSup();
+      doc.currentCtx.BREAK = true;
+    });
+    var coantent = doc.Read(ctx);
+
+    _Mod.OutputBracketedContent(output, content, ltr1, ltr2, sbsp1, sbsp2);
   });
   _Ctx.AddCommandHandler("right", CH_EXIT_WITH_ERROR);
 };
@@ -7666,6 +7675,7 @@ agh.memcpy(_at.Table.prototype, {
   valign: "m",
 
   m_defaultCol: null,
+  m_subsup: null,
   //****************************************************************
   //    データ
   //****************************************************************
@@ -7830,10 +7840,24 @@ agh.memcpy(_at.Table.prototype, {
   get_current_col: function() {
     return this.cy;
   },
+  setSubSup: function(value) {
+    this.m_subsup = value;
+  },
   //****************************************************************
   //    出力
   //****************************************************************
   write: function(output) {
+    if (this.param_bracket || this.m_subsup) {
+      var ltr1 = this.param_bracket && this.param_bracket[0];
+      var ltr2 = this.param_bracket && this.param_bracket[1];
+      var self = this;
+      var content_writer = function(output) { self.write_content(output); };
+      mod_base.OutputBracketedContent(output, content_writer, ltr1, ltr2, null, this.m_subsup);
+    } else {
+      this.write_content(output);
+    }
+  },
+  write_content: function(output) {
     // init this.cols
     // 　各 cell 列に使用する td 列数の計算
     var tdc_total = 0;
@@ -7844,23 +7868,10 @@ agh.memcpy(_at.Table.prototype, {
 
     // header
     var buff = output.buff;
-    if (this.param_bracket)
-      buff.push('<table class="aghtex-css-table-inline aghtex-array-table aghtex-array-valign-', this.valign, ' aghtex-array-lrpad"><tbody>\n');
-    else
-      buff.push('<table class="aghtex-css-table-inline aghtex-array-table aghtex-array-valign-', this.valign, '"><tbody>\n');
+    buff.push('<table class="aghtex-css-table-inline aghtex-array-table aghtex-array-valign-', this.valign, '"><tbody>\n');
 
     // thead (colgroups or dummy-row)
     this.write_thead(output);
-
-    // enclosing brackets
-    if (this.param_bracket) {
-      var trCount = 1 + this.getHtmlRowCount();
-      buff.push('<tr class="aghtex-css-tr aghtex-cmdleft-row">');
-      mod_base.OutputStretchBracketTd(output, this.param_bracket[0], trCount);
-      buff.push('\n <td colspan="', tdc_total, '" class="aghtex-css-td"></td>\n');
-      mod_base.OutputStretchBracketTd(output, this.param_bracket[1], trCount);
-      buff.push('\n</tr>\n');
-    }
 
     // content
     this.write_bT(output, tdc_total);
@@ -8044,6 +8055,11 @@ _Mod.ArrayEnvironmentDefaultEpilogue = function(doc, ctx) {
 _Mod.ArrayEnvironmentDefaultCatcher = function(doc, ctx) {
   this.epilogue(doc, ctx);
 };
+
+_Mod.ArrayEnvironmentMathEpilogue = function(doc, ctx) {
+  table.setSubSup(doc.GetSubSup());
+  _Mod.ArrayEnvironmentDefaultEpilogue(doc, ctx);
+}
 //-----------------------------------------------------------------------------
 
 
@@ -8296,8 +8312,7 @@ _Mod["envdef:align"] = {
 _Mod["envdef:aligned"] = {
   suppressOutput: true,
   prologue: _Mod["envdef:align*"].prologue,
-  epilogue: _Mod["envdef:eqnarray*"].epilogue,
-  epilogue: _Mod.ArrayEnvironmentDefaultEpilogue,
+  epilogue: _Mod.ArrayEnvironmentMathEpilogue,
   catcher: _Mod.ArrayEnvironmentDefaultCatcher,
   context: "env.array"
 };
@@ -8348,8 +8363,7 @@ _Mod["envdef:alignat"] = {
 _Mod["envdef:alignedat"] = {
   suppressOutput: true,
   prologue: _Mod["envdef:alignat*"].prologue,
-  epilogue: _Mod["envdef:eqnarray*"].epilogue,
-  epilogue: _Mod.ArrayEnvironmentDefaultEpilogue,
+  epilogue: _Mod.ArrayEnvironmentMathEpilogue,
   catcher: _Mod.ArrayEnvironmentDefaultCatcher,
   context: "env.array"
 };
@@ -8423,8 +8437,7 @@ _Mod["envdef:gather"] = {
 _Mod["envdef:gathered"] = {
   suppressOutput: true,
   prologue: _Mod["envdef:gather*"].prologue,
-  epilogue: _Mod["envdef:eqnarray*"].epilogue,
-  epilogue: _Mod.ArrayEnvironmentDefaultEpilogue,
+  epilogue: _Mod.ArrayEnvironmentMathEpilogue,
   catcher: _Mod.ArrayEnvironmentDefaultCatcher,
   context: "env.array"
 };
@@ -8505,7 +8518,7 @@ function define_xmatrix(name, bracket) {
       t.param_bracket = bracket;
       t.default_col().halign = "c";
     },
-    epilogue: _Mod.ArrayEnvironmentDefaultEpilogue,
+    epilogue: _Mod.ArrayEnvironmentMathEpilogue,
     catcher: _Mod.ArrayEnvironmentDefaultCatcher,
     context: "env.array"
   };
