@@ -709,7 +709,8 @@ latex
       position, left, top, width, height
       これは親ドキュメントで勝手に設定されるとは思えないが…。
 
-    * tr: height visibility
+    * done: tr: height visibility
+    * done: table, tbody について TAG_TABLE, TAG_TBODY を削除する。
 
 2018-02-06
 

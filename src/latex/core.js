@@ -75,17 +75,6 @@ function aghtex_assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-_Mod.TAG_TABLE = 'table';
-_Mod.TAG_TBODY = 'tbody';
-_Mod.TAG_TR = 'tr';
-_Mod.TAG_TD = 'td';
-// if (agh.browser.isWk || agh.browser.vFx) {
-//   _Mod.TAG_TABLE = 'tex:table';
-//   _Mod.TAG_TBODY = 'tex:tbody';
-//   _Mod.TAG_TR = 'tex:tr';
-//   _Mod.TAG_TD = 'tex:td';
-// }
-
 //◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 //
 //            class Scanner4

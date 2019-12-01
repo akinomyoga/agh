@@ -304,11 +304,11 @@ context "mode.math" {
   var HT_SQRT_STRETCH_IMAGE = mod_base.GetStretchImageTd("stretch_sqrt.png", 2, "√", 'sqrt');
   command f\sqrt(#[]>1#>2) {
     var buff = doc.currentCtx.output.buff;
-    buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-sqrt-table" cellpadding="0"><', mod_core.TAG_TBODY, '><tr class="aghtex-css-tr" style="height:0px!important;">');
+    buff.push('<table class="aghtex-css-table-inline aghtex-sqrt-table" cellpadding="0"><tbody><tr class="aghtex-css-tr" style="height:0px!important;">');
     if (argv[1].length > 0)
       buff.push('<td class="aghtex-css-td aghtex-sqrt-index-cell aghtex-tag-script"><tex:i class="aghtex-sqrt-index">', argv[1], '</tex:i></td>');
     buff.push(HT_SQRT_STRETCH_IMAGE, '<td class="aghtex-css-td aghtex-sqrt-body">', argv[2], '</td>');
-    buff.push('</tr></', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '>');
+    buff.push('</tr></tbody></table>');
   };
 
   //---------------------------------------------------------------------------
@@ -373,13 +373,13 @@ context "mode.math" {
       buff.push('</tex:i>');
     } else {
       // image ~ <td>
-      buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-underbrace-table"><', mod_core.TAG_TBODY, '>');
+      buff.push('<table class="aghtex-css-table-inline aghtex-underbrace-table"><tbody>');
       buff.push('<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-underbrace-cell-b">', content, '</td></tr>');
       if (image)
         buff.push('<tr class="aghtex-css-tr">', image, '</tr>');
       if (undertxt)
         buff.push('<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-underbrace-cell-t">', undertxt, '</td></tr>');
-      buff.push('</', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '>');
+      buff.push('</tbody></table>');
     }
   }
   function output_overbrace(buff, content, image, overtext, className) {
@@ -505,19 +505,19 @@ context "mode.math" {
   if (agh.browser.vIE <= 8 || ns.compatMode == "IE-qks") {
     _Ctx.DefineCommand({
       frac: ['s@;#>1#>2',
-             '<' + mod_core.TAG_TABLE + ' class="aghtex-css-table-inline aghtex-frac-ie6-table" cellspacing="0"><' + mod_core.TAG_TBODY + '>'
+             '<table class="aghtex-css-table-inline aghtex-frac-ie6-table" cellspacing="0"><tbody>'
              + '<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-frac-ie6-num">#1</td></tr>'
              + '<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-frac-ie6-den">#2</td></tr>'
-             + '</' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>']
+             + '</tbody></table>']
     });
     command f\over() {
       var output = doc.currentCtx.output;
       var former = output.toHtml();
       output.clear();
-      output.buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-frac-ie6-table" cellspacing="0"><', mod_core.TAG_TBODY, '>');
+      output.buff.push('<table class="aghtex-css-table-inline aghtex-frac-ie6-table" cellspacing="0"><tbody>');
       output.buff.push('<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-frac-ie6-num">', former, '</td></tr>');
       output.buff.push('<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-frac-ie6-den">');
-      output.appendPost('</td></tr></' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>');
+      output.appendPost('</td></tr></tbody></table>');
     };
   } else {
     function cmd_frac(doc, argv) {
@@ -547,7 +547,7 @@ context "mode.math" {
     output.clear();
 
     var buff = output.buff;
-    buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-genfrac-table" cellspacing="0"><', mod_core.TAG_TBODY, '><tr class="aghtex-css-tr" style="height:0px!important;">');
+    buff.push('<table class="aghtex-css-table-inline aghtex-genfrac-table" cellspacing="0"><tbody><tr class="aghtex-css-tr" style="height:0px!important;">');
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 
@@ -557,7 +557,7 @@ context "mode.math" {
     if (right)
       mod_base.OutputStretchBracketTd(output, right, 2);
     buff.push('</tr><tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-genfrac-center">');
-    output.appendPost('</td></tr></' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>');
+    output.appendPost('</td></tr></tbody></table>');
   }
   command f\atopwithdelims("#!1#!2") {
     Atop(doc.currentCtx.output, argv[1], argv[2]);
@@ -640,9 +640,9 @@ context "mode.math" {
 
   _Mod.CreateCommandSummation = (function InitCreateCommandSummation() {
     var _ht_strut = '<tex:i class="aghtex-sum-strut">&nbsp;</tex:i>'
-    var ht_table_beg = '<' + mod_core.TAG_TABLE + ' class="aghtex-css-table-inline aghtex-sum-table"><' + mod_core.TAG_TBODY + '><tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-sum-m-cell"><tex:i class="aghtex-sum-m">';
+    var ht_table_beg = '<table class="aghtex-css-table-inline aghtex-sum-table"><tbody><tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-sum-m-cell"><tex:i class="aghtex-sum-m">';
     var ht_table_mid = '</tex:i></td></tr><tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-sum-d-cell"><tex:i class="aghtex-sum-d aghtex-tag-script">' + _ht_strut;
-    var ht_table_end = _ht_strut + '</tex:i></td></tr></' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>';
+    var ht_table_end = _ht_strut + '</tex:i></td></tr></tbody></table>';
     var ht_sum_begin = '<tex:i class="aghtex-sum">';
 
     var fWA = false;
@@ -723,10 +723,10 @@ context "mode.math" {
         break;
       case 3:
         buff.push(
-          '<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-int-table"><', mod_core.TAG_TBODY, '>',
+          '<table class="aghtex-css-table-inline aghtex-int-table"><tbody>',
           '<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-int-cell-sup aghtex-tag-script"><tex:i class="aghtex-int-sup">', sbsp.sup, '</tex:i></td></tr>',
           '<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-int-cell-sub aghtex-tag-script"><tex:i class="aghtex-int-sub">', sbsp.sub, '</tex:i></td></tr>',
-          '</', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '>');
+          '</tbody></table>');
         break;
       }
     } else {

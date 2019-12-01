@@ -374,10 +374,10 @@ context "pkg:amsmath/mode.math" new() {
   var cfrac_html = null;
   if (agh.browser.vIE) {
     cfrac_html = (
-      '<' + mod_core.TAG_TABLE + ' class="aghtex-css-table-inline aghtex-frac-ie6-table" cellspacing="0"><' + mod_core.TAG_TBODY + '>'
+      '<table class="aghtex-css-table-inline aghtex-frac-ie6-table" cellspacing="0"><tbody>'
         + '<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-frac-ie6-num" style="text-align:$!important;">$</td></tr>'
         + '<tr class="aghtex-css-tr"><td class="aghtex-css-td aghtex-frac-ie6-den" style="text-align:$!important;">$</td></tr>'
-        + '</' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>'
+        + '</tbody></table>'
     ).split(/\$/g);
   } else {
     cfrac_html = (
@@ -418,7 +418,7 @@ context "pkg:amsmath/mode.math" new() {
 
     var output = doc.currentCtx.output;
     var buff = output.buff;
-    buff.push('<', mod_core.TAG_TABLE, ' class="aghtex-css-table-inline aghtex-genfrac-table" cellspacing="0"><', mod_core.TAG_TBODY, '><tr class="aghtex-css-tr aghtex-cmdleft-row">');
+    buff.push('<table class="aghtex-css-table-inline aghtex-genfrac-table" cellspacing="0"><tbody><tr class="aghtex-css-tr aghtex-cmdleft-row">');
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 
@@ -431,7 +431,7 @@ context "pkg:amsmath/mode.math" new() {
     if (right)
       mod_base.OutputStretchBracketTd(output, right, 2);
     buff.push('</tr><tr class="aghtex-css-tr"><td align="center" class="aghtex-css-td aghtex-genfrac-center">', htDenominator, '</td></tr>');
-    buff.push('</', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '>');
+    buff.push('</tbody></table>');
   }
 
   _Ctx.DefineCommand({
