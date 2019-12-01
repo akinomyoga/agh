@@ -124,14 +124,14 @@ div.aghtex-flushright { text-align: right; }
 div.aghtex-flushleft { text-align: left; }
 
 /* TeX */
-  tex\:La { font-family: aghtex_roman,aghtex_mincho,serif; }
-  tex\:La span { vertical-align: 12%; font-size: 80%; margin-left: -0.9ex; margin-right: -0.2ex; }
-  tex\:TeX { font-family: aghtex_roman,aghtex_mincho,serif; }
-  tex\:TeX span { vertical-align: -20%; margin-left: -0.3ex; margin-right: -0.3ex; }
-  tex\:AmS { font-family: aghtex_mathcal,aghtex_gothic,sans-serif; }
-  tex\:AmS span { vertical-align: -20%; margin-left: -0.6ex; margin-right: -0.3ex; }
+  tex\:i.aghtex-latex-la  { font-family: aghtex_roman,aghtex_mincho,serif; }
+  tex\:i.aghtex-latex-a   { vertical-align: 12%; font-size: 80%; margin-left: -0.9ex; margin-right: -0.2ex; }
+  tex\:i.aghtex-latex-tex { font-family: aghtex_roman,aghtex_mincho,serif; }
+  tex\:i.aghtex-latex-e   { vertical-align: -20%; margin-left: -0.3ex; margin-right: -0.3ex; }
+  tex\:i.aghtex-latex-ams { font-family: aghtex_mathcal,aghtex_gothic,sans-serif; }
+  tex\:i.aghtex-latex-ams-m { vertical-align: -20%; margin-left: -0.6ex; margin-right: -0.3ex; }
+tex\:i.aghtex-latex-eps { vertical-align: -10%; }
 
-p.aghtex-vspace { margin: 0px; padding: 0px; }
 tex\:i.aghtex-vspace { display: block; height: 0; margin: 0px; padding: 0px; }
 
 dl.aghtex-desc { margin-left: 1em; }

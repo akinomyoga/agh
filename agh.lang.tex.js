@@ -3322,7 +3322,7 @@ new function(){
       sbsp2 = doc.GetSubSup();
       doc.currentCtx.BREAK = true;
     });
-    var coantent = doc.Read(ctx);
+    var content = doc.Read(ctx);
 
     _Mod.OutputBracketedContent(output, content, ltr1, ltr2, sbsp1, sbsp2);
   });
@@ -4403,8 +4403,8 @@ new function(){
 
   _Ctx.DefineCommand({"hspace":['s@;#D','<tex:i style="padding-right:#1;"></tex:i>']});
   _Ctx.DefineCommand({"hspace*":['s@;#D','<tex:i style="padding-right:#1;"></tex:i>']});
-  _Ctx.DefineCommand({"vspace":['s@;#D','<p class="aghtex-vspace" style="font-size:#1">&nbsp;</p>']});
-  _Ctx.DefineCommand({"vspace*":['s@;#D','<p class="aghtex-vspace" style="font-size:#1">&nbsp;</p>']});
+  _Ctx.DefineCommand({"vspace":['s@;#D','<tex:i class="aghtex-vspace" style="margin-bottom:#1">&nbsp;</tex:i>']});
+  _Ctx.DefineCommand({"vspace*":['s@;#D','<tex:i class="aghtex-vspace" style="margin-bottom:#1">&nbsp;</tex:i>']});
 
   _Ctx.DefineCommand({"enspace":['s>','\\hspace{0.5em}']}); // from plain-TeX, kerning
 
@@ -4464,9 +4464,9 @@ new function(){
   _Ctx.DefineCommand({"O":['s@','&#xD8;']});  // Ø
 
   // TeX
-  _Ctx.DefineCommand({"TeX":['s@','<tex:TeX>T<span>E</span>X</tex:TeX>']});
-  _Ctx.DefineCommand({"LaTeX":['s@','<tex:La>L<span>A</span></tex:La><tex:TeX>T<span>E</span>X</tex:TeX>']});
-  _Ctx.DefineCommand({"LaTeXe":['s@','<tex:La>L<span>A</span></tex:La><tex:TeX>T<span>E</span>X</tex:TeX>2<span style=\'vertical-align:-10%;\'>ε</span>']});
+  _Ctx.DefineCommand({"TeX":['s@','<tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">E</tex:i>X</tex:i>']});
+  _Ctx.DefineCommand({"LaTeX":['s@','<tex:i class="aghtex-latex-la">L<tex:i class="aghtex-latex-a">A</tex:i></tex:i><tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">E</tex:i>X</tex:i>']});
+  _Ctx.DefineCommand({"LaTeXe":['s@','<tex:i class="aghtex-latex-la">L<tex:i class="aghtex-latex-a">A</tex:i></tex:i><tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">E</tex:i>X</tex:i>2<tex:i class="aghtex-latex-eps">ε</tex;i>']});
 
   // 特別な文字
   _Ctx.DefineCommand({"copyright":['s@','<tex:f class="aghtex-textrm">©</tex:f>']}); // u00A9
@@ -8057,6 +8057,7 @@ _Mod.ArrayEnvironmentDefaultCatcher = function(doc, ctx) {
 };
 
 _Mod.ArrayEnvironmentMathEpilogue = function(doc, ctx) {
+  var table = ctx.ENVDATA;
   table.setSubSup(doc.GetSubSup());
   _Mod.ArrayEnvironmentDefaultEpilogue(doc, ctx);
 }
@@ -9333,7 +9334,7 @@ new function(){
 
   _Ctx.DefineCommand({
     // \AmS
-    "AmS": ['s@', '<tex:AmS>A<span>M</span>S</tex:AmS>'],
+    "AmS": ['s@', '<tex:i class="aghtex-latex-ams">A<tex:i class="aghtex-latex-ams-m">M</tex:i>S</tex:i>'],
 
     // CHK: 以下は paragraph mode でも使えるのか?
     dots : ['s@', '<tex:f class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:f>'],
