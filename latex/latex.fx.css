@@ -698,7 +698,9 @@ tex\:i.aghtex-overbrace-widetilde>tex\:i.aghtex-overbrace-i { height: 0.22em; }
 
 /*------------------------------------------------------------------*/
 /* 根号 */
-table.aghtex-sqrt-table { vertical-align: middle!important; height: 1em!important; }
+table.aghtex-sqrt-table {
+  height: 1em!important;
+}
 td.aghtex-sqrt-index-cell {
   vertical-align: top!important; font-size: 80%!important;
 }

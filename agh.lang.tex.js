@@ -9423,10 +9423,10 @@ new function(){
     if (left)
       mod_base.OutputStretchBracketTd(output, left, 2);
 
-    var hasBar = barWidth && barWidth;
+    var hasBar = barWidth && barWidth != 0;
     buff.push('<td align="center" class="aghtex-css-td ', hasBar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
     if (hasBar && barWidth !== '1px')
-      buff.push(' style="border-bottom-width:', barWidth, ';"');
+      buff.push(' style="border-bottom-width:', barWidth, '!important;"');
     buff.push('>', htNumerator, '</td>');
 
     if (right)
@@ -9439,7 +9439,7 @@ new function(){
     binom  : ['f;#>1#>2', function(doc, argv) { cmd_genfrac(doc, '(', ')', null, null, argv[1], argv[2]); }],
     tbinom : ['f;#>1#>2', function(doc, argv) { cmd_genfrac(doc, '(', ')', null, 1, argv[1], argv[2]); }],
     dbinom : ['f;#>1#>2', function(doc, argv) { cmd_genfrac(doc, '(', ')', null, 0, argv[1], argv[2]); }],
-    genfrac: ['f;#>1#>2#>3#>4#>5#>6', function(doc, argv) { cmd_genfrac(doc, argv[1], argv[2], argv[3], argv[4], argv[5], argv[6]); }]
+    genfrac: ['f;#>1#>2#!3#!4#>5#>6', function(doc, argv) { cmd_genfrac(doc, argv[1], argv[2], argv[3], argv[4], argv[5], argv[6]); }]
   });
 
   // TODO: command s:mode.math\uproot
