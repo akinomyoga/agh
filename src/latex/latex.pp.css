@@ -88,6 +88,27 @@ table.aghtex-css-table-inline {
 /*%%end*/
 }
 
+td.aghtex-css-td {
+  /*width background height border padding */
+  width: auto!important; height: auto!important;
+  position: static!important; left: auto!important; top: auto!important;
+  vertical-align: middle!important;
+  border: 0 solid $"borderColor:-inherit"!important;
+  padding: 0!important; margin: 0!important;
+  background: inherit!important;
+
+  font: inherit!important;
+  text-align: inherit!important;
+  white-space: normal!important;
+
+/*%%if mode=="WebKit"*/
+  -webkit-background-size: auto!important;
+  -webkit-print-color-adjust: inherit!important;
+/*%%elif mode=="Opera"*/
+  -o-background-size: auto!important;
+/*%%end*/
+}
+
 /*----------------------------------------------------------
     容れ物
 ----------------------------------------------------------*/
@@ -104,7 +125,7 @@ tex\:math { display: inline-block; }
 tex\:container.aghtex-math table,
 tex\:math table { border: 0px; border-collapse: separate; }
 */
-tex\:table { display: table; border-collapse: collapse; boder-spacing: 0px; }
+tex\:table { display: table; border-collapse: collapse; border-spacing: 0px; }
 tex\:tbody { display: table-row-group; border-color: inherit; vertical-align: middle; }
 tex\:tr { display: table-row; vertical-align: inherit; border-color: inherit; }
 tex\:td { display: table-cell; vertical-align: inherit; }
@@ -664,50 +685,47 @@ tex\:math.aghtex-displaymath {
 }
 tex\:math.aghtex-flalign { text-align: left; }
 
-.aghtex-stretch { padding: 0px!important; border-width: 0px!important; }
 /*%%if mode=="Opera"*/
-  .aghtex-stretch { -o-background-size: 100% 100%; background-size: 100% 100%; background-repeat: no-repeat; }
+  td.aghtex-stretch { -o-background-size: 100% 100%!important; background-size: 100% 100%!important; background-repeat: no-repeat!important; }
 /*%%elif mode=="WebKit"*/
   /* stretching image with background-image: url(...) */
-  .aghtex-stretch-bg {
-    padding: 0px!important; border-width: 0px!important;
-    background-repeat: no-repeat;
-    -webkit-background-size: 100%; /* Cr1+<3, Sf3+<4.1 */
-    background-size: 100% 100%;
+  td.aghtex-stretch-bg {
+    background-repeat: no-repeat!important;
+    -webkit-background-size: 100%!important; /* Cr1+<3, Sf3+<4.1 */
+    background-size: 100% 100%!important;
     /* background-size: cover; Cr3+, Sf4.1+ これは等比拡大なので× */
-    -webkit-print-color-adjust: exact; }
+    -webkit-print-color-adjust: exact!important; }
 
-  .aghtex-stretch-bg-lparen { width: 0.80ex; background-image: url(stretch_lparen.svg); }
-  .aghtex-stretch-bg-rparen { width: 0.80ex; background-image: url(stretch_rparen.svg); }
-  .aghtex-stretch-bg-lbrace { width: 0.96ex; background-image: url(stretch_lbrace.svg); }
-  .aghtex-stretch-bg-rbrace { width: 0.96ex; background-image: url(stretch_rbrace.svg); }
-  .aghtex-stretch-bg-langle { width: 0.80ex; background-image: url(stretch_langle.svg); }
-  .aghtex-stretch-bg-rangle { width: 0.80ex; background-image: url(stretch_rangle.svg); }
-  .aghtex-stretch-bg-sqrt   { width: 1.60ex; background-image: url(stretch_sqrt.svg); }
+  td.aghtex-stretch-bg-lparen { width: 0.80ex!important; background-image: url(stretch_lparen.svg)!important; }
+  td.aghtex-stretch-bg-rparen { width: 0.80ex!important; background-image: url(stretch_rparen.svg)!important; }
+  td.aghtex-stretch-bg-lbrace { width: 0.96ex!important; background-image: url(stretch_lbrace.svg)!important; }
+  td.aghtex-stretch-bg-rbrace { width: 0.96ex!important; background-image: url(stretch_rbrace.svg)!important; }
+  td.aghtex-stretch-bg-langle { width: 0.80ex!important; background-image: url(stretch_langle.svg)!important; }
+  td.aghtex-stretch-bg-rangle { width: 0.80ex!important; background-image: url(stretch_rangle.svg)!important; }
+  td.aghtex-stretch-bg-sqrt   { width: 1.60ex!important; background-image: url(stretch_sqrt.svg)  !important; }
 
 /*%%end*/
 /*%%if mode=="Gecko"||mode=="WebKit"*/
   /* stretching image with <svg> */
-  .aghtex-stretch-svg {
-    padding: 0px!important; border-width: 0px!important;
-    width: 1.0ex; height: 100%; position: relative; }
-  .aghtex-stretch-svg>svg {
-    width: 1.0ex; height: 100%; position: absolute; left: 0; top: 0; }
+  td.aghtex-stretch-svg {
+    width: 1.0ex!important; height: 100%!important; position: relative!important; }
+  td.aghtex-stretch-svg>svg {
+    width: 1.0ex!important; height: 100%!important; position: absolute!important; left: 0!important; top: 0!important; }
 
-  .aghtex-stretch-svg-lparen, .aghtex-stretch-svg-lparen>svg,
-  .aghtex-stretch-svg-rparen, .aghtex-stretch-svg-rparen>svg { width: ${.eval|mode=="Gecko"?"1.0":"0.8"}ex; }
-  .aghtex-stretch-svg-lbrace, .aghtex-stretch-svg-lbrace>svg,
-  .aghtex-stretch-svg-rbrace, .aghtex-stretch-svg-rbrace>svg { width: ${.eval|mode=="Gecko"?"1.2":"0.96"}ex; }
-  .aghtex-stretch-svg-langle, .aghtex-stretch-svg-langle>svg,
-  .aghtex-stretch-svg-rangle, .aghtex-stretch-svg-rangle>svg { width: ${.eval|mode=="Gecko"?"1.0":"0.8"}ex; }
+  td.aghtex-stretch-svg-lparen, td.aghtex-stretch-svg-lparen>svg,
+  td.aghtex-stretch-svg-rparen, td.aghtex-stretch-svg-rparen>svg { width: ${.eval|mode=="Gecko"?"1.0":"0.8"}ex!important; }
+  td.aghtex-stretch-svg-lbrace, td.aghtex-stretch-svg-lbrace>svg,
+  td.aghtex-stretch-svg-rbrace, td.aghtex-stretch-svg-rbrace>svg { width: ${.eval|mode=="Gecko"?"1.2":"0.96"}ex!important; }
+  td.aghtex-stretch-svg-langle, td.aghtex-stretch-svg-langle>svg,
+  td.aghtex-stretch-svg-rangle, td.aghtex-stretch-svg-rangle>svg { width: ${.eval|mode=="Gecko"?"1.0":"0.8"}ex!important; }
 /*%%if mode=="Gecko"*/
-  .aghtex-stretch-svg-sqrt>svg { left: 0.2px; top: -1.0px; }
+  td.aghtex-stretch-svg-sqrt>svg { left: 0.2px!important; top: -1.0px!important; }
 /*%%end*/
-  .aghtex-stretch-svg-sqrt, .aghtex-stretch-svg-sqrt>svg { width: ${.eval|mode=="Gecko"?"2.0":"1.6"}ex; }
+  td.aghtex-stretch-svg-sqrt, td.aghtex-stretch-svg-sqrt>svg { width: ${.eval|mode=="Gecko"?"2.0":"1.6"}ex!important; }
 
 /*%%end*/
 /*%%if mode=="Trident"(*/
-.aghtex-vstretch { position: relative; height: 0px; }
+td.aghtex-vstretch { position: relative!important; height: 0px!important; }
 .aghtex-stretch-img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
 
 /*%%)*/
@@ -853,7 +871,7 @@ table.aghtex-cmdleft-table-sf { vertical-align: middle!important; }
 /*%%)*/
 
 .aghtex-cmdleft-row { height: 0px; }
-.aghtex-cmdleft-cell { vertical-align: baseline; height: 1em; min-height: 1em; }
+td.aghtex-cmdleft-cell { vertical-align: baseline!important; height: 1em!important; min-height: 1em!important; }
 
 /*%%if mode!="Trident"*/
   /* 不格好なので括弧の高さを少し小さくする */
@@ -862,41 +880,38 @@ table.aghtex-cmdleft-table-sf { vertical-align: middle!important; }
   .aghtex-cmdleft-bmargin { display: block; margin-top: -0.2em; }
 /*%%end*/
 
-.aghtex-left-kaku ,
-.aghtex-right-kaku,
-.aghtex-left-ceil ,
-.aghtex-right-ceil,
-.aghtex-left-flor ,
-.aghtex-right-flor,
-.aghtex-left-vert ,
-.aghtex-left-pipe ,
-.aghtex-right-pipe {
-  border-style: solid!important;
-  width: .5ex; padding: 0px!important;
-}
-.aghtex-left-kaku  { border-width: 1px 0px 1px 1px!important; }
-.aghtex-right-kaku { border-width: 1px 1px 1px 0px!important; }
-.aghtex-left-ceil  { border-width: 1px 0px 0px 1px!important; }
-.aghtex-right-ceil { border-width: 1px 1px 0px 0px!important; }
-.aghtex-left-flor  { border-width: 0px 0px 1px 1px!important; }
-.aghtex-right-flor { border-width: 0px 1px 1px 0px!important; }
-.aghtex-left-vert  { border-width: 0px 1px 0px 1px!important; width: 1px; font-size: 1px; }
-.aghtex-left-pipe  { border-width: 0px 0px 0px 1px!important; width: 1px; font-size: 1px; }
-.aghtex-right-pipe { border-width: 0px 1px 0px 0px!important; width: 1px; font-size: 1px; }
+td.aghtex-left-kaku ,
+td.aghtex-right-kaku,
+td.aghtex-left-ceil ,
+td.aghtex-right-ceil,
+td.aghtex-left-flor ,
+td.aghtex-right-flor,
+td.aghtex-left-vert ,
+td.aghtex-left-pipe ,
+td.aghtex-right-pipe { width: .5ex!important; }
+td.aghtex-left-kaku  { border-width: 1px 0px 1px 1px!important; }
+td.aghtex-right-kaku { border-width: 1px 1px 1px 0px!important; }
+td.aghtex-left-ceil  { border-width: 1px 0px 0px 1px!important; }
+td.aghtex-right-ceil { border-width: 1px 1px 0px 0px!important; }
+td.aghtex-left-flor  { border-width: 0px 0px 1px 1px!important; }
+td.aghtex-right-flor { border-width: 0px 1px 1px 0px!important; }
+td.aghtex-left-vert  { border-width: 0px 1px 0px 1px!important; width: 1px!important; font-size: 1px!important; }
+td.aghtex-left-pipe  { border-width: 0px 0px 0px 1px!important; width: 1px!important; font-size: 1px!important; }
+td.aghtex-right-pipe { border-width: 0px 1px 0px 0px!important; width: 1px!important; font-size: 1px!important; }
 
-.aghtex-cmdleft-cell-sup { font-size: 75%; padding: 0px; vertical-align: top; }
+td.aghtex-cmdleft-cell-sup { font-size: 75%!important; vertical-align: top!important; }
 /*%%if mode=="Trident" (*/
-  span.aghtex-cmdleft-sup { position: relative; top: -0.6em; margin-bottom: -0.6em; display: block; }
+  tex\:i.aghtex-cmdleft-sup { position: relative; top: -0.6em; margin-bottom: -0.6em; display: block; }
 /*%%elif mode=="WebKit"*/
-  span.aghtex-cmdleft-sup { position: relative; top: -0.5em; margin-bottom: -0.5em; display: block; }
+  tex\:i.aghtex-cmdleft-sup { position: relative; top: -0.5em; margin-bottom: -0.5em; display: block; }
 /*%%elif mode=="Opera"*/
-  .aghtex-cmdleft-cell-sup { white-space: nowrap; }
-  span.aghtex-cmdleft-sup { position: relative; top: -0.7em; margin-bottom: -0.7em; display: block; }
+  td.aghtex-cmdleft-cell-sup { white-space: nowrap!important; }
+  tex\:i.aghtex-cmdleft-sup { position: relative; top: -0.7em; margin-bottom: -0.7em; display: block; }
 /*%%elif mode=="Gecko"*/
-  span.aghtex-cmdleft-sup { position: relative; top: -0.7em; margin-bottom: -0.7em; display: block; }
+  tex\:i.aghtex-cmdleft-sup { position: relative; top: -0.7em; margin-bottom: -0.7em; display: block; }
 /*%%)*/
-.aghtex-cmdleft-cell-sub { font-size: 75%; padding: 0px; vertical-align: bottom; }
-span.aghtex-cmdleft-sub { position: relative; top: 0.5em; margin-top: -0.5em; display: block; }
+td.aghtex-cmdleft-cell-sub { font-size: 75%!important; vertical-align: bottom!important; }
+tex\:i.aghtex-cmdleft-sub { position: relative; top: 0.5em; margin-top: -0.5em; display: block; }
 
 /*------------------------------------------------------------------*/
 /* 分数表記 */
@@ -910,23 +925,23 @@ tex\:i.aghtex-sub tex\:num,
 tex\:i.aghtex-sup tex\:den,
 tex\:i.aghtex-sub tex\:den { padding: 0px; font-size: 80%; }
 table.aghtex-genfrac-table { vertical-align: middle!important; }
-.aghtex-genfrac-numerator,
-.aghtex-genfrac-center { text-align: center; }
-.aghtex-genfrac-numerator { border-bottom: 1px solid $"borderColor"; }
+td.aghtex-genfrac-numerator,
+td.aghtex-genfrac-center { text-align: center!important; }
+td.aghtex-genfrac-numerator { border-width: 0px 0px 1px 0px!important; }
 /*%%if mode=="Trident" (*/
   table.aghtex-frac-ie6-table {
     vertical-align: middle!important;
     margin: 0px 0.2ex!important;
   }
-  .aghtex-frac-ie6-num,
-  .aghtex-frac-ie6-den { padding: 0px!important; border-width: 0px!important; text-align: center!important; }
-  .aghtex-frac-ie6-den { border-width: 1px 0px 0px 0px!important; border-style: solid!important; }
-  .aghtex-int-table .aghtex-frac-ie6-num,
-  .aghtex-int-table .aghtex-frac-ie6-den,
-  tex\:i.aghtex-sup .aghtex-frac-ie6-num,
-  tex\:i.aghtex-sup .aghtex-frac-ie6-den,
-  tex\:i.aghtex-sub .aghtex-frac-ie6-num,
-  tex\:i.aghtex-sub .aghtex-frac-ie6-den { padding: 0px; font-size: 80%; }
+  td.aghtex-frac-ie6-num,
+  td.aghtex-frac-ie6-den { text-align: center!important; }
+  td.aghtex-frac-ie6-den { border-width: 1px 0px 0px 0px!important; border-style: solid!important; }
+  table.aghtex-int-table td.aghtex-frac-ie6-num,
+  table.aghtex-int-table td.aghtex-frac-ie6-den,
+  tex\:i.aghtex-sup td.aghtex-frac-ie6-num,
+  tex\:i.aghtex-sup td.aghtex-frac-ie6-den,
+  tex\:i.aghtex-sub td.aghtex-frac-ie6-num,
+  tex\:i.aghtex-sub td.aghtex-frac-ie6-den { padding: 0px!important; font-size: 80%!important; }
 /*%%)*/
 
 /*%%if mode=="Gecko" (*/
@@ -983,17 +998,16 @@ table.aghtex-underbrace-table {
 /*%%end*/
   text-align: center!important;
 }
-.aghtex-underbrace-cell-b { padding: 0; margin: 0; vertical-align: baseline; }
-.aghtex-underbrace-cell-t { padding: 0; margin: 0; font-size: 80%; }
-.aghtex-underbrace-cell-i {
-  margin: 0px!important; padding: 0px!important; border-width: 0px!important;
-  position: relative; top: -0.25ex;
+td.aghtex-underbrace-cell-b { vertical-align: baseline!important; }
+td.aghtex-underbrace-cell-t { font-size: 80%!important; }
+td.aghtex-underbrace-cell-i {
+  position: relative!important; top: -0.25ex!important;
 /*%%if mode=="WebKit" (*/
-  -webkit-background-size: 100%;
-  background-size: 100% 100%;
-  -webkit-print-color-adjust: exact;
+  -webkit-background-size: 100%!important;
+  background-size: 100% 100%!important;
+  -webkit-print-color-adjust: exact!important;
 /*%%elif mode=="Opera" */
-  -o-background-size: 100% 100%; background-size: 100% 100%; background-repeat: no-repeat;
+  -o-background-size: 100% 100%!important; background-size!important: 100% 100%; background-repeat: no-repeat!important;
 /*%%)*/
 }
 
@@ -1012,10 +1026,10 @@ tex\:i.aghtex-overbrace-b { display: inline-block; vertical-align: baseline; }
 /*%%)*/
 
 /*%%if mode == "Gecko" | mode == "WebKit" */
-.aghtex-underbrace-cell-svg { position: relative; height: 1ex; }
+td.aghtex-underbrace-cell-svg { position: relative!important; height: 1ex!important; }
 tex\:i.aghtex-overbrace-i { position: relative; }
-.aghtex-underbrace-cell-svg>svg,
-tex\:i.aghtex-overbrace-i>svg { width: 100%; height: 100%; position: absolute; left: 0; top: 0; }
+td.aghtex-underbrace-cell-svg>svg,
+tex\:i.aghtex-overbrace-i>svg { width: 100%!important; height: 100%!important; position: absolute!important; left: 0!important; top: 0!important; }
 tex\:i.aghtex-overbrace-widehat>tex\:i.aghtex-overbrace-i { height: 0.3em; }
 tex\:i.aghtex-overbrace-widetilde>tex\:i.aghtex-overbrace-i { height: 0.22em; }
 /*%%end*/
@@ -1024,20 +1038,14 @@ tex\:i.aghtex-overbrace-widetilde>tex\:i.aghtex-overbrace-i { height: 0.22em; }
 /*------------------------------------------------------------------*/
 /* 根号 */
 table.aghtex-sqrt-table { vertical-align: middle!important; height: 1em!important; }
-.aghtex-sqrt-index {
-  border-width: 0px!important;
-  padding: 0px!important;
-  vertical-align: top; font-size: 80%;
+td.aghtex-sqrt-index-cell {
+  vertical-align: top!important; font-size: 80%!important;
 }
-.aghtex-sqrt-index span { position: relative; top: -3px; left: 6px; }
-.aghtex-sqrt-body {
+tex\:i.aghtex-sqrt-index { position: relative; top: -3px; left: 6px; }
+td.aghtex-sqrt-body {
   border-width: 1px 0px 0px 0px!important;
-  border-style: solid!important;
-/*%%if borderColor!=""*/
-  border-color: $"borderColor";
-/*%%end*/
   padding: 1px 2px 0px 0px!important;
-  vertical-align: baseline;
+  vertical-align: baseline!important;
 }
 
 /*------------------------------------------------------------------*/
@@ -1071,10 +1079,10 @@ tex\:i.aghtex-sup-int { vertical-align: 1.7em; margin-left: 0.1em; margin-right:
 
 table.aghtex-int-table { height: 3.3em!important; margin-right: -0.2em!important; vertical-align: middle!important; }
 /*%%if mode=="Opera"*/
-.aghtex-int-cell-sup { white-space: nowrap; }
+td.aghtex-int-cell-sup { white-space: nowrap!important; }
 /*%%end*/
-.aghtex-int-cell-sub { font-size: 75%; padding: 0px; vertical-align: bottom; text-align: left; }
-.aghtex-int-cell-sup { font-size: 75%; padding: 0px; vertical-align: top; text-align: left; }
+td.aghtex-int-cell-sub { font-size: 75%!important; padding: 0px!important; vertical-align: bottom!important; text-align: left!important; }
+td.aghtex-int-cell-sup { font-size: 75%!important; padding: 0px!important; vertical-align: top   !important; text-align: left!important; }
 tex\:i.aghtex-int-sup { position: relative; left: 0ex; top: -0.2em; }
 tex\:i.aghtex-int-sub { position: relative; left: -0.6em; top: 0em; margin-right: -0.6em; }
 
@@ -1113,15 +1121,15 @@ tex\:sum2m { display: block; margin: 0; font-size: 180%; line-height: 0.70em; }
 tex\:i.aghtex-sum { display: inline-block; text-align: center; padding: 0 0.2ex; }
 tex\:i.aghtex-sum-u { display: block; font-size: 80%; position: relative; top: 0em; margin-top: -0.05em; }
 table.aghtex-sum-table { text-align: center!important; margin-bottom: -0.25em!important; }
-.aghtex-sum-m-cell {
-  font-size: 125%; vertical-align: baseline;
-  font-family: aghtex_mathrm,aghtex_roman,aghtex_mincho,serif; }
+td.aghtex-sum-m-cell {
+  font-size: 125%!important; vertical-align: baseline!important;
+  font-family: aghtex_mathrm,aghtex_roman,aghtex_mincho,serif!important; }
 tex\:i.aghtex-sum-m { display: block; line-height: 1; vertical-align: -0.02em; }
 tex\:i.aghtex-sum-m1 {
   display: block; font-size: 125%; vertical-align: baseline;
   font-family: aghtex_mathrm,aghtex_roman,aghtex_mincho,serif; }
 tex\:i.aghtex-sum-m2 { line-height: 1; vertical-align: -0.02em; }
-.aghtex-sum-d-cell { font-size: 80%; }
+td.aghtex-sum-d-cell { font-size: 80%!important; }
 tex\:i.aghtex-sum-d { position: relative; top: -0.1em; }
 tex\:i.aghtex-sum-strut { display: inline-block; overflow: hidden; width: 1px; line-height: 1em; }
 /*%%if mode=="WebKit" (*/
@@ -1233,26 +1241,26 @@ table.aghtex-array-lrpad { margin: 0 0.15em!important; }
 /*----------------------------------------------------------
     mod_array (array 環境 2)
 ----------------------------------------------------------*/
-.aghtex-array-border-txt,
-.aghtex-array-border-zw {
-  border-style: solid;
-  border-color: currentColor;
-  padding: 0px; vertical-align: baseline;
+td.aghtex-array-border-txt,
+td.aghtex-array-border-zw {
+  border-style: solid!important;
+  border-color: currentColor!important;
+  padding: 0px!important; vertical-align: baseline!important;
 }
-.aghtex-array-border-zw {
-  font-size: 0px; width: 1px;
+td.aghtex-array-border-zw {
+  font-size: 0px!important; width: 1px!important;
 }
 
-.aghtex-array-cell {
-  border-width: 0px; border-style: solid!important;
-  border-color: currentColor;
-  padding: 0.2ex .9ex; vertical-align: baseline; }
-.aghtex-array-first-row>.aghtex-array-cell { padding-top: 0; }
-.aghtex-array-last-row>.aghtex-array-cell { padding-bottom: 0; }
+td.aghtex-array-cell {
+  border-width: 0px!important; border-style: solid!important;
+  border-color: currentColor!important;
+  padding: 0.2ex .9ex!important; vertical-align: baseline!important; }
+.aghtex-array-first-row>td.aghtex-array-cell { padding-top: 0!important; }
+.aghtex-array-last-row>td.aghtex-array-cell { padding-bottom: 0!important; }
 
 
-.aghtex-array-hdots-cell {
-  position: relative; height: 1.3em; }
+td.aghtex-array-cell--hdots {
+  position: relative!important; height: 1.3em!important; }
 /*%%if mode=="Trident"*/
 tex\:i.aghtex-array-hdots-ie9,
 /*%%end*/
@@ -1273,11 +1281,11 @@ tex\:i.aghtex-array-hdots-ie9 {
 }
 /*%%end*/
 
-.aghtex-array-hline-t { height: 1px; border-top: 1px solid $"borderColor"; font-size: 1px; padding: 0px; }
-.aghtex-array-hline-b { height: 1px; border-bottom: 1px solid $"borderColor"; font-size: 1px; padding: 0px; }
+td.aghtex-array-hline-t { height: 1px!important; border-top   : 1px solid $"borderColor"!important; font-size: 1px!important; padding: 0px!important; }
+td.aghtex-array-hline-b { height: 1px!important; border-bottom: 1px solid $"borderColor"!important; font-size: 1px!important; padding: 0px!important; }
 /*%%if mode=="Opera"||mode=="Gecko" (*/
-.aghtex-array-hline-t { height: 0; padding-top: 1px; }
-.aghtex-array-hline-b { height: 0; padding-bottom: 1px; }
+td.aghtex-array-hline-t { height: 0!important; padding-top   : 1px!important; }
+td.aghtex-array-hline-b { height: 0!important; padding-bottom: 1px!important; }
 /*%%elif mode=="Trident" (*/
 tex\:i.aghtex-array-hline-dummy {
   display: block;
@@ -1288,14 +1296,15 @@ tex\:i.aghtex-array-hline-dummy {
 
 /*%%if mode=="Gecko" (*/
   .aghtex-array-fxdummy-row { visibility: hidden; }
-  .aghtex-array-fxdummy-border,
-  .aghtex-array-fxdummy-cell {
+  td.aghtex-array-fxdummy-border,
+  td.aghtex-array-fxdummy-cell {
     padding: 0px!important; border-width: 0px!important; height: 0px!important;
-    overflow: hidden;
+    overflow: hidden!important;
   }
-  .aghtex-array-fxdummy-border { width: 0px; }
-  .aghtex-array-fxdummy-cell { width: auto; }
-  .aghtex-array-fxdummy-cell>div {
+  td.aghtex-array-fxdummy-border { width: 0px!important; }
+  td.aghtex-array-fxdummy-cell { width: auto!important; }
+  tex\:i.aghtex-array-fxdummy-content {
+    display: block;
     width: 1px; height: 0px; overflow: hidden; padding: 0px; margin: 0px;
   }
 /*%%)*/
@@ -1325,9 +1334,9 @@ table.aghtex-toc-table--part {}
 table.aghtex-toc-table--section {}
 table.aghtex-toc-table--subsection { margin-left: 2em!important; }
 table.aghtex-toc-table--subsubsection { margin-left: 4em!important; }
-.aghtex-toc-cell-label { white-space: nowrap; padding: 0 1em 0 0; }
-.aghtex-toc-cell-page { white-space: nowrap; padding: 0 0 0 1em; vertical-align: bottom; }
-.aghtex-toc-cell-hfill { width: 100%; padding: 0; vertical-align: bottom; }
+td.aghtex-toc-cell-label { white-space: nowrap!important; padding: 0 1em 0 0!important; }
+td.aghtex-toc-cell-page  { white-space: nowrap!important; padding: 0 0 0 1em!important; vertical-align: bottom!important; }
+td.aghtex-toc-cell-hfill { width: 100%!important; padding: 0!important; vertical-align: bottom!important; }
 tex\:i.aghtex-toc-hfill {
   display: block; position: relative; top: -4px; left: 0; font-size: 1px;
   border-bottom: dotted 3px gray; }

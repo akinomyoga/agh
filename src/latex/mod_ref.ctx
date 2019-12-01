@@ -176,16 +176,16 @@ ns.Document.prototype.AddContentsLine = function(doc, file, type, content, id) {
     var f = get_contents_file(this, DOCV_FILE_TOC);
     f.buff.push(
       '<tex:i class="aghtex-toc-item"><', mod_core.TAG_TABLE, ' class="aghtex-css-table aghtex-toc-table aghtex-toc-table--', type, '"><', mod_core.TAG_TBODY, '><', mod_core.TAG_TR, '>',
-      '<', mod_core.TAG_TD, ' class="aghtex-toc-cell-label">', content, '</', mod_core.TAG_TD, '>',
-      '<', mod_core.TAG_TD, ' class="aghtex-toc-cell-hfill"><tex:i class="aghtex-toc-hfill">&nbsp;</tex:i></', mod_core.TAG_TD, '>',
-      '<', mod_core.TAG_TD, ' class="aghtex-toc-cell-page">');
+      '<td class="aghtex-css-td aghtex-toc-cell-label">', content, '</td>',
+      '<td class="aghtex-css-td aghtex-toc-cell-hfill"><tex:i class="aghtex-toc-hfill">&nbsp;</tex:i></td>',
+      '<td class="aghtex-css-td aghtex-toc-cell-page">');
 
     if (id)
       f.buff.push('<a class="aghtex-ref" href="#', id, '">', page, '</a>');
     else
       f.buff.push(page);
 
-    f.buff.push('</', mod_core.TAG_TD, '></', mod_core.TAG_TR, '></', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '></tex:i>');
+    f.buff.push('</td></', mod_core.TAG_TR, '></', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '></tex:i>');
     f.data.push({type: type, content: content, id: id});
     break;
   case "lof":

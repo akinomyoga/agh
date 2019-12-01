@@ -218,19 +218,19 @@ agh.memcpy(_at.Cell.prototype, {
     var bbT = this.get_bT();
     var bbB = this.get_bB();
     if (bbL || bbR || bbT || bbB) {
-      sbuff.push('border-width:', bbT ? 1 : 0, 'px ', bbR ? 1 : 0, 'px ', bbB ? 1 : 0, 'px ', bbL ? 1 : 0, 'px;');
+      sbuff.push('border-width:', bbT ? 1 : 0, 'px ', bbR ? 1 : 0, 'px ', bbB ? 1 : 0, 'px ', bbL ? 1 : 0, 'px!important;');
       if (bbL) bL = bL.slice(0, -1);
       if (bbR) bR = bR.slice(1);
     }
 
     var pL = this.get_pL();
-    if (pL != null) sbuff.push('padding-left:', pL, ';');
+    if (pL != null) sbuff.push('padding-left:', pL, '!important;');
     var pR = this.get_pR();
-    if (pR != null) sbuff.push('padding-right:', pR, ';');
+    if (pR != null) sbuff.push('padding-right:', pR, '!important;');
     var pB = this.get_pB();
-    if (pB != null) sbuff.push('padding-bottom:', pB, ';');
+    if (pB != null) sbuff.push('padding-bottom:', pB, '!important;');
     var width = this.get_width();
-    if (width != null) sbuff.push('width:', width, ';');
+    if (width != null) sbuff.push('width:', width, '!important;');
 
     this.write_bL(output, bL, bbT, bbB);
 
@@ -241,11 +241,11 @@ agh.memcpy(_at.Cell.prototype, {
       var hdots_type = 'hdots';
       if (agh.browser.vIE < 10) hdots_type = 'hdots-ie9';
       content = '<tex:i class="aghtex-array-' + hdots_type + '"></tex:i>' + content;
-      className += ' aghtex-array-hdots-cell';
+      className += ' aghtex-array-cell--hdots';
     }
 
     var buff = output.buff;
-    buff.push(' <', mod_core.TAG_TD, ' class="', className, '"');
+    buff.push(' <td class="aghtex-css-td ', className, '"');
     buff.push(_at.toAlign(this.get_align()));
     if (tdspan > 1) buff.push(' colspan="', tdspan, '"');
     var style = sty.toHtml();
@@ -253,7 +253,7 @@ agh.memcpy(_at.Cell.prototype, {
       buff.push(' style="', style, '"');
       // ■ padding
     }
-    buff.push('>', content, '</', mod_core.TAG_TD, '>\n');
+    buff.push('>', content, '</td>\n');
 
     this.write_bR(output, bR, bbT, bbB);
   },
@@ -268,16 +268,16 @@ agh.memcpy(_at.Cell.prototype, {
       var border = bL[i];
       if (typeof border == "string" || border instanceof String) {
         buff.push(
-          ' <', mod_core.TAG_TD, ' class="aghtex-array-border-txt" style="border-width:',
-          bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px;">',
-          border, '</', mod_core.TAG_TD, '>\n');
+          ' <td class="aghtex-css-td aghtex-array-border-txt" style="border-width:',
+          bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px!important;">',
+          border, '</td>\n');
 
         bw_left = 0;
       } else if (border === 1) {
         if (bw_left > 0) {
           buff.push(
-            ' <', mod_core.TAG_TD, ' class="aghtex-array-border-zw" style="border-width:',
-            bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px;"></', mod_core.TAG_TD, '>\n');
+            ' <td class="aghtex-css-td aghtex-array-border-zw" style="border-width:',
+            bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px!important;"></td>\n');
         }
 
         bw_left = 1;
@@ -291,8 +291,8 @@ agh.memcpy(_at.Cell.prototype, {
 
     if (bw_left > 0) {
       buff.push(
-        ' <', mod_core.TAG_TD, ' class="aghtex-array-border-zw" style="border-width:',
-        bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px;"></', mod_core.TAG_TD, '>\n');
+        ' <td class="aghtex-css-td aghtex-array-border-zw" style="border-width:',
+        bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px!important;"></td>\n');
     }
   },
   write_bR: function(output, bR, bT, bB) {
@@ -305,16 +305,16 @@ agh.memcpy(_at.Cell.prototype, {
     function emit_cell() {
       if (td_content != null) {
         buff.push(
-          ' <', mod_core.TAG_TD, ' class="aghtex-array-border-txt" style="border-width:',
-          bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px;">',
-          td_content, '</', mod_core.TAG_TD, '>\n');
+          ' <td class="aghtex-css-td aghtex-array-border-txt" style="border-width:',
+          bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px!important;">',
+          td_content, '</td>\n');
 
         bw_right = 0;
         td_content = null;
       } else {
         buff.push(
-          ' <', mod_core.TAG_TD, ' class="aghtex-array-border-zw" style="border-width:',
-          bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px;"></', mod_core.TAG_TD, '>\n');
+          ' <td class="aghtex-css-td aghtex-array-border-zw" style="border-width:',
+          bw_top, 'px ', bw_right, 'px ', bw_bottom, 'px ', bw_left, 'px!important;"></td>\n');
 
         bw_right = 0;
       }
@@ -858,7 +858,7 @@ agh.memcpy(_at.Table.prototype, {
       var trCount = 1 + this.getHtmlRowCount();
       buff.push('<', mod_core.TAG_TR, ' class="aghtex-cmdleft-row">');
       mod_base.OutputStretchBracketTd(output, this.param_bracket[0], trCount);
-      buff.push('\n <', mod_core.TAG_TD, ' colspan="', tdc_total, '"></', mod_core.TAG_TD, '>\n');
+      buff.push('\n <td colspan="', tdc_total, '" class="aghtex-css-td"></td>\n');
       mod_base.OutputStretchBracketTd(output, this.param_bracket[1], trCount);
       buff.push('\n</', mod_core.TAG_TR, '>\n');
     }
@@ -891,9 +891,9 @@ agh.memcpy(_at.Table.prototype, {
       for (var y = 0; y < this.yM; y++) {
         var col = this.col(y);
         buff.push(' ');
-        for (var i = 0; i < col.tdcL; i++) buff.push('<', mod_core.TAG_TD, ' class="aghtex-array-fxdummy-border" />');
-        buff.push('<', mod_core.TAG_TD, ' class="aghtex-array-fxdummy-cell" style="width:auto;"><div>.</div></', mod_core.TAG_TD, '>');
-        for (var i = 0; i < col.tdcR; i++) buff.push('<', mod_core.TAG_TD, ' class="aghtex-array-fxdummy-border" />');
+        for (var i = 0; i < col.tdcL; i++) buff.push('<td class="aghtex-css-td aghtex-array-fxdummy-border" />');
+        buff.push('<td class="aghtex-css-td aghtex-array-fxdummy-cell" style="width:auto!important;"><tex:i class="aghtex-array-fxdummy-content">.</tex:i></td>');
+        for (var i = 0; i < col.tdcR; i++) buff.push('<td class="aghtex-css-td aghtex-array-fxdummy-border" />');
         buff.push('\n');
       }
       buff.push('</', mod_core.TAG_TR, '>\n');
@@ -904,16 +904,16 @@ agh.memcpy(_at.Table.prototype, {
     var h = this.getHorizontalLines(0) - 1;
     while (h-- > 0) {
       output.buff.push(
-        '<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-array-hline-t" colspan="', tdc_total,
-        '"><tex:i class="aghtex-array-hline-dummy">&nbsp;</tex:i></', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>\n');
+        '<', mod_core.TAG_TR, '><td class="aghtex-css-td aghtex-array-hline-t" colspan="', tdc_total,
+        '"><tex:i class="aghtex-array-hline-dummy">&nbsp;</tex:i></td></', mod_core.TAG_TR, '>\n');
     }
   },
   write_bB: function(output, tdc_total, x) {
     var h = this.getHorizontalLines(x + 1) - 1;
     while (h-- > 0) {
       output.buff.push(
-        '<', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' class="aghtex-array-hline-b" colspan="', tdc_total,
-        '"><tex:i class="aghtex-array-hline-dummy">&nbsp;</tex:i></', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>\n');
+        '<', mod_core.TAG_TR, '><td class="aghtex-css-td aghtex-array-hline-b" colspan="', tdc_total,
+        '"><tex:i class="aghtex-array-hline-dummy">&nbsp;</tex:i></td></', mod_core.TAG_TR, '>\n');
     }
   },
   "0": 0

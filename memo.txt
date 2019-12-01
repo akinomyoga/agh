@@ -693,6 +693,21 @@ latex
       - array は nowrap を指定していない。と思ったら指定していた。
       - toc-item に関しては display も norwap も指定していないのである。
 
+    * td についても調整する。
+      - done: 取り敢えず TAG_TD を全て置換した。
+      - done: 同時に inline css の !important と aghtex-css-td のクラス付加を行った。
+      - done: 次に確認するべきは td に一緒につけられている className の収集。
+        それぞれ他のタグには使われていない事を確認して明示的に td. を追加した。
+      - done: td のついているルールが全て !important になっているか確認する。
+      - done: td の既定のルールを追加する。
+      - done: 無駄なルールを削除する
+      - 既定のルールとして hatena が設定している物を上書きする。
+
+    * done: span.aghtex-cmdleft-sup の類は tex:i に置き換える。
+
+    * svg?
+      position, left, top, width, height
+      これは親ドキュメントで勝手に設定されるとは思えないが…。
 
 2018-02-06
 

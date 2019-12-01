@@ -375,8 +375,8 @@ context "pkg:amsmath/mode.math" new() {
   if (agh.browser.vIE) {
     cfrac_html = (
       '<' + mod_core.TAG_TABLE + ' class="aghtex-css-table-inline aghtex-frac-ie6-table" cellspacing="0"><' + mod_core.TAG_TBODY + '>'
-        + '<' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-frac-ie6-num" style="text-align:$!important;">$</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '>'
-        + '<' + mod_core.TAG_TR + '><' + mod_core.TAG_TD + ' class="aghtex-frac-ie6-den" style="text-align:$!important;">$</' + mod_core.TAG_TD + '></' + mod_core.TAG_TR + '>'
+        + '<' + mod_core.TAG_TR + '><td class="aghtex-css-td aghtex-frac-ie6-num" style="text-align:$!important;">$</td></' + mod_core.TAG_TR + '>'
+        + '<' + mod_core.TAG_TR + '><td class="aghtex-css-td aghtex-frac-ie6-den" style="text-align:$!important;">$</td></' + mod_core.TAG_TR + '>'
         + '</' + mod_core.TAG_TBODY + '></' + mod_core.TAG_TABLE + '>'
     ).split(/\$/g);
   } else {
@@ -423,14 +423,14 @@ context "pkg:amsmath/mode.math" new() {
       mod_base.OutputStretchBracketTd(output, left, 2);
 
     var hasBar = barWidth && barWidth;
-    buff.push('<', mod_core.TAG_TD, ' align="center" class="', hasBar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
+    buff.push('<td align="center" class="aghtex-css-td ', hasBar ? 'aghtex-genfrac-numerator' : 'aghtex-genfrac-center', '"');
     if (hasBar && barWidth !== '1px')
       buff.push(' style="border-bottom-width:', barWidth, ';"');
-    buff.push('>', htNumerator, '</', mod_core.TAG_TD, '>');
+    buff.push('>', htNumerator, '</td>');
 
     if (right)
       mod_base.OutputStretchBracketTd(output, right, 2);
-    buff.push('</', mod_core.TAG_TR, '><', mod_core.TAG_TR, '><', mod_core.TAG_TD, ' align="center" class="aghtex-genfrac-center">', htDenominator, '</', mod_core.TAG_TD, '></', mod_core.TAG_TR, '>');
+    buff.push('</', mod_core.TAG_TR, '><', mod_core.TAG_TR, '><td align="center" class="aghtex-css-td aghtex-genfrac-center">', htDenominator, '</td></', mod_core.TAG_TR, '>');
     buff.push('</', mod_core.TAG_TBODY, '></', mod_core.TAG_TABLE, '>');
   }
 

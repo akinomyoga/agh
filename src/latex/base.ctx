@@ -643,75 +643,75 @@ context "mode.math" new("global") {
     };
 
     switch (ns.compatMode) {
-      case "IE-qks":
-      case "Fx-qks":
+    case "IE-qks":
+    case "Fx-qks":
+      return function(imgsrc, width, alt) {
+        width = width.toString() + "ex";
+        return '<td class="aghtex-css-td aghtex-stretch" rowspan="2" style="height:0px!important;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="width:' + width + ';height:100%;"/></td>';
+      };
+    case "IE-std":
+      if (agh.browser.vIE<8) {
+        ns.expression_height = function(elem) {
+          var tr = elem.parentElement.parentElement;
+          var table = tr.parentElement.parentElement;
+          return (table.clientHeight-4) + "px";
+        };
         return function(imgsrc, width, alt) {
           width = width.toString() + "ex";
-          return '<' + mod_core.TAG_TD + ' class="aghtex-stretch" rowspan="2" style="height:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="width:' + width + ';height:100%;"/></' + mod_core.TAG_TD + '>';
+          var style = 'width:' + width + ';height:expression(' + ns.namespaceName + '.expression_height(this));';
+          //var style = 'width:' + width + ';height:expression(this.parentElement.parentElement.parentElement.parentElement.clientHeight-4);';
+          return '<td class="aghtex-css-td aghtex-stretch" rowspan="2" style="height:0px!important;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></td>';
         };
-      case "IE-std":
-        if (agh.browser.vIE<8) {
-          ns.expression_height = function(elem) {
-            var tr = elem.parentElement.parentElement;
-            var table = tr.parentElement.parentElement;
-            return (table.clientHeight-4) + "px";
-          };
-          return function(imgsrc, width, alt) {
-            width = width.toString() + "ex";
-            var style = 'width:' + width + ';height:expression(' + ns.namespaceName + '.expression_height(this));';
-            //var style = 'width:' + width + ';height:expression(this.parentElement.parentElement.parentElement.parentElement.clientHeight-4);';
-            return '<' + mod_core.TAG_TD + ' class="aghtex-stretch" rowspan="2" style="height:0px;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></' + mod_core.TAG_TD + '>';
-          };
+      } else {
+        return function(imgsrc, width, alt) {
+          width = width.toString() + "ex";
+          var style = 'width:' + width + ';'
+          return '<td class="aghtex-css-td aghtex-vstretch" rowspan="2" style="' + style + '"><img class="aghtex-stretch-img" src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></td>';
+        };
+      }
+    case "Fx-std":
+      return function(imgsrc, width, alt, className) {
+        if (className in stretchSvgPath) {
+          // .svg を用いた表示
+          var svg = stretchSvgHead + stretchSvgPath[className] + stretchSvgTail;
+          return '<td rowspan="2" class="aghtex-css-td aghtex-stretch-svg aghtex-stretch-svg-' + className + '">' + svg + '</td>';
         } else {
-          return function(imgsrc, width, alt) {
-            width = width.toString() + "ex";
-            var style = 'width:' + width + ';'
-            return '<' + mod_core.TAG_TD + ' class="aghtex-vstretch" rowspan="2" style="' + style + '"><img class="aghtex-stretch-img" src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="' + style + '"/></' + mod_core.TAG_TD + '>';
-          };
+          // 旧来の .png を用いた表示
+          width = width.toString() + "ex";
+          //return '<td rowspan="2" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');-moz-background-size:100%;"></td>';
+          return '<td rowspan="2" class="aghtex-css-td aghtex-stretch" style="height:100%!important;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="width:' + width + ';height:100%;"/></td>';
         }
-      case "Fx-std":
-        return function(imgsrc, width, alt, className) {
-          if (className in stretchSvgPath) {
-            // .svg を用いた表示
-            var svg = stretchSvgHead + stretchSvgPath[className] + stretchSvgTail;
-            return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch-svg aghtex-stretch-svg-' + className + '">' + svg + '</' + mod_core.TAG_TD + '>';
-          } else {
-            // 旧来の .png を用いた表示
-            width = width.toString() + "ex";
-            //return '<' + mod_core.TAG_TD + ' rowspan="2" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');-moz-background-size:100%;"></' + mod_core.TAG_TD + '>';
-            return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch" style="height:100%;"><img src="' + ns.BaseUrl + imgsrc + '" alt="' + alt + '" style="width:' + width + ';height:100%;"/></' + mod_core.TAG_TD + '>';
-          }
-        };
-      case "Sf-qks":
-      case "Sf-std":
-        return function(imgsrc, width, alt, className) {
-          if (className in stretchSvgPath) {
-            var svg = stretchSvgHead + stretchSvgPath[className] + stretchSvgTail;
-            return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch-svg aghtex-stretch-svg-' + className + '">' + svg + '</' + mod_core.TAG_TD + '>';
-          } else {
-            width = (width * 0.8).toString() + "ex";
-            if (className)
-              return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch-bg aghtex-stretch-bg-' + className + '"></' + mod_core.TAG_TD + '>';
-            else
-              return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch-bg" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');"></' + mod_core.TAG_TD + '>';
-          }
-        };
-      case "Op-qks":
-      case "Op-std":
-        return function(imgsrc, width, alt) {
+      };
+    case "Sf-qks":
+    case "Sf-std":
+      return function(imgsrc, width, alt, className) {
+        if (className in stretchSvgPath) {
+          var svg = stretchSvgHead + stretchSvgPath[className] + stretchSvgTail;
+          return '<td rowspan="2" class="aghtex-css-td aghtex-stretch-svg aghtex-stretch-svg-' + className + '">' + svg + '</td>';
+        } else {
           width = (width * 0.8).toString() + "ex";
-          return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');"></' + mod_core.TAG_TD + '>';
-        };
-      default:
-        return function(imgsrc, width, alt) {
-          width = (width * 0.8).toString() + "ex";
-          return '<' + mod_core.TAG_TD + ' rowspan="2" class="aghtex-stretch" style="width:' + width + ';background-image:url(' + ns.BaseUrl + imgsrc + ');background-size:100% 100%;"></' + mod_core.TAG_TD + '>';
-        };
+          if (className)
+            return '<td rowspan="2" class="aghtex-css-td aghtex-stretch-bg aghtex-stretch-bg-' + className + '"></td>';
+          else
+            return '<td rowspan="2" class="aghtex-css-td aghtex-stretch-bg" style="width:' + width + '!important;background-image:url(' + ns.BaseUrl + imgsrc + ')!important;"></td>';
+        }
+      };
+    case "Op-qks":
+    case "Op-std":
+      return function(imgsrc, width, alt) {
+        width = (width * 0.8).toString() + "ex";
+        return '<td rowspan="2" class="aghtex-css-td aghtex-stretch" style="width:' + width + '!important;background-image:url(' + ns.BaseUrl + imgsrc + ')!important;"></td>';
+      };
+    default:
+      return function(imgsrc, width, alt) {
+        width = (width * 0.8).toString() + "ex";
+        return '<td rowspan="2" class="aghtex-css-td aghtex-stretch" style="width:' + width + '!important;background-image:url(' + ns.BaseUrl + imgsrc + ')!important;background-size:100% 100%!important;"></td>';
+      };
     }
   })();
   function stretchTd(className, content) {
     if (!content) content = '&nbsp;';
-    return '<' + mod_core.TAG_TD + ' rowspan="2" class="' + className + '">' + content + '</' + mod_core.TAG_TD + '>';
+    return '<td rowspan="2" class="aghtex-css-td ' + className + '">' + content + '</td>';
   }
   //------------------------------------------------------------
   _Mod.GetStretchImageTd = stretchImg;
@@ -785,9 +785,9 @@ context "mode.math" new("global") {
             buff.push(bracket_dict[c].replace(/\browspan="2"/, 'rowspan="' + rowspan + '"'));
           return true;
         } else {
-          buff.push('<', mod_core.TAG_TD, ' rowspan="', rowspan, '">');
+          buff.push('<td rowspan="', rowspan, '" class="aghtex-css-td">');
           output.error('mod:base.cmd:left.NotSupportedSymbol', {ch: c}, 'mod:base.OutputStretchBracketTd');
-          buff.push(content, '</', mod_core.TAG_TD, '>');
+          buff.push(content, '</td>');
           return false;
         }
       }
@@ -803,14 +803,14 @@ context "mode.math" new("global") {
     function proc_subsup() {
       switch ((sbsp.sup ? 1 : 0) + (sbsp.sub ? 2 : 0)) {
         case 1: // 上付
-          buff.push('<', mod_core.TAG_TD, ' rowspan="2" class="aghtex-cmdleft-cell-sup aghtex-tag-script"><span class="aghtex-cmdleft-sup">', sbsp.sup, '</span></', mod_core.TAG_TD, '>');
+          buff.push('<td rowspan="2" class="aghtex-css-td aghtex-cmdleft-cell-sup aghtex-tag-script"><tex:i class="aghtex-cmdleft-sup">', sbsp.sup, '</tex:i></td>');
           break;
         case 2: // 下付
-          buff.push('<', mod_core.TAG_TD, ' rowspan="2" class="aghtex-cmdleft-cell-sub aghtex-tag-script"><span class="aghtex-cmdleft-sub">', sbsp.sub, '</span></', mod_core.TAG_TD, '>');
+          buff.push('<td rowspan="2" class="aghtex-css-td aghtex-cmdleft-cell-sub aghtex-tag-script"><tex:i class="aghtex-cmdleft-sub">', sbsp.sub, '</tex:i></td>');
           break;
         case 3: // 両方
-          buff.push('<', mod_core.TAG_TD, ' class="aghtex-cmdleft-cell-sup aghtex-tag-script"><span class="aghtex-cmdleft-sup">', sbsp.sup, '</span></', mod_core.TAG_TD, '>');
-          bottom_row += '<' + mod_core.TAG_TD + ' class="aghtex-cmdleft-cell-sub aghtex-tag-script"><span class="aghtex-cmdleft-sub">' + sbsp.sub + '</span></' + mod_core.TAG_TD + '>';
+          buff.push('<td class="aghtex-css-td aghtex-cmdleft-cell-sup aghtex-tag-script"><tex:i class="aghtex-cmdleft-sup">', sbsp.sup, '</tex:i></td>');
+          bottom_row += '<td class="aghtex-css-td aghtex-cmdleft-cell-sub aghtex-tag-script"><tex:i class="aghtex-cmdleft-sub">' + sbsp.sub + '</tex:i></td>';
           break;
       }
     }
@@ -835,7 +835,7 @@ context "mode.math" new("global") {
     proc_subsup();
 
     //-- [content]
-    buff.push('<', mod_core.TAG_TD, ' class="aghtex-cmdleft-cell" rowspan="2"><tex:i class="aghtex-cmdleft-tmargin"></tex:i>');
+    buff.push('<td class="aghtex-css-td aghtex-cmdleft-cell" rowspan="2"><tex:i class="aghtex-cmdleft-tmargin"></tex:i>');
 
     // setup context and read under the context
     var ctx = doc.wrap_context(doc.currentCtx);
@@ -848,7 +848,7 @@ context "mode.math" new("global") {
     buff.push(doc.Read(ctx));
 
     //-- [epilogue]
-    buff.push('<tex:i class="aghtex-cmdleft-bmargin"></tex:i></', mod_core.TAG_TD, '>');
+    buff.push('<tex:i class="aghtex-cmdleft-bmargin"></tex:i></td>');
 
     _Mod.OutputStretchBracketTd(output, ltr, 2);
 
