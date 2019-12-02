@@ -810,7 +810,7 @@
         return sheet.insertRule(selector + "{" + css + "}", rules.length);
       };
     })();
-    css_add('.entry-content pre[lang^="tex:"]', 'background-color: #eee; color: black; white-space: normal; border: 1px dashed gray; padding: 0; font-size: 70%;');
+    css_add('.entry-content pre[data-lang^="tex:"]', 'background-color: #eee; color: black; white-space: normal; border: 1px dashed gray; padding: 0; font-size: 70%;');
 
 
     // 直接 agh.js, agh.lang.tex.js を読み込んでいると仮定
@@ -827,9 +827,16 @@
 
           function processElementNode_code(code) {
             var tnode = code.previousSibling;
-            if (!tnode) return;
-            if (tnode.nodeType == 1 && /^span$/i.test(tnode.tagName) && tnode.childNodes.length)
-              tnode = tnode.childNodes[tnode.childNodes.length - 1];
+            for (;;) {
+              if (!tnode)
+                return;
+              else if (tnode.nodeType == 3 && getTextContent(tnode) == "")
+                tnode = tnode.previousSibling;
+              else if (tnode.nodeType == 1 && /^span$/i.test(tnode.tagName) && tnode.childNodes.length)
+                tnode = tnode.childNodes[tnode.childNodes.length - 1];
+              else
+                break;
+            }
             if (tnode.nodeType != 3) return;
             var text = getTextContent(tnode);
             if (!text.endsWith("$")) return;
@@ -910,7 +917,7 @@
         agh.Array.each(document.getElementsByClassName("entry-footer"), function(elem) {
           var div = document.createElement('div');
           div.innerHTML = '<a class="aghfly-powered-hatena" href="https://akinomyoga.hatenablog.com/entry/2019/11/30/180113" target="_blank">Powered by aghtex4hatenablog</a>';
-          css_add('a.aghfly-powered-hatena', 'color: white; background: gray; padding: 0.3ex; font-size: 80%; font-weight: bold;');
+          css_add('a.aghfly-powered-hatena', 'color: white; background: gray; padding: 0.3ex; font: bold 80% serif; text-decoration: underline;');
           if (elem.childNodes[0])
             elem.insertBefore(div, elem.childNodes[0]);
           else
