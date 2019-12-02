@@ -805,7 +805,6 @@
 
       var rules = sheet.cssRules || sheet.rules;
       return function(selector, css) {
-        console.log(selector, css, rules.length);
         return sheet.insertRule(selector + "{" + css + "}", rules.length);
       };
     })();
@@ -848,7 +847,7 @@
               pre.style.display = 'none';
             } else if (lang == "tex:plain") {
               ent = {type: "para"};
-            } else if (lang.startsWith('tex:')) {
+            } else if (lang && lang.startsWith('tex:')) {
               ent = {type: "begin", envname: lang.substr(4)};
             }
 

@@ -169,5 +169,18 @@
 
 <p class="test-hatena1">これは agh.fly.js によって挿入された CSS 規則が動作するかを確認するための文章です。</p>
 
+<h3>Q: 左要素の右marginと右要素の左marginは max なのか sum なのか</h3>
+<p>試してみると以下の様に margin-right 1em と margin-left 1em はくっつかない。2em になっている。</p>
+<p><span style="margin-right:1em;">ABC</span><span style="margin-left:1em;">DEF</span> 右paddingと左paddingは融合しない</p>
+<p><span style="padding-right:1em;">ABC</span><span style="padding-left:1em;">DEF</span> 右marginと左marginは融合して欲しい</p>
+<p>調べてみるとこの margin がくっつく振る舞いは margin collapsing というらしい。
+  然し、margin collapsing が発生するのは margin-top と margin-bottom だけらしい。
+  改めて調べてみるとそれができないか質問している人を見つけたが回答はついていない。
+</p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Box_Model/Mastering_margin_collapsing">Mastering margin collapsing - CSS: Cascading Style Sheets | MDN</a></li>
+<li><a href="https://stackoverflow.com/questions/22722074/is-it-possible-to-collapse-through-left-and-right-margins-with-a-parent-element">css - Is it possible to collapse through left and right margins with a parent element? - Stack Overflow</a></li>
+</ul>
+
 </body>
 </html>
