@@ -785,7 +785,9 @@
     });
   }
 
-  if (script_hash == '#hatena') {
+  if (script_hash == '#hatena' && window.aghtex4hatenablog != "processed") {
+    window.aghtex4hatenablog = "processed";
+
     // 参考: agh.dom.js
     var css_add = (function() {
       var sheet;
@@ -825,7 +827,10 @@
 
           function processElementNode_code(code) {
             var tnode = code.previousSibling;
-            if (!tnode || tnode.nodeType != 3) return;
+            if (!tnode) return;
+            if (tnode.nodeType == 1 && /^span$/i.test(tnode.tagName) && tnode.childNodes.length)
+              tnode = tnode.childNodes[tnode.childNodes.length - 1];
+            if (tnode.nodeType != 3) return;
             var text = getTextContent(tnode);
             if (!text.endsWith("$")) return;
             setTextContent(tnode, text.substr(0, text.length - 1));
@@ -900,7 +905,18 @@
         extractAllTargets(document.body, params);
       }
 
-      agh.fly.latex_v2.transform(document.body, params);
+      if (params.targets.length) {
+        agh.fly.latex_v2.transform(document.body, params);
+        agh.Array.each(document.getElementsByClassName("entry-footer"), function(elem) {
+          var div = document.createElement('div');
+          div.innerHTML = '<a class="aghfly-powered-hatena" href="https://akinomyoga.hatenablog.com/entry/2019/11/30/180113" target="_blank">Powered by aghtex4hatenablog</a>';
+          css_add('a.aghfly-powered-hatena', 'color: white; background: gray; padding: 0.3ex; font: bold 80% serif; text-decoration: underline;');
+          if (elem.childNodes[0])
+            elem.insertBefore(div, elem.childNodes[0]);
+          else
+            elem.appendChild(div);
+        });
+      }
     });
   }
 })();
