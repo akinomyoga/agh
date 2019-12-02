@@ -17,9 +17,8 @@
   .test2-monospace { font: normal 1.0em/1 'MS Gothic'!important; }
   </style>
 
-  <meta name="agh-fly-type" content="tex" />
-  <script type="text/javascript" charset="utf-8" src="../out/agh.js"></script>
-  <script type="text/javascript" charset="utf-8" src="../out/agh.lang.tex.js"></script>
+  <script type="text/javascript" charset="utf-8" src="../out/agh.js?20191201"></script>
+  <script type="text/javascript" charset="utf-8" src="../out/agh.lang.tex.js?20191201"></script>
   <script type="text/javascript" charset="utf-8" src="../out/agh.fly.js?20191201#hatena"></script>
 
   <!-- From http://genkuroki.web.fc2.com/ -->
@@ -52,7 +51,12 @@
 </head>
 <body>
 <h1>Test $hello$</h1>
-<p>This is a test $\frac12$. 以下の定義 $\eqref{eq:defsA}$ と $\eqref{eq:defsB}$ を考える。</p>
+<p>これはテストです $\frac12$. 以下の定義 $\eqref{eq:defsA}$ と $\eqref{eq:defsB}$ を考える。
+  数式の着色のテスト $\textcolor{red}{123}\textcolor{blue}{abc}\textcolor{red}{\dfrac12}$
+</p>
+<pre data-lang="tex:preamble">
+\usepackage{color}
+</pre>
 <pre data-lang="tex:align">
   A_n^k &= \sqrt{\langle a_n^k\rangle_{\rm ev}}, \label{eq:defsA} \\
   B_n^k &= \sqrt{\langle b_n^k\rangle_{\rm ev}}. \label{eq:defsB}
