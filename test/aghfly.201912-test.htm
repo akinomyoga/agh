@@ -141,25 +141,32 @@
   X &= \left\|\left\|\left\|\frac1{1+\frac1{2+x}}\right\|\right\|\right\|
 </pre>
 
+<p>$<code>\Lambda</code> <span>hello$</span><code>\Psi</code></p>
+
+<h1>CSS テスト</h1>
 <h2>Test for table</h2>
+<p>display を使って &lt;table&gt;, &lt;tr&gt;, &lt;td&gt; を使わずに表を作れるか?</p>
 <tex:table class="aghfly-test1">
 <tex:tbody>
 <tex:tr><tex:td>a_11</tex:td><tex:td>a_12</tex:td></tex:tr>
 <tex:tr><tex:td>a_21</tex:td><tex:td>a_22</tex:td></tex:tr>
 </tex:tbody>
 </tex:table>
+<p>どうやら colspan や rowspan を指定しても有効にならないので使えない。</p>
 <div class="aghtex">
   X &= 3 \left(\int_{-\infty}^\infty dx \frac1{2+\frac1{3+x}} + 2\right) + \left(\right), \\
   Y &= \alpha \begin{pmatrix}a & b & c \\ d & e & f \\ g & h & i \end{pmatrix}_{-\infty}^\infty, \\
   Z &= \binom{n}{\int dx x^n} + \genfrac{[}{]}{1}{0}{x}{\int dx x^m}.
 </div>
 
-<h2>Test CSS</h2>
+<h2>Test for <code>!important</code></h2>
 <p>+ <span class="test1-hello" style="color:green;">Is this Green?</span></p>
 <p>+ <span class="test2-monospace">Is this Bold?</span>
     <span class="test2-monospace" style="font:bold 1.2em/1 'MS Mincho';">Is this Bold?</span>
     <span class="test2-monospace" style="font-weight:bold;font-family: MS Mincho;">Is this Bold?</span>
     <span style="font-weight:bold;font-family:MS Mincho;">Bold Serif</span></p>
+
+<p>table, tr, td 要素の既定のスタイルは何だろうか。</p>
 <table>
 <tbody>
 <tr><th>style</th><th>value</th></tr>
@@ -167,6 +174,7 @@
 </tbody>
 </table>
 
+<h3>Dynamics CSS</h3>
 <p class="test-hatena1">これは agh.fly.js によって挿入された CSS 規則が動作するかを確認するための文章です。</p>
 
 <h3>Q: 左要素の右marginと右要素の左marginは max なのか sum なのか</h3>

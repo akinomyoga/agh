@@ -825,7 +825,10 @@
 
           function processElementNode_code(code) {
             var tnode = code.previousSibling;
-            if (!tnode || tnode.nodeType != 3) return;
+            if (!tnode) return;
+            if (tnode.nodeType == 1 && /^span$/i.test(tnode.tagName) && tnode.childNodes.length)
+              tnode = tnode.childNodes[tnode.childNodes.length - 1];
+            if (tnode.nodeType != 3) return;
             var text = getTextContent(tnode);
             if (!text.endsWith("$")) return;
             setTextContent(tnode, text.substr(0, text.length - 1));
