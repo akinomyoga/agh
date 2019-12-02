@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" charset="utf-8" src="../out/agh.js"></script>
+<script type="text/javascript">
+agh.scripts.wait(["event:onload", "agh.lang.tex.js"], function() {
+  function convertDocument(id) {
+    var div = document.getElementById(id);
+    var source = agh.Text.Unescape(div.innerHTML, "html");
+    var doc = new agh.LaTeX.Document(source);
+    var result = doc.Parse();
+    div.innerHTML = result;
+  }
+  convertDocument("texdoc1");
+  convertDocument("texdoc2");
+});
+</script>
+<style type="text/css">
+.aghtex-page {
+  width: 50em; margin-left: auto; margin-right: auto; min-height: 100%;
+  padding: 1em; border: 1px solid silver; background-color: white;
+}
+body {
+  background-color: gray;
+}
+</style>
+</head>
+<body>
+<div id="texdoc1" class="aghtex-page">
+\documentclass[amsmath,amssymb]{revtex4-1}
+\begin{document}
+\title{Test agh.lang.latex 201801}
+\author{\verb+@akinomyoga+}
+\maketitle
+アクセント記号の高さはブラウザを更新すると時々変わる気がする。
+そもそもブラウザによっても結果が異なるので高さの設定はブラウザごとに切り替えている。
+CSSの仕様的には定まっていないのだろうか。
+
+\section{数式モード}
+\def\CheckAccent#1{%
+  #1{a}#1{b}#1{c}#1{d}#1{e}#1{f}#1{g}#1{h}#1{i}#1{j}%
+  #1{k}#1{l}#1{m}#1{n}#1{o}#1{p}#1{q}#1{r}#1{s}#1{t}%
+  #1{u}#1{v}#1{w}#1{x}#1{y}#1{z} \atop
+  #1{A}#1{B}#1{C}#1{D}#1{E}#1{F}#1{G}#1{H}#1{I}#1{J}%
+  #1{K}#1{L}#1{M}#1{N}#1{O}#1{P}#1{Q}#1{R}#1{S}#1{T}%
+  #1{U}#1{V}#1{W}#1{X}#1{Y}#1{Z} \atop
+  #1{あ}#1{ア}#1{漢}#1{0}\_
+}
+取りあえず数式モードのアクセント記号\\[1ex]
+\begin{center}
+\begin{tabular}{|c|c|} \hline
+  コマンド & 表示結果 \\ \hline \hline
+  \verb+\bar+ & $\CheckAccent{\bar}$ \\ \hline
+  \verb+\hat+ & $\CheckAccent{\hat}$ \\ \hline
+  \verb+\tilde+ & $\CheckAccent{\tilde}$ \\ \hline
+  \verb+\vec+ & $\CheckAccent{\vec}$ \\ \hline
+  \verb+\dot+ & $\CheckAccent{\dot}$ \\ \hline
+  \verb+\ddot+ & $\CheckAccent{\ddot}$ \\ \hline
+  \verb+\dddot+ & $\CheckAccent{\dddot}$ \\ \hline
+\end{tabular}
+\end{center}
+
+\section{パラグラフモード}
+\def\CheckAccent#1{%
+  \text{#1{a}#1{b}#1{c}#1{d}#1{e}#1{f}#1{g}#1{h}#1{i}#1{j}%
+  #1{k}#1{l}#1{m}#1{n}#1{o}#1{p}#1{q}#1{r}#1{s}#1{t}%
+  #1{u}#1{v}#1{w}#1{x}#1{y}#1{z}} \atop
+  \text{#1{A}#1{B}#1{C}#1{D}#1{E}#1{F}#1{G}#1{H}#1{I}#1{J}%
+  #1{K}#1{L}#1{M}#1{N}#1{O}#1{P}#1{Q}#1{R}#1{S}#1{T}%
+  #1{U}#1{V}#1{W}#1{X}#1{Y}#1{Z}}
+}
+パラグラフモードのアクセント記号\\[1ex]
+\begin{center}
+\begin{tabular}{|c|c|} \hline
+  コマンド & 表示結果 \\ \hline \hline
+  \verb+\'+ & $\CheckAccent{\'}$ \\ \hline
+  \verb+\`+ & $\CheckAccent{\`}$ \\ \hline
+  \verb+\"+ & $\CheckAccent{\"}$ \\ \hline
+  \verb+\~+ & $\CheckAccent{\~}$ \\ \hline
+  \verb+\^+ & $\CheckAccent{\^}$ \\ \hline
+  \verb+\v+ & $\CheckAccent{\v}$ \\ \hline
+  \verb+\H+ & $\CheckAccent{\H}$ \\ \hline
+  \verb+\t+ & $\CheckAccent{\t}$ \\ \hline
+  \verb+\c+ & $\CheckAccent{\c}$ \\ \hline
+\end{tabular}
+\end{center}
+
+\end{document}
+</div>
+</body>
+</html>
