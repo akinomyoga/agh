@@ -6,6 +6,7 @@
 
 - `make` (GNU Make)
 - `gawk` (GNU awk)
+- `wget`, `zip`, `unzip`
 - A C# compiler: `csc` (Windows) or `dmcs` (Mono)
 - CLI: .NET Framework (Windows) or `mono` (Mono)
 - [`uglifyjs`](https://github.com/mishoo/UglifyJS2) with Node.js
@@ -14,6 +15,8 @@
 - `lwiki` (optional) [lwiki](https://github.com/akinomyoga/lwiki)
 
 ### Build and setup
+
+You need to have access to GitHub with `git@github.com:...`, i.e., the SSH key should be added to your GitHub account.
 
 ```bash
 $ git clone --recursive git@github.com:akinomyoga/agh.git

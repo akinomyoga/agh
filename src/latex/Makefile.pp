@@ -106,9 +106,9 @@ jgzfiles: $(jsfiles:.js=.js.gz) $(jsfiles:.js=.jgz)
 #-------------------------------------------------------------------------------
 # resources
 #-------------------------------------------------------------------------------
-AgehaFontsDir:=aghfonts
+AgehaFontsDir := aghfonts
 
-#%define RegisterTTFFile (
+#%define RegisterTTFFile
 resources:=$(resources)      \
 	$(OUTDIR)/%fontname%.ttf   \
 	$(OUTDIR)/%fontname%.eot   \
@@ -120,8 +120,15 @@ $(OUTDIR)/%fontname%.eot: res/%fontname%.ttf
 $(OUTDIR)/%fontname%.woff: res/%fontname%.ttf
 	$(SFNT2WOFF) $<
 	mv res/%fontname%.woff $(OUTDIR)
-#%)
-#%define RegisterAgehaFont (
+#%end
+
+.PHONY: submodule
+submodule: $(AgehaFontsDir)/LICENSE
+$(AgehaFontsDir)/LICENSE:
+	git submodule init
+	git submodule update
+
+#%define RegisterAgehaFont
 resources:=$(resources)      \
 	$(OUTDIR)/%fontname%.ttf   \
 	$(OUTDIR)/%fontname%.eot   \
@@ -133,7 +140,8 @@ $(OUTDIR)/%fontname%.eot: $(AgehaFontsDir)/%fontname%.ttf
 $(OUTDIR)/%fontname%.woff: $(AgehaFontsDir)/%fontname%.ttf
 	$(SFNT2WOFF) $<
 	mv $(AgehaFontsDir)/%fontname%.woff $(OUTDIR)
-#%)
+$(AgehaFontsDir)/%fontname%.ttf: | submodule
+#%end
 #%expand RegisterAgehaFont.r|%fontname%|aghtex_mathit|
 #%expand RegisterAgehaFont.r|%fontname%|aghtex_mathbm|
 #%expand RegisterAgehaFont.r|%fontname%|aghtex_mathrm|

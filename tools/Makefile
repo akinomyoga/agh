@@ -26,20 +26,23 @@ all: $(OUTDIR)/reptxt.exe
 $(OUTDIR)/reptxt.exe: reptxt.cs | $(OUTDIR)
 	$(CSC) $(CSFLAGS) '-out:$@' $<
 
+.PHONY: submodule
+submodule: ext/unidata/Makefile
+ext/unidata/Makefile:
+	git submodule init
+	git submodule update
+
 .PHONY: make-unidata
 all: make-unidata
-make-unidata:
+make-unidata: | submodule
 	+make -C ext/unidata
 
 all: $(OUTDIR)/ttf2eot.exe
 $(OUTDIR)/ttf2eot.exe: ext/ttf2eot/ttf2eot.exe
 	cp $< $@
-ext/ttf2eot/ttf2eot.exe: | ext/ttf2eot/Makefile ext/ttf2eot/.gitignore
+ext/ttf2eot/ttf2eot.exe: | submodule ext/ttf2eot/.gitignore
 	+make -C ext/ttf2eot
-ext/ttf2eot/Makefile:
-	git submodule init
-	git submodule update
-ext/ttf2eot/.gitignore: | ext/ttf2eot/Makefile
+ext/ttf2eot/.gitignore: | submodule
 	printf '%s\n' /.gitignore *.o /ttf2eot /ttf2eot.exe > $@
 
 all: $(OUTDIR)/sfnt2woff.exe

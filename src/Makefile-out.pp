@@ -25,7 +25,11 @@ endif
 #  definitions
 #==============================================================================
 
-export FTPPASS:=$(shell awk -F: '$$1=="myoga.web.fc2.com"{printf("%s",$$2)}' ~/.ssh/ftppass.txt)
+FTPPASS :=
+ifeq ($(USER)@$(HOSTNAME),murase@vaio2016)
+  FTPPASS := $(shell test -f ~/.ssh/ftppass.txt && awk -F: '$$1=="myoga.web.fc2.com"{printf("%s",$$2)}' ~/.ssh/ftppass.txt)
+endif
+export FTPPASS
 
 myogaftpfiles:=stamp@myoga.web.fc2.com
 stamp@myoga.web.fc2.com:

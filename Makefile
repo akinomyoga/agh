@@ -49,6 +49,7 @@ make-tools:
 	+make -C tools all
 make-src: make-tools src/Makefile
 	+make -C src all
+	+make -C out all
 src/Makefile: src/Makefile.pp
 	tools/ext/mwg_pp.awk $< > $@
 

@@ -166,6 +166,10 @@ i prog-type.png
 #%x agh::js_from.r|%name%|agh.dom|.r|%from%|agh.dom/agh.dom2.js|
 #%x agh::js_from.r|%name%|agh.sprintf|.r|%from%|agh.sprintf/agh.sprintf.js|
 
+agh.sprintf/agh.sprintf.js:
+	git submodule init
+	git submodule update
+
 #-------------------------------------------------------------------------------
 # resources for forms.js
 #-------------------------------------------------------------------------------
