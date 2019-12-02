@@ -827,9 +827,16 @@
 
           function processElementNode_code(code) {
             var tnode = code.previousSibling;
-            if (!tnode) return;
-            if (tnode.nodeType == 1 && /^span$/i.test(tnode.tagName) && tnode.childNodes.length)
-              tnode = tnode.childNodes[tnode.childNodes.length - 1];
+            for (;;) {
+              if (!tnode)
+                return;
+              else if (tnode.nodeType == 3 && getTextContent(tnode) == "")
+                tnode = tnode.previousSibling;
+              else if (tnode.nodeType == 1 && /^span$/i.test(tnode.tagName) && tnode.childNodes.length)
+                tnode = tnode.childNodes[tnode.childNodes.length - 1];
+              else
+                break;
+            }
             if (tnode.nodeType != 3) return;
             var text = getTextContent(tnode);
             if (!text.endsWith("$")) return;
