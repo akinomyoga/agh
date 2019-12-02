@@ -810,7 +810,7 @@
         return sheet.insertRule(selector + "{" + css + "}", rules.length);
       };
     })();
-    css_add('.entry-content pre[lang^="tex:"]', 'background-color: #eee; color: black; white-space: normal; border: 1px dashed gray; padding: 0; font-size: 70%;');
+    css_add('.entry-content pre[data-lang^="tex:"]', 'background-color: #eee; color: black; white-space: normal; border: 1px dashed gray; padding: 0; font-size: 70%;');
 
 
     // 直接 agh.js, agh.lang.tex.js を読み込んでいると仮定

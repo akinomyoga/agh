@@ -5379,9 +5379,17 @@ new function(){
   }
 
   (function() {
-    function is_single_lower(html) {
-      var text = agh.Text.Unescape(html, "html");
+    function is_single_lower(html, text) {
+      if (text == null) text = agh.Text.Unescape(html, "html");
       return /^[acegijmnopqrsuvwxyzαγεηικμνοπρστυφχψω\u0131＝－]*$/.test(text);
+    }
+    function is_single_upper(html, text) {
+      if (text == null) text = agh.Text.Unescape(html, "html");
+      return /^[βδζθλξΑ-ΩbdfhkltA-Z∂]$/.test(text);
+    }
+    function is_single_digit(html, text) {
+      if (text == null) text = agh.Text.Unescape(html, "html");
+      return /^[0-9]$/.test(text);
     }
     function is_slanted(html,ismath) {
       if (ismath)
@@ -5452,15 +5460,28 @@ new function(){
         return ns.Command2("f", "#>1", function(doc, argv) {
           var content = argv[1].trim();
           var t = type;
+          var text = agh.Text.Unescape(content, "html");
           if (content.length === 0)
             content = '&nbsp;';
-          else if (is_single_lower(content)) {
+          else if (text == "t") {
+            if (is_slanted(content, ismath))
+              t += "M"; // 数式 t
+            else
+              t += "T"; // 直立体 t
+          } else if (is_single_lower(content, text)) {
             if (is_slanted(content, ismath))
               t += "L"; // 数式小文字
             else
               t += "S"; // 直立体小文字
-          } else if (is_slanted_fullheight(content,ismath))
-            t += "U"; // 数式大文字
+          } else if (is_single_upper(content, text)) {
+            if (is_slanted(content, ismath))
+              t += "U"; // 数式大文字
+            else
+              t += "N"; // 直立体大文字
+          } else {
+            if (is_single_digit(content, text))
+              t += "N";
+          }
 
           var buff = doc.currentCtx.output.buff;
           buff.push(ht1, content, ht2, t, ht3);

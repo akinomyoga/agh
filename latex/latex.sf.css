@@ -187,7 +187,7 @@ tex\:i.aghtex-stackrel-top { top: 0.52em; }
 tex\:i.aghtex-stackrel-top-lower { top: 0.87em; }
 
 
-tex\:i.aghtex-accent { position: relative; top: 0; left: 0; }
+tex\:i.aghtex-accent { position: relative; top: 0; left: 0; line-height: 1; }
 tex\:i.aghtex-accent-acc { display: inline-block; margin-top: 0.10em; }
 tex\:i.aghtex-accent-vec { display: inline-block; margin-top: 0.15em; }
 
@@ -199,27 +199,41 @@ tex\:i.aghtex-accent-symbol-lowT,
 tex\:i.aghtex-accent-symbol-acc ,
 tex\:i.aghtex-accent-symbol-accS,
 tex\:i.aghtex-accent-symbol-accL,
+tex\:i.aghtex-accent-symbol-accT,
+tex\:i.aghtex-accent-symbol-accM,
+tex\:i.aghtex-accent-symbol-accN,
 tex\:i.aghtex-accent-symbol-accU,
 tex\:i.aghtex-accent-symbol-vec ,
 tex\:i.aghtex-accent-symbol-vecS,
 tex\:i.aghtex-accent-symbol-vecL,
+tex\:i.aghtex-accent-symbol-vecT,
+tex\:i.aghtex-accent-symbol-vecM,
+tex\:i.aghtex-accent-symbol-vecN,
 tex\:i.aghtex-accent-symbol-vecU { position: relative; margin-left: -0.5ex; margin-right: -0.5ex; }
 
-tex\:i.aghtex-accent-symbol-low { top: 0.00em; }
+tex\:i.aghtex-accent-symbol-low  { top: 0.03em; }
 tex\:i.aghtex-accent-symbol-lowT { top: 0.20em; }
 
 tex\:i.aghtex-accent-symbol-accS,
-tex\:i.aghtex-accent-symbol-accL { top: -0.10em; }
-tex\:i.aghtex-accent-symbol-acc,
-tex\:i.aghtex-accent-symbol-accU { top: -0.35em}
+tex\:i.aghtex-accent-symbol-accL { top: -0.00em; }
+tex\:i.aghtex-accent-symbol-accT,
+tex\:i.aghtex-accent-symbol-accM { top: -0.15em; }
+tex\:i.aghtex-accent-symbol-accN,
+tex\:i.aghtex-accent-symbol-accU { top: -0.25em; }
+tex\:i.aghtex-accent-symbol-acc  { top: -0.32em; }
 tex\:i.aghtex-accent-symbol-vecS,
-tex\:i.aghtex-accent-symbol-vecL { top: -0.48em; }
-tex\:i.aghtex-accent-symbol-vec,
-tex\:i.aghtex-accent-symbol-vecU { top: -0.70em; }
+tex\:i.aghtex-accent-symbol-vecL { top: -0.40em; }
+tex\:i.aghtex-accent-symbol-vecT,
+tex\:i.aghtex-accent-symbol-vecM { top: -0.50em; }
+tex\:i.aghtex-accent-symbol-vecN,
+tex\:i.aghtex-accent-symbol-vecU { top: -0.65em; }
+tex\:i.aghtex-accent-symbol-vec  { top: -0.70em; }
 
 /* italic corrections */
 tex\:i.aghtex-accent-symbol-accL,
 tex\:i.aghtex-accent-symbol-vecL { left: 0.08em; }
+tex\:i.aghtex-accent-symbol-accM,
+tex\:i.aghtex-accent-symbol-vecM { left: 0.10em; }
 tex\:i.aghtex-accent-symbol-accU,
 tex\:i.aghtex-accent-symbol-vecU { left: 0.15em; }
 
