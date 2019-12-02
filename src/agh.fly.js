@@ -785,7 +785,9 @@
     });
   }
 
-  if (script_hash == '#hatena') {
+  if (script_hash == '#hatena' && window.aghtex4hatenablog != "processed") {
+    window.aghtex4hatenablog = "processed";
+
     // 参考: agh.dom.js
     var css_add = (function() {
       var sheet;
@@ -903,7 +905,18 @@
         extractAllTargets(document.body, params);
       }
 
-      agh.fly.latex_v2.transform(document.body, params);
+      if (params.targets.length) {
+        agh.fly.latex_v2.transform(document.body, params);
+        agh.Array.each(document.getElementsByClassName("entry-footer"), function(elem) {
+          var div = document.createElement('div');
+          div.innerHTML = '<a class="aghfly-powered-hatena" href="https://akinomyoga.hatenablog.com/entry/2019/11/30/180113" target="_blank">Powered by aghtex4hatenablog</a>';
+          css_add('a.aghfly-powered-hatena', 'color: white; background: gray; padding: 0.3ex; font-size: 80%; font-weight: bold;');
+          if (elem.childNodes[0])
+            elem.insertBefore(div, elem.childNodes[0]);
+          else
+            elem.appendChild(div);
+        });
+      }
     });
   }
 })();

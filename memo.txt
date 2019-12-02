@@ -111,8 +111,6 @@ agh/js - Ageha JavaScript Library v3.2
 
 2019-12-01
 
-  * aghfly (hatena): 実際に変換が実施された時に credit を自動的に挿入する。
-
   * aghtex: \tag に対応する
 
     先ず tex の動作を確認しなければならない。
@@ -573,6 +571,9 @@ latex
 
   * aghfly (hatena): $`` が効かない場合がある。$`` が ...$</span><code>... になっている。
     対応した。これの対応は簡単だった。
+
+  * aghfly (hatena): 実際に変換が実施された時に credit を自動的に挿入する。
+    簡単に対応した。
 
 2019-12-01
 
