@@ -841,10 +841,10 @@
           }
 
           function processElementNode_pre(pre) {
-            var ent;
+            var ent = null;
             var lang = pre.dataset.lang;
             if (lang == "tex:preamble") {
-              params.preamble += getTextContent(elem);
+              params.preamble += getTextContent(pre) + "\n";
               pre.style.display = 'none';
             } else if (lang == "tex:plain") {
               ent = {type: "para"};

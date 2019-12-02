@@ -232,6 +232,7 @@
  *  @fn agh.scripts.load_js(filename)
  *  @fn agh.scripts.load_css(filename)
  *  @var agh.scripts.AGH_URLBASE
+ *  @var agh.scripts.DOCUMENT
  *  @var agh.scripts.DOCUMENT_HEAD
  *  @var agh.scripts.JGZ_EXTENSION
  */
@@ -2195,7 +2196,7 @@ Function.prototype.get_name = function() {
   if (agh.browser.vNode) {
     agh.memcpy(agh.scripts, {
       load_js: function(filename) {
-        //require(agh.scripts.AGH_URLBASE+"/"+filename);
+        //require(agh.scripts.AGH_URLBASE + "/" + filename);
         require("./" + filename);
         this.files[filename] = "ready";
         return true;
@@ -2243,7 +2244,7 @@ Function.prototype.get_name = function() {
         this.DOCUMENT_HEAD.appendChild(link);
         return true;
       },
-      AGH_URLBASE: "",
+      AGH_URLBASE: 'https://akinomyoga.github.io/agh/',
       DOCUMENT: document,
       DOCUMENT_HEAD: document.getElementsByTagName("head")[0],
       JGZ_EXTENSION: ".js"
@@ -2252,20 +2253,16 @@ Function.prototype.get_name = function() {
     var scripts = document.getElementsByTagName("script");
     for (var i = 0; i < scripts.length; i++) {
       var src = scripts[i].src;
+      if (!src) continue;
+      src = src.replace(/[?#].*$/);
 
-      var fname = agh.Text.Url.GetFileName(src);
-      var js_ext = ".js";
-      if (fname.endsWith(".js.gz")) {
-        fname = fname.slice(0, -3);
-        js_ext = ".js.gz";
-      } else if (fname.endsWith(".jgz")) {
-        fname = fname.slice(0, -4) + ".js";
-        js_ext = ".jgz";
-      } else if (fname.endsWith(".min.js")) {
-        fname = fname.slice(0, -7) + ".js";
-        js_ext = ".min.js";
-      }
-      if (fname != THIS_FILE) continue;
+      var filename = agh.Text.Url.GetFileName(src);
+      var m = filename.match(/^(.*)(\.(?:js|js\.gz|jgz|min\.js))$/);
+      if (!m) continue;
+
+      var original_filename = m[1] + ".js";
+      var js_ext = m[2];
+      if (original_filename != THIS_FILE) continue;
 
       agh.scripts.AGH_URLBASE = agh.Text.Url.Directory(src);
       agh.scripts.JGZ_EXTENSION = js_ext;
