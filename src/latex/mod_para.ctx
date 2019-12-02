@@ -47,16 +47,16 @@ context "mode.para" {
   //@A 字体
   _Ctx.DefineCommand({
     // - 文字の大きさ
-    normalsize  : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-normal">', '</tex:f>'),
-    tiny        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-small4">', '</tex:f>'),
-    scriptsize  : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-small3">', '</tex:f>'),
-    footnotesize: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-small2">', '</tex:f>'),
-    small       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-small1">', '</tex:f>'),
-    large       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-large1">', '</tex:f>'),
-    Large       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-large2">', '</tex:f>'),
-    LARGE       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-large3">', '</tex:f>'),
-    huge        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-large4">', '</tex:f>'),
-    Huge        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-size-large5">', '</tex:f>'),
+    normalsize  : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-normal">', '</tex:f>'),
+    tiny        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-small4">', '</tex:f>'),
+    scriptsize  : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-small3">', '</tex:f>'),
+    footnotesize: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-small2">', '</tex:f>'),
+    small       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-small1">', '</tex:f>'),
+    large       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large1">', '</tex:f>'),
+    Large       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large2">', '</tex:f>'),
+    LARGE       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large3">', '</tex:f>'),
+    huge        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large4">', '</tex:f>'),
+    Huge        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large5">', '</tex:f>'),
 
     // - フォント
     textrm: ['s@;#>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
