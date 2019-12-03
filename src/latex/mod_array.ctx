@@ -1157,7 +1157,7 @@ _Mod.eqno_output = function(doc, actx, output) {
 
     buff.push('<a class="aghtex-label" name="', id, '">&nbsp;</a>');
     if (counter != null)
-      doc.references.displayedText['ref@' + labels[0]] = counter.arabic();
+      doc.references.displayedHtml['ref@' + labels[0]] = counter.arabic();
 
     labels.length = 0;
   }

@@ -945,12 +945,12 @@ ns.Document = function(text, context) {
       this.lastSectionId = id;
       return id;
     },
-    displayedText: {},
+    displayedHtml: {},
     label_id_map: {},
     label_page_map: {}
   };
-  // refs.displayedText[sec:attention] = "1.2.4";
-  // refs.displayedText[eq:firstEquation] = "1";
+  // refs.displayedHtml[sec:attention] = "1.2.4";
+  // refs.displayedHtml[eq:firstEquation] = "1";
 
   // document variables
   this.flags = {};

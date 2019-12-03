@@ -579,6 +579,11 @@ latex
 
 2019-12-03
 
+  * aghtex: tableofcontents が壊れている。 [#D0014]
+    これは最近式番号の参照の動的な置換に対応した時に埋め込んだバグだった。
+    references.displayedText には実際のところ text ではなくて html が格納されていたのだった。
+    分かりにくいので変数名を書き換える事にした。
+
   * aghtex: paragraph mode で \text が使えないのは変だ。 [#D0013]
     →実際に pdflatex で試すとちゃんと \text が使える。
 

@@ -111,7 +111,7 @@ context "global" {
     // 節番号
     var lastsec = doc.references.lastSection;
     if (lastsec != "")
-      doc.references.displayedText['ref@' + name] = lastsec;
+      doc.references.displayedHtml['ref@' + name] = lastsec;
     if (doc.references.lastSectionId) {
       doc.references.label_id_map[name] = doc.references.lastSectionId;
     } else {
@@ -122,7 +122,7 @@ context "global" {
   command f\ref("#@1") {
     var output = doc.currentCtx.output;
     var name = agh.Text.Escape(argv[1].trim(), "html-attr");
-    var text = doc.references.displayedText['ref@' + name];
+    var text = doc.references.displayedHtml['ref@' + name];
     if (text != null) {
       output.buff.push('<a class="aghtex-ref" href="#aghtex.', name, '">', text, '</a>');
     } else {
@@ -242,7 +242,7 @@ _Mod["cmd:label:eq"] = ns.Command2("f", "#1", function(doc, argv) {
   // 式番号
   var counter = doc.GetCounter('equation');
   if (counter != null)
-    doc.references.displayedText['ref@' + name] = counter.arabic();
+    doc.references.displayedHtml['ref@' + name] = counter.arabic();
 
   var labels = doc.GetContextVariable(CTXV_LABEL_EQ);
   if (labels == null) {
@@ -284,7 +284,7 @@ _Mod["cmd:label:%fig%"] = ns.Command2("f", "#1", function(doc, argv) {
   // 図番号, 表番号
   var counter = doc.GetCounter('%figure%');
   if (counter != null)
-    doc.references.displayedText['ref@' + name] = counter.arabic();
+    doc.references.displayedHtml['ref@' + name] = counter.arabic();
 
   var labels = doc.GetContextVariable(CTXV_LABEL_%FIG%);
   if (labels == null) {
@@ -346,7 +346,7 @@ context "env.thebibliography" new("mode.para") {
         counter.Step();
         var c = counter.arabic();
         buff.push("[", c, "] ");
-        doc.references.displayedText['bib@' + name] = c;
+        doc.references.displayedHtml['bib@' + name] = c;
       }
     } else {
       doc.currentCtx.output.error(
@@ -387,9 +387,9 @@ agh.memcpy(ns.Document.prototype, {
   getReferenceText: function get_reference_text(type, name) {
     switch (type) {
     case "ref":
-      return this.references.displayedText['ref@' + name] || null;
+      return this.references.displayedHtml['ref@' + name] || null;
     case "bib":
-      return this.references.displayedText['bib@' + name] || null;
+      return this.references.displayedHtml['bib@' + name] || null;
     case "contents":
       if (name == "toc" || name == "lof" || name == "lot") {
         var f = this["mod:ref/" + name];
@@ -435,10 +435,10 @@ agh.memcpy(ns.Document.prototype, {
       if (!ref) continue;
       var m = ref.match(/^(\w+)\.(.*)$/);
       if (!m) continue;
-      var text = this.getReferenceText(m[1], m[2]);
-      if (!text) continue;
+      var html = this.getReferenceText(m[1], m[2]);
+      if (!html) continue;
       elem.removeAttribute("ref");
-      elem.innerHTML = agh.Text.Escape(text, "html");
+      elem.innerHTML = html;
     }
   }
 });

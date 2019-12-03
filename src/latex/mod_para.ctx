@@ -338,7 +338,7 @@ context "mode.para" {
         var eqno = c.arabic();
         buff.push('(', eqno, ')');
         if (labels.length > 0)
-          doc.references.displayedText['ref@' + labels[0]] = eqno;
+          doc.references.displayedHtml['ref@' + labels[0]] = eqno;
       }
 
       buff.push('</tex:i></tex:math>\r\n');
