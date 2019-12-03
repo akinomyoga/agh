@@ -43,7 +43,7 @@ A: Error
 
 A: Error
 
-\subsection*{Q: Is cmd:tag can be used in nested context such as paragraph modes?}
+\subsection*{Q: Can cmd:tag be used in nested context such as paragraph modes?}
 \begin{align}
   Hello \quad\text{text \tag{tagE}} \\
   World \quad\text{text $math\tag{tagF}$} \\
@@ -51,5 +51,15 @@ A: Error
 \end{align}
 
 A: Yes
+
+\subsection*{Q: Can cmd:notag also be used in nested contexts? Is it the same with cmd:nonumber?}
+\begin{align}
+  Hello \quad\text{text \notag} \\
+  World \quad\text{text $math\notag$} \\
+  Hello \quad\text{text \notag} \\
+  World \quad\text{text $math\notag$}
+\end{align}
+
+A: Yes, Yes.
 
 \end{document}

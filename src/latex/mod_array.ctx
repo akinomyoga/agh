@@ -1128,18 +1128,21 @@ ns.ContextFactory["mode.para"].AddEnvironment("tabular", ENV_PARAMS);
 // 式番号 (eqnarray)
 
 var CTXV_LABEL_EQ = 'mod_ref/label:eq';
-var CTXV_NONUMBER = 'mod_array/nonumber';
 var CTXV_ARRAYCTX = 'mod_array/arrayCtx';
+var CTXV_NOTAG = 'mod_array/notag';
+var CTXV_EQTAG = 'mod_array/eqtag';
 
 _Mod.eqno_output = function(doc, actx, output) {
   var counter = doc.GetCounter("equation");
 
   // 式番号
   var buff = output.buff;
-  if (!actx.dataV[CTXV_NONUMBER]) {
-    buff.push('<tex:i class="aghtex-eqno-margin"></tex:i>');
-    buff.push('<tex:i class="aghtex-eqno">&nbsp;<tex:i class="aghtex-eqno-right">');
-    if (counter == null) {
+  buff.push('<tex:i class="aghtex-eqno-margin"></tex:i>');
+  if (actx.dataV[CTXV_EQTAG] || !actx.dataV[CTXV_NOTAG]) {
+    buff.push('<tex:i class="aghtex-eqno"><tex:i class="aghtex-eqno-vspan"></tex:i><tex:i class="aghtex-eqno-right">');
+    if (actx.dataV[CTXV_EQTAG]) {
+      buff.push(actx.dataV[CTXV_EQTAG]);
+    } else if (counter == null) {
       buff.push('(?)');
     } else {
       counter.Step();
@@ -1147,7 +1150,8 @@ _Mod.eqno_output = function(doc, actx, output) {
     }
     buff.push('</tex:i></tex:i>');
   }
-  actx.dataV[CTXV_NONUMBER] = false;
+  actx.dataV[CTXV_NOTAG] = false;
+  actx.dataV[CTXV_EQTAG] = false;
 
   var labels = actx.GetContextVariable(CTXV_LABEL_EQ);
   if (labels.length > 0) {
@@ -1176,7 +1180,8 @@ function isEndingEqnoRequired(ctx) {
 
 _Mod.eqno_prologue = function(doc, ctx) {
   ctx.dataV[CTXV_ARRAYCTX] = ctx;
-  ctx.dataV[CTXV_NONUMBER] = false;
+  ctx.dataV[CTXV_NOTAG] = false;
+  ctx.dataV[CTXV_EQTAG] = false;
   ctx.SetContextVariable(CTXV_LABEL_EQ, []);
   ctx.userC["label"] = ns.Modules["mod:ref"]["cmd:label:eq"];
 };
@@ -1187,7 +1192,7 @@ _Mod.eqno_epilogue = function(doc, ctx) {
 
 context "env.eqnarray" new("env.array") {
   _Ctx.DefineCommand("nonumber", ["f", function(doc, argv) {
-    doc.AssignContextVariable(CTXV_NONUMBER, true);
+    doc.AssignContextVariable(CTXV_NOTAG, true);
   }]);
   _Ctx.DefineCommand("\\", ["f;#[]D", function(doc, argv) {
     var output = doc.currentCtx.output;
@@ -1441,7 +1446,7 @@ _Mod["envdef:gathered"] = {
 
 context "env.multline" new("env.array") {
   _Ctx.DefineCommand("nonumber", ['f', function(doc, argv) {
-    doc.AssignContextVariable(CTXV_NONUMBER, true);
+    doc.AssignContextVariable(CTXV_NOTAG, true);
   }]);
 }
 

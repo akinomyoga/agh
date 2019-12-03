@@ -405,7 +405,7 @@ agh.memcpy(ns.Document.prototype, {
     var self = this;
     return this.html = this.html.replace(/<tex:ref ref="(\w+)\.([^"<>]+)">\?<\/tex:ref>|<a class="aghtex-ref" href="#aghtex\.([^"]+)">/g, function($0, $1, $2, $B1) { //
       if ($1 != null && $1 != "") {
-        return this.getReferenceText($1, $2) || $0;
+        return self.getReferenceText($1, $2) || $0;
       } else if ($B1 != "" && $B1) {
         if ($B1 in self.references.label_id_map)
           return '<a class="aghtex-ref" href="#' + self.references.label_id_map[$B1] + '">';

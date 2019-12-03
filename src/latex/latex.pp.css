@@ -1373,6 +1373,7 @@ tex\:i.aghtex-array-hline-dummy {
   tex\:i.aghtex-equation-eqno-left { position: absolute; left: 1em; top: 50%; margin-top: -1em; }
 /*%%)*/
 tex\:i.aghtex-eqno { display: inline-block; }
+tex\:i.aghtex-eqno-vspan { display: inline-block; height: 1em; }
 tex\:i.aghtex-eqno-right { position: absolute; right: 1em; }
 tex\:i.aghtex-eqno-left { position: absolute; left: 1em; }
 tex\:i.aghtex-eqno-margin { margin-right: 2em; }

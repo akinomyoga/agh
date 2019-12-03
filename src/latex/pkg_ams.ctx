@@ -614,12 +614,19 @@ context "pkg:amsmath/mode.math" new() {
 
   // TODO: command s:mode.math\bordermatrix (cmd 上書き)
 
-  // TODO: command s:mode.math\tag
-  // TODO: command s:mode.math\tag*
-  // TODO: command s:mode.math\notag
   // TODO: command f\raisetag(#1)
 
   _Ctx.DefineCommand({
+    tag: ['f;#mode.para>1', function(doc, argv) {
+      doc.AssignContextVariable('mod_array/eqtag', '(' + argv[1] + ')');
+    }],
+    'tag*': ['f;#mode.para>1', function(doc, argv) {
+      doc.AssignContextVariable('mod_array/eqtag', argv[1]);
+    }],
+    notag: ['f', function(doc, argv) {
+      doc.AssignContextVariable('mod_array/notag', true);
+    }],
+
     lvert: ['s@', '<tex:f class="aghtex-symb-mincho">&#x007c;</tex:f>'], // u007c "|",  u2223
     lVert: ['s@', '<tex:f class="aghtex-symb-mincho">&#x2225;</tex:f>'], // u2225 "∥", u???? (‖)
     rvert: ['s@', '<tex:f class="aghtex-symb-mincho">&#x007c;</tex:f>'],
