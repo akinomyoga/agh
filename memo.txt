@@ -111,25 +111,15 @@ agh/js - Ageha JavaScript Library v3.2
 
 2019-12-01
 
-  * aghtex: paragraph mode で \text が使えないのは変だ。
-    →実際に pdflatex で試すとちゃんと \text が使える。
-
-    mod_math での \text の実装は以下の通り。
-      text: ['s@;#mode.para>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
-
-    さて。ここで問題になるのは paragraph mode の中で text を使った時のフォント。
-    rm に強制されるのか或いは外側のフォントがそのまま使われるのか。
-    →試しに使ってみたところ外側のフォントが使われる様だ。
-    →更に試しに数式モードの中で text を実行してみると、
-      外側の paragraph mode のフォントが使われるという事が分かった。
-
   * aghtex: \text によるフォントを正しく実装する?
     現状の実装では数式モードにおける \text のフォントは roman に固定している。
     然し、実際の TeX では外側の最初の paragraph mode におけるフォントが使われる。
     これに対応するには現在のフォントについてちゃんと把握しながら処理する必要がある。
     それで文字列を出力する時にフォント情報も一緒に出力するのである。
 
-  * aghtex: tableofcontents が壊れている。
+    取りあえず userC か或いは何らかの枠組みを用いて変数を定義して、
+    「paragraph mode における現在のフォント」の情報を記録して、
+    それに基づいて出力を行う様に定義するのが良さそう。
 
   * aghtex: \tag に対応する
 
@@ -589,14 +579,29 @@ latex
 
 2019-12-03
 
-  * agh: ?version が agh.js に指定されていたら、
+  * aghtex: paragraph mode で \text が使えないのは変だ。 [#D0013]
+    →実際に pdflatex で試すとちゃんと \text が使える。
+
+    mod_math での \text の実装は以下の通り。
+      text: ['s@;#mode.para>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
+
+    さて。ここで問題になるのは paragraph mode の中で text を使った時のフォント。
+    rm に強制されるのか或いは外側のフォントがそのまま使われるのか。
+    →試しに使ってみたところ外側のフォントが使われる様だ。
+    →更に試しに数式モードの中で text を実行してみると、
+      外側の paragraph mode のフォントが使われるという事が分かった。
+
+    取りあえず簡単に実装する事にした。
+    もっとちゃんとした実装は別に行う事にする。
+
+  * agh: ?version が agh.js に指定されていたら、 [#D0012]
     他のスクリプトを要求する時も ?version を付加するべき。
     そうしないと部分的に古いファイルが使われて不整合が起こってしまう。
     →一応実装した。ちゃんと動作するか確認する。確認した。
 
 2019-12-02
 
-  * aghtex: アクセント記号の高さがずれている。
+  * aghtex: アクセント記号の高さがずれている。 [#D0011]
     これは hatenablog 特有の問題か、それとも Chrome の更新によるものか。
     →試すと普通に Chrome の仕様変更によるものの気がする。
 
@@ -620,17 +625,17 @@ latex
     ブラウザ毎に調整するのは地獄なので Cr だけで調整する事にした。
     他のブラウザでは雰囲気的にあっていれば良いという事にする。
 
-  * aghfly (hatena): $`` が効かない場合がある。$`` が ...$</span><code>... になっている。
+  * aghfly (hatena): $`` が効かない場合がある。$`` が ...$</span><code>... になっている。 [#D0010]
     対応した。これの対応は簡単だった。
 
-  * aghfly (hatena): 実際に変換が実施された時に credit を自動的に挿入する。
+  * aghfly (hatena): 実際に変換が実施された時に credit を自動的に挿入する。 [#D0009]
     簡単に対応した。
 
 2019-12-01
 
-  * aghtex: \sqrt の vertical-align は baseline にするべき。
+  * aghtex: \sqrt の vertical-align は baseline にするべき。 [#D0008]
 
-  * aghtex: \begin{pmatrix} と \left...\right で高さが統一されていない。
+  * aghtex: \begin{pmatrix} と \left...\right で高さが統一されていない。 [#D0007]
 
     現在の実装ではそれぞれ独自に実装している。
     実装を統一した方が良い様に感じる。
@@ -645,10 +650,10 @@ latex
 
 2019-11-30
 
-  * aghtex: \left\right の括弧。上下に広がりすぎている。
+  * aghtex: \left\right の括弧。上下に広がりすぎている。 [#D0006]
     対策を入れてみた。これも暫くこれで使ってみて問題があれば修正する。
 
-  * aghtex: table の要素の中に式番号のある式を入れると、
+  * aghtex: table の要素の中に式番号のある式を入れると、 [#D0005]
     式番号の為の余白を確保できなくて式番号が重なってしまう。
 
     →取り敢えず aghtex-eqno を出力する時に同時に
@@ -657,10 +662,10 @@ latex
     式番号を除いてセンタリングしたければ右側だけに余白を設置するのが妥当である。
     取り敢えず実装が単純なので右側だけに空白を設置する事にした。
 
-  * aghtex: tex:f に line-height:1 を設定すると良い気がする。
+  * aghtex: tex:f に line-height:1 を設定すると良い気がする。 [#D0004]
     試しに実行してみた。しばらく様子を見てみる事にする。
 
-  * aghtex: CSS干渉対策 table → tex:table
+  * aghtex: CSS干渉対策 table → tex:table [#D0003]
 
     うーん。実際に hatena で表示してみた所、hatena に登録されている css
     で table td 等となっている物によって表示が乱されてしまう。
@@ -807,7 +812,7 @@ latex
 
 2018-02-06
 
-  * 2016-06-10 aghfonts の取り込みとツール群の確認
+  * 2016-06-10 aghfonts の取り込みとツール群の確認 [#D0002]
 
     今迄どこからともなく手に入れた ttf2eot と sfnt2woff を使用していた。
     これらは可搬なプログラムなのだろうか。という事で検索してみる事にする。
@@ -828,7 +833,7 @@ latex
 
 2015-08-30
 
-  * agh.regex.js 整理
+  * agh.regex.js 整理 [#D0001]
 
     agh.regex.js の中で提供されている関数・クラスには以下のような物がある。
 

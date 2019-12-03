@@ -59,6 +59,7 @@ context "mode.para" {
     Huge        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large5">', '</tex:f>'),
 
     // - フォント
+    text  : ['s@;#>1', '#1'],
     textrm: ['s@;#>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
     textsf: ['s@;#>1', '<tex:f class="aghtex-textsf">#1</tex:f>'],
     texttt: ['s@;#>1', '<tex:f class="aghtex-texttt">#1</tex:f>'],
