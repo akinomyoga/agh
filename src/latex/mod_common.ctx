@@ -407,9 +407,9 @@ context "global" {
   command s@\O        () '&#xD8;';  // Ø
 
   // TeX
-  command s@\TeX   () '<tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">E</tex:i>X</tex:i>';
-  command s@\LaTeX () '<tex:i class="aghtex-latex-la">L<tex:i class="aghtex-latex-a">A</tex:i></tex:i><tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">E</tex:i>X</tex:i>';
-  command s@\LaTeXe() '<tex:i class="aghtex-latex-la">L<tex:i class="aghtex-latex-a">A</tex:i></tex:i><tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">E</tex:i>X</tex:i>2<tex:i class="aghtex-latex-eps">ε</tex;i>';
+  command s@\TeX   () '<tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">e</tex:i>X</tex:i>';
+  command s@\LaTeX () '<tex:i class="aghtex-latex-la">L<tex:i class="aghtex-latex-a">a</tex:i></tex:i><tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">e</tex:i>X</tex:i>';
+  command s@\LaTeXe() '<tex:i class="aghtex-latex-la">L<tex:i class="aghtex-latex-a">a</tex:i></tex:i><tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">e</tex:i>X</tex:i>2<tex:i class="aghtex-latex-eps">ε</tex;i>';
 
   // 特別な文字
   command s@\copyright()          '<tex:f class="aghtex-textrm">©</tex:f>'; // u00A9

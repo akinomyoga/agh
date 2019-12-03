@@ -1,0 +1,55 @@
+\documentclass[11pt]{revtex4-1}
+\usepackage{amsmath}
+\begin{document}
+
+\section{Questions}
+\subsection*{Q: Equation with cmd:tag increases the eq counter?}
+
+\begin{align}
+  Hello \\
+  World \tag{hello} \\
+  Text
+\end{align}
+
+A: Does not increase.
+
+\subsection*{Q: Is mathematical formula available in Eq counter?}
+\begin{align}
+  Hello \tag{$\frac12$}
+\end{align}
+
+A: Yes
+
+\subsection*{Q: What is the result with multiple tags}
+\begin{align}
+  %Hello \tag{tagA} \tag{tagB} \\ % Error
+  World \notag \tag{tagC} \\
+  Text \tag{tagD} \notag \\
+  Type \notag \notag \\
+  Time
+\end{align}
+
+A: Mutiple cmd:tag are error. Multiple cmd:notag allowed. cmd:notag and cmd:tag can coexist. cmd:notag just disable automatic eqno.
+
+\subsection*{Q: What happens when cmd:tag is used outside math mode}
+
+%\tag{world}
+
+A: Error
+
+\subsection*{Q: What happens when cmd:tag is used in inline math}
+
+%$\tag{hello}$
+
+A: Error
+
+\subsection*{Q: Is cmd:tag can be used in nested context such as paragraph modes?}
+\begin{align}
+  Hello \quad\text{text \tag{tagE}} \\
+  World \quad\text{text $math\tag{tagF}$} \\
+  Check
+\end{align}
+
+A: Yes
+
+\end{document}

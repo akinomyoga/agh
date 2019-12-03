@@ -17,16 +17,19 @@ agh.scripts.wait(["event:onload", "agh.lang.tex.js"], function() {
 });
 </script>
 <style type="text/css">
+body {
+  background-color: gray;
+}
+h2 { width: 50rem; margin: 0 auto; color: white; }
 .aghtex-page {
   width: 50em; margin-left: auto; margin-right: auto; min-height: 100%;
   padding: 1em; border: 1px solid silver; background-color: white;
 }
-body {
-  background-color: gray;
-}
 </style>
 </head>
 <body>
+
+<h2>アクセント記号の配置調整</h2>
 <div id="texdoc1" class="aghtex-page">
 \documentclass[amsmath,amssymb]{revtex4-1}
 \begin{document}
@@ -36,6 +39,8 @@ body {
 アクセント記号の高さはブラウザを更新すると時々変わる気がする。
 そもそもブラウザによっても結果が異なるので高さの設定はブラウザごとに切り替えている。
 CSSの仕様的には定まっていないのだろうか。
+
+\tableofcontents
 
 \section{数式モード}
 \def\CheckAccent#1{%
@@ -88,5 +93,21 @@ CSSの仕様的には定まっていないのだろうか。
 
 \end{document}
 </div>
+
+<h2>\TeX コマンド, \LaTeX コマンド</h2>
+<div id="texdoc2" class="aghtex-page">
+\documentclass[amsmath,amssymb,bm]{revtex4}
+\begin{document}
+
+\begin{itemize}
+\item \TeX
+\item \LaTeX
+\item \LaTeXe
+\item \AmS-\LaTeX
+\end{itemize}
+
+\end{document}
+</div>
+
 </body>
 </html>
