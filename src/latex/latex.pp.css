@@ -503,14 +503,19 @@ tex\:f.aghtex-symb-roman { font-style: normal; font-family: aghtex_mathrm,aghtex
 tex\:f.aghtex-symb-meiryo { font-style: normal; font-family: aghtex_mathrm,aghtex_meiryo,sans-serif; }
 tex\:f.aghtex-symb-cent { font-family: aghtex_mathrm,Century,aghtex_gothic,sans-serif; }
 tex\:f.aghtex-syma-mincho { font-style: normal; font-family: aghtex_mathbb,aghtex_mathrm,aghtex_mincho,aghtex_roman,serif; }
-tex\:f.aghtex-binop { margin-left: 0.2em; margin-right: 0.2em; }
-tex\:f.aghtex-comma { margin-right: 0.3ex; }
+tex\:f.aghtex-binop  { margin-left: 0.2em; margin-right: 0.2em; }
+tex\:f.aghtex-comma  { margin-right: 0.3ex; }
 tex\:f.aghtex-lbrace { margin-left: 0.2ex; margin-right: 0; }
 tex\:f.aghtex-rbrace { margin-left: 0; margin-right: 0.2ex; }
 tex\:f.aghtex-mbrace { margin-left: 0.2ex; margin-right: 0.2ex; }
 tex\:f.aghtex-rbrace+tex\:i.aghtex-sup,
 tex\:f.aghtex-rbrace+tex\:i.aghtex-sub,
 tex\:f.aghtex-rbrace+tex\:i.aghtex-supsub { margin-left: -0.2ex; }
+.aghtex-tag-script tex\:f.aghtex-binop  { margin-left: 0; margin-right: 0; }
+.aghtex-tag-script tex\:f.aghtex-comma  { margin-right: 0; }
+.aghtex-tag-script tex\:f.aghtex-lbrace { margin-left: 0; margin-right: 0; }
+.aghtex-tag-script tex\:f.aghtex-rbrace { margin-left: 0; margin-right: 0; }
+.aghtex-tag-script tex\:f.aghtex-mbrace { margin-left: 0; margin-right: 0; }
 
 /*%%if mode=="Opera"*/
   /* Opera 謎の記号空白対処 */
@@ -901,7 +906,10 @@ table.aghtex-cmdleft-table-sf { vertical-align: middle!important; }
 /*%%)*/
 
 tr.aghtex-cmdleft-row { height: 0px!important; }
-td.aghtex-cmdleft-cell { vertical-align: baseline!important; height: 1em!important; min-height: 1em!important; }
+td.aghtex-cmdleft-cell {
+  vertical-align: baseline!important; height: 1em!important; min-height: 1em!important;
+  padding: 0 0.06em!important;
+}
 
 /*%%if mode!="Trident" */
   /* 不格好なので括弧の高さを少し小さくする */

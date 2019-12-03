@@ -1,0 +1,19 @@
+\documentclass[11pt]{revtex4-1}
+\usepackage{amsmath}
+\begin{document}
+
+\noindent
+Q: Can \verb+\text+ used inside paragraph mode? \\
+Test: \text{hello} \\
+A: Yes
+
+\noindent
+Q: Is the font in \verb+\text+ forced to be roman? Or just use the same font with outer env? \\
+Test \textit{hello \text{small} world} \\
+A: Use outer font
+
+\noindent
+Q: What is the font in math-mode \verb+\text+?
+Test: \texttt{ABC $DEF \text{GHI} JKL$ MNO}
+A:
+\end{document}

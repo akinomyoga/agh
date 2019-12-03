@@ -146,10 +146,26 @@
 
 <p>$<code>\Lambda</code> <span>hello$</span><code>\Psi</code></p>
 
+<p>別の表現</p>
+<pre data-lang="tex:align">
+  \left\|\bigwedge_{p=1}^P \sum_{l=1}^\Lambda v_{i_l,j_p} dx^l \right\|^2
+  &= \frac{\displaystyle
+    \sum_{j_{P+1} < \dots < j_\Lambda\atop \{j_p\}_{p=1}^P \cap \{j_p\}_{p=P+1}^\Lambda = \emptyset}
+    \prod_{k=1}^{n-\Lambda}[\lambda - \lambda_k(M_{j_1,\dots,j_\Lambda})]
+  }{\displaystyle
+    \prod_{k=1 \atop \lambda_k(A) \neq \lambda}^n [\lambda - \lambda_k(A)]}
+    \bigwedge_{l=1}^\Lambda dx^l \\
+  &= \frac{c_{n-\Lambda}\{\lambda - \lambda_k(M_{j_1,\dots,j_P})\}_{k=1}^{n-P}}{
+    \displaystyle
+    \prod_{k=1 \atop \lambda_k(A) \neq \lambda}^n [\lambda - \lambda_k(A)]}
+    \bigwedge_{l=1}^\Lambda dx^l.
+</pre>
+
 <footer class="entry-footer">
 hello
 </footer>
 </div>
+
 
 <h1>CSS テスト</h1>
 <h2>Test for table</h2>

@@ -112,6 +112,24 @@ agh/js - Ageha JavaScript Library v3.2
 2019-12-01
 
   * aghtex: paragraph mode で \text が使えないのは変だ。
+    →実際に pdflatex で試すとちゃんと \text が使える。
+
+    mod_math での \text の実装は以下の通り。
+      text: ['s@;#mode.para>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
+
+    さて。ここで問題になるのは paragraph mode の中で text を使った時のフォント。
+    rm に強制されるのか或いは外側のフォントがそのまま使われるのか。
+    →試しに使ってみたところ外側のフォントが使われる様だ。
+    →更に試しに数式モードの中で text を実行してみると、
+      外側の paragraph mode のフォントが使われるという事が分かった。
+
+  * aghtex: \text によるフォントを正しく実装する?
+    現状の実装では数式モードにおける \text のフォントは roman に固定している。
+    然し、実際の TeX では外側の最初の paragraph mode におけるフォントが使われる。
+    これに対応するには現在のフォントについてちゃんと把握しながら処理する必要がある。
+    それで文字列を出力する時にフォント情報も一緒に出力するのである。
+
+  * aghtex: tableofcontents が壊れている。
 
   * aghtex: \tag に対応する
 
