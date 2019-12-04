@@ -111,18 +111,6 @@ agh/js - Ageha JavaScript Library v3.2
 
 2019-12-01
 
-  * aghtex: \text によるフォントを正しく実装する?
-    現状の実装では数式モードにおける \text のフォントは roman に固定している。
-    然し、実際の TeX では外側の最初の paragraph mode におけるフォントが使われる。
-    これに対応するには現在のフォントについてちゃんと把握しながら処理する必要がある。
-    それで文字列を出力する時にフォント情報も一緒に出力するのである。
-
-    取りあえず userC か或いは何らかの枠組みを用いて変数を定義して、
-    「paragraph mode における現在のフォント」の情報を記録して、
-    それに基づいて出力を行う様に定義するのが良さそう。
-
-    \tag, \tag*, \mbox 等、他の mode.para 文脈でも同様に適用する必要がある気がする。
-
   * aghtex: \genfrac の高さ。
 
     現状の実装では vertical-align: middle にしている。
@@ -131,7 +119,7 @@ agh/js - Ageha JavaScript Library v3.2
     中身に応じて伸縮したりする事はない。つまり、中身が大きいと上下にはみでる。
     しかしそれでも上下の要素の境界の位置は固定である。
 
-  * リンクのページ番号自動生成について。
+  * aghtex: (memo) リンクのページ番号自動生成について。
 
     最近は css も改ページ制御などの機能を持っていて、だとすれば
     ページ内リンクを印刷時にページ番号に変換する機能ぐらいあっても良い。
@@ -143,7 +131,6 @@ agh/js - Ageha JavaScript Library v3.2
     [CSS Generated Content for Paged Media Module](https://www.w3.org/TR/2014/WD-css-gcpm-3-20140513/#target-text-function)
     [CSS Level 3 target-counter() and target-counters() Functions](https://www.oxygenxml.com/doc/versions/21.1/ug-editor/topics/dg-target-counter-function.html)
     [html - CSS target-counter attribute not recognised - Stack Overflow](https://stackoverflow.com/questions/9463523/css-target-counter-attribute-not-recognised)
-
 
 2015-09-14
 
@@ -585,6 +572,60 @@ latex
 -------------------------------------------------------------------------------
 
 2019-12-04
+
+  * aghtex: \emph, \em 明示的にフォントを toggle する [#D0021]
+    調べると rm と it を交互に切り替える。
+    更に一番直近の paragraph mode のフォントを参照している。
+
+    \emph は math mode でも使えるそうだ。
+
+    うーん。振る舞いを調べていたら新しい事が分かってしまった。
+    実は LaTeX2e では family x series x shape の三次元で指定する様だ。
+    そして \emph は shape を切り替えるという実装になっている様だ。
+
+    というかこの文脈で行くと物凄く色々なフォントを用意しなければならない…。
+    まあ、取り敢えず用意されていない場合は適当に別のフォントで代替される
+    ようであるからそのように実装しておくのが妥当なのだろう。
+
+    うーん。math mode でも使える様に実装したのだが結局
+    フォントの三次元組み合わせが有効なのは段落モードの時だけの様だ。
+
+    取り敢えず実装は終わったので次にテストをする。
+    うーん。色々駄目、と思って latex.pp.css を確認すると、
+    そもそもちゃんと triplet を意識した実装になっていた様だ。
+    Web fonts も使っていないので synthesize もちゃんと行われている。
+    うーん。。。それに応じて実装し直した。
+    (Web fonts を使わない事により) 丁度 CSS の側でも
+    3次元のフォントの指定が直交していたので実装は簡単だった。
+    下手にテーブルなどで対応表を作るという事をしなくて良かった。
+
+  * aghtex: \text によるフォントを正しく実装する? [#D0020]
+    現状の実装では数式モードにおける \text のフォントは roman に固定している。
+    然し、実際の TeX では外側の最初の paragraph mode におけるフォントが使われる。
+    これに対応するには現在のフォントについてちゃんと把握しながら処理する必要がある。
+    それで文字列を出力する時にフォント情報も一緒に出力するのである。
+
+    取りあえず userC か或いは何らかの枠組みを用いて変数を定義して、
+    「paragraph mode における現在のフォント」の情報を記録して、
+    それに基づいて出力を行う様に定義するのが良さそう。
+
+    \tag, \tag*, \mbox 等、他の mode.para 文脈でも同様に適用する必要がある気がする。
+
+    然し、context variable を設定して引数を読み取るという機能は提供されていない。
+    うーん。これはどの様に実装するのが良いだろうか。
+    調べてみると GetArgumentHtml で直接 ctx を使って読み出す機能が実装されていて、
+    これを使っているのは \global の一つのみである。global は同様に flags を一時的に
+    設定してその時の context を使って読み取るのに使用している。
+    やはり似たような状況である。但し、flags は context variable に置き換えられる気がする。
+
+    然し何れにしても ctx.Initialize が呼び出される事になるのである。
+    うーん。GetArgumentHtml を拡張して context variables を追加できる様にする事にした。
+    然し、今の実装は引数として direct を受け取っているのでこれを消去する為に global
+    を先に修正して flags を ContextVariable に変換すると同時に、GetArgumentHtml に
+    contextVariables を渡せる様に修正する → #D0019 で対応した。
+
+    em についても同時に明示的にフォントを切り替える様に実装する事にする。
+    → #D0021
 
   * aghtex: どうも doc.flags は \global 一箇所でしか使われていない。 [#D0019]
     doc.pushFlags, popFlags なども同様に。

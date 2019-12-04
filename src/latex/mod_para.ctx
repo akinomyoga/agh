@@ -59,42 +59,55 @@ context "mode.para" {
     Huge        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large5">', '</tex:f>'),
 
     // - フォント
-    text  : ['s@;#>1', '#1'],
-    textrm: ['s@;#>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
-    textsf: ['s@;#>1', '<tex:f class="aghtex-textsf">#1</tex:f>'],
-    texttt: ['s@;#>1', '<tex:f class="aghtex-texttt">#1</tex:f>'],
-    textmc: ['s@;#>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
-    textgt: ['s@;#>1', '<tex:f class="aghtex-textgt">#1</tex:f>'],
-    textmd: ['s@;#>1', '<tex:f class="aghtex-textmd">#1</tex:f>'],
-    textbf: ['s@;#>1', '<tex:f class="aghtex-textbf">#1</tex:f>'],
-    textup: ['s@;#>1', '<tex:f class="aghtex-textup">#1</tex:f>'],
-    textit: ['s@;#>1', '<tex:f class="aghtex-textit">#1</tex:f>'],
-    textsc: ['s@;#>1', '<tex:f class="aghtex-textsc">#1</tex:f>'],
-    textsl: ['s@;#>1', '<tex:f class="aghtex-textsl">#1</tex:f>'],
-    emph  : ['s@;#>1', '<tex:i class="aghtex-emphasize">#1</tex:i>'],
-    rmfamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textrm">', '</tex:f>'),
-    sffamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsf">', '</tex:f>'),
-    ttfamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-texttt">', '</tex:f>'),
-    mcfamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textmc">', '</tex:f>'),
-    gtfamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textgt">', '</tex:f>'),
-    mdseries: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textmd">', '</tex:f>'),
-    bfseries: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textbf">', '</tex:f>'),
-    upshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textup">', '</tex:f>'),
-    itshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textit">', '</tex:f>'),
-    scshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsc">', '</tex:f>'),
-    slshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsl">', '</tex:f>'),
-    em: mod_common.CreateCommandTagFollowing('<tex:i class="aghtex-emphasize">', '</tex:i>'),
-    rm: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textrm">', '</tex:f>'),
-    sl: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsl">', '</tex:f>'),
-    it: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textit">', '</tex:f>'),
-    tt: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-texttt">', '</tex:f>'),
-    bf: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textbf">', '</tex:f>'),
-    sf: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsf">', '</tex:f>'),
-    sc: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsc">', '</tex:f>'),
-    mc: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textmc">', '</tex:f>'),
-    gt: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textgt">', '</tex:f>'),
-    dm: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textmc">', '</tex:f>'),
-    dg: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textgt">', '</tex:f>'),
+    text  : mod_common.CreateFontCommand('para'),
+    textrm: mod_common.CreateFontCommand('para', /^..:/, 'rm:'),
+    textsf: mod_common.CreateFontCommand('para', /^..:/, 'sf:'),
+    texttt: mod_common.CreateFontCommand('para', /^..:/, 'tt:'),
+    textmc: mod_common.CreateFontCommand('para', /^..:/, 'mc:'),
+    textgt: mod_common.CreateFontCommand('para', /^..:/, 'gt:'),
+    textmd: mod_common.CreateFontCommand('para', /:..:/, ':md:'),
+    textbf: mod_common.CreateFontCommand('para', /:..:/, ':bf:'),
+    textup: mod_common.CreateFontCommand('para', /:..$/, ':up'),
+    textit: mod_common.CreateFontCommand('para', /:..$/, ':it'),
+    textsc: mod_common.CreateFontCommand('para', /:..$/, ':sc'),
+    textsl: mod_common.CreateFontCommand('para', /:..$/, ':sl'),
+    rmfamily: mod_common.CreateFollowingFontCommand('para', /^..:/, 'rm:'),
+    sffamily: mod_common.CreateFollowingFontCommand('para', /^..:/, 'sf:'),
+    ttfamily: mod_common.CreateFollowingFontCommand('para', /^..:/, 'tt:'),
+    mcfamily: mod_common.CreateFollowingFontCommand('para', /^..:/, 'mc:'),
+    gtfamily: mod_common.CreateFollowingFontCommand('para', /^..:/, 'gt:'),
+    mdseries: mod_common.CreateFollowingFontCommand('para', /:..:/, ':md:'),
+    bfseries: mod_common.CreateFollowingFontCommand('para', /:..:/, ':bf:'),
+    upshape : mod_common.CreateFollowingFontCommand('para', /:..$/, ':up'),
+    itshape : mod_common.CreateFollowingFontCommand('para', /:..$/, ':it'),
+    scshape : mod_common.CreateFollowingFontCommand('para', /:..$/, ':sc'),
+    slshape : mod_common.CreateFollowingFontCommand('para', /:..$/, ':sl'),
+    rm: mod_common.CreateFollowingFontCommand('para', /.*/, 'rm:md:up'),
+    sf: mod_common.CreateFollowingFontCommand('para', /.*/, 'sf:md:up'),
+    tt: mod_common.CreateFollowingFontCommand('para', /.*/, 'tt:md:up'),
+    mc: mod_common.CreateFollowingFontCommand('para', /.*/, 'mc:md:up'),
+    gt: mod_common.CreateFollowingFontCommand('para', /.*/, 'gt:md:up'),
+    dm: mod_common.CreateFollowingFontCommand('para', /.*/, 'mc:md:up'),
+    dg: mod_common.CreateFollowingFontCommand('para', /.*/, 'gt:md:up'),
+    bf: mod_common.CreateFollowingFontCommand('para', /.*/, 'rm:bf:up'),
+    sl: mod_common.CreateFollowingFontCommand('para', /.*/, 'rm:md:sl'),
+    sc: mod_common.CreateFollowingFontCommand('para', /.*/, 'rm:md:sc'),
+    it: mod_common.CreateFollowingFontCommand('para', /.*/, 'rm:md:it'),
+    emph: ['f', function(doc, argv) {
+      var font0 = doc.GetContextVariable('mod:para/font') || 'rm:md:up';
+      var font1 = font0.replace(/:..$/, /:(?:it|sl)$/.test(font0) ? ':up' : ':it');
+      var arg = doc.GetArgumentHtml(null, {'mod:para/font': font1});
+      var output = doc.currentCtx.output;
+      output.buff.push('<tex:f class="', mod_common.ResolveFontTriplet(font1), '">', arg, '</tex:f>');
+    }],
+    em: ['f', function(doc, argv) {
+      var font0 = doc.GetContextVariable('mod:para/font') || 'rm:md:up';
+      var font1 = font0.replace(/:..$/, /:(?:it|sl)$/.test(font0) ? ':up' : ':it');
+      doc.SetContextVariable('mod:para/font', font1);
+      var output = doc.currentCtx.output;
+      output.buff.push('<tex:f class="', mod_common.ResolveFontTriplet(font1), '">');
+      output.appendPost('<tex:f>');
+    }],
 
     // 標準字体
     textnormal: ['s@;#>1', '<tex:fnorm>#1</tex:fnorm>'],

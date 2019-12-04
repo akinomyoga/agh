@@ -463,30 +463,30 @@ tex\:f.aghtex-size-large4 { font-size: 200%; } /* \huge */
 tex\:f.aghtex-size-large5 { font-size: 250%; } /* \Huge */
 
 /* 字体 (text mode) */
-tex\:f.aghtex-textsy { font-family: Symbol; }
-tex\:f.aghtex-textmc { font-family: aghtex_mincho,serif; }
-tex\:f.aghtex-textgt { font-family: aghtex_gothic,sans-serif; }
-tex\:f.aghtex-textmr { font-family: aghtex_meiryo,sans-serif; }
-tex\:f.aghtex-textrm { font-family: aghtex_roman,aghtex_mincho,serif; }
-
 tex\:fcent { font-family: Century,aghtex_gothic,sans-serif; }
 tex\:fnorm {
   font-family: aghtex_roman,aghtex_mincho,serif;
   font-weight: normal; font-style: normal; }
 
-/* unused */
-tex\:f.aghtex-textui { font-family: 'MS UI Gothic',aghtex_gothic,sans-serif; }
-
+/* - Font Family */
+tex\:f.aghtex-textmc { font-family: aghtex_mincho,serif; }
+tex\:f.aghtex-textgt { font-family: aghtex_gothic,sans-serif; }
+tex\:f.aghtex-textrm { font-family: aghtex_roman,aghtex_mincho,serif; }
 tex\:f.aghtex-textsf { font-family: sans-serif; }
 tex\:f.aghtex-texttt { font-family: "Courier New",monospace,serif; }
+/*   (internal) */
+tex\:f.aghtex-textsy { font-family: Symbol; }
+tex\:f.aghtex-textmr { font-family: aghtex_meiryo,sans-serif; }
+/*   (unused) */
+tex\:f.aghtex-textui { font-family: 'MS UI Gothic',aghtex_gothic,sans-serif; }
 /* - Font Series */
 tex\:f.aghtex-textmd { font-weight: normal; }
 tex\:f.aghtex-textbf { font-weight: bold; }
 /* - Font Shape */
-tex\:f.aghtex-textup { font-style: normal; }
-tex\:f.aghtex-textsl { font-style: oblique; font-family: sans-serif; }
+tex\:f.aghtex-textup { font-style: normal; font-variant: normal; }
+tex\:f.aghtex-textsl { font-style: oblique; font-variant: normal; }
 tex\:f.aghtex-textsc { font-style: normal; font-variant: small-caps; } /* text-transform: uppercase; */
-tex\:f.aghtex-textit { font-style: italic; font-family: "Times New Roman"; }
+tex\:f.aghtex-textit { font-style: italic; font-variant: normal; }
 
 tex\:i.aghtex-emphasize,
 tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize tex\:i.aghtex-emphasize,

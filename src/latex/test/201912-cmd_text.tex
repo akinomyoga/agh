@@ -2,19 +2,90 @@
 \usepackage{amsmath}
 \begin{document}
 
-\noindent
-Q: Can \verb+\text+ used inside paragraph mode? \\
+\subsection*{Q: Can cmd:text used inside paragraph mode?}
 Test: \text{hello} \\
 A: Yes
 
-\noindent
-Q: Is the font in \verb+\text+ forced to be roman? Or just use the same font with outer env? \\
+\subsection*{Q: Is the font in cmd:text forced to be roman? Or just use the same font with outer env?}
 Test \textit{hello \text{small} world} \\
 A: Use outer font
 
-\noindent
-Q: What is the font in math-mode \verb+\text+?
+\subsection*{Q: What is the font in math-mode cmd:text?}
 Test: \texttt{ABC $DEF \text{GHI} JKL$ MNO}
 A: The font of outside paragraph-mode.
+
+\subsection*{Q: How do cmd:emph and cmd:em toggle?}
+Test: This {\em hello {\em check test} world} that. \\
+Test: {\it This {\em hello {\em check test} world} that}. \\
+A: Toggles between rm and it.
+
+\subsection*{Q: Are cmd:emph and cmd:em available in math mode?}
+Test: $\emph{Hello \emph{World}}$ \\
+%%Test: $\emph{Hello \frac12\emph{World}}$ %% Error
+%%Test: $\em Hello \em World$ %% Error
+A: cmd:emph Yes, and it turns into paragraph mode as is cmd:text \\
+A: cmd:em No
+
+\subsection*{Q: Do cmd:emph and cmd:em remember outer font?}
+Test: $\text{A\emph{B}C}$ \\
+Test: $\emph{AAA}$ \\
+Test: {\it $\text{A\emph{B}C}$ } \\
+Test: {\it $\emph{AAA}$} \\
+A: Yes
+
+\subsection*{Q: How do cmd:emph and cmd:em behave for other outer fonts?}
+Test: {\sf Hello {\em world {\em test}}} \\
+Test: {\tt Hello {\em world {\em test}}} \\
+Test: {\bf Hello {\em world {\em test}}} \\
+Test: slshape {\sl Hello {\em world {\em test}}} \\
+Test: scshape {\sc Hello {\em world {\em test}}} \\
+Test: itshape {\it Hello {\em world {\em test}}} \\
+Test: upshape {\upshape Hello {\em world {\em test}}} \\
+A: toggle between ({\sf cmd:sf}, {\sf\em cmd:??}), ({\tt cmd:tt}, {\tt\em cmd:??}), ({\bf cmd:tt}, {\bf\em cmd:??}) \\
+A: $sl \to rm \to it$
+
+Test: {\tt Hello \slshape world \upshape world \scshape world \itshape world} \\
+Test: {\rm Hello \bfseries world \mdseries world} \\
+Conclusion: It seems that a font is specified by the combination of family, series and shape.
+  cmd:em and cmd:emph changes the shape preserving other values.
+
+\subsection*{Q: Does math-mode font-family affect?}
+Test: $\mathsf{Hi,how are you? \text{Good!}}$ \\
+Test: $\mathsf{Hi,how are you? \text{Good!}}$ \\
+A: Yes
+
+%%-----------------------------------------------------------------------------
+\section{Test font specification}
+\subsection*{Does cmd:ttfamily change the other properties?}
+Test: {\bfseries Hello \ttfamily World \rmfamily Test}; {\slshape Hello \ttfamily World}; {\itshape Hello \ttfamily World} \\
+A: No. It preserves other properties
+
+\subsection*{Does cmd:tt change the other properties?}
+Test: {\bfseries Hello \tt World \rmfamily Test}; {\slshape Hello \tt World}; {\itshape Hello \tt World} \\
+A: Yes. It clears.
+
+\subsection*{Does cmd:texttt change the other properties?}
+Test: {\bfseries Hello \texttt{World \rmfamily Test}}; {\slshape Hello \texttt{World}}; {\itshape Hello \texttt{World}} \\
+A: No. It preserves other properties.
+
+%%-----------------------------------------------------------------------------
+\section{Math mode fonts}
+\subsection*{Q: Is there cmd:math}
+Test: Error %%\math{Hello} \\
+Test: Error %%$\math{Hello}$ \\
+A: No.
+
+\subsection*{Q: Is math mode font preserved through cmd:text?}
+\begin{align}
+  \mathbf{Hello = \text{World $Math$}}, \\
+  %%\mathbf{Hello = \text{World \mathtt{Math}}}, \\
+\end{align}
+A: No
+
+\subsection*{Q: Is font(family,series,shape) combination available in math moded?}
+\begin{align}
+  World,\mathtt{World,\mathbf{World,\mathtt{World}}}
+\end{align}
+A: No
 
 \end{document}

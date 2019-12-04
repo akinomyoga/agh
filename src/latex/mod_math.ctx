@@ -83,18 +83,18 @@ context "mode.math" {
     Huge        : mod_base["cmd:relax"],
 
     // - 以下は文章モードに移行して評価
-    text  : ['s@;#mode.para>1', '<tex:f class="aghtex-textrm">#1</tex:f>'], // 文章モードはデフォルトで roman で良いか?
-    textrm: ['s@;#mode.para>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
-    textsf: ['s@;#mode.para>1', '<tex:f class="aghtex-textsf">#1</tex:f>'],
-    texttt: ['s@;#mode.para>1', '<tex:f class="aghtex-texttt">#1</tex:f>'],
-    textmc: ['s@;#mode.para>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
-    textgt: ['s@;#mode.para>1', '<tex:f class="aghtex-textgt">#1</tex:f>'],
-    textmd: ['s@;#mode.para>1', '<tex:f class="aghtex-textmd">#1</tex:f>'],
-    textbf: ['s@;#mode.para>1', '<tex:f class="aghtex-textbf">#1</tex:f>'],
-    textup: ['s@;#mode.para>1', '<tex:f class="aghtex-textup">#1</tex:f>'],
-    textit: ['s@;#mode.para>1', '<tex:f class="aghtex-textit">#1</tex:f>'],
-    textsc: ['s@;#mode.para>1', '<tex:f class="aghtex-textsc">#1</tex:f>'],
-    textsl: ['s@;#mode.para>1', '<tex:f class="aghtex-textsl">#1</tex:f>'],
+    text  : mod_common.CreateFontCommand('para'),
+    textrm: mod_common.CreateFontCommand('para', /^..:/, 'rm:'),
+    textsf: mod_common.CreateFontCommand('para', /^..:/, 'sf:'),
+    texttt: mod_common.CreateFontCommand('para', /^..:/, 'tt:'),
+    textmc: mod_common.CreateFontCommand('para', /^..:/, 'mc:'),
+    textgt: mod_common.CreateFontCommand('para', /^..:/, 'gt:'),
+    textmd: mod_common.CreateFontCommand('para', /:..:/, ':md:'),
+    textbf: mod_common.CreateFontCommand('para', /:..:/, ':bf:'),
+    textup: mod_common.CreateFontCommand('para', /:..$/, ':up'),
+    textit: mod_common.CreateFontCommand('para', /:..$/, ':it'),
+    textsc: mod_common.CreateFontCommand('para', /:..$/, ':sc'),
+    textsl: mod_common.CreateFontCommand('para', /:..$/, ':sl'),
 
     mathbf    : ['s@;#>1', '<tex:f class="aghtex-mathbf">#1</tex:f>'],
     mathit    : ['s@;#>1', '<tex:f class="aghtex-mathit">#1</tex:f>'],
@@ -103,7 +103,6 @@ context "mode.math" {
     mathtt    : ['s@;#>1', '<tex:f class="aghtex-mathtt">#1</tex:f>'],
     mathnormal: ['s@;#>1', '<tex:f class="aghtex-mathit">#1</tex:f>'],
     mathcal   : ['s@;#>1', '<tex:f class="aghtex-mathcal">#1</tex:f>'],
-
   });
 
   // 括弧の大きさ

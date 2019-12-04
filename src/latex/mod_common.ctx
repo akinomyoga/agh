@@ -82,6 +82,39 @@ _Mod.CreateCommandTagFollowing = function(htBegin, htEnd) {
     output.appendPost(htEnd);
   });
 };
+_Mod.ResolveFontTriplet = function(font) {
+  var a = font.split(':');
+  for (var i = 0; i < 3; i++)
+    a[i] = 'aghtex-text' + a[i];
+  return a.join(' ');
+};
+_Mod.CreateFontCommand = function(mode, reg, rep) {
+  // Note: 実装してから気づいたがフォントの組み合わせが使えるのは
+  //   段落モードの時だけの様だ。つまり数式モード mode='math' は
+  //   実際には使われない。
+  var key = mode == 'math' ? 'mod:math/font' : 'mod:para/font';
+  var defaultFont = mode == 'math' ? 'rm:md:it' : 'rm:md:up';
+  var contextName = mode == 'math' ? 'mode.math' : 'mode.para';
+  return ns.Command2('f', null, function(doc, argv) {
+    var font0 = doc.GetContextVariable(key) || defaultFont;
+    var font1 = reg ? font0.replace(reg, rep) : font0;
+    var arg = doc.GetArgumentHtml(contextName, {'mod:para/font': font1});
+    var output = doc.currentCtx.output;
+    output.buff.push('<tex:f class="', _Mod.ResolveFontTriplet(font1), '">', arg, '</tex:f>');
+  });
+};
+_Mod.CreateFollowingFontCommand = function(mode, reg, rep) {
+  var key = mode == 'math' ? 'mod:math/font' : 'mod:para/font';
+  var defaultFont = mode == 'math' ? 'rm:md:it' : 'rm:md:up';
+  return ns.Command2('f', null, function(doc, argv) {
+    var font0 = doc.GetContextVariable(key) || defaultFont;
+    var font1 = font0.replace(reg, rep);
+    doc.SetContextVariable('mod:para/font', font1);
+    var output = doc.currentCtx.output;
+    output.buff.push('<tex:f class="', _Mod.ResolveFontTriplet(font1), '">');
+    output.appendPost('<tex:f>');
+  });
+};
 
 context "global" {
   var CTXV_FOOTNOTE = 'mod_ref/footnote';
