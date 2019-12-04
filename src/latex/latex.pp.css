@@ -154,22 +154,22 @@ div.aghtex-flushright { text-align: right; }
 div.aghtex-flushleft { text-align: left; }
 
 /* TeX */
+tex\:i.aghtex-logo { font-family: aghtex_mathrm,aghtex_mincho,serif; }
+tex\:i.aghtex-logo-a { vertical-align: 12%; font-size: 80%; text-transform: uppercase; }
+tex\:i.aghtex-logo-e { vertical-align: -20%; text-transform: uppercase; }
+tex\:i.aghtex-logo-eps { font-family: aghtex_mathit,aghtex_roman,serif; vertical-align: -10%; }
+tex\:i.aghtex-logo-ams { font-family: aghtex_mathcal,aghtex_gothic,sans-serif; }
+tex\:i.aghtex-logo-ams-m { vertical-align: -20%; }
 /*%%if mode=="Trident" (*/
-  tex\:i.aghtex-latex-la  { font-family: aghtex_roman,aghtex_mincho,serif; letter-spacing: -0.5ex; }
-  tex\:i.aghtex-latex-a   { vertical-align: 20%; font-size: 80%; text-transform: uppercase; }
-  tex\:i.aghtex-latex-tex { font-family: aghtex_roman,aghtex_mincho,serif; letter-spacing: -0.3ex; }
-  tex\:i.aghtex-latex-e   { vertical-align: -20%; text-transform: uppercase; }
-  tex\:i.aghtex-latex-ams { font-family: aghtex_mathcal,aghtex_gothic,sans-serif; letter-spacing: -0.45ex; }
-  tex\:i.aghtex-latex-ams-m { vertical-align: -20%; }
+  tex\:i.aghtex-logo-la { letter-spacing: -0.5ex; }
+  tex\:i.aghtex-logo-tex { letter-spacing: -0.3ex; }
+  tex\:i.aghtex-logo-ams { letter-spacing: -0.45ex; }
+  tex\:i.aghtex-logo-a { vertical-align: 20%; }
 /*%%else*/
-  tex\:i.aghtex-latex-la  { font-family: aghtex_roman,aghtex_mincho,serif; }
-  tex\:i.aghtex-latex-a   { vertical-align: 12%; font-size: 80%; text-transform: uppercase; margin-left: -0.9ex; margin-right: -0.2ex; }
-  tex\:i.aghtex-latex-tex { font-family: aghtex_roman,aghtex_mincho,serif; }
-  tex\:i.aghtex-latex-e   { vertical-align: -20%; text-transform: uppercase; margin-left: -0.3ex; margin-right: -0.3ex; }
-  tex\:i.aghtex-latex-ams { font-family: aghtex_mathcal,aghtex_gothic,sans-serif; }
-  tex\:i.aghtex-latex-ams-m { vertical-align: -20%; margin-left: -0.6ex; margin-right: -0.3ex; }
+  tex\:i.aghtex-logo-a { margin-left: -0.9ex; margin-right: -0.2ex; }
+  tex\:i.aghtex-logo-e { margin-left: -0.3ex; margin-right: -0.3ex; }
+  tex\:i.aghtex-logo-ams-m { margin-left: -0.6ex; margin-right: -0.3ex; }
 /*%%)*/
-tex\:i.aghtex-latex-eps { vertical-align: -10%; }
 
 tex\:i.aghtex-vspace { display: block; height: 0; margin: 0px; padding: 0px; }
 

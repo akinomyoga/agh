@@ -123,8 +123,6 @@ agh/js - Ageha JavaScript Library v3.2
 
     \tag, \tag*, \mbox 等、他の mode.para 文脈でも同様に適用する必要がある気がする。
 
-  * \LaTeXe の 2e の部分のWebフォントの指定を行う。
-
   * aghtex: \genfrac の高さ。
 
     現状の実装では vertical-align: middle にしている。
@@ -132,6 +130,20 @@ agh/js - Ageha JavaScript Library v3.2
     実際に TeX の振る舞いを見てみると左右の括弧の大きさは \binom では固定になっている。
     中身に応じて伸縮したりする事はない。つまり、中身が大きいと上下にはみでる。
     しかしそれでも上下の要素の境界の位置は固定である。
+
+  * リンクのページ番号自動生成について。
+
+    最近は css も改ページ制御などの機能を持っていて、だとすれば
+    ページ内リンクを印刷時にページ番号に変換する機能ぐらいあっても良い。
+    というかなければならない。そう思って検索してみたが結局未だサポートされる気配はない様だ。
+    CSS3 Generative Content の内容に含まれているらしいが、これは殆ど見捨てられた仕様らしい。
+    唯一サポートしているのは Prince という HTML to PDF の変換ソフトウェアらしい。
+
+    [html - Print page numbers for table of contents using CSS in Chrome - Stack Overflow](https://stackoverflow.com/questions/24389341/print-page-numbers-for-table-of-contents-using-css-in-chrome)
+    [CSS Generated Content for Paged Media Module](https://www.w3.org/TR/2014/WD-css-gcpm-3-20140513/#target-text-function)
+    [CSS Level 3 target-counter() and target-counters() Functions](https://www.oxygenxml.com/doc/versions/21.1/ug-editor/topics/dg-target-counter-function.html)
+    [html - CSS target-counter attribute not recognised - Stack Overflow](https://stackoverflow.com/questions/9463523/css-target-counter-attribute-not-recognised)
+
 
 2015-09-14
 
@@ -571,6 +583,11 @@ latex
 -------------------------------------------------------------------------------
   Done (実装メモ)
 -------------------------------------------------------------------------------
+
+2019-12-04
+
+  * aghtex: \LaTeXe の 2e の部分のWebフォントの指定を行う。 [#D0018]
+    調べてみたらそもそも LaTeX や TeX の部分のフォントの指定も古いままだった。修正した。
 
 2019-12-03
 

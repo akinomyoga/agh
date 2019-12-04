@@ -395,21 +395,21 @@ context "global" {
   command s@\copyright() '&#xa9;';
   command s@\aa       () '&#xE5;';  // å
   command s@\AA       () '&#xC5;';  // Å
-  command s@\ae       () '&#xE6;';  // æ
-  command s@\AE       () '&#xC6;';  // Æ
-  command s@\l        () '&#x142;'; // ł
-  command s@\L        () '&#x141;'; // Ł
-  command s@\oe       () '&#x153;'; // œ
-  command s@\OE       () '&#x152;'; // Œ
-  command s@\SS       () '&#xDF;';  // ß
-  command s@\ss       () '&#xDF;';  // ß
-  command s@\o        () '&#xF8;';  // ø
-  command s@\O        () '&#xD8;';  // Ø
+  command s@\ae       () '&#xE6;';  // ae
+  command s@\AE       () '&#xC6;';  // AE
+  command s@\l        () '&#x142;'; // l-bar
+  command s@\L        () '&#x141;'; // L-bar
+  command s@\oe       () '&#x153;'; // oe
+  command s@\OE       () '&#x152;'; // OE
+  command s@\SS       () '&#xDF;';  // Eszett
+  command s@\ss       () '&#xDF;';  // eszett
+  command s@\o        () '&#xF8;';  // o-slash
+  command s@\O        () '&#xD8;';  // O-slash
 
   // TeX
-  command s@\TeX   () '<tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">e</tex:i>X</tex:i>';
-  command s@\LaTeX () '<tex:i class="aghtex-latex-la">L<tex:i class="aghtex-latex-a">a</tex:i></tex:i><tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">e</tex:i>X</tex:i>';
-  command s@\LaTeXe() '<tex:i class="aghtex-latex-la">L<tex:i class="aghtex-latex-a">a</tex:i></tex:i><tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">e</tex:i>X</tex:i>2<tex:i class="aghtex-latex-eps">ε</tex;i>';
+  command s@\TeX   () '<tex:i class="aghtex-logo"><tex:i class="aghtex-logo-tex">T<tex:i class="aghtex-logo-e">e</tex:i>X</tex:i></tex:i>';
+  command s@\LaTeX () '<tex:i class="aghtex-logo"><tex:i class="aghtex-logo-la">L<tex:i class="aghtex-logo-a">a</tex:i></tex:i><tex:i class="aghtex-logo-tex">T<tex:i class="aghtex-logo-e">e</tex:i>X</tex:i></tex:i>';
+  command s@\LaTeXe() '<tex:i class="aghtex-logo"><tex:i class="aghtex-logo-la">L<tex:i class="aghtex-logo-a">a</tex:i></tex:i><tex:i class="aghtex-logo-tex">T<tex:i class="aghtex-logo-e">e</tex:i>X</tex:i>2<tex:i class="aghtex-logo-eps">ε</tex;i></tex:i>';
 
   // 特別な文字
   command s@\copyright()          '<tex:f class="aghtex-textrm">©</tex:f>'; // u00A9
@@ -417,9 +417,9 @@ context "global" {
   // \text/math... 記号
   //   元々 text-mode 用だが、期せずして math-mode でも表示できる物。
   //   正しく表示できない \text... 記号は mod_para.ctx で定義。
-  command s@\textregistered()   '<tex:f class="aghtex-textrm">®</tex:f>'; // u00AE
-  command s@\texttrademark()    '<tex:f class="aghtex-textrm">™</tex:f>'; // u2122
-  command s@\textvisiblespace() '<tex:f class="aghtex-textmr">␣</tex:f>'; // u2423 (■ XP IE6 では表示できない)
+  command s@\textregistered()   '<tex:f class="aghtex-textrm">&#x226E;</tex:f>'; // u00AE 丸R
+  command s@\texttrademark()    '<tex:f class="aghtex-textrm">&#x226F;</tex:f>'; // u2122 TM
+  command s@\textvisiblespace() '<tex:f class="aghtex-textmr">&#x277D;</tex:f>'; // u2423 空白記号 (■ XP IE6 では表示できない)
   command s@\textcopyright   () '&copy;';
   command s@\textellipsis    () '<tex:f lang="en">…</tex:f>';
   command s@\textless        () '&lt;';
