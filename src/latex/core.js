@@ -952,9 +952,6 @@ ns.Document = function(text, context) {
   // refs.displayedHtml[sec:attention] = "1.2.4";
   // refs.displayedHtml[eq:firstEquation] = "1";
 
-  // document variables
-  this.flags = {};
-
   // 解析時に使用
   this.currentCtx = null;
   this.ctxStack = [];
@@ -1079,53 +1076,45 @@ agh.memcpy(ns.Document.prototype, {
     }
   },
   //======================================================================
-  //  Flags:
+  //  DocumentVariables:
   //    context に属するのではなく document に直接属する変数。
-  //    pushFlags, popFlags を手動で呼び出して階層を作る。
   //----------------------------------------------------------------------
-  pushFlags: function() {
-    this.flags = agh.wrap(this.flags, {'core/oldflags': this.flags});
+  GetDocumentVariable: function(dictName, key) {
+    var dict = this[dictName];
+    if (!key) return dict;
+    return dict ? dict[key] : null;
   },
-  popFlags: function() {
-    var parent = this.flags['core/oldflags']
-    if (parent != null) this.flags = parent;
-  },
-  GetDocumentVariable: function(dict, key) {
-    var m = this[dict];
-    if (!key) return m;
-    return m ? m[key] : null;
-  },
-  SetDocumentVariable: function(dict, key, value) {
-    var m = this[dict] || (this[dict] = {});
-    m[key] = value;
+  SetDocumentVariable: function(dictName, key, value) {
+    var dict = this[dictName] || (this[dictName] = {});
+    dict[key] = value;
   },
   //======================================================================
   //  コンテキスト変数検索
   //    GetMacroHandler: マクロハンドラ
   //    GetLengthData:   長さ変数
   //----------------------------------------------------------------------
-  internalGetContextVariable: function(dict, key) {
-    var ret = this.currentCtx[dict][key];
+  internalGetContextVariable: function(dictName, key) {
+    var ret = this.currentCtx[dictName][key];
     if (ret != null) return ret;
 
     for (var i = this.ctxStack.length - 1; i >= 0; i--) {
-      ret = this.ctxStack[i][dict][key];
+      ret = this.ctxStack[i][dictName][key];
       if (ret != null) return ret;
     }
     return null;
   },
-  internalSetContextVariable: function(dict, key, value) {
-    this.currentCtx[dict][key] = value;
+  internalSetContextVariable: function(dictName, key, value) {
+    this.currentCtx[dictName][key] = value;
   },
-  internalReplaceContextVariable: function(dict, key, value) {
-    var d = this.currentCtx[dict];
+  internalReplaceContextVariable: function(dictName, key, value) {
+    var d = this.currentCtx[dictName];
     if (d[key] != null) {
       d[key] = value;
       return true;
     }
 
     for (var i = this.ctxStack.length - 1; i >= 0; i--) {
-      d = this.ctxStack[i][dict];
+      d = this.ctxStack[i][dictName];
       if (d[key] != null) {
         d[key] = value;
         return true;
@@ -1133,6 +1122,21 @@ agh.memcpy(ns.Document.prototype, {
     }
 
     return false;
+  },
+  // 指定された名前の変数を全ての文脈で削除する (unused)
+  internalDeepRemoveContextVariable: function(dictName, key) {
+    var d = this.currentCtx[dictName];
+    if (d[key] != null) d[key] = null;
+    for (var i = this.ctxStack.length - 1; i >= 0; i--) {
+      d = this.ctxStack[i][dictName];
+      if (d[key] != null) d[key] = null;
+    }
+  },
+  // 全ての文脈で指定された名前の変数を設定する。
+  internalDeepSetContextVariable: function(dictName, key, value) {
+    this.currentCtx[dictName][key] = value;
+    for (var i = this.ctxStack.length - 1; i >= 0; i--)
+      this.ctxStack[i][dictName][key] = value;
   },
   GetContextVariable: function(key) {
     return this.internalGetContextVariable('dataV', key);
@@ -1147,8 +1151,8 @@ agh.memcpy(ns.Document.prototype, {
     return this.internalGetContextVariable('userC', cmd);
   },
   SetMacroHandler: function(cmd, handler, isGlobal) {
-    if ((isGlobal || this.flags['mod:common/global']) && 0 < this.ctxStack.length)
-      this.ctxStack[0].userC[cmd] = handler;
+    if (isGlobal || this.GetContextVariable('mod:common/global'))
+      this.internalDeepSetContextVariable('userC', cmd, handler);
     else {
       //this.internalSetContextVariable('userC', cmd, handler); は以下に等価
       this.currentCtx.userC[cmd] = handler;
@@ -1268,7 +1272,7 @@ agh.memcpy(ns.Document.prototype, {
   /// <summary>
   /// 引数を html として取得します。
   /// </summary>
-  GetArgumentHtml: function(basectx, direct) {
+  GetArgumentHtml: function(basectx, contextVariables) {
     var output = new ns.Writer();
     if (!basectx) basectx = this.currentCtx;
 
@@ -1277,7 +1281,8 @@ agh.memcpy(ns.Document.prototype, {
     var fmacro = false;
     {
       this.skipSpaceAndComment();
-      this.pushContext(this.context_cast(direct ? basectx : [basectx, "sub.argument"]));
+      this.pushContext(this.context_cast([basectx, "sub.argument"]));
+      if (contextVariables) agh.memcpy(this.currentCtx.dataV, contextVariables);
       this.currentCtx.output = output;
       this.currentCtx.Initialize();
       this.currentCtx.BREAK = true;

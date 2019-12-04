@@ -266,15 +266,10 @@ context "global" {
 
   // マクログローバル定義
   command f\global() {
-    doc.pushFlags();
-    doc.flags['mod:common/global'] = true; // \let, \def, \edef, etc
-    //■TODO: \count, \countdef
-
-    // 続くコマンドを引数として読み取り
+    // \let, \def, \edef, etc に対する作用は対応済み。
+    // ■TODO: \count, \countdef に対する効果は未実装。
     doc.currentCtx.output.buff.push(
-      doc.GetArgumentHtml(doc.currentCtx, true));
-
-    doc.popFlags();
+      doc.GetArgumentHtml(doc.currentCtx, {'mod:common/global': true}));
   };
 
   command f\newenvironment("#!1#[]!2#[\\agh@noarg]3#4#5") {

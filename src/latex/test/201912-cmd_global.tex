@@ -1,0 +1,12 @@
+\documentclass[11pt]{revtex4-1}
+\usepackage{amsmath}
+\begin{document}
+
+\def\aaa{N/A}
+
+$hello\gdef\aaa{world} (\aaa)$, $(\aaa)$.
+
+Expected: $hello (world)$, $(world)$
+
+
+\end{document}

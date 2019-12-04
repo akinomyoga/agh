@@ -110,6 +110,20 @@ CSSの仕様的には定まっていないのだろうか。
   \frac1{2+\frac13}
 \end{align}
 
+\section{global コマンド}
+現在の実装では flags という仕組みを用いている。
+この flags の仕組みは他の場所では一切使われていない。
+この仕組は ContextVariable に置き換える事ができる。
+global コマンドは ContextVariable に置き換えるべきではないか。
+
+先ず初めに動作テストを作成する。
+\def\aaa{N/A}
+\begin{itemize}
+\item $diamond, spade, club\def\aaa{heart}$ and $\aaa$ (N/A).
+\item $spring, summer, fall\global\def\aaa{winter}$ and $\aaa$ (winter).
+\item $left\gdef\aaa{right}$ and $\aaa$ (right).
+\end{itemize}
+
 \end{document}
 </div>
 
