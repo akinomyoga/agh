@@ -168,8 +168,8 @@
  *
  *  @fn String.prototype.first(length)
  *  @fn String.prototype.last(length)
- *  @fn String.prototype.startsWith(str)
- *  @fn String.prototype.endsWith(str)
+ *  @fn String.prototype.startsWith(str, [position])
+ *  @fn String.prototype.endsWith(str, [length])
  *  @fn String.prototype.$indexOf(pattern,index)
  *  @fn String.prototype.$lastIndexOf(text,index)
  *  @fn String.prototype.trim_l()
@@ -232,6 +232,7 @@
  *  @fn agh.scripts.load_js(filename)
  *  @fn agh.scripts.load_css(filename)
  *  @var agh.scripts.AGH_URLBASE
+ *  @var agh.scripts.AGH_QUERY
  *  @var agh.scripts.DOCUMENT
  *  @var agh.scripts.DOCUMENT_HEAD
  *  @var agh.scripts.JGZ_EXTENSION
@@ -1926,6 +1927,10 @@ agh.memcpy(agh.Text.Url, {
     var i = str.$lastIndexOf(["\\", "/"]);
     if (i < 0) return str;
     return str.substring(i + 1);
+  },
+  QueryString: function(str) {
+    var m = str.match(/\?[^#]*/);
+    return m ? m[0] : "";
   }
 });
 //******************************************************************************
@@ -2203,6 +2208,7 @@ Function.prototype.get_name = function() {
       },
       load_css: function() { return true; },
       AGH_URLBASE: __dirname,
+      AGH_QUERY: '',
       JGZ_EXTENSION: (__filename || "agh.js").replace(/^.*(\.\w+)$/, "$1")
     });
   } else {
@@ -2219,7 +2225,10 @@ Function.prototype.get_name = function() {
         if (agh.Array.contains(["loading", "parsed", "ready"], this.files[filename])) return false;
         this.files[filename] = "loading";
         var script = this.DOCUMENT.createElement("script");
-        script.src = this.AGH_URLBASE + filename.slice(0, -3) + this.JGZ_EXTENSION;
+        if (/^\w+:/.test(filename))
+          script.src = filename;
+        else
+          script.src = this.AGH_URLBASE + filename.slice(0, -3) + this.JGZ_EXTENSION + this.AGH_QUERY;
         script.charset = "utf-8";
         script.type = "text/javascript";
         this.DOCUMENT_HEAD.appendChild(script);
@@ -2240,11 +2249,15 @@ Function.prototype.get_name = function() {
         link.rel = "stylesheet";
         link.type = "text/css";
         link.charset = "utf-8";
-        link.href = agh.scripts.AGH_URLBASE + filename;
+        if (/^\w+:/.test(filename))
+          link.href = filename;
+        else
+          link.href = this.AGH_URLBASE + filename + this.AGH_QUERY;
         this.DOCUMENT_HEAD.appendChild(link);
         return true;
       },
       AGH_URLBASE: 'https://akinomyoga.github.io/agh/',
+      AGH_QUERY: '',
       DOCUMENT: document,
       DOCUMENT_HEAD: document.getElementsByTagName("head")[0],
       JGZ_EXTENSION: ".js"
@@ -2254,9 +2267,9 @@ Function.prototype.get_name = function() {
     for (var i = 0; i < scripts.length; i++) {
       var src = scripts[i].src;
       if (!src) continue;
-      src = src.replace(/[?#].*$/);
+      var path = src.replace(/[?#].*$/, "");
 
-      var filename = agh.Text.Url.GetFileName(src);
+      var filename = agh.Text.Url.GetFileName(path);
       var m = filename.match(/^(.*)(\.(?:js|js\.gz|jgz|min\.js))$/);
       if (!m) continue;
 
@@ -2264,7 +2277,8 @@ Function.prototype.get_name = function() {
       var js_ext = m[2];
       if (original_filename != THIS_FILE) continue;
 
-      agh.scripts.AGH_URLBASE = agh.Text.Url.Directory(src);
+      agh.scripts.AGH_URLBASE = agh.Text.Url.Directory(path);
+      agh.scripts.AGH_QUERY = agh.Text.Url.QueryString(src);
       agh.scripts.JGZ_EXTENSION = js_ext;
       break;
     }

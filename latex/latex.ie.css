@@ -117,13 +117,16 @@ div.aghtex-flushright { text-align: right; }
 div.aghtex-flushleft { text-align: left; }
 
 /* TeX */
-  tex\:i.aghtex-latex-la  { font-family: aghtex_roman,aghtex_mincho,serif; letter-spacing: -0.5ex; }
-  tex\:i.aghtex-latex-a   { vertical-align: 20%; font-size: 80%; }
-  tex\:i.aghtex-latex-tex { font-family: aghtex_roman,aghtex_mincho,serif; letter-spacing: -0.3ex; }
-  tex\:i.aghtex-latex-e   { vertical-align: -20%; }
-  tex\:i.aghtex-latex-ams { font-family: aghtex_mathcal,aghtex_gothic,sans-serif; letter-spacing: -0.45ex; }
-  tex\:i.aghtex-latex-ams-m { vertical-align: -20%; }
-tex\:i.aghtex-latex-eps { vertical-align: -10%; }
+tex\:i.aghtex-logo { font-family: aghtex_mathrm,aghtex_mincho,serif; }
+tex\:i.aghtex-logo-a { vertical-align: 12%; font-size: 80%; text-transform: uppercase; }
+tex\:i.aghtex-logo-e { vertical-align: -20%; text-transform: uppercase; }
+tex\:i.aghtex-logo-eps { font-family: aghtex_mathit,aghtex_roman,serif; vertical-align: -10%; }
+tex\:i.aghtex-logo-ams { font-family: aghtex_mathcal,aghtex_gothic,sans-serif; }
+tex\:i.aghtex-logo-ams-m { vertical-align: -20%; }
+  tex\:i.aghtex-logo-la { letter-spacing: -0.5ex; }
+  tex\:i.aghtex-logo-tex { letter-spacing: -0.3ex; }
+  tex\:i.aghtex-logo-ams { letter-spacing: -0.45ex; }
+  tex\:i.aghtex-logo-a { vertical-align: 20%; }
 
 tex\:i.aghtex-vspace { display: block; height: 0; margin: 0px; padding: 0px; }
 
@@ -348,14 +351,19 @@ tex\:f.aghtex-symb-roman { font-style: normal; font-family: aghtex_mathrm,aghtex
 tex\:f.aghtex-symb-meiryo { font-style: normal; font-family: aghtex_mathrm,aghtex_meiryo,sans-serif; }
 tex\:f.aghtex-symb-cent { font-family: aghtex_mathrm,Century,aghtex_gothic,sans-serif; }
 tex\:f.aghtex-syma-mincho { font-style: normal; font-family: aghtex_mathbb,aghtex_mathrm,aghtex_mincho,aghtex_roman,serif; }
-tex\:f.aghtex-binop { margin-left: 0.2em; margin-right: 0.2em; }
-tex\:f.aghtex-comma { margin-right: 0.3ex; }
+tex\:f.aghtex-binop  { margin-left: 0.2em; margin-right: 0.2em; }
+tex\:f.aghtex-comma  { margin-right: 0.3ex; }
 tex\:f.aghtex-lbrace { margin-left: 0.2ex; margin-right: 0; }
 tex\:f.aghtex-rbrace { margin-left: 0; margin-right: 0.2ex; }
 tex\:f.aghtex-mbrace { margin-left: 0.2ex; margin-right: 0.2ex; }
 tex\:f.aghtex-rbrace+tex\:i.aghtex-sup,
 tex\:f.aghtex-rbrace+tex\:i.aghtex-sub,
 tex\:f.aghtex-rbrace+tex\:i.aghtex-supsub { margin-left: -0.2ex; }
+.aghtex-tag-script tex\:f.aghtex-binop  { margin-left: 0; margin-right: 0; }
+.aghtex-tag-script tex\:f.aghtex-comma  { margin-right: 0; }
+.aghtex-tag-script tex\:f.aghtex-lbrace { margin-left: 0; margin-right: 0; }
+.aghtex-tag-script tex\:f.aghtex-rbrace { margin-left: 0; margin-right: 0; }
+.aghtex-tag-script tex\:f.aghtex-mbrace { margin-left: 0; margin-right: 0; }
 
 
 /* --- 数式フォント適用 --- */
@@ -613,7 +621,10 @@ table.aghtex-cmdleft-table {
 }
 
 tr.aghtex-cmdleft-row { height: 0px!important; }
-td.aghtex-cmdleft-cell { vertical-align: baseline!important; height: 1em!important; min-height: 1em!important; }
+td.aghtex-cmdleft-cell {
+  vertical-align: baseline!important; height: 1em!important; min-height: 1em!important;
+  padding: 0 0.06em!important;
+}
 
 
 td.aghtex-left-kaku ,
@@ -951,6 +962,7 @@ tex\:i.aghtex-array-hline-dummy {
   tex\:i.aghtex-equation-eqno-right { position: absolute; right: 1em; top: 50%; margin-top: -0.7em; }
   tex\:i.aghtex-equation-eqno-left { position: absolute; left: 1em; top: 50%; margin-top: -0.7em; }
 tex\:i.aghtex-eqno { display: inline-block; }
+tex\:i.aghtex-eqno-vspan { display: inline-block; height: 1em; }
 tex\:i.aghtex-eqno-right { position: absolute; right: 1em; }
 tex\:i.aghtex-eqno-left { position: absolute; left: 1em; }
 tex\:i.aghtex-eqno-margin { margin-right: 2em; }

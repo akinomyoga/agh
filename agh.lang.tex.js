@@ -930,12 +930,12 @@ ns.Document = function(text, context) {
       this.lastSectionId = id;
       return id;
     },
-    displayedText: {},
+    displayedHtml: {},
     label_id_map: {},
     label_page_map: {}
   };
-  // refs.displayedText[sec:attention] = "1.2.4";
-  // refs.displayedText[eq:firstEquation] = "1";
+  // refs.displayedHtml[sec:attention] = "1.2.4";
+  // refs.displayedHtml[eq:firstEquation] = "1";
 
   // document variables
   this.flags = {};
@@ -4452,21 +4452,21 @@ new function(){
   _Ctx.DefineCommand({"copyright":['s@','&#xa9;']});
   _Ctx.DefineCommand({"aa":['s@','&#xE5;']});  // å
   _Ctx.DefineCommand({"AA":['s@','&#xC5;']});  // Å
-  _Ctx.DefineCommand({"ae":['s@','&#xE6;']});  // æ
-  _Ctx.DefineCommand({"AE":['s@','&#xC6;']});  // Æ
-  _Ctx.DefineCommand({"l":['s@','&#x142;']}); // ł
-  _Ctx.DefineCommand({"L":['s@','&#x141;']}); // Ł
-  _Ctx.DefineCommand({"oe":['s@','&#x153;']}); // œ
-  _Ctx.DefineCommand({"OE":['s@','&#x152;']}); // Œ
-  _Ctx.DefineCommand({"SS":['s@','&#xDF;']});  // ß
-  _Ctx.DefineCommand({"ss":['s@','&#xDF;']});  // ß
-  _Ctx.DefineCommand({"o":['s@','&#xF8;']});  // ø
-  _Ctx.DefineCommand({"O":['s@','&#xD8;']});  // Ø
+  _Ctx.DefineCommand({"ae":['s@','&#xE6;']});  // ae
+  _Ctx.DefineCommand({"AE":['s@','&#xC6;']});  // AE
+  _Ctx.DefineCommand({"l":['s@','&#x142;']}); // l-bar
+  _Ctx.DefineCommand({"L":['s@','&#x141;']}); // L-bar
+  _Ctx.DefineCommand({"oe":['s@','&#x153;']}); // oe
+  _Ctx.DefineCommand({"OE":['s@','&#x152;']}); // OE
+  _Ctx.DefineCommand({"SS":['s@','&#xDF;']});  // Eszett
+  _Ctx.DefineCommand({"ss":['s@','&#xDF;']});  // eszett
+  _Ctx.DefineCommand({"o":['s@','&#xF8;']});  // o-slash
+  _Ctx.DefineCommand({"O":['s@','&#xD8;']});  // O-slash
 
   // TeX
-  _Ctx.DefineCommand({"TeX":['s@','<tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">E</tex:i>X</tex:i>']});
-  _Ctx.DefineCommand({"LaTeX":['s@','<tex:i class="aghtex-latex-la">L<tex:i class="aghtex-latex-a">A</tex:i></tex:i><tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">E</tex:i>X</tex:i>']});
-  _Ctx.DefineCommand({"LaTeXe":['s@','<tex:i class="aghtex-latex-la">L<tex:i class="aghtex-latex-a">A</tex:i></tex:i><tex:i class="aghtex-latex-tex">T<tex:i class="aghtex-latex-e">E</tex:i>X</tex:i>2<tex:i class="aghtex-latex-eps">ε</tex;i>']});
+  _Ctx.DefineCommand({"TeX":['s@','<tex:i class="aghtex-logo"><tex:i class="aghtex-logo-tex">T<tex:i class="aghtex-logo-e">e</tex:i>X</tex:i></tex:i>']});
+  _Ctx.DefineCommand({"LaTeX":['s@','<tex:i class="aghtex-logo"><tex:i class="aghtex-logo-la">L<tex:i class="aghtex-logo-a">a</tex:i></tex:i><tex:i class="aghtex-logo-tex">T<tex:i class="aghtex-logo-e">e</tex:i>X</tex:i></tex:i>']});
+  _Ctx.DefineCommand({"LaTeXe":['s@','<tex:i class="aghtex-logo"><tex:i class="aghtex-logo-la">L<tex:i class="aghtex-logo-a">a</tex:i></tex:i><tex:i class="aghtex-logo-tex">T<tex:i class="aghtex-logo-e">e</tex:i>X</tex:i>2<tex:i class="aghtex-logo-eps">ε</tex;i></tex:i>']});
 
   // 特別な文字
   _Ctx.DefineCommand({"copyright":['s@','<tex:f class="aghtex-textrm">©</tex:f>']}); // u00A9
@@ -4474,9 +4474,9 @@ new function(){
   // \text/math... 記号
   //   元々 text-mode 用だが、期せずして math-mode でも表示できる物。
   //   正しく表示できない \text... 記号は mod_para.ctx で定義。
-  _Ctx.DefineCommand({"textregistered":['s@','<tex:f class="aghtex-textrm">®</tex:f>']}); // u00AE
-  _Ctx.DefineCommand({"texttrademark":['s@','<tex:f class="aghtex-textrm">™</tex:f>']}); // u2122
-  _Ctx.DefineCommand({"textvisiblespace":['s@','<tex:f class="aghtex-textmr">␣</tex:f>']}); // u2423 (■ XP IE6 では表示できない)
+  _Ctx.DefineCommand({"textregistered":['s@','<tex:f class="aghtex-textrm">&#x226E;</tex:f>']}); // u00AE 丸R
+  _Ctx.DefineCommand({"texttrademark":['s@','<tex:f class="aghtex-textrm">&#x226F;</tex:f>']}); // u2122 TM
+  _Ctx.DefineCommand({"textvisiblespace":['s@','<tex:f class="aghtex-textmr">&#x277D;</tex:f>']}); // u2423 空白記号 (■ XP IE6 では表示できない)
   _Ctx.DefineCommand({"textcopyright":['s@','&copy;']});
   _Ctx.DefineCommand({"textellipsis":['s@','<tex:f lang="en">…</tex:f>']});
   _Ctx.DefineCommand({"textless":['s@','&lt;']});
@@ -5861,6 +5861,7 @@ new function(){
     Huge        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large5">', '</tex:f>'),
 
     // - フォント
+    text  : ['s@;#>1', '#1'],
     textrm: ['s@;#>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
     textsf: ['s@;#>1', '<tex:f class="aghtex-textsf">#1</tex:f>'],
     texttt: ['s@;#>1', '<tex:f class="aghtex-texttt">#1</tex:f>'],
@@ -6139,7 +6140,7 @@ new function(){
         var eqno = c.arabic();
         buff.push('(', eqno, ')');
         if (labels.length > 0)
-          doc.references.displayedText['ref@' + labels[0]] = eqno;
+          doc.references.displayedHtml['ref@' + labels[0]] = eqno;
       }
 
       buff.push('</tex:i></tex:math>\r\n');
@@ -6485,7 +6486,7 @@ new function(){
     // 節番号
     var lastsec = doc.references.lastSection;
     if (lastsec != "")
-      doc.references.displayedText['ref@' + name] = lastsec;
+      doc.references.displayedHtml['ref@' + name] = lastsec;
     if (doc.references.lastSectionId) {
       doc.references.label_id_map[name] = doc.references.lastSectionId;
     } else {
@@ -6496,7 +6497,7 @@ new function(){
   _Ctx.DefineCommand({"ref":['f;#@1',function(doc,argv){
     var output = doc.currentCtx.output;
     var name = agh.Text.Escape(argv[1].trim(), "html-attr");
-    var text = doc.references.displayedText['ref@' + name];
+    var text = doc.references.displayedHtml['ref@' + name];
     if (text != null) {
       output.buff.push('<a class="aghtex-ref" href="#aghtex.', name, '">', text, '</a>');
     } else {
@@ -6618,7 +6619,7 @@ _Mod["cmd:label:eq"] = ns.Command2("f", "#1", function(doc, argv) {
   // 式番号
   var counter = doc.GetCounter('equation');
   if (counter != null)
-    doc.references.displayedText['ref@' + name] = counter.arabic();
+    doc.references.displayedHtml['ref@' + name] = counter.arabic();
 
   var labels = doc.GetContextVariable(CTXV_LABEL_EQ);
   if (labels == null) {
@@ -6659,7 +6660,7 @@ _Mod["cmd:label:fig"] = ns.Command2("f", "#1", function(doc, argv) {
   // 図番号, 表番号
   var counter = doc.GetCounter('figure');
   if (counter != null)
-    doc.references.displayedText['ref@' + name] = counter.arabic();
+    doc.references.displayedHtml['ref@' + name] = counter.arabic();
 
   var labels = doc.GetContextVariable(CTXV_LABEL_FIG);
   if (labels == null) {
@@ -6727,7 +6728,7 @@ _Mod["cmd:label:tb"] = ns.Command2("f", "#1", function(doc, argv) {
   // 図番号, 表番号
   var counter = doc.GetCounter('table');
   if (counter != null)
-    doc.references.displayedText['ref@' + name] = counter.arabic();
+    doc.references.displayedHtml['ref@' + name] = counter.arabic();
 
   var labels = doc.GetContextVariable(CTXV_LABEL_TB);
   if (labels == null) {
@@ -6788,7 +6789,7 @@ new function(){
         counter.Step();
         var c = counter.arabic();
         buff.push("[", c, "] ");
-        doc.references.displayedText['bib@' + name] = c;
+        doc.references.displayedHtml['bib@' + name] = c;
       }
     } else {
       doc.currentCtx.output.error(
@@ -6829,9 +6830,9 @@ agh.memcpy(ns.Document.prototype, {
   getReferenceText: function get_reference_text(type, name) {
     switch (type) {
     case "ref":
-      return this.references.displayedText['ref@' + name] || null;
+      return this.references.displayedHtml['ref@' + name] || null;
     case "bib":
-      return this.references.displayedText['bib@' + name] || null;
+      return this.references.displayedHtml['bib@' + name] || null;
     case "contents":
       if (name == "toc" || name == "lof" || name == "lot") {
         var f = this["mod:ref/" + name];
@@ -6847,7 +6848,7 @@ agh.memcpy(ns.Document.prototype, {
     var self = this;
     return this.html = this.html.replace(/<tex:ref ref="(\w+)\.([^"<>]+)">\?<\/tex:ref>|<a class="aghtex-ref" href="#aghtex\.([^"]+)">/g, function($0, $1, $2, $B1) { //
       if ($1 != null && $1 != "") {
-        return this.getReferenceText($1, $2) || $0;
+        return self.getReferenceText($1, $2) || $0;
       } else if ($B1 != "" && $B1) {
         if ($B1 in self.references.label_id_map)
           return '<a class="aghtex-ref" href="#' + self.references.label_id_map[$B1] + '">';
@@ -6877,10 +6878,10 @@ agh.memcpy(ns.Document.prototype, {
       if (!ref) continue;
       var m = ref.match(/^(\w+)\.(.*)$/);
       if (!m) continue;
-      var text = this.getReferenceText(m[1], m[2]);
-      if (!text) continue;
+      var html = this.getReferenceText(m[1], m[2]);
+      if (!html) continue;
       elem.removeAttribute("ref");
-      elem.innerHTML = agh.Text.Escape(text, "html");
+      elem.innerHTML = html;
     }
   }
 });
@@ -8154,18 +8155,21 @@ ns.ContextFactory["mode.para"].AddEnvironment("tabular", ENV_PARAMS);
 // 式番号 (eqnarray)
 
 var CTXV_LABEL_EQ = 'mod_ref/label:eq';
-var CTXV_NONUMBER = 'mod_array/nonumber';
 var CTXV_ARRAYCTX = 'mod_array/arrayCtx';
+var CTXV_NOTAG = 'mod_array/notag';
+var CTXV_EQTAG = 'mod_array/eqtag';
 
 _Mod.eqno_output = function(doc, actx, output) {
   var counter = doc.GetCounter("equation");
 
   // 式番号
   var buff = output.buff;
-  if (!actx.dataV[CTXV_NONUMBER]) {
-    buff.push('<tex:i class="aghtex-eqno-margin"></tex:i>');
-    buff.push('<tex:i class="aghtex-eqno">&nbsp;<tex:i class="aghtex-eqno-right">');
-    if (counter == null) {
+  buff.push('<tex:i class="aghtex-eqno-margin"></tex:i>');
+  if (actx.dataV[CTXV_EQTAG] || !actx.dataV[CTXV_NOTAG]) {
+    buff.push('<tex:i class="aghtex-eqno"><tex:i class="aghtex-eqno-vspan"></tex:i><tex:i class="aghtex-eqno-right">');
+    if (actx.dataV[CTXV_EQTAG]) {
+      buff.push(actx.dataV[CTXV_EQTAG]);
+    } else if (counter == null) {
       buff.push('(?)');
     } else {
       counter.Step();
@@ -8173,7 +8177,8 @@ _Mod.eqno_output = function(doc, actx, output) {
     }
     buff.push('</tex:i></tex:i>');
   }
-  actx.dataV[CTXV_NONUMBER] = false;
+  actx.dataV[CTXV_NOTAG] = false;
+  actx.dataV[CTXV_EQTAG] = false;
 
   var labels = actx.GetContextVariable(CTXV_LABEL_EQ);
   if (labels.length > 0) {
@@ -8183,7 +8188,7 @@ _Mod.eqno_output = function(doc, actx, output) {
 
     buff.push('<a class="aghtex-label" name="', id, '">&nbsp;</a>');
     if (counter != null)
-      doc.references.displayedText['ref@' + labels[0]] = counter.arabic();
+      doc.references.displayedHtml['ref@' + labels[0]] = counter.arabic();
 
     labels.length = 0;
   }
@@ -8202,7 +8207,8 @@ function isEndingEqnoRequired(ctx) {
 
 _Mod.eqno_prologue = function(doc, ctx) {
   ctx.dataV[CTXV_ARRAYCTX] = ctx;
-  ctx.dataV[CTXV_NONUMBER] = false;
+  ctx.dataV[CTXV_NOTAG] = false;
+  ctx.dataV[CTXV_EQTAG] = false;
   ctx.SetContextVariable(CTXV_LABEL_EQ, []);
   ctx.userC["label"] = ns.Modules["mod:ref"]["cmd:label:eq"];
 };
@@ -8215,7 +8221,7 @@ new function(){
   var _Ctx=ns.ContextFactory.GetInstance("env.eqnarray","env.array");
   var _CtxName="env.eqnarray";
   _Ctx.DefineCommand("nonumber", ["f", function(doc, argv) {
-    doc.AssignContextVariable(CTXV_NONUMBER, true);
+    doc.AssignContextVariable(CTXV_NOTAG, true);
   }]);
   _Ctx.DefineCommand("\\", ["f;#[]D", function(doc, argv) {
     var output = doc.currentCtx.output;
@@ -8471,7 +8477,7 @@ new function(){
   var _Ctx=ns.ContextFactory.GetInstance("env.multline","env.array");
   var _CtxName="env.multline";
   _Ctx.DefineCommand("nonumber", ['f', function(doc, argv) {
-    doc.AssignContextVariable(CTXV_NONUMBER, true);
+    doc.AssignContextVariable(CTXV_NOTAG, true);
   }]);
 }
 
@@ -9355,7 +9361,7 @@ new function(){
 
   _Ctx.DefineCommand({
     // \AmS
-    "AmS": ['s@', '<tex:i class="aghtex-latex-ams">A<tex:i class="aghtex-latex-ams-m">M</tex:i>S</tex:i>'],
+    "AmS": ['s@', '<tex:i class="aghtex-logo-ams">A<tex:i class="aghtex-logo-ams-m">M</tex:i>S</tex:i>'],
 
     // CHK: 以下は paragraph mode でも使えるのか?
     dots : ['s@', '<tex:f class="aghtex-binop aghtex-symb-roman">&#x2026;</tex:f>'],
@@ -9636,12 +9642,19 @@ new function(){
 
   // TODO: command s:mode.math\bordermatrix (cmd 上書き)
 
-  // TODO: command s:mode.math\tag
-  // TODO: command s:mode.math\tag*
-  // TODO: command s:mode.math\notag
   // TODO: command f\raisetag(#1)
 
   _Ctx.DefineCommand({
+    tag: ['f;#mode.para>1', function(doc, argv) {
+      doc.AssignContextVariable('mod_array/eqtag', '(' + argv[1] + ')');
+    }],
+    'tag*': ['f;#mode.para>1', function(doc, argv) {
+      doc.AssignContextVariable('mod_array/eqtag', argv[1]);
+    }],
+    notag: ['f', function(doc, argv) {
+      doc.AssignContextVariable('mod_array/notag', true);
+    }],
+
     lvert: ['s@', '<tex:f class="aghtex-symb-mincho">&#x007c;</tex:f>'], // u007c "|",  u2223
     lVert: ['s@', '<tex:f class="aghtex-symb-mincho">&#x2225;</tex:f>'], // u2225 "∥", u???? (‖)
     rvert: ['s@', '<tex:f class="aghtex-symb-mincho">&#x007c;</tex:f>'],
