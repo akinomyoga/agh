@@ -1131,6 +1131,7 @@ var CTXV_LABEL_EQ = 'mod_ref/label:eq';
 var CTXV_ARRAYCTX = 'mod_array/arrayCtx';
 var CTXV_NOTAG = 'mod_array/notag';
 var CTXV_EQTAG = 'mod_array/eqtag';
+var CTXV_RAISETAG = 'mod_array/raisetag';
 
 _Mod.eqno_output = function(doc, actx, output) {
   var counter = doc.GetCounter("equation");
@@ -1140,6 +1141,9 @@ _Mod.eqno_output = function(doc, actx, output) {
   buff.push('<tex:i class="aghtex-eqno-margin"></tex:i>');
   if (actx.dataV[CTXV_EQTAG] || !actx.dataV[CTXV_NOTAG]) {
     buff.push('<tex:i class="aghtex-eqno"><tex:i class="aghtex-eqno-vspan"></tex:i><tex:i class="aghtex-eqno-right">');
+    var raisetag = actx.dataV[CTXV_RAISETAG];
+    if (raisetag) buff.push('<tex:i class="aghtex-eqno-raise" style="top:', raisetag,';">');
+
     if (actx.dataV[CTXV_EQTAG]) {
       buff.push(actx.dataV[CTXV_EQTAG]);
     } else if (counter == null) {
@@ -1148,10 +1152,13 @@ _Mod.eqno_output = function(doc, actx, output) {
       counter.Step();
       buff.push('(', counter.arabic(), ')');
     }
+
+    if (raisetag) buff.push('</tex:i>');
     buff.push('</tex:i></tex:i>');
   }
   actx.dataV[CTXV_NOTAG] = false;
   actx.dataV[CTXV_EQTAG] = false;
+  actx.dataV[CTXV_RAISETAG] = false;
 
   var labels = actx.GetContextVariable(CTXV_LABEL_EQ);
   if (labels.length > 0) {
@@ -1182,6 +1189,7 @@ _Mod.eqno_prologue = function(doc, ctx) {
   ctx.dataV[CTXV_ARRAYCTX] = ctx;
   ctx.dataV[CTXV_NOTAG] = false;
   ctx.dataV[CTXV_EQTAG] = false;
+  ctx.dataV[CTXV_RAISETAG] = false;
   ctx.SetContextVariable(CTXV_LABEL_EQ, []);
   ctx.userC["label"] = ns.Modules["mod:ref"]["cmd:label:eq"];
 };

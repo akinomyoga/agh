@@ -114,10 +114,7 @@ agh/js - Ageha JavaScript Library v3.2
   * aghtex: 取り敢えず以下に載っているものを全て実装したい?
     http://www.math.kobe-u.ac.jp/HOME/kodama/tips-latex-math-margin.html
 
-  * aghtex: \raisetag
-    position relative で実装すればよい。
-
-  * aghtex: 式番号。実は最初から両側に margin を入れる事にすれば良い?
+  * aghtex: 式番号周りの空白。実は最初から両側に margin を入れる事にすれば良い?
     そうすればちゃんと数式が真ん中に来る様にできる。
     うーん。然し、そうすると自動的に幅を決定する時に2emだけ無駄になる。
 
@@ -593,6 +590,9 @@ latex
 -------------------------------------------------------------------------------
 
 2019-12-05
+
+  * aghtex: \raisetag
+    position relative で実装すればよい。
 
   * aghtex: tex:f を文字とフォントに分離する。
     そもそもフォントとして使っている箇所がどれほどあるか。

@@ -120,15 +120,15 @@ agh.memcpy(ns.Counter.prototype, {
   },
   fnsymbol: function() {
     switch (this.val) {
-    case 1: return "*";
-    case 2: return "<tex:f class="aghtex-sym0-cent">†</tex:f>";
-    case 3: return "<tex:f class="aghtex-sym0-cent">‡</tex:f>";
-    case 4: return "§";
-    case 5: return "¶";
-    case 6: return "∥"; //&#8741;
-    case 7: return "**";
-    case 8: return "<tex:f class="aghtex-sym0-cent">††</tex:f>";
-    case 9: return "<tex:f class="aghtex-sym0-cent">‡‡</tex:f>";
+    case 1: return '*';
+    case 2: return '<tex:f class="aghtex-sym0-cent">†</tex:f>';
+    case 3: return '<tex:f class="aghtex-sym0-cent">‡</tex:f>';
+    case 4: return '§';
+    case 5: return '¶';
+    case 6: return '∥'; //&#8741;
+    case 7: return '**';
+    case 8: return '<tex:f class="aghtex-sym0-cent">††</tex:f>';
+    case 9: return '<tex:f class="aghtex-sym0-cent">‡‡</tex:f>';
     default:
       return ns.Writer.get_error(
         "mod:counter.cmd:fnsymbol.CounterOutOfRange",

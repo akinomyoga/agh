@@ -173,6 +173,11 @@ agh.memcpy(ns.Length.prototype, {
   subtractValue: function(arg) { // currently unused
     this.addValue(arg, true);
   },
+  scaleValue: function(scale) {
+    this.val *= scale;
+    this.plus *= scale;
+    this.minus *= scale;
+  },
   setValue: function(arg) {
     if (arg == null) return;
 

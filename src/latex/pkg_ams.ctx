@@ -5,8 +5,8 @@
 //   \usepackage{amssymb}
 //   \usepackage{amsmath}
 // ChangeLog
-//   2019-12-04, KM
-//     Added \tag, \tag*, \notag
+//   2019-12-05, KM
+//     Added \tag, \tag*, \notag, \raisetag
 //   2013-09-02, KM
 //     Created, documentclass.ctx から分離・作成
 // References
@@ -626,6 +626,11 @@ context "pkg:amsmath/mode.math" new() {
     }],
     notag: ['f', function(doc, argv) {
       doc.AssignContextVariable('mod_array/notag', true);
+    }],
+    raisetag: ['f;#L', function(doc, argv) {
+      var len = argv[1];
+      len.scaleValue(-1.0);
+      doc.AssignContextVariable('mod_array/raisetag', len.toString());
     }],
 
     lvert: ['s@', '<tex:f class="aghtex-symb-mincho">&#x007c;</tex:f>'], // u007c "|",  u2223
