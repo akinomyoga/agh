@@ -111,6 +111,27 @@ agh/js - Ageha JavaScript Library v3.2
 
 2019-12-01
 
+  * aghtex: 取り敢えず以下に載っているものを全て実装したい?
+    http://www.math.kobe-u.ac.jp/HOME/kodama/tips-latex-math-margin.html
+
+  * aghtex: \raisetag
+    position relative で実装すればよい。
+
+  * aghtex: 式番号。実は最初から両側に margin を入れる事にすれば良い?
+    そうすればちゃんと数式が真ん中に来る様にできる。
+    うーん。然し、そうすると自動的に幅を決定する時に2emだけ無駄になる。
+
+    問題は横幅が大きい時は centering して、
+    横幅が小さい時には式番号の為のスペースを確保するという事。
+    後、tag を使って長い文字列を設定した時にどう振る舞うべきか。
+
+  * aghtex: \mathstrut, \strut
+
+    display: inline-block; width: 0; height: 1.1em; vertical-align: -0.3em;
+
+    - \rule の実装を確認する→未実装だった。一緒に実装すれば良い。
+    - paragraph mode でも使えるのか。
+
   * aghtex: \genfrac の高さ。
 
     現状の実装では vertical-align: middle にしている。
@@ -570,6 +591,61 @@ latex
 -------------------------------------------------------------------------------
   Done (実装メモ)
 -------------------------------------------------------------------------------
+
+2019-12-05
+
+  * aghtex: tex:f を文字とフォントに分離する。
+    そもそもフォントとして使っている箇所がどれほどあるか。
+
+    aghtex-size-*
+    aghtex-text*
+    aghtex-math*
+
+    tex:small? は今は使われていない。
+
+    - aghtex-textmr は文字の表示に使われている。
+      aghtex-symb-meiryo と実質似ているが、
+      aghtex-symb-meiryo は mathrm に登録されている字形で、
+      フォールバックとして Meiryo を使うという意味である。
+      ここで、mathrm に bullet や visiblespace
+      が登録されているか確かめる必要がある。
+
+      もし登録されていれば symb-meiryo に書き換える。
+
+      * fixed: 確認してみた所まるで異なる文字が表示される。どういうことか。
+        277D は調べてみても"丸に8"である。27DD や 2D77 や 027D を
+        調べてみても混同するような文字ではない。
+        Unicode.org で PDF をダウンロードする事にする。
+        ネットワークがそんなに太くないのでダウンロードには時間がかかる。
+        しかも実際にダウンロードし終わって確認してみた所、
+        code chart ではなくて unicode の仕様の文書の方だった。
+        code chart は UCD のディレクトリに 108MB の物があった。
+        こちらのダウンロードは1時間かかりそうだ。
+
+        Unicode のページで 2423 を確認してみても類似の文字や
+        混同しそうな文字の候補は指定されていない。
+        分かった…。277D は JIS コードだ…。と思ったがそうでも無い様だ。
+        →改めて調べてみると。Emacs の内部番号なのだろうか。
+          japanese-jisx0213.2004-1 0x277D という事になっている。
+          他の文字についても以下の様になっていた。
+          japanese-jisx0212 0x226E
+          japanese-jisx0212 0x226F
+        これについては修正した。
+
+      結局 aghtex_mathrm には登録されていない様だ。
+      aghtex_mathttt はどうかと思ったらその様な物はなかった。
+      \texttt の中身は "Courier New" を用いて表示しているようだ。
+      取り敢えず後でフォントを補うとして今の所は何か分かりやすい
+      クラス名に変更する事にする。
+
+      \textbullet の方は mathrm に字体が登録されている様子なので
+      symb-meiryo にする事にした。
+
+    - aghtex-size-* も変更した。
+    - 一部 aghtex-size-small1 は aghtex-symbol-small1 にした。
+
+    何だか良くわからなくなって来たが現在の書き換えは
+    完全にコマンド毎に独立したものなので余り考える必要はないのだ。
 
 2019-12-04
 

@@ -60,12 +60,12 @@ context "mode.math" {
   //---------------------------------------------------------------
 
   _Ctx.DefineCommand({
-    bf : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-mathbf">' , '</tex:f>'),
-    it : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-mathit">' , '</tex:f>'),
-    rm : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-mathrm">' , '</tex:f>'),
-    sf : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-mathsf">' , '</tex:f>'),
-    tt : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-mathtt">' , '</tex:f>'),
-    cal: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-mathcal">', '</tex:f>'),
+    bf : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-mathbf">' , '</tex:font>'),
+    it : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-mathit">' , '</tex:font>'),
+    rm : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-mathrm">' , '</tex:font>'),
+    sf : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-mathsf">' , '</tex:font>'),
+    tt : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-mathtt">' , '</tex:font>'),
+    cal: mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-mathcal">', '</tex:font>'),
 
     // - 以下は数式モードでは効果無し。
     mc          : mod_base["cmd:relax"],
@@ -96,13 +96,13 @@ context "mode.math" {
     textsc: mod_common.CreateFontCommand('para', /:..$/, ':sc'),
     textsl: mod_common.CreateFontCommand('para', /:..$/, ':sl'),
 
-    mathbf    : ['s@;#>1', '<tex:f class="aghtex-mathbf">#1</tex:f>'],
-    mathit    : ['s@;#>1', '<tex:f class="aghtex-mathit">#1</tex:f>'],
-    mathrm    : ['s@;#>1', '<tex:f class="aghtex-mathrm">#1</tex:f>'],
-    mathsf    : ['s@;#>1', '<tex:f class="aghtex-mathsf">#1</tex:f>'],
-    mathtt    : ['s@;#>1', '<tex:f class="aghtex-mathtt">#1</tex:f>'],
-    mathnormal: ['s@;#>1', '<tex:f class="aghtex-mathit">#1</tex:f>'],
-    mathcal   : ['s@;#>1', '<tex:f class="aghtex-mathcal">#1</tex:f>'],
+    mathbf    : ['s@;#>1', '<tex:font class="aghtex-mathbf">#1</tex:font>'],
+    mathit    : ['s@;#>1', '<tex:font class="aghtex-mathit">#1</tex:font>'],
+    mathrm    : ['s@;#>1', '<tex:font class="aghtex-mathrm">#1</tex:font>'],
+    mathsf    : ['s@;#>1', '<tex:font class="aghtex-mathsf">#1</tex:font>'],
+    mathtt    : ['s@;#>1', '<tex:font class="aghtex-mathtt">#1</tex:font>'],
+    mathnormal: ['s@;#>1', '<tex:font class="aghtex-mathit">#1</tex:font>'],
+    mathcal   : ['s@;#>1', '<tex:font class="aghtex-mathcal">#1</tex:font>'],
   });
 
   // 括弧の大きさ
@@ -181,7 +181,7 @@ context "mode.math" {
   letter s@\|() '<tex:f class="aghtex-symb-gothic">|</tex:f>';
   letter f@\:() {
     doc.scanner.Next();
-    if (doc.scanner.is(mod_core.SCAN_WT_LTR,"=")) {
+    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "=")) {
       //doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-gothic">:＝</tex:f>');
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-gothic">&#x2254;</tex:f>');
       doc.scanner.Next();
@@ -194,7 +194,7 @@ context "mode.math" {
     var html = cmdName;
     doc.scanner.Next();
     if (doc.scanner.wordtype == mod_core.SCAN_WT_LTR && " \b\t\v\r\n\f".indexOf(doc.scanner.word) >= 0) {
-      html='<tex:f class="aghtex-comma">'+html+'</tex:f>';
+      html = '<tex:f class="aghtex-comma">' + html + '</tex:f>';
       doc.scanner.Next();
     }
     doc.currentCtx.output.buff.push(html);
@@ -277,22 +277,22 @@ context "mode.math" {
   _Mod.OutputSupSubScripts = output_supsub_scripts;
 
   // プライム
-  // letter s@#"'"() @'<tex:f class="aghtex-textrm">''</tex:f>';
+  // letter s@#"'"() @'<tex:f class="aghtex-sym0-roman">''</tex:f>';
   var prime_handler = function(doc) {
     doc.scanner.Next();
     if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "'") && !doc.scanner.is(mod_core.SCAN_WT_CMD, "rq")) {
-      doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">′</tex:f>');
+      doc.currentCtx.output.buff.push('<tex:f class="aghtex-sym0-roman">′</tex:f>');
       return;
     }
 
     doc.scanner.Next();
     if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "'") && !doc.scanner.is(mod_core.SCAN_WT_CMD, "rq")) {
-      doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">″</tex:f>');
+      doc.currentCtx.output.buff.push('<tex:f class="aghtex-sym0-roman">″</tex:f>');
       return;
     }
 
     doc.scanner.Next();
-    doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">‴</tex:f>');
+    doc.currentCtx.output.buff.push('<tex:f class="aghtex-sym0-roman">‴</tex:f>');
   };
   _Ctx.AddLetterHandler("'", prime_handler);
   _Ctx.AddCommandHandler("rq", prime_handler);
@@ -710,7 +710,7 @@ context "mode.math" {
     // content
     if (!_Mod.GetMathStyle(doc)) {
       // 普通の (大きな) 積分記号
-      buff.push('<tex:f class="aghtex-int">',ch,'</tex:f>');
+      buff.push('<tex:f class="aghtex-int">', ch, '</tex:f>');
 
       var sbsp = doc.GetSubSup();
       switch ((sbsp.sub ? 1 : 0) + (sbsp.sup ? 2 : 0)) {
@@ -764,7 +764,7 @@ context "mode.math" {
     }
     function is_slanted(html,ismath) {
       if (ismath)
-        return !(/^<tex:f class="aghtex-math(?:rm|sf|tt|bf|frak)">/.test(html));
+        return !(/^<tex:font class="aghtex-math(?:rm|sf|tt|bf|frak)">/.test(html));
       else
         return false;
     }

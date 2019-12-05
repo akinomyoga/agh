@@ -29,8 +29,8 @@ context "mode.math" {
     ominus  : ['s@', '<tex:f class="aghtex-binop aghtex-symb-meiryo">&#x2296;</tex:f>'],
     otimes  : ['s@', '<tex:f class="aghtex-binop aghtex-symb-meiryo">&#x2297;</tex:f>'],
     oslash  : ['s@', '<tex:f class="aghtex-binop aghtex-symb-meiryo">&#x2298;</tex:f>'],
-    triangleleft   : ['s@', '<tex:f class="aghtex-symb-mincho aghtex-size-small1">&#x22B2;</tex:f>'],
-    triangleright  : ['s@', '<tex:f class="aghtex-symb-mincho aghtex-size-small1">&#x22B3;</tex:f>'],
+    triangleleft   : ['s@', '<tex:f class="aghtex-symb-mincho aghtex-symbol-small1">&#x22B2;</tex:f>'],
+    triangleright  : ['s@', '<tex:f class="aghtex-symb-mincho aghtex-symbol-small1">&#x22B3;</tex:f>'],
     bigtriangleup  : ['s@', '<tex:f class="aghtex-syma-mincho">△</tex:f>'], // u25b3
     bigtriangledown: ['s@', '<tex:f class="aghtex-syma-mincho">▽</tex:f>'], // u25bd
     bigcirc        : ['s@', '<tex:f class="aghtex-syma-mincho">○</tex:f>'], // u25cb
@@ -232,18 +232,18 @@ context "mode.math" {
     nabla       : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2207;</tex:f>'], // @"∇";
     partial     : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2202;</tex:f>'], // ∂
     hbar        : ['s@', '<tex:f class="aghtex-symb-mincho">&#x0127;</tex:f>'], // hbar
-    aleph       : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2135;</tex:f>'], // @'<tex:f class="aghtex-textrm" style="font-size:150%;">&#x5d0;</tex:f>';
+    aleph       : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2135;</tex:f>'],
     imath       : ['s@', '<tex:f class="aghtex-symb-mincho">&#x0131;</tex:f>'],
     jmath       : ['s@', '<tex:f class="aghtex-symb-mincho">&#x0237;</tex:f>'],
     ell         : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2113;</tex:f>'],
-    wp          : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2118;</tex:f>'], // @'<tex:f class="aghtex-textsy">&#xC3;</tex:f>';
-    Re          : ['s@', '<tex:f class="aghtex-symb-mincho">&#x211C;</tex:f>'], // @'<tex:f class="aghtex-textsy">&#xC2;</tex:f>';
-    Im          : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2111;</tex:f>'], // @'<tex:f class="aghtex-textsy">&#xC1;</tex:f>';
+    wp          : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2118;</tex:f>'],
+    Re          : ['s@', '<tex:f class="aghtex-symb-mincho">&#x211C;</tex:f>'],
+    Im          : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2111;</tex:f>'],
     infty       : ['s@', '<tex:f class="aghtex-symb-mincho">∞</tex:f>'],
     smallint    : ['s@', '<tex:f class="aghtex-symb-mincho">∫</tex:f>'],
     prime       : ['s@', '<tex:f class="aghtex-symb-roman">&#x2032;</tex:f>'], // 大きな prime (⇔ <tex:f class="aghtex-textrm">&#x0027;</tex:f> は上付の小さい物)
     emptyset    : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2205;</tex:f>'], // ■platex では 0 slash (cmsy9 にある) を出力する。
-    surd        : ['s@', '<tex:f class="aghtex-symb-mincho">&#x221A;</tex:f>'], // '<tex:f class="aghtex-mathrm" lang="en">√</tex:f>';
+    surd        : ['s@', '<tex:f class="aghtex-symb-mincho">&#x221A;</tex:f>'], // '<tex:f class="aghtex-sym0-roman" lang="en">√</tex:f>';
     top         : ['s@', '<tex:f class="aghtex-symb-mincho">&#x22A4;</tex:f>'],
     bot         : ['s@', '<tex:f class="aghtex-symb-gothic">⊥</tex:f>'], // u22a5
     angle       : ['s@', '<tex:f class="aghtex-symb-gothic">∠</tex:f>'], // u2220

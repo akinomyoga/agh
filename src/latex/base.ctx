@@ -908,7 +908,7 @@ context "mode.para" new("global") {
   _Ctx.AddCommandHandler("verb", function(doc) {
     var output = doc.currentCtx.output;
     var ret = doc.scanner.NextVerbArgument();
-    output.buff.push('<tex:f class="aghtex-texttt">', agh.Text.Escape(doc.scanner.word, "html"), '</tex:f>');
+    output.buff.push('<tex:font class="aghtex-texttt">', agh.Text.Escape(doc.scanner.word, "html"), '</tex:font>');
     if (ret == doc.scanner.NEXT_EOF) {
       output.error('UnexpectedEOR', 'EOF', 'mod:base.cmd:verb');
     } else if (ret == doc.scanner.NEXT_NEWLINE) {
@@ -919,7 +919,7 @@ context "mode.para" new("global") {
   _Ctx.AddCommandHandler("verb*", function(doc) {
     var output = doc.currentCtx.output;
     var ret = doc.scanner.NextVerbArgument();
-    output.buff.push('<tex:f class="aghtex-texttt">', agh.Text.Escape(doc.scanner.word.replace(/ /g, '\u2423'), "html"), '</tex:f>');
+    output.buff.push('<tex:font class="aghtex-texttt">', agh.Text.Escape(doc.scanner.word.replace(/ /g, '\u2423'), "html"), '</tex:font>');
     if (ret == doc.scanner.NEXT_EOF) {
       output.error('UnexpectedEOR', 'EOF', 'mod:base.cmd:verb');
     } else if (ret == doc.scanner.NEXT_NEWLINE) {

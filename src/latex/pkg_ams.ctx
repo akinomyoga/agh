@@ -5,11 +5,12 @@
 //   \usepackage{amssymb}
 //   \usepackage{amsmath}
 // ChangeLog
+//   2019-12-04, KM
+//     Added \tag, \tag*, \notag
 //   2013-09-02, KM
-//     * documentclass.ctx から分離・作成
+//     Created, documentclass.ctx から分離・作成
 // References
 //
-// 公開
 
 /** pkg_ams.ctx
  *
@@ -92,7 +93,7 @@ context "pkg:amssymb/mode.math" new() {
         '<tex:i class="aghtex-mathbb-d">#1</tex:i>' +
         '<tex:i class="aghtex-mathbb-e">#1</tex:i>#1</tex:i>'
     )],
-    mathfrak           : ['s@;#>1', '<tex:f class="aghtex-mathfrak">#1</tex:f>'],
+    mathfrak           : ['s@;#>1', '<tex:font class="aghtex-mathfrak">#1</tex:font>'],
 
     lessdot            : ['s@', '<tex:f class="aghtex-binop aghtex-symb-mincho">⋖</tex:f>'],
     gtrdot             : ['s@', '<tex:f class="aghtex-binop aghtex-symb-mincho">⋗</tex:f>'],
@@ -360,7 +361,7 @@ context "pkg:amsmath/mode.para" new() {
 context "pkg:amsmath/mode.math" new() {
 
   _Ctx.DefineCommand({
-    boldsymbol: ['s@;#>1', '<tex:f class="aghtex-mathbm">#1</tex:f>'],
+    boldsymbol: ['s@;#>1', '<tex:font class="aghtex-mathbm">#1</tex:font>'],
     substack  : ['s;#1', @"\begin{array}{c}#1\end{array}"],
 
     // 色々なスタイルの分数

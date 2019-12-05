@@ -47,16 +47,16 @@ context "mode.para" {
   //@A 字体
   _Ctx.DefineCommand({
     // - 文字の大きさ
-    normalsize  : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-normal">', '</tex:f>'),
-    tiny        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-small4">', '</tex:f>'),
-    scriptsize  : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-small3">', '</tex:f>'),
-    footnotesize: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-small2">', '</tex:f>'),
-    small       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-small1">', '</tex:f>'),
-    large       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large1">', '</tex:f>'),
-    Large       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large2">', '</tex:f>'),
-    LARGE       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large3">', '</tex:f>'),
-    huge        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large4">', '</tex:f>'),
-    Huge        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large5">', '</tex:f>'),
+    normalsize  : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-normal">', '</tex:font>'),
+    tiny        : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-small4">', '</tex:font>'),
+    scriptsize  : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-small3">', '</tex:font>'),
+    footnotesize: mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-small2">', '</tex:font>'),
+    small       : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-small1">', '</tex:font>'),
+    large       : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-large1">', '</tex:font>'),
+    Large       : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-large2">', '</tex:font>'),
+    LARGE       : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-large3">', '</tex:font>'),
+    huge        : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-large4">', '</tex:font>'),
+    Huge        : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-large5">', '</tex:font>'),
 
     // - フォント
     text  : mod_common.CreateFontCommand('para'),
@@ -98,23 +98,23 @@ context "mode.para" {
       var font1 = font0.replace(/:..$/, /:(?:it|sl)$/.test(font0) ? ':up' : ':it');
       var arg = doc.GetArgumentHtml(null, {'mod:para/font': font1});
       var output = doc.currentCtx.output;
-      output.buff.push('<tex:f class="', mod_common.ResolveFontTriplet(font1), '">', arg, '</tex:f>');
+      output.buff.push('<tex:font class="', mod_common.ResolveFontTriplet(font1), '">', arg, '</tex:font>');
     }],
     em: ['f', function(doc, argv) {
       var font0 = doc.GetContextVariable('mod:para/font') || 'rm:md:up';
       var font1 = font0.replace(/:..$/, /:(?:it|sl)$/.test(font0) ? ':up' : ':it');
       doc.SetContextVariable('mod:para/font', font1);
       var output = doc.currentCtx.output;
-      output.buff.push('<tex:f class="', mod_common.ResolveFontTriplet(font1), '">');
-      output.appendPost('<tex:f>');
+      output.buff.push('<tex:font class="', mod_common.ResolveFontTriplet(font1), '">');
+      output.appendPost('</tex:font>');
     }],
 
     // 標準字体
-    textnormal: ['s@;#>1', '<tex:fnorm>#1</tex:fnorm>'],
-    normalfont: mod_common.CreateCommandTagFollowing('<tex:fnorm>', '</tex:fnorm>'),
+    textnormal: ['s@;#>1', '<tex:font class="aghtex-font-normal">#1</tex:font>'],
+    normalfont: mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-font-normal">', '</tex:font>'),
 
     // 太字斜体
-    boldmath: ['s@;#>1', '<tex:f class="aghtex-mathbm">#1</tex:f>'],
+    boldmath: ['s@;#>1', '<tex:font class="aghtex-mathbm">#1</tex:font>'],
 
     // アクセント
     "'": mod_math.CreateAccentCommand('acc', '<tex:f class="aghtex-symb-mincho">&#x00B4;</tex:f>'), // alt = &#x02CA;
@@ -135,7 +135,7 @@ context "mode.para" {
 
   if (ns.compatMode == "IE-qks" || agh.browser.vIE < 8) {
     _Ctx.DefineCommand({
-      "c": mod_math.CreateAccentCommandQksB( 0.2, '<tex:f class="aghtex-textgt">&#x327;</tex:f>'),
+      "c": mod_math.CreateAccentCommandQksB( 0.2, '<tex:f class="aghtex-sym0-gothic">&#x327;</tex:f>'),
       "b": mod_math.CreateAccentCommandQksB( 0.2, "_"),
       "d": mod_math.CreateAccentCommandQksB(-1.0, "・")
     });
@@ -144,18 +144,18 @@ context "mode.para" {
   // \text... 記号 (math-mode で文字化けする系統の物)
   command s@\textasciicircum     () "^";
   command s@\textasciitilde      () "~";
-  command s@\textbackslash       () '<tex:f class="aghtex-textrm">\\</tex:f>';
-  command s@\textbullet          () '<tex:f class="aghtex-textmr">•</tex:f>'; // u2022
+  command s@\textbackslash       () '<tex:f class="aghtex-sym0-roman">\\</tex:f>';
+  command s@\textbullet          () '<tex:f class="aghtex-symb-meiryo">•</tex:f>'; // u2022
   command s@\textperiodcentered  () "·";  // u00B7
   command s@\textbar             () "|";  // platex: j に文字化け in math-mode
   command s@\textemdash          () "―"; // platex: | に文字化け in math-mode
   command s@\textendash          () "—";
   command s@\textexclamdown      () "¡";  // platex: < に文字化け in math-mode
   command s@\textquestiondown    () "¿";  // platex: > に文字化け in math-mode
-  command s@\textquotedblleft    () '<tex:f class="aghtex-textrm">“</tex:f>';
-  command s@\textquotedblright   () '<tex:f class="aghtex-textrm">”</tex:f>'; // platex: double prime に文字化け in math-mode
-  command s@\textquoteleft       () '<tex:f class="aghtex-textrm">‘</tex:f>';
-  command s@\textquoteright      () '<tex:f class="aghtex-textrm">’</tex:f>'; // platex: prime に文字化け in math-mode
+  command s@\textquotedblleft    () '<tex:f class="aghtex-sym0-roman">“</tex:f>';
+  command s@\textquotedblright   () '<tex:f class="aghtex-sym0-roman">”</tex:f>'; // platex: double prime に文字化け in math-mode
+  command s@\textquoteleft       () '<tex:f class="aghtex-sym0-roman">‘</tex:f>';
+  command s@\textquoteright      () '<tex:f class="aghtex-sym0-roman">’</tex:f>'; // platex: prime に文字化け in math-mode
   command s@\textasteriskcentered() "&#x2217;";
   command s@\textparagraph       () "&#x00b6;";
   command s@\textbraceleft       () "{";
@@ -209,28 +209,28 @@ context "mode.para" {
   function quoteleft(doc) {
     doc.scanner.Next();
     if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "`") && !doc.scanner.is(mod_core.SCAN_WT_CMD, "lq")) {
-      doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">‘</tex:f>');
+      doc.currentCtx.output.buff.push('<tex:f class="aghtex-sym0-roman">‘</tex:f>');
       return;
     }
 
     doc.scanner.Next();
-    doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">“</tex:f>');
+    doc.currentCtx.output.buff.push('<tex:f class="aghtex-sym0-roman">“</tex:f>');
   }
   _Ctx.AddLetterHandler("`", quoteleft);
   _Ctx.AddCommandHandler("lq", quoteleft);
   function quoteright(doc) {
     doc.scanner.Next();
     if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "'") && !doc.scanner.is(mod_core.SCAN_WT_CMD, "rq")) {
-      doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">’</tex:f>');
+      doc.currentCtx.output.buff.push('<tex:f class="aghtex-sym0-roman">’</tex:f>');
       return;
     }
 
     doc.scanner.Next();
-    doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">”</tex:f>');
+    doc.currentCtx.output.buff.push('<tex:f class="aghtex-sym0-roman">”</tex:f>');
   }
   _Ctx.AddLetterHandler("'", quoteright);
   _Ctx.AddCommandHandler("rq", quoteright);
-  letter s@\'"'()  '<tex:f class="aghtex-textrm">”</tex:f>'; // "
+  letter s@\'"'()  '<tex:f class="aghtex-sym0-roman">”</tex:f>'; // "
 
   environment s@\center()     '<div class="aghtex-center">#0</div>';
   environment s@\flushright() '<div class="aghtex-flushright">#0</div>';

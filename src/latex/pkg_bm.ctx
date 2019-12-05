@@ -23,9 +23,9 @@ agh.memcpy(ns.Modules["core"].ErrorMessages, {
 context "pkg:bm/global" new() {
   function DefineBoldSymbol(doc,weight,name,content) {
     if (weight == 'bold') {
-      content = '<tex:f class="aghtex-mathbm">' + content + '</tex:f>';
+      content = '<tex:font class="aghtex-mathbm">' + content + '</tex:font>';
     } else if (weight == 'heavy') {
-      content = '<tex:f class="aghtex-mathhm">' + content + '</tex:f>';
+      content = '<tex:font class="aghtex-mathhm">' + content + '</tex:font>';
     } else {
       doc.currentCtx.output.error(
         "pkg:bm.DefineBoldSymbol.InvalidMathVersion",
@@ -57,10 +57,10 @@ context "pkg:bm/global" new() {
 }
 context "pkg:bm/mode.math" new() {
   _Ctx.DefineCommand({
-    bm         : ['s@;#>1', '<tex:f class="aghtex-mathbm">#1</tex:f>'],
-    hm         : ['s@;#>1', '<tex:f class="aghtex-mathhm">#1</tex:f>'],
-    boldsymbol : ['s@;#>1', '<tex:f class="aghtex-mathbm">#1</tex:f>'],
-    heavysymbol: ['s@;#>1', '<tex:f class="aghtex-mathhm">#1</tex:f>']
+    bm         : ['s@;#>1', '<tex:font class="aghtex-mathbm">#1</tex:font>'],
+    hm         : ['s@;#>1', '<tex:font class="aghtex-mathhm">#1</tex:font>'],
+    boldsymbol : ['s@;#>1', '<tex:font class="aghtex-mathbm">#1</tex:font>'],
+    heavysymbol: ['s@;#>1', '<tex:font class="aghtex-mathhm">#1</tex:font>']
   });
 
   // \bmmax, \hmmax

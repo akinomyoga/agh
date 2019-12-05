@@ -25,11 +25,14 @@
  *    \mbox, \string
  *    \aghtex@htag → \aghtexInternalHTag [改名]
  *
- *    not implemeneted: \special
+ *    TODO: \special
  *
  *  @section 公開オブジェクト
  *    ※以下 mod_common = ns.Modules["mod:common"] とする。
  *    @fn mod_common.CreateCommandTagFollowing(tagName [, endTag])
+ *    @fn mod_common.ResolveFontTriplet(font)
+ *    @fn mod_common.CreateFontCommand(mode, reg, rep)
+ *    @fn mod_common.CreateFollowingFontCommand(mode, reg, rep)
  */
 
 var mod_core = ns.Modules["core"];
@@ -100,7 +103,7 @@ _Mod.CreateFontCommand = function(mode, reg, rep) {
     var font1 = reg ? font0.replace(reg, rep) : font0;
     var arg = doc.GetArgumentHtml(contextName, {'mod:para/font': font1});
     var output = doc.currentCtx.output;
-    output.buff.push('<tex:f class="', _Mod.ResolveFontTriplet(font1), '">', arg, '</tex:f>');
+    output.buff.push('<tex:font class="', _Mod.ResolveFontTriplet(font1), '">', arg, '</tex:font>');
   });
 };
 _Mod.CreateFollowingFontCommand = function(mode, reg, rep) {
@@ -111,8 +114,8 @@ _Mod.CreateFollowingFontCommand = function(mode, reg, rep) {
     var font1 = font0.replace(reg, rep);
     doc.SetContextVariable('mod:para/font', font1);
     var output = doc.currentCtx.output;
-    output.buff.push('<tex:f class="', _Mod.ResolveFontTriplet(font1), '">');
-    output.appendPost('<tex:f>');
+    output.buff.push('<tex:font class="', _Mod.ResolveFontTriplet(font1), '">');
+    output.appendPost('</tex:font>');
   });
 };
 
@@ -417,9 +420,9 @@ context "global" {
   // その他の記号
   command s@\P        () '¶';
   command s@\S        () '§';
-  command s@\dag      () '<tex:fcent>†</tex:fcent>';
-  command s@\ddag     () '<tex:fcent>‡</tex:fcent>';
-  command s@\pounds   () '<tex:fcent><i>￡</i></tex:fcent>';
+  command s@\dag      () '<tex:f class="aghtex-sym0-cent">†</tex:f>';
+  command s@\ddag     () '<tex:f class="aghtex-sym0-cent">‡</tex:f>';
+  command s@\pounds   () '<tex:f class="aghtex-sym0-cent"><i>￡</i></tex:f>';
   command s@\copyright() '&#xa9;';
   command s@\aa       () '&#xE5;';  // å
   command s@\AA       () '&#xC5;';  // Å
@@ -440,14 +443,14 @@ context "global" {
   command s@\LaTeXe() '<tex:i class="aghtex-logo"><tex:i class="aghtex-logo-la">L<tex:i class="aghtex-logo-a">a</tex:i></tex:i><tex:i class="aghtex-logo-tex">T<tex:i class="aghtex-logo-e">e</tex:i>X</tex:i>2<tex:i class="aghtex-logo-eps">ε</tex;i></tex:i>';
 
   // 特別な文字
-  command s@\copyright()          '<tex:f class="aghtex-textrm">©</tex:f>'; // u00A9
+  command s@\copyright()        '<tex:f class="aghtex-sym0-roman">©</tex:f>'; // u00A9
 
   // \text/math... 記号
   //   元々 text-mode 用だが、期せずして math-mode でも表示できる物。
   //   正しく表示できない \text... 記号は mod_para.ctx で定義。
-  command s@\textregistered()   '<tex:f class="aghtex-textrm">&#x226E;</tex:f>'; // u00AE 丸R
-  command s@\texttrademark()    '<tex:f class="aghtex-textrm">&#x226F;</tex:f>'; // u2122 TM
-  command s@\textvisiblespace() '<tex:f class="aghtex-textmr">&#x277D;</tex:f>'; // u2423 空白記号 (■ XP IE6 では表示できない)
+  command s@\textregistered  () '<tex:f class="aghtex-sym0-roman">&#x00AE;</tex:f>'; // u00AE 丸R
+  command s@\texttrademark   () '<tex:f class="aghtex-sym0-roman">&#x2122;</tex:f>'; // u2122 TM
+  command s@\textvisiblespace() '<tex:f class="aghtex-sym0-meiryo">&#x2423;</tex:f>'; // u2423 空白記号 (■ XP IE6 では表示できない)
   command s@\textcopyright   () '&copy;';
   command s@\textellipsis    () '<tex:f lang="en">…</tex:f>';
   command s@\textless        () '&lt;';
