@@ -1355,17 +1355,25 @@ tex\:i.aghtex-array-hline-dummy {
 /*----------------------------------------------------------
     mod_ref
 ----------------------------------------------------------*/
-/*%%if mode=="Trident"||mode=="Opera"||mode=="WebKit" (*/
-  tex\:i.aghtex-equation-eqno-right { position: absolute; right: 1em; top: 50%; margin-top: -0.7em; }
-  tex\:i.aghtex-equation-eqno-left { position: absolute; left: 1em; top: 50%; margin-top: -0.7em; }
-/*%%elif mode=="Gecko"*/
-  tex\:i.aghtex-equation-eqno-right { position: absolute; right: 1em; top: 50%; margin-top: -1em; }
-  tex\:i.aghtex-equation-eqno-left { position: absolute; left: 1em; top: 50%; margin-top: -1em; }
-/*%%)*/
 tex\:i.aghtex-eqno { display: inline-block; }
 tex\:i.aghtex-eqno-vspan { display: inline-block; height: 1em; }
-tex\:i.aghtex-eqno-right { position: absolute; right: 1em; }
-tex\:i.aghtex-eqno-left { position: absolute; left: 1em; }
+
+tex\:i.aghtex-equation-eqno-right,
+tex\:i.aghtex-equation-eqno-left,
+tex\:i.aghtex-eqno-right,
+tex\:i.aghtex-eqno-left { position: absolute; text-align: center; white-space: nowrap; min-width: 2em; }
+tex\:i.aghtex-equation-eqno-right,
+tex\:i.aghtex-eqno-right { right: 0.5em; }
+tex\:i.aghtex-equation-eqno-left,
+tex\:i.aghtex-eqno-left { left: 0.5em; }
+/*%%if mode=="Gecko" */
+  tex\:i.aghtex-equation-eqno-right,
+  tex\:i.aghtex-equation-eqno-left { top: 50%; margin-top: -1em; }
+/*%%else*/
+  tex\:i.aghtex-equation-eqno-right,
+  tex\:i.aghtex-equation-eqno-left { top: 50%; margin-top: -0.7em; }
+/*%%end*/
+
 tex\:i.aghtex-eqno-margin { margin-right: 2em; }
 tex\:i.aghtex-eqno-raise { position: relative; }
 tex\:i.aghtex-table,

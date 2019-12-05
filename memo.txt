@@ -591,10 +591,35 @@ latex
 
 2019-12-05
 
-  * aghtex: \raisetag
+  * aghtex: 式番号の中央揃え [#D0024]
+
+    やはり一桁の式番号と二桁の式番号の配置が気になる。
+    現在の実装では position: absolute; right: ... としている。
+    その為に右端揃えになっている。
+    然し中央揃えにしたい。しかし \tag で長い内容を入力すると、
+    それだと右端が画面の外にはみ出てしまう。
+
+    幅が小さい時には中央揃えにして、
+    幅に入り切らなくなったら右端揃えにする方法はあるだろうか。
+    検索してみると以下の記事が見つかった。
+    https://stackoverflow.com/questions/218065/overflow-to-left-instead-of-right
+    この記事では常に右端揃えにする方法を質問していて、
+    回答も単純なものしか用意されていない。
+
+    然し、ここの jsFiddle で色々やっていたらどうやら実現できた。
+    以下の様な構成で行ける。
+    div { position: relative; }
+    div>span { text-align: center; white-space: nowrap; min-width: 2em; position: absolute; right: 0; }
+    結局元の構成の原型を留めていないので上の記事は全く参考にはならなかったのだが。
+    現状で使っている方法と違うのは text-align, min-width だけである。
+    加えて white-space で勝手に改行が入らない様にしている。
+
+    →これは結局 CSS の修正だけで対処できた。
+
+  * aghtex: \raisetag [#D0023]
     position relative で実装すればよい。
 
-  * aghtex: tex:f を文字とフォントに分離する。
+  * aghtex: tex:f を文字とフォントに分離する。 [#D0022]
     そもそもフォントとして使っている箇所がどれほどあるか。
 
     aghtex-size-*
