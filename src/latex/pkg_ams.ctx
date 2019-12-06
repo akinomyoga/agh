@@ -411,7 +411,7 @@ context "pkg:amsmath/mode.math" new() {
   environment s:mode.math\split() @"\begin{array}{r@{}l}#0\end{array}";
 
   // \AmS
-  _Ctx.DefineCommand({AmS: ['s@', '<tex:AmS>A<span>M</span>S</tex:AmS>']});
+  _Ctx.DefineCommand({AmS: ['s@', '<tex:i class="aghtex-logo-ams">A<tex:i class="aghtex-logo-ams-m">M</tex:i>S</tex:i>']});
 
   // \binom, \tbinom, \dbinom, \genfrac
   function cmd_genfrac(doc, left, right, barWidth, style, htNumerator, htDenominator) {
