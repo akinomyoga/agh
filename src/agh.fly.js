@@ -821,95 +821,90 @@
       {
         params.preamble = '\\documentclass{revtex4}';
         params.flag_revert_symbols = true;
-
-        function extractAllTargets(elem, params) {
-          params.targets = [];
-
-          function processElementNode_code(code) {
-            var tnode = code.previousSibling;
-            for (;;) {
-              if (!tnode)
-                return;
-              else if (tnode.nodeType == 3 && getTextContent(tnode) == "")
-                tnode = tnode.previousSibling;
-              else if (tnode.nodeType == 1 && /^span$/i.test(tnode.tagName) && tnode.childNodes.length)
-                tnode = tnode.childNodes[tnode.childNodes.length - 1];
-              else
-                break;
-            }
-            if (tnode.nodeType != 3) return;
-            var text = getTextContent(tnode);
-            if (!text.endsWith("$")) return;
-            setTextContent(tnode, text.substr(0, text.length - 1));
-
-            var source = getTextContent(code);
-            var span = code.ownerDocument.createElement('span');
-            span.title = source;
-            setTextContent(span, source);
-            code.parentNode.insertBefore(span, code);
-            code.style.display = 'none';
-            params.targets.push({type: "imath", target: span});
+        params.targets = [];
+        
+        function processElementNode_code(code) {
+          var tnode = code.previousSibling;
+          for (;;) {
+            if (!tnode)
+              return;
+            else if (tnode.nodeType == 3 && getTextContent(tnode) == "")
+              tnode = tnode.previousSibling;
+            else if (tnode.nodeType == 1 && /^span$/i.test(tnode.tagName) && tnode.childNodes.length)
+              tnode = tnode.childNodes[tnode.childNodes.length - 1];
+            else
+              break;
           }
+          if (tnode.nodeType != 3) return;
+          var text = getTextContent(tnode);
+          if (!text.endsWith("$")) return;
+          setTextContent(tnode, text.substr(0, text.length - 1));
 
-          function processElementNode_pre(pre) {
-            var ent = null;
-            var lang = pre.dataset.lang;
-            if (lang == "tex:preamble") {
-              params.preamble += getTextContent(pre) + "\n";
-              pre.style.display = 'none';
-            } else if (lang == "tex:plain") {
-              ent = {type: "para"};
-            } else if (lang && lang.startsWith('tex:')) {
-              ent = {type: "begin", envname: lang.substr(4)};
-            }
-
-            if (ent) {
-              var source = getTextContent(pre);
-              var div = pre.ownerDocument.createElement('div');
-              div.title = source;
-              setTextContent(div, source);
-              pre.parentNode.insertBefore(div, pre);
-              pre.style.display = 'none';
-              ent.target = div;
-              params.targets.push(ent);
-            }
-          }
-
-          function processElementNode(elem) {
-            if (/^code$/i.test(elem.tagName)) {
-              processElementNode_code(elem);
-            } else if (/^pre$/i.test(elem.tagName)) {
-              processElementNode_pre(elem);
-            } else if (/^div$/i.test(elem.tagName) && /(?:^|\s)aghtex(?:\s|$)/.test(elem.className)) {
-              params.targets.push({type: "begin", envname: "align", target: elem});
-              processNodes(elem.childNodes);
-            } else if (/^span$/i.test(elem.tagName) && /(?:^|\s)aghtex(?:\s|$)/.test(elem.className)) {
-              params.targets.push({type: "imath", target: elem});
-              processNodes(elem.childNodes);
-            } else {
-              processNodes(elem.childNodes);
-            }
-          }
-
-          function processNodes(children, elementOnly) {
-            if (!(children instanceof Array))
-              children = agh(children, Array); // 内容固定
-
-            for (var i = 0, iN = children.length; i < iN; i++) {
-              var child = children[i];
-              if (elementOnly && child.nodeType !== 1) continue;
-
-              if(child.nodeType === 3)
-                agh.fly.latex_v2.extractInlineMathFromTextNode(params.targets, child, /\`?\$((?!\n)[^$]*[^$\n])\$/g);
-              else if(child.nodeType === 1)
-                processElementNode(child);
-            }
-          }
-
-          processElementNode(elem);
+          var source = getTextContent(code);
+          var span = code.ownerDocument.createElement('span');
+          span.title = source;
+          setTextContent(span, source);
+          code.parentNode.insertBefore(span, code);
+          code.style.display = 'none';
+          params.targets.push({type: "imath", target: span});
         }
 
-        extractAllTargets(document.body, params);
+        function processElementNode_pre(pre) {
+          var ent = null;
+          var lang = pre.dataset.lang;
+          if (lang == "tex:preamble") {
+            params.preamble += getTextContent(pre) + "\n";
+            pre.style.display = 'none';
+          } else if (lang == "tex:plain") {
+            ent = {type: "para"};
+          } else if (lang && lang.startsWith('tex:')) {
+            ent = {type: "begin", envname: lang.substr(4)};
+          }
+
+          if (ent) {
+            var source = getTextContent(pre);
+            var div = pre.ownerDocument.createElement('div');
+            div.title = source;
+            setTextContent(div, source);
+            pre.parentNode.insertBefore(div, pre);
+            pre.style.display = 'none';
+            ent.target = div;
+            params.targets.push(ent);
+          }
+        }
+
+        function processNodes(children, elementOnly) {
+          if (!(children instanceof Array))
+            children = agh(children, Array); // 内容固定
+
+          for (var i = 0, iN = children.length; i < iN; i++) {
+            var child = children[i];
+            if (elementOnly && child.nodeType !== 1) continue;
+
+            if(child.nodeType === 3)
+              agh.fly.latex_v2.extractInlineMathFromTextNode(params.targets, child, /\`?\$((?!\n)[^$]*[^$\n])\$/g);
+            else if(child.nodeType === 1)
+              processElementNode(child);
+          }
+        }
+
+        function processElementNode(elem) {
+          if (/^code$/i.test(elem.tagName)) {
+            processElementNode_code(elem);
+          } else if (/^pre$/i.test(elem.tagName)) {
+            processElementNode_pre(elem);
+          } else if (/^div$/i.test(elem.tagName) && /(?:^|\s)aghtex(?:\s|$)/.test(elem.className)) {
+            params.targets.push({type: "begin", envname: "align", target: elem});
+            processNodes(elem.childNodes);
+          } else if (/^span$/i.test(elem.tagName) && /(?:^|\s)aghtex(?:\s|$)/.test(elem.className)) {
+            params.targets.push({type: "imath", target: elem});
+            processNodes(elem.childNodes);
+          } else {
+            processNodes(elem.childNodes);
+          }
+        }
+
+        agh.Array.each(document.getElementsByClassName('entry-content'), processElementNode);
       }
 
       if (params.targets.length) {
