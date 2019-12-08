@@ -112,6 +112,12 @@ $(MWGTEX4CR_OUTDIR):
 #%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_mathcal.ttf|
 #%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_mathfrak.ttf|
 #%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_mathscr.ttf|
+#%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_cmttmn10.ttf|
+#%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_cmttms10.ttf|
+#%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_cmttmi10.ttf|
+#%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_cmttbn10.ttf|
+#%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_cmttbs10.ttf|
+#%expand aghtex4chrome::copy_agh.r|%FILE%|latex/aghtex_cmttbi10.ttf|
 
 aghtex4chrome_files:=$(aghtex4chrome_files) $(MWGTEX4CR_OUTDIR).xml
 $(MWGTEX4CR_OUTDIR).xml: aghtex4chrome/update.xml aghtex4chrome/version.txt
@@ -413,6 +419,12 @@ $(MWGTEX4SH_EXTDIR)/agh.addon.aghtex4seahorse.user.js: aghtex4seahorse/aghtex4se
 #%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_mathbb.eot|
 #%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_mathfrak.eot|
 #%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_mathscr.eot|
+#%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_cmttmn10.eot|
+#%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_cmttms10.eot|
+#%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_cmttmi10.eot|
+#%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_cmttbn10.eot|
+#%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_cmttbs10.eot|
+#%x aghtex4seahorse::copy_agh.r|%FILE%|latex/aghtex_cmttbi10.eot|
 
 .PHONY: aghtex4seahorse
 aghtex4seahorse: $(aghtex4seahorse_files)
@@ -510,6 +522,12 @@ fon latex/aghtex_mathcal;
 fon latex/aghtex_mathbb;
 fon latex/aghtex_mathfrak;
 fon latex/aghtex_mathscr;
+fon latex/aghtex_cmttmn10;
+fon latex/aghtex_cmttms10;
+fon latex/aghtex_cmttmi10;
+fon latex/aghtex_cmttbn10;
+fon latex/aghtex_cmttbs10;
+fon latex/aghtex_cmttbi10;
 
 # dll file and install
 f install.bat;

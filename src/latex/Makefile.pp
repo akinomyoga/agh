@@ -150,7 +150,12 @@ $(AgehaFontsDir)/%fontname%.ttf: | submodule
 #%expand RegisterAgehaFont.r|%fontname%|aghtex_mathfrak|
 #%expand RegisterAgehaFont.r|%fontname%|aghtex_mathbf|
 #%expand RegisterAgehaFont.r|%fontname%|aghtex_mathscr|
-
+#%expand RegisterAgehaFont.r|%fontname%|aghtex_cmttmn10|
+#%expand RegisterAgehaFont.r|%fontname%|aghtex_cmttms10|
+#%expand RegisterAgehaFont.r|%fontname%|aghtex_cmttmi10|
+#%expand RegisterAgehaFont.r|%fontname%|aghtex_cmttbn10|
+#%expand RegisterAgehaFont.r|%fontname%|aghtex_cmttbs10|
+#%expand RegisterAgehaFont.r|%fontname%|aghtex_cmttbi10|
 
 #%define add_res (
 resources:=$(resources) $(OUTDIR)/%name%

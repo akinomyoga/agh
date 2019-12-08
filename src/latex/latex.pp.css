@@ -37,11 +37,14 @@
   font-family: aghtex_mincho;
   src: /*local("モリサワ リュウミン"),*/
     local("Hiragino Mincho Pro"),
-    local("IPA P明朝"),local("MS PMincho"),local("ＭＳ Ｐ明朝");
+    local("IPA P明朝"),
+    local("YuMincho"),local("Yu Mincho"),
+    local("MS PMincho"),local("ＭＳ Ｐ明朝");
 }
 @font-face {
   font-family: aghtex_gothic;
   src: local("Hiragino Kaku Gothic Pro"),
+    local("YuGothic"),local("Yu Gothic"),
     local("MS PGothic"),local("ＭＳ Ｐゴシック");
 }
 @font-face {
@@ -443,6 +446,57 @@ tex\:i.aghtex-accent-container-vec { top: -0.05em; }
   src: url('aghtex_mathbm.woff') format("woff");
   /*%%)*/
 }
+/*%%define font-src */
+/*%%if mode=="Trident"*/
+  src: url(%NAME%.eot);
+/*%%elif mode=="Opera"||mode=="WebKit"*/
+  src: url('%NAME%.ttf') format("truetype");
+/*%%elif mode=="Gecko"*/
+  src: url('%NAME%.woff') format("woff");
+/*%%end*/
+/*%%end*/
+/* font:aghtex_mathtt */
+@font-face {
+  font-family: aghtex_mathtt;
+  /*%%x font-src.r|%NAME%|aghtex_cmttmn10|*/
+}
+/* font:aghtex_texttt */
+@font-face {
+  font-family: aghtex_texttt;
+  font-style: normal;
+  font-weight: normal;
+  /*%%x font-src.r|%NAME%|aghtex_cmttmn10|*/
+}
+@font-face {
+  font-family: aghtex_texttt;
+  font-style: italic;
+  font-weight: normal;
+  /*%%x font-src.r|%NAME%|aghtex_cmttmi10|*/
+}
+@font-face {
+  font-family: aghtex_texttt;
+  font-style: oblique;
+  font-weight: normal;
+  /*%%x font-src.r|%NAME%|aghtex_cmttms10|*/
+}
+@font-face {
+  font-family: aghtex_texttt;
+  font-style: normal;
+  font-weight: bold;
+  /*%%x font-src.r|%NAME%|aghtex_cmttbn10|*/
+}
+@font-face {
+  font-family: aghtex_texttt;
+  font-style: italic;
+  font-weight: bold;
+  /*%%x font-src.r|%NAME%|aghtex_cmttbi10|*/
+}
+@font-face {
+  font-family: aghtex_texttt;
+  font-style: oblique;
+  font-weight: bold;
+  /*%%x font-src.r|%NAME%|aghtex_cmttbs10|*/
+}
 
 /* ------------------------------------------------------ */
 
@@ -472,7 +526,7 @@ tex\:font.aghtex-textmc { font-family: aghtex_mincho,serif; }
 tex\:font.aghtex-textgt { font-family: aghtex_gothic,sans-serif; }
 tex\:font.aghtex-textrm { font-family: aghtex_roman,aghtex_mincho,serif; }
 tex\:font.aghtex-textsf { font-family: sans-serif; }
-tex\:font.aghtex-texttt { font-family: "Courier New",monospace,serif; }
+tex\:font.aghtex-texttt { font-family: aghtex_texttt,"Courier New",monospace,serif; }
 /* - Font Series */
 tex\:font.aghtex-textmd { font-weight: normal; }
 tex\:font.aghtex-textbf { font-weight: bold; }
@@ -573,7 +627,7 @@ tex\:math tex\:font.aghtex-mathsf tex\:f.aghtex-alpha {
 /* \mathtt */
 tex\:font.aghtex-mathtt,
 tex\:math tex\:font.aghtex-mathtt tex\:f.aghtex-alpha {
-  font-family: "Courier New",monospace,serif; font-style: normal; font-weight: normal;
+  font-family: aghtex_mathtt,"Courier New",monospace,serif; font-style: normal; font-weight: normal;
 }
 /* \mathbf */
 tex\:font.aghtex-mathbf {
@@ -1432,7 +1486,7 @@ tex\:i.aghtex-latex-theorem-content {
     \usepackage{url}
 ----------------------------------------------------------*/
 a.aghtex-url-tt {
-  font-family: "Courier New",monospace,serif; font-style: normal; }
+  font-family: aghtex_mathtt,"Courier New",monospace,serif; font-style: normal; }
 a.aghtex-url-rm {
   font-family: "Times New Roman",serif; font-style: normal; }
 a.aghtex-url-sf {

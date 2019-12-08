@@ -145,6 +145,13 @@ global コマンドは ContextVariable に置き換えるべきではないか�
 \verb+\em+: AAA {\em AAA {\em AAA} AAA} \\
 \verb+\em+ with cmd:sf: {\sf AAA {\em AAA {\em AAA} AAA}} \\
 
+\subsection{Test for \texttt{ttfamily}}
+\verb+\emph+: \texttt{Typewriter text \emph{Hello world \emph{Check test \emph{Emphasized text}}}} \\
+{\ttfamily
+  Apple \bfseries Banana \slshape Tomato \scshape Pineapple \itshape Melon
+  \mdseries Orange \scshape Egg plant \slshape Water melon \mdseries Plum.
+}
+
 \section{fonts}
 
 以下の文字は実は aghfonts に含まれていない様だ。
@@ -165,6 +172,9 @@ global コマンドは ContextVariable に置き換えるべきではないか�
   hello \raisetag{-3mm}
 \end{gather}
 
+\section{cmd:mathtt}
+Hello \texttt{Hello world} Check. \\
+Hello $\mathtt{Hello world}$ Check.
 
 \end{document}
 </div>
