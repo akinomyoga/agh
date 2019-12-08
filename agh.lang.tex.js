@@ -937,9 +937,6 @@ ns.Document = function(text, context) {
   // refs.displayedHtml[sec:attention] = "1.2.4";
   // refs.displayedHtml[eq:firstEquation] = "1";
 
-  // document variables
-  this.flags = {};
-
   // 解析時に使用
   this.currentCtx = null;
   this.ctxStack = [];
@@ -1060,53 +1057,45 @@ agh.memcpy(ns.Document.prototype, {
     }
   },
   //======================================================================
-  //  Flags:
+  //  DocumentVariables:
   //    context に属するのではなく document に直接属する変数。
-  //    pushFlags, popFlags を手動で呼び出して階層を作る。
   //----------------------------------------------------------------------
-  pushFlags: function() {
-    this.flags = agh.wrap(this.flags, {'core/oldflags': this.flags});
+  GetDocumentVariable: function(dictName, key) {
+    var dict = this[dictName];
+    if (!key) return dict;
+    return dict ? dict[key] : null;
   },
-  popFlags: function() {
-    var parent = this.flags['core/oldflags']
-    if (parent != null) this.flags = parent;
-  },
-  GetDocumentVariable: function(dict, key) {
-    var m = this[dict];
-    if (!key) return m;
-    return m ? m[key] : null;
-  },
-  SetDocumentVariable: function(dict, key, value) {
-    var m = this[dict] || (this[dict] = {});
-    m[key] = value;
+  SetDocumentVariable: function(dictName, key, value) {
+    var dict = this[dictName] || (this[dictName] = {});
+    dict[key] = value;
   },
   //======================================================================
   //  コンテキスト変数検索
   //    GetMacroHandler: マクロハンドラ
   //    GetLengthData:   長さ変数
   //----------------------------------------------------------------------
-  internalGetContextVariable: function(dict, key) {
-    var ret = this.currentCtx[dict][key];
+  internalGetContextVariable: function(dictName, key) {
+    var ret = this.currentCtx[dictName][key];
     if (ret != null) return ret;
 
     for (var i = this.ctxStack.length - 1; i >= 0; i--) {
-      ret = this.ctxStack[i][dict][key];
+      ret = this.ctxStack[i][dictName][key];
       if (ret != null) return ret;
     }
     return null;
   },
-  internalSetContextVariable: function(dict, key, value) {
-    this.currentCtx[dict][key] = value;
+  internalSetContextVariable: function(dictName, key, value) {
+    this.currentCtx[dictName][key] = value;
   },
-  internalReplaceContextVariable: function(dict, key, value) {
-    var d = this.currentCtx[dict];
+  internalReplaceContextVariable: function(dictName, key, value) {
+    var d = this.currentCtx[dictName];
     if (d[key] != null) {
       d[key] = value;
       return true;
     }
 
     for (var i = this.ctxStack.length - 1; i >= 0; i--) {
-      d = this.ctxStack[i][dict];
+      d = this.ctxStack[i][dictName];
       if (d[key] != null) {
         d[key] = value;
         return true;
@@ -1114,6 +1103,21 @@ agh.memcpy(ns.Document.prototype, {
     }
 
     return false;
+  },
+  // 指定された名前の変数を全ての文脈で削除する (unused)
+  internalDeepRemoveContextVariable: function(dictName, key) {
+    var d = this.currentCtx[dictName];
+    if (d[key] != null) d[key] = null;
+    for (var i = this.ctxStack.length - 1; i >= 0; i--) {
+      d = this.ctxStack[i][dictName];
+      if (d[key] != null) d[key] = null;
+    }
+  },
+  // 全ての文脈で指定された名前の変数を設定する。
+  internalDeepSetContextVariable: function(dictName, key, value) {
+    this.currentCtx[dictName][key] = value;
+    for (var i = this.ctxStack.length - 1; i >= 0; i--)
+      this.ctxStack[i][dictName][key] = value;
   },
   GetContextVariable: function(key) {
     return this.internalGetContextVariable('dataV', key);
@@ -1128,8 +1132,8 @@ agh.memcpy(ns.Document.prototype, {
     return this.internalGetContextVariable('userC', cmd);
   },
   SetMacroHandler: function(cmd, handler, isGlobal) {
-    if ((isGlobal || this.flags['mod:common/global']) && 0 < this.ctxStack.length)
-      this.ctxStack[0].userC[cmd] = handler;
+    if (isGlobal || this.GetContextVariable('mod:common/global'))
+      this.internalDeepSetContextVariable('userC', cmd, handler);
     else {
       //this.internalSetContextVariable('userC', cmd, handler); は以下に等価
       this.currentCtx.userC[cmd] = handler;
@@ -1242,7 +1246,7 @@ agh.memcpy(ns.Document.prototype, {
   /// <summary>
   /// 引数を html として取得します。
   /// </summary>
-  GetArgumentHtml: function(basectx, direct) {
+  GetArgumentHtml: function(basectx, contextVariables) {
     var output = new ns.Writer();
     if (!basectx) basectx = this.currentCtx;
 
@@ -1251,7 +1255,8 @@ agh.memcpy(ns.Document.prototype, {
     var fmacro = false;
     {
       this.skipSpaceAndComment();
-      this.pushContext(this.context_cast(direct ? basectx : [basectx, "sub.argument"]));
+      this.pushContext(this.context_cast([basectx, "sub.argument"]));
+      if (contextVariables) agh.memcpy(this.currentCtx.dataV, contextVariables);
       this.currentCtx.output = output;
       this.currentCtx.Initialize();
       this.currentCtx.BREAK = true;
@@ -3366,7 +3371,7 @@ new function(){
   _Ctx.AddCommandHandler("verb", function(doc) {
     var output = doc.currentCtx.output;
     var ret = doc.scanner.NextVerbArgument();
-    output.buff.push('<tex:f class="aghtex-texttt">', agh.Text.Escape(doc.scanner.word, "html"), '</tex:f>');
+    output.buff.push('<tex:font class="aghtex-texttt">', agh.Text.Escape(doc.scanner.word, "html"), '</tex:font>');
     if (ret == doc.scanner.NEXT_EOF) {
       output.error('UnexpectedEOR', 'EOF', 'mod:base.cmd:verb');
     } else if (ret == doc.scanner.NEXT_NEWLINE) {
@@ -3377,7 +3382,7 @@ new function(){
   _Ctx.AddCommandHandler("verb*", function(doc) {
     var output = doc.currentCtx.output;
     var ret = doc.scanner.NextVerbArgument();
-    output.buff.push('<tex:f class="aghtex-texttt">', agh.Text.Escape(doc.scanner.word.replace(/ /g, '\u2423'), "html"), '</tex:f>');
+    output.buff.push('<tex:font class="aghtex-texttt">', agh.Text.Escape(doc.scanner.word.replace(/ /g, '\u2423'), "html"), '</tex:font>');
     if (ret == doc.scanner.NEXT_EOF) {
       output.error('UnexpectedEOR', 'EOF', 'mod:base.cmd:verb');
     } else if (ret == doc.scanner.NEXT_NEWLINE) {
@@ -3521,15 +3526,15 @@ agh.memcpy(ns.Counter.prototype, {
   },
   fnsymbol: function() {
     switch (this.val) {
-    case 1: return "*";
-    case 2: return "<tex:fcent>†</tex:fcent>";
-    case 3: return "<tex:fcent>‡</tex:fcent>";
-    case 4: return "§";
-    case 5: return "¶";
-    case 6: return "∥"; //&#8741;
-    case 7: return "**";
-    case 8: return "<tex:fcent>††</tex:fcent>";
-    case 9: return "<tex:fcent>‡‡</tex:fcent>";
+    case 1: return '*';
+    case 2: return '<tex:f class="aghtex-sym0-cent">†</tex:f>';
+    case 3: return '<tex:f class="aghtex-sym0-cent">‡</tex:f>';
+    case 4: return '§';
+    case 5: return '¶';
+    case 6: return '∥'; //&#8741;
+    case 7: return '**';
+    case 8: return '<tex:f class="aghtex-sym0-cent">††</tex:f>';
+    case 9: return '<tex:f class="aghtex-sym0-cent">‡‡</tex:f>';
     default:
       return ns.Writer.get_error(
         "mod:counter.cmd:fnsymbol.CounterOutOfRange",
@@ -3840,6 +3845,11 @@ agh.memcpy(ns.Length.prototype, {
   subtractValue: function(arg) { // currently unused
     this.addValue(arg, true);
   },
+  scaleValue: function(scale) {
+    this.val *= scale;
+    this.plus *= scale;
+    this.minus *= scale;
+  },
   setValue: function(arg) {
     if (arg == null) return;
 
@@ -4080,11 +4090,14 @@ new function(){
  *    \mbox, \string
  *    \aghtex@htag → \aghtexInternalHTag [改名]
  *
- *    not implemeneted: \special
+ *    TODO: \special
  *
  *  @section 公開オブジェクト
  *    ※以下 mod_common = ns.Modules["mod:common"] とする。
  *    @fn mod_common.CreateCommandTagFollowing(tagName [, endTag])
+ *    @fn mod_common.ResolveFontTriplet(font)
+ *    @fn mod_common.CreateFontCommand(mode, reg, rep)
+ *    @fn mod_common.CreateFollowingFontCommand(mode, reg, rep)
  */
 
 var mod_core = ns.Modules["core"];
@@ -4135,6 +4148,39 @@ _Mod.CreateCommandTagFollowing = function(htBegin, htEnd) {
     var output = doc.currentCtx.output;
     output.buff.push(htBegin);
     output.appendPost(htEnd);
+  });
+};
+_Mod.ResolveFontTriplet = function(font) {
+  var a = font.split(':');
+  for (var i = 0; i < 3; i++)
+    a[i] = 'aghtex-text' + a[i];
+  return a.join(' ');
+};
+_Mod.CreateFontCommand = function(mode, reg, rep) {
+  // Note: 実装してから気づいたがフォントの組み合わせが使えるのは
+  //   段落モードの時だけの様だ。つまり数式モード mode='math' は
+  //   実際には使われない。
+  var key = mode == 'math' ? 'mod:math/font' : 'mod:para/font';
+  var defaultFont = mode == 'math' ? 'rm:md:it' : 'rm:md:up';
+  var contextName = mode == 'math' ? 'mode.math' : 'mode.para';
+  return ns.Command2('f', null, function(doc, argv) {
+    var font0 = doc.GetContextVariable(key) || defaultFont;
+    var font1 = reg ? font0.replace(reg, rep) : font0;
+    var arg = doc.GetArgumentHtml(contextName, {'mod:para/font': font1});
+    var output = doc.currentCtx.output;
+    output.buff.push('<tex:font class="', _Mod.ResolveFontTriplet(font1), '">', arg, '</tex:font>');
+  });
+};
+_Mod.CreateFollowingFontCommand = function(mode, reg, rep) {
+  var key = mode == 'math' ? 'mod:math/font' : 'mod:para/font';
+  var defaultFont = mode == 'math' ? 'rm:md:it' : 'rm:md:up';
+  return ns.Command2('f', null, function(doc, argv) {
+    var font0 = doc.GetContextVariable(key) || defaultFont;
+    var font1 = font0.replace(reg, rep);
+    doc.SetContextVariable('mod:para/font', font1);
+    var output = doc.currentCtx.output;
+    output.buff.push('<tex:font class="', _Mod.ResolveFontTriplet(font1), '">');
+    output.appendPost('</tex:font>');
   });
 };
 
@@ -4323,15 +4369,10 @@ new function(){
 
   // マクログローバル定義
   _Ctx.DefineCommand({"global":['f',function(doc,argv){
-    doc.pushFlags();
-    doc.flags['mod:common/global'] = true; // \let, \def, \edef, etc
-    //■TODO: \count, \countdef
-
-    // 続くコマンドを引数として読み取り
+    // \let, \def, \edef, etc に対する作用は対応済み。
+    // ■TODO: \count, \countdef に対する効果は未実装。
     doc.currentCtx.output.buff.push(
-      doc.GetArgumentHtml(doc.currentCtx, true));
-
-    doc.popFlags();
+      doc.GetArgumentHtml(doc.currentCtx, {'mod:common/global': true}));
   }]});
 
   _Ctx.DefineCommand({"newenvironment":['f;#!1#[]!2#[\\agh@noarg]3#4#5',function(doc,argv){
@@ -4446,9 +4487,9 @@ new function(){
   // その他の記号
   _Ctx.DefineCommand({"P":['s@','¶']});
   _Ctx.DefineCommand({"S":['s@','§']});
-  _Ctx.DefineCommand({"dag":['s@','<tex:fcent>†</tex:fcent>']});
-  _Ctx.DefineCommand({"ddag":['s@','<tex:fcent>‡</tex:fcent>']});
-  _Ctx.DefineCommand({"pounds":['s@','<tex:fcent><i>￡</i></tex:fcent>']});
+  _Ctx.DefineCommand({"dag":['s@','<tex:f class="aghtex-sym0-cent">†</tex:f>']});
+  _Ctx.DefineCommand({"ddag":['s@','<tex:f class="aghtex-sym0-cent">‡</tex:f>']});
+  _Ctx.DefineCommand({"pounds":['s@','<tex:f class="aghtex-sym0-cent"><i>￡</i></tex:f>']});
   _Ctx.DefineCommand({"copyright":['s@','&#xa9;']});
   _Ctx.DefineCommand({"aa":['s@','&#xE5;']});  // å
   _Ctx.DefineCommand({"AA":['s@','&#xC5;']});  // Å
@@ -4469,14 +4510,14 @@ new function(){
   _Ctx.DefineCommand({"LaTeXe":['s@','<tex:i class="aghtex-logo"><tex:i class="aghtex-logo-la">L<tex:i class="aghtex-logo-a">a</tex:i></tex:i><tex:i class="aghtex-logo-tex">T<tex:i class="aghtex-logo-e">e</tex:i>X</tex:i>2<tex:i class="aghtex-logo-eps">ε</tex;i></tex:i>']});
 
   // 特別な文字
-  _Ctx.DefineCommand({"copyright":['s@','<tex:f class="aghtex-textrm">©</tex:f>']}); // u00A9
+  _Ctx.DefineCommand({"copyright":['s@','<tex:f class="aghtex-sym0-roman">©</tex:f>']}); // u00A9
 
   // \text/math... 記号
   //   元々 text-mode 用だが、期せずして math-mode でも表示できる物。
   //   正しく表示できない \text... 記号は mod_para.ctx で定義。
-  _Ctx.DefineCommand({"textregistered":['s@','<tex:f class="aghtex-textrm">&#x226E;</tex:f>']}); // u00AE 丸R
-  _Ctx.DefineCommand({"texttrademark":['s@','<tex:f class="aghtex-textrm">&#x226F;</tex:f>']}); // u2122 TM
-  _Ctx.DefineCommand({"textvisiblespace":['s@','<tex:f class="aghtex-textmr">&#x277D;</tex:f>']}); // u2423 空白記号 (■ XP IE6 では表示できない)
+  _Ctx.DefineCommand({"textregistered":['s@','<tex:f class="aghtex-sym0-roman">&#x00AE;</tex:f>']}); // u00AE 丸R
+  _Ctx.DefineCommand({"texttrademark":['s@','<tex:f class="aghtex-sym0-roman">&#x2122;</tex:f>']}); // u2122 TM
+  _Ctx.DefineCommand({"textvisiblespace":['s@','<tex:f class="aghtex-sym0-meiryo">&#x2423;</tex:f>']}); // u2423 空白記号 (■ XP IE6 では表示できない)
   _Ctx.DefineCommand({"textcopyright":['s@','&copy;']});
   _Ctx.DefineCommand({"textellipsis":['s@','<tex:f lang="en">…</tex:f>']});
   _Ctx.DefineCommand({"textless":['s@','&lt;']});
@@ -4686,12 +4727,12 @@ new function(){
   //---------------------------------------------------------------
 
   _Ctx.DefineCommand({
-    bf : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-mathbf">' , '</tex:f>'),
-    it : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-mathit">' , '</tex:f>'),
-    rm : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-mathrm">' , '</tex:f>'),
-    sf : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-mathsf">' , '</tex:f>'),
-    tt : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-mathtt">' , '</tex:f>'),
-    cal: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-mathcal">', '</tex:f>'),
+    bf : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-mathbf">' , '</tex:font>'),
+    it : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-mathit">' , '</tex:font>'),
+    rm : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-mathrm">' , '</tex:font>'),
+    sf : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-mathsf">' , '</tex:font>'),
+    tt : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-mathtt">' , '</tex:font>'),
+    cal: mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-mathcal">', '</tex:font>'),
 
     // - 以下は数式モードでは効果無し。
     mc          : mod_base["cmd:relax"],
@@ -4709,27 +4750,26 @@ new function(){
     Huge        : mod_base["cmd:relax"],
 
     // - 以下は文章モードに移行して評価
-    text  : ['s@;#mode.para>1', '<tex:f class="aghtex-textrm">#1</tex:f>'], // 文章モードはデフォルトで roman で良いか?
-    textrm: ['s@;#mode.para>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
-    textsf: ['s@;#mode.para>1', '<tex:f class="aghtex-textsf">#1</tex:f>'],
-    texttt: ['s@;#mode.para>1', '<tex:f class="aghtex-texttt">#1</tex:f>'],
-    textmc: ['s@;#mode.para>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
-    textgt: ['s@;#mode.para>1', '<tex:f class="aghtex-textgt">#1</tex:f>'],
-    textmd: ['s@;#mode.para>1', '<tex:f class="aghtex-textmd">#1</tex:f>'],
-    textbf: ['s@;#mode.para>1', '<tex:f class="aghtex-textbf">#1</tex:f>'],
-    textup: ['s@;#mode.para>1', '<tex:f class="aghtex-textup">#1</tex:f>'],
-    textit: ['s@;#mode.para>1', '<tex:f class="aghtex-textit">#1</tex:f>'],
-    textsc: ['s@;#mode.para>1', '<tex:f class="aghtex-textsc">#1</tex:f>'],
-    textsl: ['s@;#mode.para>1', '<tex:f class="aghtex-textsl">#1</tex:f>'],
+    text  : mod_common.CreateFontCommand('para'),
+    textrm: mod_common.CreateFontCommand('para', /^..:/, 'rm:'),
+    textsf: mod_common.CreateFontCommand('para', /^..:/, 'sf:'),
+    texttt: mod_common.CreateFontCommand('para', /^..:/, 'tt:'),
+    textmc: mod_common.CreateFontCommand('para', /^..:/, 'mc:'),
+    textgt: mod_common.CreateFontCommand('para', /^..:/, 'gt:'),
+    textmd: mod_common.CreateFontCommand('para', /:..:/, ':md:'),
+    textbf: mod_common.CreateFontCommand('para', /:..:/, ':bf:'),
+    textup: mod_common.CreateFontCommand('para', /:..$/, ':up'),
+    textit: mod_common.CreateFontCommand('para', /:..$/, ':it'),
+    textsc: mod_common.CreateFontCommand('para', /:..$/, ':sc'),
+    textsl: mod_common.CreateFontCommand('para', /:..$/, ':sl'),
 
-    mathbf    : ['s@;#>1', '<tex:f class="aghtex-mathbf">#1</tex:f>'],
-    mathit    : ['s@;#>1', '<tex:f class="aghtex-mathit">#1</tex:f>'],
-    mathrm    : ['s@;#>1', '<tex:f class="aghtex-mathrm">#1</tex:f>'],
-    mathsf    : ['s@;#>1', '<tex:f class="aghtex-mathsf">#1</tex:f>'],
-    mathtt    : ['s@;#>1', '<tex:f class="aghtex-mathtt">#1</tex:f>'],
-    mathnormal: ['s@;#>1', '<tex:f class="aghtex-mathit">#1</tex:f>'],
-    mathcal   : ['s@;#>1', '<tex:f class="aghtex-mathcal">#1</tex:f>'],
-
+    mathbf    : ['s@;#>1', '<tex:font class="aghtex-mathbf">#1</tex:font>'],
+    mathit    : ['s@;#>1', '<tex:font class="aghtex-mathit">#1</tex:font>'],
+    mathrm    : ['s@;#>1', '<tex:font class="aghtex-mathrm">#1</tex:font>'],
+    mathsf    : ['s@;#>1', '<tex:font class="aghtex-mathsf">#1</tex:font>'],
+    mathtt    : ['s@;#>1', '<tex:font class="aghtex-mathtt">#1</tex:font>'],
+    mathnormal: ['s@;#>1', '<tex:font class="aghtex-mathit">#1</tex:font>'],
+    mathcal   : ['s@;#>1', '<tex:font class="aghtex-mathcal">#1</tex:font>'],
   });
 
   // 括弧の大きさ
@@ -4808,7 +4848,7 @@ new function(){
   _Ctx.DefineLetter({"|":['s@','<tex:f class="aghtex-symb-gothic">|</tex:f>']});
   _Ctx.DefineLetter({":":['f@',function(doc,cmdName){
     doc.scanner.Next();
-    if (doc.scanner.is(mod_core.SCAN_WT_LTR,"=")) {
+    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "=")) {
       //doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-gothic">:＝</tex:f>');
       doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-gothic">&#x2254;</tex:f>');
       doc.scanner.Next();
@@ -4821,7 +4861,7 @@ new function(){
     var html = cmdName;
     doc.scanner.Next();
     if (doc.scanner.wordtype == mod_core.SCAN_WT_LTR && " \b\t\v\r\n\f".indexOf(doc.scanner.word) >= 0) {
-      html='<tex:f class="aghtex-comma">'+html+'</tex:f>';
+      html = '<tex:f class="aghtex-comma">' + html + '</tex:f>';
       doc.scanner.Next();
     }
     doc.currentCtx.output.buff.push(html);
@@ -4904,22 +4944,22 @@ new function(){
   _Mod.OutputSupSubScripts = output_supsub_scripts;
 
   // プライム
-  // _Ctx.DefineLetter({"'":['s@','<tex:f class="aghtex-textrm">\'</tex:f>']});
+  // _Ctx.DefineLetter({"'":['s@','<tex:f class="aghtex-sym0-roman">\'</tex:f>']});
   var prime_handler = function(doc) {
     doc.scanner.Next();
     if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "'") && !doc.scanner.is(mod_core.SCAN_WT_CMD, "rq")) {
-      doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">′</tex:f>');
+      doc.currentCtx.output.buff.push('<tex:f class="aghtex-sym0-roman">′</tex:f>');
       return;
     }
 
     doc.scanner.Next();
     if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "'") && !doc.scanner.is(mod_core.SCAN_WT_CMD, "rq")) {
-      doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">″</tex:f>');
+      doc.currentCtx.output.buff.push('<tex:f class="aghtex-sym0-roman">″</tex:f>');
       return;
     }
 
     doc.scanner.Next();
-    doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">‴</tex:f>');
+    doc.currentCtx.output.buff.push('<tex:f class="aghtex-sym0-roman">‴</tex:f>');
   };
   _Ctx.AddLetterHandler("'", prime_handler);
   _Ctx.AddCommandHandler("rq", prime_handler);
@@ -5337,7 +5377,7 @@ new function(){
     // content
     if (!_Mod.GetMathStyle(doc)) {
       // 普通の (大きな) 積分記号
-      buff.push('<tex:f class="aghtex-int">',ch,'</tex:f>');
+      buff.push('<tex:f class="aghtex-int">', ch, '</tex:f>');
 
       var sbsp = doc.GetSubSup();
       switch ((sbsp.sub ? 1 : 0) + (sbsp.sup ? 2 : 0)) {
@@ -5393,7 +5433,7 @@ new function(){
     }
     function is_slanted(html,ismath) {
       if (ismath)
-        return !(/^<tex:f class="aghtex-math(?:rm|sf|tt|bf|frak)">/.test(html));
+        return !(/^<tex:font class="aghtex-math(?:rm|sf|tt|bf|frak)">/.test(html));
       else
         return false;
     }
@@ -5559,8 +5599,8 @@ new function(){
     ominus  : ['s@', '<tex:f class="aghtex-binop aghtex-symb-meiryo">&#x2296;</tex:f>'],
     otimes  : ['s@', '<tex:f class="aghtex-binop aghtex-symb-meiryo">&#x2297;</tex:f>'],
     oslash  : ['s@', '<tex:f class="aghtex-binop aghtex-symb-meiryo">&#x2298;</tex:f>'],
-    triangleleft   : ['s@', '<tex:f class="aghtex-symb-mincho aghtex-size-small1">&#x22B2;</tex:f>'],
-    triangleright  : ['s@', '<tex:f class="aghtex-symb-mincho aghtex-size-small1">&#x22B3;</tex:f>'],
+    triangleleft   : ['s@', '<tex:f class="aghtex-symb-mincho aghtex-symbol-small1">&#x22B2;</tex:f>'],
+    triangleright  : ['s@', '<tex:f class="aghtex-symb-mincho aghtex-symbol-small1">&#x22B3;</tex:f>'],
     bigtriangleup  : ['s@', '<tex:f class="aghtex-syma-mincho">△</tex:f>'], // u25b3
     bigtriangledown: ['s@', '<tex:f class="aghtex-syma-mincho">▽</tex:f>'], // u25bd
     bigcirc        : ['s@', '<tex:f class="aghtex-syma-mincho">○</tex:f>'], // u25cb
@@ -5762,18 +5802,18 @@ new function(){
     nabla       : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2207;</tex:f>'], // @"∇";
     partial     : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2202;</tex:f>'], // ∂
     hbar        : ['s@', '<tex:f class="aghtex-symb-mincho">&#x0127;</tex:f>'], // hbar
-    aleph       : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2135;</tex:f>'], // @'<tex:f class="aghtex-textrm" style="font-size:150%;">&#x5d0;</tex:f>';
+    aleph       : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2135;</tex:f>'],
     imath       : ['s@', '<tex:f class="aghtex-symb-mincho">&#x0131;</tex:f>'],
     jmath       : ['s@', '<tex:f class="aghtex-symb-mincho">&#x0237;</tex:f>'],
     ell         : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2113;</tex:f>'],
-    wp          : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2118;</tex:f>'], // @'<tex:f class="aghtex-textsy">&#xC3;</tex:f>';
-    Re          : ['s@', '<tex:f class="aghtex-symb-mincho">&#x211C;</tex:f>'], // @'<tex:f class="aghtex-textsy">&#xC2;</tex:f>';
-    Im          : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2111;</tex:f>'], // @'<tex:f class="aghtex-textsy">&#xC1;</tex:f>';
+    wp          : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2118;</tex:f>'],
+    Re          : ['s@', '<tex:f class="aghtex-symb-mincho">&#x211C;</tex:f>'],
+    Im          : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2111;</tex:f>'],
     infty       : ['s@', '<tex:f class="aghtex-symb-mincho">∞</tex:f>'],
     smallint    : ['s@', '<tex:f class="aghtex-symb-mincho">∫</tex:f>'],
     prime       : ['s@', '<tex:f class="aghtex-symb-roman">&#x2032;</tex:f>'], // 大きな prime (⇔ <tex:f class="aghtex-textrm">&#x0027;</tex:f> は上付の小さい物)
     emptyset    : ['s@', '<tex:f class="aghtex-symb-mincho">&#x2205;</tex:f>'], // ■platex では 0 slash (cmsy9 にある) を出力する。
-    surd        : ['s@', '<tex:f class="aghtex-symb-mincho">&#x221A;</tex:f>'], // '<tex:f class="aghtex-mathrm" lang="en">√</tex:f>';
+    surd        : ['s@', '<tex:f class="aghtex-symb-mincho">&#x221A;</tex:f>'], // '<tex:f class="aghtex-sym0-roman" lang="en">√</tex:f>';
     top         : ['s@', '<tex:f class="aghtex-symb-mincho">&#x22A4;</tex:f>'],
     bot         : ['s@', '<tex:f class="aghtex-symb-gothic">⊥</tex:f>'], // u22a5
     angle       : ['s@', '<tex:f class="aghtex-symb-gothic">∠</tex:f>'], // u2220
@@ -5849,61 +5889,74 @@ new function(){
   //@A 字体
   _Ctx.DefineCommand({
     // - 文字の大きさ
-    normalsize  : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-normal">', '</tex:f>'),
-    tiny        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-small4">', '</tex:f>'),
-    scriptsize  : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-small3">', '</tex:f>'),
-    footnotesize: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-small2">', '</tex:f>'),
-    small       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-small1">', '</tex:f>'),
-    large       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large1">', '</tex:f>'),
-    Large       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large2">', '</tex:f>'),
-    LARGE       : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large3">', '</tex:f>'),
-    huge        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large4">', '</tex:f>'),
-    Huge        : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-size-large5">', '</tex:f>'),
+    normalsize  : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-normal">', '</tex:font>'),
+    tiny        : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-small4">', '</tex:font>'),
+    scriptsize  : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-small3">', '</tex:font>'),
+    footnotesize: mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-small2">', '</tex:font>'),
+    small       : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-small1">', '</tex:font>'),
+    large       : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-large1">', '</tex:font>'),
+    Large       : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-large2">', '</tex:font>'),
+    LARGE       : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-large3">', '</tex:font>'),
+    huge        : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-large4">', '</tex:font>'),
+    Huge        : mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-size-large5">', '</tex:font>'),
 
     // - フォント
-    text  : ['s@;#>1', '#1'],
-    textrm: ['s@;#>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
-    textsf: ['s@;#>1', '<tex:f class="aghtex-textsf">#1</tex:f>'],
-    texttt: ['s@;#>1', '<tex:f class="aghtex-texttt">#1</tex:f>'],
-    textmc: ['s@;#>1', '<tex:f class="aghtex-textrm">#1</tex:f>'],
-    textgt: ['s@;#>1', '<tex:f class="aghtex-textgt">#1</tex:f>'],
-    textmd: ['s@;#>1', '<tex:f class="aghtex-textmd">#1</tex:f>'],
-    textbf: ['s@;#>1', '<tex:f class="aghtex-textbf">#1</tex:f>'],
-    textup: ['s@;#>1', '<tex:f class="aghtex-textup">#1</tex:f>'],
-    textit: ['s@;#>1', '<tex:f class="aghtex-textit">#1</tex:f>'],
-    textsc: ['s@;#>1', '<tex:f class="aghtex-textsc">#1</tex:f>'],
-    textsl: ['s@;#>1', '<tex:f class="aghtex-textsl">#1</tex:f>'],
-    emph  : ['s@;#>1', '<tex:i class="aghtex-emphasize">#1</tex:i>'],
-    rmfamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textrm">', '</tex:f>'),
-    sffamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsf">', '</tex:f>'),
-    ttfamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-texttt">', '</tex:f>'),
-    mcfamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textmc">', '</tex:f>'),
-    gtfamily: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textgt">', '</tex:f>'),
-    mdseries: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textmd">', '</tex:f>'),
-    bfseries: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textbf">', '</tex:f>'),
-    upshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textup">', '</tex:f>'),
-    itshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textit">', '</tex:f>'),
-    scshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsc">', '</tex:f>'),
-    slshape : mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsl">', '</tex:f>'),
-    em: mod_common.CreateCommandTagFollowing('<tex:i class="aghtex-emphasize">', '</tex:i>'),
-    rm: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textrm">', '</tex:f>'),
-    sl: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsl">', '</tex:f>'),
-    it: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textit">', '</tex:f>'),
-    tt: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-texttt">', '</tex:f>'),
-    bf: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textbf">', '</tex:f>'),
-    sf: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsf">', '</tex:f>'),
-    sc: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textsc">', '</tex:f>'),
-    mc: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textmc">', '</tex:f>'),
-    gt: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textgt">', '</tex:f>'),
-    dm: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textmc">', '</tex:f>'),
-    dg: mod_common.CreateCommandTagFollowing('<tex:f class="aghtex-textgt">', '</tex:f>'),
+    text  : mod_common.CreateFontCommand('para'),
+    textrm: mod_common.CreateFontCommand('para', /^..:/, 'rm:'),
+    textsf: mod_common.CreateFontCommand('para', /^..:/, 'sf:'),
+    texttt: mod_common.CreateFontCommand('para', /^..:/, 'tt:'),
+    textmc: mod_common.CreateFontCommand('para', /^..:/, 'mc:'),
+    textgt: mod_common.CreateFontCommand('para', /^..:/, 'gt:'),
+    textmd: mod_common.CreateFontCommand('para', /:..:/, ':md:'),
+    textbf: mod_common.CreateFontCommand('para', /:..:/, ':bf:'),
+    textup: mod_common.CreateFontCommand('para', /:..$/, ':up'),
+    textit: mod_common.CreateFontCommand('para', /:..$/, ':it'),
+    textsc: mod_common.CreateFontCommand('para', /:..$/, ':sc'),
+    textsl: mod_common.CreateFontCommand('para', /:..$/, ':sl'),
+    rmfamily: mod_common.CreateFollowingFontCommand('para', /^..:/, 'rm:'),
+    sffamily: mod_common.CreateFollowingFontCommand('para', /^..:/, 'sf:'),
+    ttfamily: mod_common.CreateFollowingFontCommand('para', /^..:/, 'tt:'),
+    mcfamily: mod_common.CreateFollowingFontCommand('para', /^..:/, 'mc:'),
+    gtfamily: mod_common.CreateFollowingFontCommand('para', /^..:/, 'gt:'),
+    mdseries: mod_common.CreateFollowingFontCommand('para', /:..:/, ':md:'),
+    bfseries: mod_common.CreateFollowingFontCommand('para', /:..:/, ':bf:'),
+    upshape : mod_common.CreateFollowingFontCommand('para', /:..$/, ':up'),
+    itshape : mod_common.CreateFollowingFontCommand('para', /:..$/, ':it'),
+    scshape : mod_common.CreateFollowingFontCommand('para', /:..$/, ':sc'),
+    slshape : mod_common.CreateFollowingFontCommand('para', /:..$/, ':sl'),
+    rm: mod_common.CreateFollowingFontCommand('para', /.*/, 'rm:md:up'),
+    sf: mod_common.CreateFollowingFontCommand('para', /.*/, 'sf:md:up'),
+    tt: mod_common.CreateFollowingFontCommand('para', /.*/, 'tt:md:up'),
+    mc: mod_common.CreateFollowingFontCommand('para', /.*/, 'mc:md:up'),
+    gt: mod_common.CreateFollowingFontCommand('para', /.*/, 'gt:md:up'),
+    dm: mod_common.CreateFollowingFontCommand('para', /.*/, 'mc:md:up'),
+    dg: mod_common.CreateFollowingFontCommand('para', /.*/, 'gt:md:up'),
+    bf: mod_common.CreateFollowingFontCommand('para', /.*/, 'rm:bf:up'),
+    sl: mod_common.CreateFollowingFontCommand('para', /.*/, 'rm:md:sl'),
+    sc: mod_common.CreateFollowingFontCommand('para', /.*/, 'rm:md:sc'),
+    it: mod_common.CreateFollowingFontCommand('para', /.*/, 'rm:md:it'),
+    emph: ['f', function(doc, argv) {
+      var font0 = doc.GetContextVariable('mod:para/font') || 'rm:md:up';
+      var font1 = font0.replace(/:..$/, /:(?:it|sl)$/.test(font0) ? ':up' : ':it');
+      var arg = doc.GetArgumentHtml(null, {'mod:para/font': font1});
+      var output = doc.currentCtx.output;
+      output.buff.push('<tex:font class="', mod_common.ResolveFontTriplet(font1), '">', arg, '</tex:font>');
+    }],
+    em: ['f', function(doc, argv) {
+      var font0 = doc.GetContextVariable('mod:para/font') || 'rm:md:up';
+      var font1 = font0.replace(/:..$/, /:(?:it|sl)$/.test(font0) ? ':up' : ':it');
+      doc.SetContextVariable('mod:para/font', font1);
+      var output = doc.currentCtx.output;
+      output.buff.push('<tex:font class="', mod_common.ResolveFontTriplet(font1), '">');
+      output.appendPost('</tex:font>');
+    }],
 
     // 標準字体
-    textnormal: ['s@;#>1', '<tex:fnorm>#1</tex:fnorm>'],
-    normalfont: mod_common.CreateCommandTagFollowing('<tex:fnorm>', '</tex:fnorm>'),
+    textnormal: ['s@;#>1', '<tex:font class="aghtex-font-normal">#1</tex:font>'],
+    normalfont: mod_common.CreateCommandTagFollowing('<tex:font class="aghtex-font-normal">', '</tex:font>'),
 
     // 太字斜体
-    boldmath: ['s@;#>1', '<tex:f class="aghtex-mathbm">#1</tex:f>'],
+    boldmath: ['s@;#>1', '<tex:font class="aghtex-mathbm">#1</tex:font>'],
 
     // アクセント
     "'": mod_math.CreateAccentCommand('acc', '<tex:f class="aghtex-symb-mincho">&#x00B4;</tex:f>'), // alt = &#x02CA;
@@ -5924,7 +5977,7 @@ new function(){
 
   if (ns.compatMode == "IE-qks" || agh.browser.vIE < 8) {
     _Ctx.DefineCommand({
-      "c": mod_math.CreateAccentCommandQksB( 0.2, '<tex:f class="aghtex-textgt">&#x327;</tex:f>'),
+      "c": mod_math.CreateAccentCommandQksB( 0.2, '<tex:f class="aghtex-sym0-gothic">&#x327;</tex:f>'),
       "b": mod_math.CreateAccentCommandQksB( 0.2, "_"),
       "d": mod_math.CreateAccentCommandQksB(-1.0, "・")
     });
@@ -5933,18 +5986,18 @@ new function(){
   // \text... 記号 (math-mode で文字化けする系統の物)
   _Ctx.DefineCommand({"textasciicircum":['s@',"^"]});
   _Ctx.DefineCommand({"textasciitilde":['s@',"~"]});
-  _Ctx.DefineCommand({"textbackslash":['s@','<tex:f class="aghtex-textrm">\\</tex:f>']});
-  _Ctx.DefineCommand({"textbullet":['s@','<tex:f class="aghtex-textmr">•</tex:f>']}); // u2022
+  _Ctx.DefineCommand({"textbackslash":['s@','<tex:f class="aghtex-sym0-roman">\\</tex:f>']});
+  _Ctx.DefineCommand({"textbullet":['s@','<tex:f class="aghtex-symb-meiryo">•</tex:f>']}); // u2022
   _Ctx.DefineCommand({"textperiodcentered":['s@',"·"]});  // u00B7
   _Ctx.DefineCommand({"textbar":['s@',"|"]});  // platex: j に文字化け in math-mode
   _Ctx.DefineCommand({"textemdash":['s@',"―"]}); // platex: | に文字化け in math-mode
   _Ctx.DefineCommand({"textendash":['s@',"—"]});
   _Ctx.DefineCommand({"textexclamdown":['s@',"¡"]});  // platex: < に文字化け in math-mode
   _Ctx.DefineCommand({"textquestiondown":['s@',"¿"]});  // platex: > に文字化け in math-mode
-  _Ctx.DefineCommand({"textquotedblleft":['s@','<tex:f class="aghtex-textrm">“</tex:f>']});
-  _Ctx.DefineCommand({"textquotedblright":['s@','<tex:f class="aghtex-textrm">”</tex:f>']}); // platex: double prime に文字化け in math-mode
-  _Ctx.DefineCommand({"textquoteleft":['s@','<tex:f class="aghtex-textrm">‘</tex:f>']});
-  _Ctx.DefineCommand({"textquoteright":['s@','<tex:f class="aghtex-textrm">’</tex:f>']}); // platex: prime に文字化け in math-mode
+  _Ctx.DefineCommand({"textquotedblleft":['s@','<tex:f class="aghtex-sym0-roman">“</tex:f>']});
+  _Ctx.DefineCommand({"textquotedblright":['s@','<tex:f class="aghtex-sym0-roman">”</tex:f>']}); // platex: double prime に文字化け in math-mode
+  _Ctx.DefineCommand({"textquoteleft":['s@','<tex:f class="aghtex-sym0-roman">‘</tex:f>']});
+  _Ctx.DefineCommand({"textquoteright":['s@','<tex:f class="aghtex-sym0-roman">’</tex:f>']}); // platex: prime に文字化け in math-mode
   _Ctx.DefineCommand({"textasteriskcentered":['s@',"&#x2217;"]});
   _Ctx.DefineCommand({"textparagraph":['s@',"&#x00b6;"]});
   _Ctx.DefineCommand({"textbraceleft":['s@',"{"]});
@@ -5998,28 +6051,28 @@ new function(){
   function quoteleft(doc) {
     doc.scanner.Next();
     if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "`") && !doc.scanner.is(mod_core.SCAN_WT_CMD, "lq")) {
-      doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">‘</tex:f>');
+      doc.currentCtx.output.buff.push('<tex:f class="aghtex-sym0-roman">‘</tex:f>');
       return;
     }
 
     doc.scanner.Next();
-    doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">“</tex:f>');
+    doc.currentCtx.output.buff.push('<tex:f class="aghtex-sym0-roman">“</tex:f>');
   }
   _Ctx.AddLetterHandler("`", quoteleft);
   _Ctx.AddCommandHandler("lq", quoteleft);
   function quoteright(doc) {
     doc.scanner.Next();
     if (!doc.scanner.is(mod_core.SCAN_WT_LTR, "'") && !doc.scanner.is(mod_core.SCAN_WT_CMD, "rq")) {
-      doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">’</tex:f>');
+      doc.currentCtx.output.buff.push('<tex:f class="aghtex-sym0-roman">’</tex:f>');
       return;
     }
 
     doc.scanner.Next();
-    doc.currentCtx.output.buff.push('<tex:f class="aghtex-textrm">”</tex:f>');
+    doc.currentCtx.output.buff.push('<tex:f class="aghtex-sym0-roman">”</tex:f>');
   }
   _Ctx.AddLetterHandler("'", quoteright);
   _Ctx.AddCommandHandler("rq", quoteright);
-  _Ctx.DefineLetter({'"':['s@','<tex:f class="aghtex-textrm">”</tex:f>']}); // "
+  _Ctx.DefineLetter({'"':['s@','<tex:f class="aghtex-sym0-roman">”</tex:f>']}); // "
 
   _Ctx.AddEnvironment("center",ns.Environment.Create("s@",null,'<div class="aghtex-center">#0</div>',_CtxName));
   _Ctx.AddEnvironment("flushright",ns.Environment.Create("s@",null,'<div class="aghtex-flushright">#0</div>',_CtxName));
@@ -8158,6 +8211,7 @@ var CTXV_LABEL_EQ = 'mod_ref/label:eq';
 var CTXV_ARRAYCTX = 'mod_array/arrayCtx';
 var CTXV_NOTAG = 'mod_array/notag';
 var CTXV_EQTAG = 'mod_array/eqtag';
+var CTXV_RAISETAG = 'mod_array/raisetag';
 
 _Mod.eqno_output = function(doc, actx, output) {
   var counter = doc.GetCounter("equation");
@@ -8167,6 +8221,9 @@ _Mod.eqno_output = function(doc, actx, output) {
   buff.push('<tex:i class="aghtex-eqno-margin"></tex:i>');
   if (actx.dataV[CTXV_EQTAG] || !actx.dataV[CTXV_NOTAG]) {
     buff.push('<tex:i class="aghtex-eqno"><tex:i class="aghtex-eqno-vspan"></tex:i><tex:i class="aghtex-eqno-right">');
+    var raisetag = actx.dataV[CTXV_RAISETAG];
+    if (raisetag) buff.push('<tex:i class="aghtex-eqno-raise" style="top:', raisetag,';">');
+
     if (actx.dataV[CTXV_EQTAG]) {
       buff.push(actx.dataV[CTXV_EQTAG]);
     } else if (counter == null) {
@@ -8175,10 +8232,13 @@ _Mod.eqno_output = function(doc, actx, output) {
       counter.Step();
       buff.push('(', counter.arabic(), ')');
     }
+
+    if (raisetag) buff.push('</tex:i>');
     buff.push('</tex:i></tex:i>');
   }
   actx.dataV[CTXV_NOTAG] = false;
   actx.dataV[CTXV_EQTAG] = false;
+  actx.dataV[CTXV_RAISETAG] = false;
 
   var labels = actx.GetContextVariable(CTXV_LABEL_EQ);
   if (labels.length > 0) {
@@ -8209,6 +8269,7 @@ _Mod.eqno_prologue = function(doc, ctx) {
   ctx.dataV[CTXV_ARRAYCTX] = ctx;
   ctx.dataV[CTXV_NOTAG] = false;
   ctx.dataV[CTXV_EQTAG] = false;
+  ctx.dataV[CTXV_RAISETAG] = false;
   ctx.SetContextVariable(CTXV_LABEL_EQ, []);
   ctx.userC["label"] = ns.Modules["mod:ref"]["cmd:label:eq"];
 };
@@ -9025,11 +9086,12 @@ ns.Document.Classes["default"] = function(doc, opt, cls) {
 //   \usepackage{amssymb}
 //   \usepackage{amsmath}
 // ChangeLog
+//   2019-12-05, KM
+//     Added \tag, \tag*, \notag, \raisetag
 //   2013-09-02, KM
-//     * documentclass.ctx から分離・作成
+//     Created, documentclass.ctx から分離・作成
 // References
 //
-// 公開
 
 /** pkg_ams.ctx
  *
@@ -9116,7 +9178,7 @@ new function(){
         '<tex:i class="aghtex-mathbb-d">#1</tex:i>' +
         '<tex:i class="aghtex-mathbb-e">#1</tex:i>#1</tex:i>'
     )],
-    mathfrak           : ['s@;#>1', '<tex:f class="aghtex-mathfrak">#1</tex:f>'],
+    mathfrak           : ['s@;#>1', '<tex:font class="aghtex-mathfrak">#1</tex:font>'],
 
     lessdot            : ['s@', '<tex:f class="aghtex-binop aghtex-symb-mincho">⋖</tex:f>'],
     gtrdot             : ['s@', '<tex:f class="aghtex-binop aghtex-symb-mincho">⋗</tex:f>'],
@@ -9388,7 +9450,7 @@ new function(){
   var _CtxName="pkg:amsmath/mode.math";
 
   _Ctx.DefineCommand({
-    boldsymbol: ['s@;#>1', '<tex:f class="aghtex-mathbm">#1</tex:f>'],
+    boldsymbol: ['s@;#>1', '<tex:font class="aghtex-mathbm">#1</tex:font>'],
     substack  : ['s;#1', "\\begin{array}{c}#1\\end{array}"],
 
     // 色々なスタイルの分数
@@ -9654,6 +9716,11 @@ new function(){
     notag: ['f', function(doc, argv) {
       doc.AssignContextVariable('mod_array/notag', true);
     }],
+    raisetag: ['f;#L', function(doc, argv) {
+      var len = argv[1];
+      len.scaleValue(-1.0);
+      doc.AssignContextVariable('mod_array/raisetag', len.toString());
+    }],
 
     lvert: ['s@', '<tex:f class="aghtex-symb-mincho">&#x007c;</tex:f>'], // u007c "|",  u2223
     lVert: ['s@', '<tex:f class="aghtex-symb-mincho">&#x2225;</tex:f>'], // u2225 "∥", u???? (‖)
@@ -9729,9 +9796,9 @@ new function(){
   var _CtxName="pkg:bm/global";
   function DefineBoldSymbol(doc,weight,name,content) {
     if (weight == 'bold') {
-      content = '<tex:f class="aghtex-mathbm">' + content + '</tex:f>';
+      content = '<tex:font class="aghtex-mathbm">' + content + '</tex:font>';
     } else if (weight == 'heavy') {
-      content = '<tex:f class="aghtex-mathhm">' + content + '</tex:f>';
+      content = '<tex:font class="aghtex-mathhm">' + content + '</tex:font>';
     } else {
       doc.currentCtx.output.error(
         "pkg:bm.DefineBoldSymbol.InvalidMathVersion",
@@ -9765,10 +9832,10 @@ new function(){
   var _Ctx=ns.ContextFactory.GetInstance("pkg:bm/mode.math");
   var _CtxName="pkg:bm/mode.math";
   _Ctx.DefineCommand({
-    bm         : ['s@;#>1', '<tex:f class="aghtex-mathbm">#1</tex:f>'],
-    hm         : ['s@;#>1', '<tex:f class="aghtex-mathhm">#1</tex:f>'],
-    boldsymbol : ['s@;#>1', '<tex:f class="aghtex-mathbm">#1</tex:f>'],
-    heavysymbol: ['s@;#>1', '<tex:f class="aghtex-mathhm">#1</tex:f>']
+    bm         : ['s@;#>1', '<tex:font class="aghtex-mathbm">#1</tex:font>'],
+    hm         : ['s@;#>1', '<tex:font class="aghtex-mathhm">#1</tex:font>'],
+    boldsymbol : ['s@;#>1', '<tex:font class="aghtex-mathbm">#1</tex:font>'],
+    heavysymbol: ['s@;#>1', '<tex:font class="aghtex-mathhm">#1</tex:font>']
   });
 
   // \bmmax, \hmmax
