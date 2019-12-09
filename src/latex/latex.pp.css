@@ -97,6 +97,7 @@ td.aghtex-css-td {
   vertical-align: middle!important;
   border: 0 solid $"borderColor:-inherit"!important;
   padding: 0!important; margin: 0!important;
+  box-sizing: content-box!important;
   background: inherit!important;
 
   font: inherit!important;
@@ -1406,7 +1407,7 @@ tex\:i.aghtex-array-hline-dummy {
     mod_ref
 ----------------------------------------------------------*/
 tex\:i.aghtex-eqno { display: inline-block; }
-tex\:i.aghtex-eqno-vspan { display: inline-block; height: 1em; }
+tex\:i.aghtex-eqno-vspan { display: inline-block; height: 1em; vertical-align: bottom; }
 
 tex\:i.aghtex-equation-eqno-right,
 tex\:i.aghtex-equation-eqno-left,

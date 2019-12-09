@@ -111,6 +111,11 @@ agh/js - Ageha JavaScript Library v3.2
 
 2019-12-01
 
+  * aghtex: 表内部での \ttfamily 等の効果の持続範囲
+    他のセルに影響が残ってはいけないのではないか。
+    というか \displaystyle 等の他のコマンドに関しても同様なのではなかろうか。
+    これについては改めて LaTeX の振る舞いを確認する必要がある。
+
   * aghtex: 取り敢えず以下に載っているものを全て実装したい?
     http://www.math.kobe-u.ac.jp/HOME/kodama/tips-latex-math-margin.html
 
@@ -620,7 +625,16 @@ latex
 
 2019-12-09
 
-  * フォントを生成するという事。 [#D0026]
+  * aghtex: 式番号が微妙にずれている。 [#D0028]
+    これは空白の代わりに inline-block で高さを確保する様にした事の影響である。
+    vertical-align を bottom にしたら直ったので取り敢えずこれで様子見する。
+
+  * hatena: 表の縦二重線がくっついてしまっている。 [#D0027]
+    結局まだ hatena css の影響を受けている。
+    box-sizing を border-box に書き換えているのである。
+    box-sizing に関しても td に対して content-box!important を適用する事にした。
+
+  * aghfonts: フォントを生成するという事。 [#D0026]
 
     Computer Modern の Wikipedia のページを見るとどうやら Metafont から生成しているとのこと。
     Metafont について調べるとこれも Knuth の作ったプログラムで stroke からフォントを定義できる。
