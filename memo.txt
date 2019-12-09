@@ -111,91 +111,6 @@ agh/js - Ageha JavaScript Library v3.2
 
 2019-12-01
 
-  * フォントを生成するという事。
-
-    Computer Modern の Wikipedia のページを見るとどうやら Metafont から生成しているとのこと。
-    Metafont について調べるとこれも Knuth の作ったプログラムで stroke からフォントを定義できる。
-    CMU の source が 500k と小さかったのは METAFONT で定義されていたからではないか。
-    実際に source をダウンロードして見ると *.mf というファイルがある。
-    フォントの生成スクリプトを眺める。mftrace というコマンドを呼び出している。
-    然し、Typewriter Bold のファイルが見当たらない。うーん。というかそもそも文字の定義が見当たらない。
-
-    改めて AMSFonts も確認する。texmf/fonts/source/public/amsfonts/cm にソースがあった。
-    それらをコピーして mftrace を呼び出してみる事にする。
-    途中でクラッシュする。t1asm が駄目だそうだ。他の mf を試しても駄目だった。
-    具体的にエラーを探すと t1asm の main 関数で segfault している。
-    song437 の上で実行したらちゃんと t1asm が実行できた。
-    つまり、 Fedora の t1asm が壊れているという事だろうか。
-
-    kohler/t1utils からダウンロードして入れる事にした。
-    うーん。あっさり変換できた。次の問題はどの様にしたら太字にできるのかという事。
-    cmr と cmb を比較すると結構色々な値を弄らないと太字にできない。
-    うーん。できれば CMU の sl を弄るだけで済ませたい所だが、
-    CMU のソースを見ても tt太字の mf が見当たらない。不思議だ。
-
-    うーん。何だか分からない。Makefile.cm を見ると cmuntb.ttf は
-    ectb1000.pfb をはじめ複数のフォントファイルをくっつけて生成されている。
-    ectb.mf に関してはファイルがある。つまりこれを見て生成すれば良いのか。
-
-    ectb.mf の中にあるパラメータが実は cmtt10.mf のパラメータに対応していると分かった。
-    ectb.mf はそのままでは使えなかったがパラメータの値を cmtt10.mf に適用してみたら
-    太字のフォントが生成できた。調子に乗って cmtt12 や cmtt9 の太字も生成しようとしたが…。
-    どうやら ectb.mf の表は 10pt の場合にか調整されていない様だ。
-    その他の値は全て cmtt{8,9,12} に完全に一致している。
-
-    取り敢えず .mf を自動で生成して其処から .ttf を合成するというのに成功した。
-    実際に使って表示してみる。と思ったら空白文字が受け皿になってしまっている。
-    これを何とかする事は可能だろうか。FF で開いて確認してみると、
-    受け皿は一つしか登録されていなくてそれが空白という事になっている。
-    眺めてみると他にもおかしい物は色々ある。enc を指定していない所為だろうか。
-
-  * aghtex: tt を使える様にしたい気がする。
-
-    | C:\cygwin64\usr\share\texmf-dist\fonts\type1\public\amsfonts\cm
-    | cmr     rm
-    | cmex    rm 括弧や大きな記号の類
-    | cmti    rm?
-    | cmsl    rm::sl
-    | cmmi    rm::it
-    | cmcsc   rm::sc
-    | cmb     rm:bf
-    | cmbx    rm:bf
-    | cmbxsl  rm:bf:sl
-    | cmbxti  rm:bf:it
-    | cmmib   rm:bf:it
-    | cmdunh  rm 縦長
-    | cmu     直立it
-    | 
-    | cmss    sf
-    | cmssbx  sf:hf
-    | cmssdc  sf:bf
-    | cmssi   sf::sl
-    | cmssq   sf:   丸ゴシックっぽい
-    | cmssqi  sf::sl 丸ゴシックっぽい
-    | 
-    | cmtt    tt1
-    | cmtex   tt2
-    | cmvtt   ttの横長? 縦書き用なのかもしれない。
-    | cmtcsc  tt::sc
-    | cmitt   tt::it
-    | cmsltt  tt::sl
-    | 
-    | cmff    ff (fancy?)
-    | cmfi    ff? it
-    | cmfib   ff? bf
-    | 
-    | cmsy    cal
-    | cmbsy   cal:bf
-
-    →こちらの記事にまとめた。
-      https://akinomyoga.hatenablog.com/entry/2019/12/06/222504
-
-    結局 mathtt は cm に対応するが texttt に関してはそのままにする事にした。
-    Web fonts にすると bold や italic が効かなくなってしまう。
-
-    というかフォントを書き換えたので複数箇所を修正する必要がある。
-    addon にフォントの一覧を指定する箇所が複数あった気がする。
-
   * aghtex: 取り敢えず以下に載っているものを全て実装したい?
     http://www.math.kobe-u.ac.jp/HOME/kodama/tips-latex-math-margin.html
 
@@ -702,6 +617,96 @@ latex
 -------------------------------------------------------------------------------
   Done (実装メモ)
 -------------------------------------------------------------------------------
+
+2019-12-09
+
+  * フォントを生成するという事。 [#D0026]
+
+    Computer Modern の Wikipedia のページを見るとどうやら Metafont から生成しているとのこと。
+    Metafont について調べるとこれも Knuth の作ったプログラムで stroke からフォントを定義できる。
+    CMU の source が 500k と小さかったのは METAFONT で定義されていたからではないか。
+    実際に source をダウンロードして見ると *.mf というファイルがある。
+    フォントの生成スクリプトを眺める。mftrace というコマンドを呼び出している。
+    然し、Typewriter Bold のファイルが見当たらない。うーん。というかそもそも文字の定義が見当たらない。
+
+    改めて AMSFonts も確認する。texmf/fonts/source/public/amsfonts/cm にソースがあった。
+    それらをコピーして mftrace を呼び出してみる事にする。
+    途中でクラッシュする。t1asm が駄目だそうだ。他の mf を試しても駄目だった。
+    具体的にエラーを探すと t1asm の main 関数で segfault している。
+    song437 の上で実行したらちゃんと t1asm が実行できた。
+    つまり、 Fedora の t1asm が壊れているという事だろうか。
+
+    kohler/t1utils からダウンロードして入れる事にした。
+    うーん。あっさり変換できた。次の問題はどの様にしたら太字にできるのかという事。
+    cmr と cmb を比較すると結構色々な値を弄らないと太字にできない。
+    うーん。できれば CMU の sl を弄るだけで済ませたい所だが、
+    CMU のソースを見ても tt太字の mf が見当たらない。不思議だ。
+
+    うーん。何だか分からない。Makefile.cm を見ると cmuntb.ttf は
+    ectb1000.pfb をはじめ複数のフォントファイルをくっつけて生成されている。
+    ectb.mf に関してはファイルがある。つまりこれを見て生成すれば良いのか。
+
+    ectb.mf の中にあるパラメータが実は cmtt10.mf のパラメータに対応していると分かった。
+    ectb.mf はそのままでは使えなかったがパラメータの値を cmtt10.mf に適用してみたら
+    太字のフォントが生成できた。調子に乗って cmtt12 や cmtt9 の太字も生成しようとしたが…。
+    どうやら ectb.mf の表は 10pt の場合にか調整されていない様だ。
+    その他の値は全て cmtt{8,9,12} に完全に一致している。
+
+    取り敢えず .mf を自動で生成して其処から .ttf を合成するというのに成功した。
+    実際に使って表示してみる。と思ったら空白文字が受け皿になってしまっている。
+    これを何とかする事は可能だろうか。FF で開いて確認してみると、
+    受け皿は一つしか登録されていなくてそれが空白という事になっている。
+    眺めてみると他にもおかしい物は色々ある。enc を指定していない所為だろうか。
+
+    取り敢えず生成して対応した。
+
+  * aghtex: tt を使える様にしたい気がする。 [#D0025]
+
+    | C:\cygwin64\usr\share\texmf-dist\fonts\type1\public\amsfonts\cm
+    | cmr     rm
+    | cmex    rm 括弧や大きな記号の類
+    | cmti    rm?
+    | cmsl    rm::sl
+    | cmmi    rm::it
+    | cmcsc   rm::sc
+    | cmb     rm:bf
+    | cmbx    rm:bf
+    | cmbxsl  rm:bf:sl
+    | cmbxti  rm:bf:it
+    | cmmib   rm:bf:it
+    | cmdunh  rm 縦長
+    | cmu     直立it
+    | 
+    | cmss    sf
+    | cmssbx  sf:hf
+    | cmssdc  sf:bf
+    | cmssi   sf::sl
+    | cmssq   sf:   丸ゴシックっぽい
+    | cmssqi  sf::sl 丸ゴシックっぽい
+    | 
+    | cmtt    tt1
+    | cmtex   tt2
+    | cmvtt   ttの横長? 縦書き用なのかもしれない。
+    | cmtcsc  tt::sc
+    | cmitt   tt::it
+    | cmsltt  tt::sl
+    | 
+    | cmff    ff (fancy?)
+    | cmfi    ff? it
+    | cmfib   ff? bf
+    | 
+    | cmsy    cal
+    | cmbsy   cal:bf
+
+    →こちらの記事にまとめた。
+      https://akinomyoga.hatenablog.com/entry/2019/12/06/222504
+
+    結局 mathtt は cm に対応するが texttt に関してはそのままにする事にした。
+    Web fonts にすると bold や italic が効かなくなってしまう。
+
+    というかフォントを書き換えたので複数箇所を修正する必要がある。
+    addon にフォントの一覧を指定する箇所が複数あった気がする。
+    修正した。
 
 2019-12-05
 

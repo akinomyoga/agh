@@ -322,130 +322,60 @@ tex\:i.aghtex-accent-container-vec { top: -0.05em; }
 /*%%if mode=="Trident" (*/
   @font-face {
     font-family: aghtex_mathit;
+    font-display: swap;
     src: url(aghtex_mathit.eot);
   }
 /*%%elif mode=="Opera" */
   @font-face {
     font-family: aghtex_mathit;
+    font-display: swap;
     src: url('aghtex_mathit.ttf') format("truetype");
   }
   @font-face {
     font-family: aghtex_mathit;
     font-style: italic;
+    font-display: swap;
     src: url('aghtex_mathit.ttf') format("truetype");
   }
 /*%%elif mode=="WebKit" */
   @font-face {
     font-family: aghtex_mathit;
+    font-display: swap;
     src: url('aghtex_mathit.ttf') format("truetype");
   }
   @font-face {
     font-family: aghtex_mathit;
     font-style: italic;
+    font-display: swap;
     src: url('aghtex_mathit.ttf') format("truetype");
   }
   /* 自動 synthesize がない為 */
   @font-face {
     font-family: aghtex_mathit;
     font-weight: bold;
+    font-display: swap;
     src: url('aghtex_mathbm.ttf') format("truetype");
   }
   @font-face {
     font-family: aghtex_mathit;
     font-style: italic;
     font-weight: bold;
+    font-display: swap;
     src: url('aghtex_mathbm.ttf') format("truetype");
   }
 /*%%elif mode=="Gecko"*/
   @font-face {
     font-family: aghtex_mathit;
+    font-display: swap;
     src: url('aghtex_mathit.woff') format("woff");
   }
   @font-face {
     font-family: aghtex_mathit;
     font-style: italic;
+    font-display: swap;
     src: url('aghtex_mathit.woff') format("woff");
   }
 /*%%)*/
-
-/* font:\mathcal */
-@font-face {
-  font-family: aghtex_mathcal;
-  /*%%if mode=="Trident" (*/
-  src: url(aghtex_mathcal.eot);
-  /*%%elif mode=="Opera"||mode=="WebKit"*/
-  src: url('aghtex_mathcal.ttf') format("truetype");
-  /*%%elif mode=="Gecko"*/
-  src: url('aghtex_mathcal.woff') format("woff");
-  /*%%)*/
-  /*local('cmsy10'),*/
-}
-/* font:\mathfrak */
-@font-face {
-  font-family: aghtex_mathfrak;
-  /*%%if mode=="Trident" (*/
-  src: url(aghtex_mathfrak.eot);
-  /*%%elif mode=="Opera"||mode=="WebKit"*/
-  src: url('aghtex_mathfrak.ttf') format("truetype");
-  /*%%elif mode=="Gecko"*/
-  src: url('aghtex_mathfrak.woff') format("woff");
-  /*%%)*/
-  /*local('eufm10'),*/
-}
-/* font:\mathbb, aghtex-syma */
-@font-face {
-  font-family: aghtex_mathbb;
-  /*%%if mode=="Trident" (*/
-  src: url(aghtex_mathbb.eot);
-  /*%%elif mode=="Opera"||mode=="WebKit"*/
-  src: url('aghtex_mathbb.ttf') format("truetype");
-  /*%%elif mode=="Gecko"*/
-  src: url('aghtex_mathbb.woff') format("woff");
-  /*%%)*/
-  /*local('msbm10'),*/
-}
-/* font:aghtex_mathrm, aghtex-symb */
-@font-face {
-  font-family: aghtex_mathrm;
-  /*%%if mode=="Trident" (*/
-  src: url(aghtex_mathrm.eot);
-  /*%%elif mode=="Opera"||mode=="WebKit"*/
-  src: url('aghtex_mathrm.ttf') format("truetype");
-  /*%%elif mode=="Gecko"*/
-  src: url('aghtex_mathrm.woff') format("woff");
-  /*%%)*/
-}
-/*%%if mode=="WebKit"*/
-@font-face {
-  font-family: aghtex_mathrm;
-  font-style: normal;
-  font-weight: bold;
-  src: url('aghtex_mathbf.ttf') format("truetype");
-}
-/*%%end*/
-
-/* font:aghtex_mathscr */
-@font-face {
-  font-family: aghtex_mathscr;
-  /*%%if mode=="Trident" (*/
-  src: url(aghtex_mathscr.eot);
-  /*%%elif mode=="Opera"||mode=="WebKit"*/
-  src: url('aghtex_mathscr.ttf') format("truetype");
-  /*%%elif mode=="Gecko"*/
-  src: url('aghtex_mathscr.woff') format("woff");
-  /*%%)*/
-}
-/* font:aghtex_mathbm */
-@font-face {
-  font-family: aghtex_mathbm;
-  /*%%if mode=="Trident" (*/
-  src: url(aghtex_mathbm.eot);
-  /*%%elif mode=="Opera"||mode=="WebKit"*/
-  src: url('aghtex_mathbm.ttf') format("truetype");
-  /*%%elif mode=="Gecko"*/
-  src: url('aghtex_mathbm.woff') format("woff");
-  /*%%)*/
-}
 /*%%define font-src */
 /*%%if mode=="Trident"*/
   src: url(%NAME%.eot);
@@ -455,6 +385,56 @@ tex\:i.aghtex-accent-container-vec { top: -0.05em; }
   src: url('%NAME%.woff') format("woff");
 /*%%end*/
 /*%%end*/
+
+/* font:\mathcal */
+@font-face {
+  font-family: aghtex_mathcal;
+  font-display: swap;
+  /*%%x font-src.r|%NAME%|aghtex_mathcal|*/
+  /*local('cmsy10'),*/
+}
+/* font:\mathfrak */
+@font-face {
+  font-family: aghtex_mathfrak;
+  font-display: swap;
+  /*%%x font-src.r|%NAME%|aghtex_mathfrak|*/
+  /*local('eufm10'),*/
+}
+/* font:\mathbb, aghtex-syma */
+@font-face {
+  font-family: aghtex_mathbb;
+  font-display: swap;
+  /*%%x font-src.r|%NAME%|aghtex_mathbb|*/
+  /*local('msbm10'),*/
+}
+/* font:aghtex_mathrm, aghtex-symb */
+@font-face {
+  font-family: aghtex_mathrm;
+  font-display: swap;
+  /*%%x font-src.r|%NAME%|aghtex_mathrm|*/
+}
+/*%%if mode=="WebKit"*/
+@font-face {
+  font-family: aghtex_mathrm;
+  font-style: normal;
+  font-weight: bold;
+  font-display: swap;
+  src: url('aghtex_mathbf.ttf') format("truetype");
+}
+/*%%end*/
+
+/* font:aghtex_mathscr */
+@font-face {
+  font-family: aghtex_mathscr;
+  font-display: swap;
+  /*%%x font-src.r|%NAME%|aghtex_mathscr|*/
+}
+/* font:aghtex_mathbm */
+@font-face {
+  font-family: aghtex_mathbm;
+  font-display: swap;
+  /*%%x font-src.r|%NAME%|aghtex_mathbm|*/
+}
 /* font:aghtex_mathtt */
 @font-face {
   font-family: aghtex_mathtt;
@@ -469,9 +449,9 @@ tex\:i.aghtex-accent-container-vec { top: -0.05em; }
 }
 @font-face {
   font-family: aghtex_texttt;
-  font-style: italic;
-  font-weight: normal;
-  /*%%x font-src.r|%NAME%|aghtex_cmttmi10|*/
+  font-style: normal;
+  font-weight: bold;
+  /*%%x font-src.r|%NAME%|aghtex_cmttbn10|*/
 }
 @font-face {
   font-family: aghtex_texttt;
@@ -481,21 +461,31 @@ tex\:i.aghtex-accent-container-vec { top: -0.05em; }
 }
 @font-face {
   font-family: aghtex_texttt;
-  font-style: normal;
-  font-weight: bold;
-  /*%%x font-src.r|%NAME%|aghtex_cmttbn10|*/
-}
-@font-face {
-  font-family: aghtex_texttt;
-  font-style: italic;
-  font-weight: bold;
-  /*%%x font-src.r|%NAME%|aghtex_cmttbi10|*/
-}
-@font-face {
-  font-family: aghtex_texttt;
   font-style: oblique;
   font-weight: bold;
   /*%%x font-src.r|%NAME%|aghtex_cmttbs10|*/
+}
+@font-face {
+/* Cr/IE Workaround: italic と oblique に別々のフォントを指定できない。 */
+/*%%if mode=="WebKit"||mode=="Trident" */
+  font-family: aghtex_texttt-italic;
+/*%%else*/
+  font-family: aghtex_texttt;
+/*%%end*/
+  font-style: italic;
+  font-weight: normal;
+  /*%%x font-src.r|%NAME%|aghtex_cmttmi10|*/
+}
+@font-face {
+/* Cr/IE Workaround: italic と oblique に別々のフォントを指定できない。 */
+/*%%if mode=="WebKit"||mode=="Trident" */
+  font-family: aghtex_texttt-italic;
+/*%%else*/
+  font-family: aghtex_texttt;
+/*%%end*/
+  font-style: italic;
+  font-weight: bold;
+  /*%%x font-src.r|%NAME%|aghtex_cmttbi10|*/
 }
 
 /* ------------------------------------------------------ */
@@ -535,6 +525,12 @@ tex\:font.aghtex-textup { font-style: normal; font-variant: normal; }
 tex\:font.aghtex-textsl { font-style: oblique; font-variant: normal; }
 tex\:font.aghtex-textsc { font-style: normal; font-variant: small-caps; } /* text-transform: uppercase; */
 tex\:font.aghtex-textit { font-style: italic; font-variant: normal; }
+/* Cr/IE Workaround: italic と oblique に別々のフォントを指定できない。 */
+/*%%if mode=="WebKit"||mode=="Trident" */
+  tex\:font.aghtex-texttt.aghtex-textit {
+    font-family: aghtex_texttt-italic,"Courier New",monospace,serif;
+  }
+/*%%end*/
 
 /* 記号類 */
 /* symb: aghtex_mathrm に登録されている字形 */
