@@ -111,6 +111,8 @@ agh/js - Ageha JavaScript Library v3.2
 
 2019-12-01
 
+  * aghtex: 埋め込み要素の CSS (font, color, etc) はクリアする?
+
   * aghtex: 表内部での \ttfamily 等の効果の持続範囲
     他のセルに影響が残ってはいけないのではないか。
     というか \displaystyle 等の他のコマンドに関しても同様なのではなかろうか。

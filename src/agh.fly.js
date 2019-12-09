@@ -27,38 +27,40 @@
     });
   }
 
-  var getTextContent, setTextContent;
-  function initializeTextContentFunctions() {
-    if (isIE) {
-      getTextContent = function(node) {
-        if (node.nodeType === 3)
-          return node.data;
-        else
-          return node.innerText;
-      };
-      setTextContent = function(node, value) {
-        if (node.nodeType === 3)
-          node.data = value;
-        else
-          node.innerText = value;
-      };
-    }else{
-      getTextContent = function(node) {
-        return node.textContent;
-      };
-      setTextContent = function(node,value) {
-        node.textContent = value;
-      };
-    }
+  if (isIE) {
+    var getTextContent = function(node) {
+      if (node.nodeType === 3)
+        return node.data;
+      else
+        return node.innerText;
+    };
+    var setTextContent = function(node, value) {
+      if (node.nodeType === 3)
+        node.data = value;
+      else
+        node.innerText = value;
+    };
+  } else {
+    var getTextContent = function(node) {
+      return node.textContent;
+    };
+    var setTextContent = function(node,value) {
+      node.textContent = value;
+    };
   }
-  getTextContent = function(node) {
-    initializeTextContentFunctions();
-    return getTextContent(node);
-  };
-  setTextContent = function(node, value) {
-    initializeTextContentFunctions();
-    getTextContent(node, value);
-  };
+
+  var dom = {};
+  if (document.getElementsByClassName) {
+    dom.getElementsByClassName = function(target, className) {
+      return target.getElementsByClassName(className);
+    };
+  } else {
+    dom.getElementsByClassName = function(target, className) {
+      return agh.Array.filter(target.getElementsByTagName("*"), function(elem) {
+        return elem.className && agh.Array.contains(elem.className.split(' '), className);
+      });
+    };
+  }
 
   //----------------------------------------------------------------------------
   //  Loader
@@ -606,28 +608,21 @@
       container.innerHTML = html;
 
       var iemb = 0;
-
-      var idiv = 0;
-      var divs = agh(container.getElementsByTagName("div"), Array);
-      while (idiv < divs.length && iemb < embedded.length) {
-        var emb = divs[idiv++];
-        if (emb.className != 'aghfly-embedded-node') continue;
-
-        emb.innerHTML = '';
-        emb.appendChild(embedded[iemb++]);
+      var emb_arr = agh(dom.getElementsByClassName(container, 'aghfly-embedded-node'), Array);
+      for (var iemb = 0; iemb < emb_arr.length; iemb++) {
+        emb_arr[iemb].innerHTML = '';
+        emb_arr[iemb].appendChild(embedded[iemb]);
       }
 
-      if (iemb < embedded.length) {
-        // 本来此処には来ない (ID_EMBEDDED_NODE の重複がない限り)。
-        for(; iemb < embedded.length; iemb++)
-          container.appendChild(embedded[iemb]);
-      }
+      // 本来此処には来ない (ID_EMBEDDED_NODE の重複がない限り)。
+      while (iemb < embedded.length)
+        container.appendChild(embedded[iemb++]);
     }
 
     var CMDH_EMBEDDED;
     function CMDH_EMBEDDED_getInstance() {
       if (!CMDH_EMBEDDED)
-        CMDH_EMBEDDED = new agh.LaTeX.Command2('s@', null, '<div class="aghfly-embedded-node">[to be replaced]</div>');
+        CMDH_EMBEDDED = new agh.LaTeX.Command2('s@', null, '<tex:embedded class="aghfly-embedded-node">[to be replaced]</tex:embedded>');
       return CMDH_EMBEDDED;
     }
 

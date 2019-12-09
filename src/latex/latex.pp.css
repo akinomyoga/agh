@@ -1594,9 +1594,19 @@ h2.aghtex-revtex-thebibliography {
 /*----------------------------------------------------------
     agh.fly.js:tex で使用する物
 ----------------------------------------------------------*/
-div.aghfly-embedded-node {
+tex\:embedded.aghfly-embedded-node {
   display: inline-block; vertical-align: baseline;
-  margin: 1px; font-size: medium; }
+  margin: 1px;
+
+  /* clear styles set by aghtex */
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  font-stretch: normal;
+  font-size: medium;
+  line-height: normal;
+  font: initial;
+}
 tex\:container {
   display: inline; vertical-align: baseline;
   font-size: 120%; }
