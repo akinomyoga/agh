@@ -23,8 +23,11 @@ body {
 .aghtex-page {
   width: 50em; margin-left: auto; margin-right: auto; min-height: 100%;
   padding: 1em; border: 1px solid silver; background-color: white;
+  font-family: aghtex_roman,aghtex_mincho,serif;
 }
 </style>
+<meta name="agh-fly-type" content="tex" />
+<script type="text/javascript" charset="utf-8" src="../out/agh.fly.js"></script>
 </head>
 <body>
 
@@ -166,7 +169,7 @@ Small-caps & {\ttfamily\scshape Hello world!} & {\ttfamily\bfseries\scshape Hell
 以下の文字は実は aghfonts に含まれていない様だ。
 \begin{itemize}
 \item \textbullet → これは含まれていたので置き換えた。
-\item \textvisiblespace
+\item \textvisiblespace → 少し字形が異なるが mathtt に含まれている物を使う事にした。
 \item $A', A'', A'''$
 \end{itemize}
 
@@ -185,13 +188,15 @@ Small-caps & {\ttfamily\scshape Hello world!} & {\ttfamily\bfseries\scshape Hell
 Hello \texttt{Hello world} Check. \\
 Hello $\mathtt{Hello world}$ Check.
 
-\section{embedded}
-\begin{align}
-  x &= \frac{<button>Hello</button>}{<button>World</button>}
-\end{align}
-
 \end{document}
 </div>
+
+<!--
+<p>埋め込み要素のスタイルについて</p>
+<div class="aghfly-begin-align">
+  x &= \frac{<button>Hello</button>}{<button>World</button>}
+</div>
+-->
 
 </body>
 </html>

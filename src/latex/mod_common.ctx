@@ -450,7 +450,7 @@ context "global" {
   //   正しく表示できない \text... 記号は mod_para.ctx で定義。
   command s@\textregistered  () '<tex:f class="aghtex-sym0-roman">&#x00AE;</tex:f>'; // u00AE 丸R
   command s@\texttrademark   () '<tex:f class="aghtex-sym0-roman">&#x2122;</tex:f>'; // u2122 TM
-  command s@\textvisiblespace() '<tex:f class="aghtex-sym0-meiryo">&#x2423;</tex:f>'; // u2423 空白記号 (■ XP IE6 では表示できない)
+  command s@\textvisiblespace() '<tex:f class="aghtex-symt-meiryo">&#x2423;</tex:f>'; // u2423 空白記号 (■ XP IE6 では表示できない)
   command s@\textcopyright   () '&copy;';
   command s@\textellipsis    () '<tex:f lang="en">…</tex:f>';
   command s@\textless        () '&lt;';

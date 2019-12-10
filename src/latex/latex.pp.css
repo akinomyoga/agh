@@ -539,7 +539,6 @@ tex\:font.aghtex-textit { font-style: italic; font-variant: normal; }
 /* sym0: TODO: aghfonts に未登録 */
 tex\:f.aghtex-sym0-roman  { font-style: normal; font-family: aghtex_roman,aghtex_mincho,serif; }
 tex\:f.aghtex-sym0-gothic { font-style: normal; font-family: aghtex_gothic,sans-serif; }
-tex\:f.aghtex-sym0-meiryo { font-style: normal; font-family: aghtex_meiryo,sans-serif; }
 tex\:f.aghtex-sym0-cent   { font-style: normal; font-family: Century,aghtex_gothic,sans-serif; }
 tex\:f.aghtex-symb-mincho { font-style: normal; font-family: aghtex_mathrm,aghtex_mincho,aghtex_roman,serif; }
 tex\:f.aghtex-symb-gothic { font-style: normal; font-family: aghtex_mathrm,aghtex_gothic,sans-serif; }
@@ -547,6 +546,7 @@ tex\:f.aghtex-symb-roman  { font-style: normal; font-family: aghtex_mathrm,aghte
 tex\:f.aghtex-symb-meiryo { font-style: normal; font-family: aghtex_mathrm,aghtex_meiryo,sans-serif; }
 tex\:f.aghtex-symb-cent   { font-style: normal; font-family: aghtex_mathrm,Century,aghtex_gothic,sans-serif; }
 tex\:f.aghtex-syma-mincho { font-style: normal; font-family: aghtex_mathbb,aghtex_mathrm,aghtex_mincho,aghtex_roman,serif; }
+tex\:f.aghtex-symt-meiryo { font-style: normal; font-family: aghtex_mathtt,aghtex_meiryo,sans-serif; }
 tex\:f.aghtex-symbol-small1 { font-size: 90%; }
 tex\:f.aghtex-binop  { margin-left: 0.2em; margin-right: 0.2em; }
 tex\:f.aghtex-comma  { margin-right: 0.3ex; }
