@@ -564,9 +564,9 @@ agh.memcpy(ns.ContextFactory.prototype, {
 //◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 ns.Context = function(base_ctxs, handler_l, handler_c, handler_e, initializer) {
   this.baseCtxs = base_ctxs;
-  this.handlerL = handler_l||{};  // 制御文字 handler
-  this.handlerC = handler_c||{};  // コマンド handler
-  this.handlerE = handler_e||{};  // 環境開始 handler
+  this.handlerL = handler_l || {};  // 制御文字 handler
+  this.handlerC = handler_c || {};  // コマンド handler
+  this.handlerE = handler_e || {};  // 環境開始 handler
   if (initializer != null)
     this.initializer = initializer;  // 初期化子
 
@@ -4517,7 +4517,7 @@ new function(){
   //   正しく表示できない \text... 記号は mod_para.ctx で定義。
   _Ctx.DefineCommand({"textregistered":['s@','<tex:f class="aghtex-sym0-roman">&#x00AE;</tex:f>']}); // u00AE 丸R
   _Ctx.DefineCommand({"texttrademark":['s@','<tex:f class="aghtex-sym0-roman">&#x2122;</tex:f>']}); // u2122 TM
-  _Ctx.DefineCommand({"textvisiblespace":['s@','<tex:f class="aghtex-sym0-meiryo">&#x2423;</tex:f>']}); // u2423 空白記号 (■ XP IE6 では表示できない)
+  _Ctx.DefineCommand({"textvisiblespace":['s@','<tex:f class="aghtex-symt-meiryo">&#x2423;</tex:f>']}); // u2423 空白記号 (■ XP IE6 では表示できない)
   _Ctx.DefineCommand({"textcopyright":['s@','&copy;']});
   _Ctx.DefineCommand({"textellipsis":['s@','<tex:f lang="en">…</tex:f>']});
   _Ctx.DefineCommand({"textless":['s@','&lt;']});
@@ -6074,11 +6074,11 @@ new function(){
   _Ctx.AddCommandHandler("rq", quoteright);
   _Ctx.DefineLetter({'"':['s@','<tex:f class="aghtex-sym0-roman">”</tex:f>']}); // "
 
-  _Ctx.AddEnvironment("center",ns.Environment.Create("s@",null,'<div class="aghtex-center">#0</div>',_CtxName));
-  _Ctx.AddEnvironment("flushright",ns.Environment.Create("s@",null,'<div class="aghtex-flushright">#0</div>',_CtxName));
-  _Ctx.AddEnvironment("flushleft",ns.Environment.Create("s@",null,'<div class="aghtex-flushleft">#0</div>',_CtxName));
-  _Ctx.AddEnvironment("quote",ns.Environment.Create("s@",null,'<blockquote class="aghtex-quote">#0</blockquote>',_CtxName));
-  _Ctx.AddEnvironment("quotation",ns.Environment.Create("s@",null,'<blockquote class="aghtex-quota">#0</blockquote>',_CtxName));
+  _Ctx.AddEnvironment("center",ns.Environment.Create("s@",null,'<tex:i class="aghtex-center">#0</tex:i>',_CtxName));
+  _Ctx.AddEnvironment("flushright",ns.Environment.Create("s@",null,'<tex:i class="aghtex-flushright">#0</tex:i>',_CtxName));
+  _Ctx.AddEnvironment("flushleft",ns.Environment.Create("s@",null,'<tex:i class="aghtex-flushleft">#0</tex:i>',_CtxName));
+  _Ctx.AddEnvironment("quote",ns.Environment.Create("s@",null,'<tex:i class="aghtex-quote">#0</tex:i>',_CtxName));
+  _Ctx.AddEnvironment("quotation",ns.Environment.Create("s@",null,'<tex:i class="aghtex-quota">#0</tex:i>',_CtxName));
   _Ctx.AddEnvironment("verse",ns.Environment.Create("s@",null,'<tex:verse>#0</tex:verse>',_CtxName));
 
   //---------------------------------------------------------------------------
@@ -8022,10 +8022,11 @@ agh.memcpy(_at.Table, {
   // &
   H_NEXT_COL: function(doc, cmdName) {
     doc.scanner.Next();
-    var output = doc.currentCtx.output;
     var data = _at.Table.GetTable(doc, cmdName, "NextColumn");
     if (data == null) return;
 
+    var output = doc.currentCtx.output;
+    clearArrayContext(doc.currentCtx);
     if (data.cell().is_multicol) {
       var cont = output.toHtml().trim();
       if (cont) {
@@ -8045,10 +8046,11 @@ agh.memcpy(_at.Table, {
   },
   // \\[dimen]
   H_NEXT_ROW: new ns.Command2("f", "#[]D", function(doc, argv) {
-    var output = doc.currentCtx.output;
     var data = _at.Table.GetTable(doc, argv[0], "NextLine");
     if (data == null) return;
 
+    var output = doc.currentCtx.output;
+    clearArrayContext(doc.currentCtx);
     if (argv[1]) data.line().paddingBottom = argv[1];
     data.cell().content += output.toHtml();
     output.clear();
@@ -8064,9 +8066,9 @@ agh.memcpy(_at.Table, {
   },
   // \cline{1-3}
   H_CLINE: new ns.Command2("f", "#mode.para!1", function(doc, args) {
-    var output = doc.currentCtx.output;
     var data = _at.Table.GetTable(doc, args[0], "HorizontalLine");
     if (data == null) return;
+    var output = doc.currentCtx.output;
 
     // chk 引数
     var s = args[1].match(/^\s*(\d)+\s*\-\s*(\d+)/);
@@ -8106,7 +8108,31 @@ _Mod["cmd:hdotsfor"] = _at.Table.H_HDOTSFOR;
 //*****************************************************************************
 //  array 環境
 //-----------------------------------------------------------------------------
+var CTXV_LABEL_EQ = 'mod_ref/label:eq';
+var CTXV_ARRAYCTX = 'mod_array/arrayCtx';
+var CTXV_NOTAG = 'mod_array/notag';
+var CTXV_EQTAG = 'mod_array/eqtag';
+var CTXV_RAISETAG = 'mod_array/raisetag';
+
+function setupArrayContext(ctx) {
+  ctx.dataV[CTXV_ARRAYCTX] = ctx;
+  ctx.dataV[CTXV_NOTAG] = false;
+  ctx.dataV[CTXV_EQTAG] = false;
+  ctx.dataV[CTXV_RAISETAG] = false;
+  ctx.dataV[CTXV_LABEL_EQ] = [];
+}
+function clearArrayContext(ctx) {
+  ctx.dataV = agh.memcpy({}, ctx.dataV, [
+    CTXV_ARRAYCTX, CTXV_NOTAG, CTXV_EQTAG,
+    CTXV_RAISETAG, CTXV_LABEL_EQ]);
+  ctx.dataL = {};
+  ctx.userC = {};
+  if (ctx["mod:array/eqno"])
+    ctx.userC["label"] = ns.Modules["mod:ref"]["cmd:label:eq"];
+}
+
 _Mod.ArrayEnvironmentDefaultPrologue = function(doc, ctx) {
+  setupArrayContext(ctx);
   var t = new _at.Table();
   return ctx.ENVDATA = t;
 
@@ -8127,6 +8153,7 @@ _Mod.ArrayEnvironmentDefaultEpilogue = function(doc, ctx) {
 
   table.write(doc.currentCtx.output);
 };
+
 _Mod.ArrayEnvironmentDefaultCatcher = function(doc, ctx) {
   this.epilogue(doc, ctx);
 };
@@ -8136,8 +8163,6 @@ _Mod.ArrayEnvironmentMathEpilogue = function(doc, ctx) {
   table.setSubSup(doc.GetSubSup());
   _Mod.ArrayEnvironmentDefaultEpilogue(doc, ctx);
 }
-//-----------------------------------------------------------------------------
-
 
 _Mod.ReadVerticalAlign = function(doc) {
   var va = doc.GetOptionalArgumentRaw() || "m";
@@ -8149,7 +8174,18 @@ _Mod.ReadVerticalAlign = function(doc) {
   return va;
 };
 
-var ENV_PARAMS = {
+//-----------------------------------------------------------------------------
+
+new function(){
+  var _Ctx=ns.ContextFactory.GetInstance("env.array","mode.math");
+  var _CtxName="env.array";
+  _Ctx.AddLetterHandler("&", _at.Table.H_NEXT_COL);
+  _Ctx.AddCommandHandler("\\", _at.Table.H_NEXT_ROW);
+  _Ctx.AddCommandHandler("hline", _at.Table.H_HLINE);
+  _Ctx.AddCommandHandler("cline", _at.Table.H_CLINE);
+  _Ctx.AddCommandHandler("multicolumn", _at.Table.H_MULTICOL);
+}
+_Mod["envdef:array"] = {
   suppressOutput: true,
   prologue: function(doc, ctx) {
     var t = _Mod.ArrayEnvironmentDefaultPrologue(doc, ctx);
@@ -8177,20 +8213,10 @@ var ENV_PARAMS = {
       'mod:array.env:array.ExtraColumn'));
   },
   epilogue: _Mod.ArrayEnvironmentDefaultEpilogue,
-  catcher: _Mod.ArrayEnvironmentDefaultCatcher
+  catcher: _Mod.ArrayEnvironmentDefaultCatcher,
+  context: "env.array"
 };
-
-new function(){
-  var _Ctx=ns.ContextFactory.GetInstance("env.array","mode.math");
-  var _CtxName="env.array";
-  _Ctx.AddLetterHandler("&", _at.Table.H_NEXT_COL);
-  _Ctx.AddCommandHandler("\\", _at.Table.H_NEXT_ROW);
-  _Ctx.AddCommandHandler("hline", _at.Table.H_HLINE);
-  _Ctx.AddCommandHandler("cline", _at.Table.H_CLINE);
-  _Ctx.AddCommandHandler("multicolumn", _at.Table.H_MULTICOL);
-}
-ENV_PARAMS.context = "env.array";
-ns.ContextFactory["mode.math"].AddEnvironment("array", ENV_PARAMS);
+ns.ContextFactory["mode.math"].AddEnvironment("array", _Mod["envdef:array"]);
 
 new function(){
   var _Ctx=ns.ContextFactory.GetInstance("env.tabular","mode.para");
@@ -8201,17 +8227,17 @@ new function(){
   _Ctx.AddCommandHandler("cline", _at.Table.H_CLINE);
   _Ctx.AddCommandHandler("multicolumn", _at.Table.H_MULTICOL);
 }
-ENV_PARAMS.context = "env.tabular";
-ns.ContextFactory["mode.para"].AddEnvironment("tabular", ENV_PARAMS);
+_Mod["envdef:tabular"] = {
+  suppressOutput: true,
+  prologue: _Mod["envdef:array"].prologue,
+  epilogue: _Mod.ArrayEnvironmentDefaultEpilogue,
+  catcher: _Mod.ArrayEnvironmentDefaultCatcher,
+  context: "env.tabular"
+};
+ns.ContextFactory["mode.para"].AddEnvironment("tabular", _Mod["envdef:tabular"]);
 
 //-----------------------------------------------------------------------------
 // 式番号 (eqnarray)
-
-var CTXV_LABEL_EQ = 'mod_ref/label:eq';
-var CTXV_ARRAYCTX = 'mod_array/arrayCtx';
-var CTXV_NOTAG = 'mod_array/notag';
-var CTXV_EQTAG = 'mod_array/eqtag';
-var CTXV_RAISETAG = 'mod_array/raisetag';
 
 _Mod.eqno_output = function(doc, actx, output) {
   var counter = doc.GetCounter("equation");
@@ -8266,11 +8292,7 @@ function isEndingEqnoRequired(ctx) {
 }
 
 _Mod.eqno_prologue = function(doc, ctx) {
-  ctx.dataV[CTXV_ARRAYCTX] = ctx;
-  ctx.dataV[CTXV_NOTAG] = false;
-  ctx.dataV[CTXV_EQTAG] = false;
-  ctx.dataV[CTXV_RAISETAG] = false;
-  ctx.SetContextVariable(CTXV_LABEL_EQ, []);
+  ctx["mod:array/eqno"] = true;
   ctx.userC["label"] = ns.Modules["mod:ref"]["cmd:label:eq"];
 };
 _Mod.eqno_epilogue = function(doc, ctx) {
@@ -9500,7 +9522,7 @@ new function(){
   _Ctx.AddEnvironment("split",ns.Environment.Create("s",null,"\\begin{array}{r@{}l}#0\\end{array}","mode.math"));
 
   // \AmS
-  _Ctx.DefineCommand({AmS: ['s@', '<tex:AmS>A<span>M</span>S</tex:AmS>']});
+  _Ctx.DefineCommand({AmS: ['s@', '<tex:i class="aghtex-logo-ams">A<tex:i class="aghtex-logo-ams-m">M</tex:i>S</tex:i>']});
 
   // \binom, \tbinom, \dbinom, \genfrac
   function cmd_genfrac(doc, left, right, barWidth, style, htNumerator, htDenominator) {

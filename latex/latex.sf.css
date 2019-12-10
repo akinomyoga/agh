@@ -77,6 +77,7 @@ td.aghtex-css-td {
   vertical-align: middle!important;
   border: 0 solid currentColor!important;
   padding: 0!important; margin: 0!important;
+  box-sizing: content-box!important;
   background: inherit!important;
 
   font: inherit!important;
@@ -126,9 +127,9 @@ tex\:container.aghtex-math td,
 tex\:math td { padding: 0px; border-width: 0px; white-space: nowrap; }
 
 /* -- */
-div.aghtex-center { text-align: center; }
-div.aghtex-flushright { text-align: right; }
-div.aghtex-flushleft { text-align: left; }
+tex\:i.aghtex-center     { display: block; margin: 0.9em 0em; text-align: center; }
+tex\:i.aghtex-flushright { display: block; margin: 0.9em 0em; text-align: right; }
+tex\:i.aghtex-flushleft  { display: block; margin: 0.9em 0em; text-align: left; }
 
 /* TeX */
 tex\:i.aghtex-logo { font-family: aghtex_mathrm,aghtex_mincho,serif; }
@@ -149,8 +150,8 @@ dl.aghtex-desc dt tex\:dt { position: relative; left: -1em; }
 dl.aghtex-desc dd { margin-left: 1em; display: block; margin-top: .8ex; margin-bottom: .8ex; }
   dl.aghtex-desc dt { display: run-in; }
 
-blockquote.aghtex-quote { text-indent: 0px; }
-blockquote.aghtex-quota { text-indent: 1em; }
+tex\:i.aghtex-quote { display: block; margin: 0.9em 3em; text-indent: 0px; }
+tex\:i.aghtex-quota { display: block; margin: 0.9em 3em; text-indent: 1em; }
 tex\:verse { display: block; margin-left: 2em; margin-right: 2em; }
 
 tex\:i.aghtex-hbox { display: inline-block; vertical-align: baseline; white-space: nowrap; }
@@ -255,64 +256,75 @@ tex\:i.aghtex-accent-sf-vec { top: -0.05em; }
 /* font:\mathit */
   @font-face {
     font-family: aghtex_mathit;
+    font-display: swap;
     src: url('aghtex_mathit.ttf') format("truetype");
   }
   @font-face {
     font-family: aghtex_mathit;
     font-style: italic;
+    font-display: swap;
     src: url('aghtex_mathit.ttf') format("truetype");
   }
   /* 自動 synthesize がない為 */
   @font-face {
     font-family: aghtex_mathit;
     font-weight: bold;
+    font-display: swap;
     src: url('aghtex_mathbm.ttf') format("truetype");
   }
   @font-face {
     font-family: aghtex_mathit;
     font-style: italic;
     font-weight: bold;
+    font-display: swap;
     src: url('aghtex_mathbm.ttf') format("truetype");
   }
 
 /* font:\mathcal */
 @font-face {
   font-family: aghtex_mathcal;
+  font-display: swap;
   src: url('aghtex_mathcal.ttf') format("truetype");
   /*local('cmsy10'),*/
 }
 /* font:\mathfrak */
 @font-face {
   font-family: aghtex_mathfrak;
+  font-display: swap;
   src: url('aghtex_mathfrak.ttf') format("truetype");
   /*local('eufm10'),*/
 }
 /* font:\mathbb, aghtex-syma */
 @font-face {
   font-family: aghtex_mathbb;
+  font-display: swap;
   src: url('aghtex_mathbb.ttf') format("truetype");
   /*local('msbm10'),*/
 }
 /* font:aghtex_mathrm, aghtex-symb */
 @font-face {
   font-family: aghtex_mathrm;
+  font-display: swap;
   src: url('aghtex_mathrm.ttf') format("truetype");
 }
 @font-face {
   font-family: aghtex_mathrm;
   font-style: normal;
   font-weight: bold;
+  font-display: swap;
   src: url('aghtex_mathbf.ttf') format("truetype");
 }
 
 /* font:aghtex_mathscr */
 @font-face {
   font-family: aghtex_mathscr;
+  font-display: swap;
   src: url('aghtex_mathscr.ttf') format("truetype");
 }
 /* font:aghtex_mathbm */
 @font-face {
   font-family: aghtex_mathbm;
+  font-display: swap;
   src: url('aghtex_mathbm.ttf') format("truetype");
 }
 /* font:aghtex_mathtt */
@@ -329,9 +341,9 @@ tex\:i.aghtex-accent-sf-vec { top: -0.05em; }
 }
 @font-face {
   font-family: aghtex_texttt;
-  font-style: italic;
-  font-weight: normal;
-  src: url('aghtex_cmttmi10.ttf') format("truetype");
+  font-style: normal;
+  font-weight: bold;
+  src: url('aghtex_cmttbn10.ttf') format("truetype");
 }
 @font-face {
   font-family: aghtex_texttt;
@@ -341,21 +353,23 @@ tex\:i.aghtex-accent-sf-vec { top: -0.05em; }
 }
 @font-face {
   font-family: aghtex_texttt;
-  font-style: normal;
-  font-weight: bold;
-  src: url('aghtex_cmttbn10.ttf') format("truetype");
-}
-@font-face {
-  font-family: aghtex_texttt;
-  font-style: italic;
-  font-weight: bold;
-  src: url('aghtex_cmttbi10.ttf') format("truetype");
-}
-@font-face {
-  font-family: aghtex_texttt;
   font-style: oblique;
   font-weight: bold;
   src: url('aghtex_cmttbs10.ttf') format("truetype");
+}
+@font-face {
+/* Cr/IE Workaround: italic と oblique に別々のフォントを指定できない。 */
+  font-family: aghtex_texttt-italic;
+  font-style: italic;
+  font-weight: normal;
+  src: url('aghtex_cmttmi10.ttf') format("truetype");
+}
+@font-face {
+/* Cr/IE Workaround: italic と oblique に別々のフォントを指定できない。 */
+  font-family: aghtex_texttt-italic;
+  font-style: italic;
+  font-weight: bold;
+  src: url('aghtex_cmttbi10.ttf') format("truetype");
 }
 
 /* ------------------------------------------------------ */
@@ -395,6 +409,10 @@ tex\:font.aghtex-textup { font-style: normal; font-variant: normal; }
 tex\:font.aghtex-textsl { font-style: oblique; font-variant: normal; }
 tex\:font.aghtex-textsc { font-style: normal; font-variant: small-caps; } /* text-transform: uppercase; */
 tex\:font.aghtex-textit { font-style: italic; font-variant: normal; }
+/* Cr/IE Workaround: italic と oblique に別々のフォントを指定できない。 */
+  tex\:font.aghtex-texttt.aghtex-textit {
+    font-family: aghtex_texttt-italic,"Courier New",monospace,serif;
+  }
 
 /* 記号類 */
 /* symb: aghtex_mathrm に登録されている字形 */
@@ -402,7 +420,6 @@ tex\:font.aghtex-textit { font-style: italic; font-variant: normal; }
 /* sym0: TODO: aghfonts に未登録 */
 tex\:f.aghtex-sym0-roman  { font-style: normal; font-family: aghtex_roman,aghtex_mincho,serif; }
 tex\:f.aghtex-sym0-gothic { font-style: normal; font-family: aghtex_gothic,sans-serif; }
-tex\:f.aghtex-sym0-meiryo { font-style: normal; font-family: aghtex_meiryo,sans-serif; }
 tex\:f.aghtex-sym0-cent   { font-style: normal; font-family: Century,aghtex_gothic,sans-serif; }
 tex\:f.aghtex-symb-mincho { font-style: normal; font-family: aghtex_mathrm,aghtex_mincho,aghtex_roman,serif; }
 tex\:f.aghtex-symb-gothic { font-style: normal; font-family: aghtex_mathrm,aghtex_gothic,sans-serif; }
@@ -410,6 +427,7 @@ tex\:f.aghtex-symb-roman  { font-style: normal; font-family: aghtex_mathrm,aghte
 tex\:f.aghtex-symb-meiryo { font-style: normal; font-family: aghtex_mathrm,aghtex_meiryo,sans-serif; }
 tex\:f.aghtex-symb-cent   { font-style: normal; font-family: aghtex_mathrm,Century,aghtex_gothic,sans-serif; }
 tex\:f.aghtex-syma-mincho { font-style: normal; font-family: aghtex_mathbb,aghtex_mathrm,aghtex_mincho,aghtex_roman,serif; }
+tex\:f.aghtex-symt-meiryo { font-style: normal; font-family: aghtex_mathtt,aghtex_meiryo,sans-serif; }
 tex\:f.aghtex-symbol-small1 { font-size: 90%; }
 tex\:f.aghtex-binop  { margin-left: 0.2em; margin-right: 0.2em; }
 tex\:f.aghtex-comma  { margin-right: 0.3ex; }
@@ -1018,7 +1036,7 @@ tex\:i.aghtex-array-hline-dummy {
     mod_ref
 ----------------------------------------------------------*/
 tex\:i.aghtex-eqno { display: inline-block; }
-tex\:i.aghtex-eqno-vspan { display: inline-block; height: 1em; }
+tex\:i.aghtex-eqno-vspan { display: inline-block; height: 1em; vertical-align: bottom; }
 
 tex\:i.aghtex-equation-eqno-right,
 tex\:i.aghtex-equation-eqno-left,
@@ -1196,9 +1214,19 @@ h2.aghtex-revtex-thebibliography {
 /*----------------------------------------------------------
     agh.fly.js:tex で使用する物
 ----------------------------------------------------------*/
-div.aghfly-embedded-node {
+tex\:embedded.aghfly-embedded-node {
   display: inline-block; vertical-align: baseline;
-  margin: 1px; font-size: medium; }
+  margin: 1px;
+
+  /* clear styles set by aghtex */
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  font-stretch: normal;
+  font-size: medium;
+  line-height: normal;
+  font: initial;
+}
 tex\:container {
   display: inline; vertical-align: baseline;
   font-size: 120%; }

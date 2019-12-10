@@ -27,38 +27,40 @@
     });
   }
 
-  var getTextContent, setTextContent;
-  function initializeTextContentFunctions() {
-    if (isIE) {
-      getTextContent = function(node) {
-        if (node.nodeType === 3)
-          return node.data;
-        else
-          return node.innerText;
-      };
-      setTextContent = function(node, value) {
-        if (node.nodeType === 3)
-          node.data = value;
-        else
-          node.innerText = value;
-      };
-    }else{
-      getTextContent = function(node) {
-        return node.textContent;
-      };
-      setTextContent = function(node,value) {
-        node.textContent = value;
-      };
-    }
+  if (isIE) {
+    var getTextContent = function(node) {
+      if (node.nodeType === 3)
+        return node.data;
+      else
+        return node.innerText;
+    };
+    var setTextContent = function(node, value) {
+      if (node.nodeType === 3)
+        node.data = value;
+      else
+        node.innerText = value;
+    };
+  } else {
+    var getTextContent = function(node) {
+      return node.textContent;
+    };
+    var setTextContent = function(node,value) {
+      node.textContent = value;
+    };
   }
-  getTextContent = function(node) {
-    initializeTextContentFunctions();
-    return getTextContent(node);
-  };
-  setTextContent = function(node, value) {
-    initializeTextContentFunctions();
-    getTextContent(node, value);
-  };
+
+  var dom = {};
+  if (document.getElementsByClassName) {
+    dom.getElementsByClassName = function(target, className) {
+      return target.getElementsByClassName(className);
+    };
+  } else {
+    dom.getElementsByClassName = function(target, className) {
+      return agh.Array.filter(target.getElementsByTagName("*"), function(elem) {
+        return elem.className && agh.Array.contains(elem.className.split(' '), className);
+      });
+    };
+  }
 
   //----------------------------------------------------------------------------
   //  Loader
@@ -606,28 +608,21 @@
       container.innerHTML = html;
 
       var iemb = 0;
-
-      var idiv = 0;
-      var divs = agh(container.getElementsByTagName("div"), Array);
-      while (idiv < divs.length && iemb < embedded.length) {
-        var emb = divs[idiv++];
-        if (emb.className != 'aghfly-embedded-node') continue;
-
-        emb.innerHTML = '';
-        emb.appendChild(embedded[iemb++]);
+      var emb_arr = agh(dom.getElementsByClassName(container, 'aghfly-embedded-node'), Array);
+      for (var iemb = 0; iemb < emb_arr.length; iemb++) {
+        emb_arr[iemb].innerHTML = '';
+        emb_arr[iemb].appendChild(embedded[iemb]);
       }
 
-      if (iemb < embedded.length) {
-        // 本来此処には来ない (ID_EMBEDDED_NODE の重複がない限り)。
-        for(; iemb < embedded.length; iemb++)
-          container.appendChild(embedded[iemb]);
-      }
+      // 本来此処には来ない (ID_EMBEDDED_NODE の重複がない限り)。
+      while (iemb < embedded.length)
+        container.appendChild(embedded[iemb++]);
     }
 
     var CMDH_EMBEDDED;
     function CMDH_EMBEDDED_getInstance() {
       if (!CMDH_EMBEDDED)
-        CMDH_EMBEDDED = new agh.LaTeX.Command2('s@', null, '<div class="aghfly-embedded-node">[to be replaced]</div>');
+        CMDH_EMBEDDED = new agh.LaTeX.Command2('s@', null, '<tex:embedded class="aghfly-embedded-node">[to be replaced]</tex:embedded>');
       return CMDH_EMBEDDED;
     }
 
@@ -821,95 +816,90 @@
       {
         params.preamble = '\\documentclass{revtex4}';
         params.flag_revert_symbols = true;
-
-        function extractAllTargets(elem, params) {
-          params.targets = [];
-
-          function processElementNode_code(code) {
-            var tnode = code.previousSibling;
-            for (;;) {
-              if (!tnode)
-                return;
-              else if (tnode.nodeType == 3 && getTextContent(tnode) == "")
-                tnode = tnode.previousSibling;
-              else if (tnode.nodeType == 1 && /^span$/i.test(tnode.tagName) && tnode.childNodes.length)
-                tnode = tnode.childNodes[tnode.childNodes.length - 1];
-              else
-                break;
-            }
-            if (tnode.nodeType != 3) return;
-            var text = getTextContent(tnode);
-            if (!text.endsWith("$")) return;
-            setTextContent(tnode, text.substr(0, text.length - 1));
-
-            var source = getTextContent(code);
-            var span = code.ownerDocument.createElement('span');
-            span.title = source;
-            setTextContent(span, source);
-            code.parentNode.insertBefore(span, code);
-            code.style.display = 'none';
-            params.targets.push({type: "imath", target: span});
+        params.targets = [];
+        
+        function processElementNode_code(code) {
+          var tnode = code.previousSibling;
+          for (;;) {
+            if (!tnode)
+              return;
+            else if (tnode.nodeType == 3 && getTextContent(tnode) == "")
+              tnode = tnode.previousSibling;
+            else if (tnode.nodeType == 1 && /^span$/i.test(tnode.tagName) && tnode.childNodes.length)
+              tnode = tnode.childNodes[tnode.childNodes.length - 1];
+            else
+              break;
           }
+          if (tnode.nodeType != 3) return;
+          var text = getTextContent(tnode);
+          if (!text.endsWith("$")) return;
+          setTextContent(tnode, text.substr(0, text.length - 1));
 
-          function processElementNode_pre(pre) {
-            var ent = null;
-            var lang = pre.dataset.lang;
-            if (lang == "tex:preamble") {
-              params.preamble += getTextContent(pre) + "\n";
-              pre.style.display = 'none';
-            } else if (lang == "tex:plain") {
-              ent = {type: "para"};
-            } else if (lang && lang.startsWith('tex:')) {
-              ent = {type: "begin", envname: lang.substr(4)};
-            }
-
-            if (ent) {
-              var source = getTextContent(pre);
-              var div = pre.ownerDocument.createElement('div');
-              div.title = source;
-              setTextContent(div, source);
-              pre.parentNode.insertBefore(div, pre);
-              pre.style.display = 'none';
-              ent.target = div;
-              params.targets.push(ent);
-            }
-          }
-
-          function processElementNode(elem) {
-            if (/^code$/i.test(elem.tagName)) {
-              processElementNode_code(elem);
-            } else if (/^pre$/i.test(elem.tagName)) {
-              processElementNode_pre(elem);
-            } else if (/^div$/i.test(elem.tagName) && /(?:^|\s)aghtex(?:\s|$)/.test(elem.className)) {
-              params.targets.push({type: "begin", envname: "align", target: elem});
-              processNodes(elem.childNodes);
-            } else if (/^span$/i.test(elem.tagName) && /(?:^|\s)aghtex(?:\s|$)/.test(elem.className)) {
-              params.targets.push({type: "imath", target: elem});
-              processNodes(elem.childNodes);
-            } else {
-              processNodes(elem.childNodes);
-            }
-          }
-
-          function processNodes(children, elementOnly) {
-            if (!(children instanceof Array))
-              children = agh(children, Array); // 内容固定
-
-            for (var i = 0, iN = children.length; i < iN; i++) {
-              var child = children[i];
-              if (elementOnly && child.nodeType !== 1) continue;
-
-              if(child.nodeType === 3)
-                agh.fly.latex_v2.extractInlineMathFromTextNode(params.targets, child, /\`?\$((?!\n)[^$]*[^$\n])\$/g);
-              else if(child.nodeType === 1)
-                processElementNode(child);
-            }
-          }
-
-          processElementNode(elem);
+          var source = getTextContent(code);
+          var span = code.ownerDocument.createElement('span');
+          span.title = source;
+          setTextContent(span, source);
+          code.parentNode.insertBefore(span, code);
+          code.style.display = 'none';
+          params.targets.push({type: "imath", target: span});
         }
 
-        extractAllTargets(document.body, params);
+        function processElementNode_pre(pre) {
+          var ent = null;
+          var lang = pre.dataset.lang;
+          if (lang == "tex:preamble") {
+            params.preamble += getTextContent(pre) + "\n";
+            pre.style.display = 'none';
+          } else if (lang == "tex:plain") {
+            ent = {type: "para"};
+          } else if (lang && lang.startsWith('tex:')) {
+            ent = {type: "begin", envname: lang.substr(4)};
+          }
+
+          if (ent) {
+            var source = getTextContent(pre);
+            var div = pre.ownerDocument.createElement('div');
+            div.title = source;
+            setTextContent(div, source);
+            pre.parentNode.insertBefore(div, pre);
+            pre.style.display = 'none';
+            ent.target = div;
+            params.targets.push(ent);
+          }
+        }
+
+        function processNodes(children, elementOnly) {
+          if (!(children instanceof Array))
+            children = agh(children, Array); // 内容固定
+
+          for (var i = 0, iN = children.length; i < iN; i++) {
+            var child = children[i];
+            if (elementOnly && child.nodeType !== 1) continue;
+
+            if(child.nodeType === 3)
+              agh.fly.latex_v2.extractInlineMathFromTextNode(params.targets, child, /\`?\$((?!\n)[^$]*[^$\n])\$/g);
+            else if(child.nodeType === 1)
+              processElementNode(child);
+          }
+        }
+
+        function processElementNode(elem) {
+          if (/^code$/i.test(elem.tagName)) {
+            processElementNode_code(elem);
+          } else if (/^pre$/i.test(elem.tagName)) {
+            processElementNode_pre(elem);
+          } else if (/^div$/i.test(elem.tagName) && /(?:^|\s)aghtex(?:\s|$)/.test(elem.className)) {
+            params.targets.push({type: "begin", envname: "align", target: elem});
+            processNodes(elem.childNodes);
+          } else if (/^span$/i.test(elem.tagName) && /(?:^|\s)aghtex(?:\s|$)/.test(elem.className)) {
+            params.targets.push({type: "imath", target: elem});
+            processNodes(elem.childNodes);
+          } else {
+            processNodes(elem.childNodes);
+          }
+        }
+
+        agh.Array.each(document.getElementsByClassName('entry-content'), processElementNode);
       }
 
       if (params.targets.length) {
