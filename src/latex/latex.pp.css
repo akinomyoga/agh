@@ -1378,8 +1378,8 @@ tex\:i.aghtex-array-hdots-ie9 {
 td.aghtex-array-hline-t { height: 1px!important; border-top   : 1px solid $"borderColor"!important; font-size: 1px!important; padding: 0px!important; }
 td.aghtex-array-hline-b { height: 1px!important; border-bottom: 1px solid $"borderColor"!important; font-size: 1px!important; padding: 0px!important; }
 /*%%if mode=="Opera"||mode=="Gecko" (*/
-td.aghtex-array-hline-t { height: 0!important; padding-top   : 1px!important; }
-td.aghtex-array-hline-b { height: 0!important; padding-bottom: 1px!important; }
+td.aghtex-array-hline-t { height: 0!important; font-size: 0px!important; padding-top   : 1px!important; }
+td.aghtex-array-hline-b { height: 0!important; font-size: 0px!important; padding-bottom: 1px!important; }
 /*%%elif mode=="Trident" (*/
 tex\:i.aghtex-array-hline-dummy {
   display: block;

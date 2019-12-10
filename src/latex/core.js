@@ -579,9 +579,9 @@ agh.memcpy(ns.ContextFactory.prototype, {
 //◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 ns.Context = function(base_ctxs, handler_l, handler_c, handler_e, initializer) {
   this.baseCtxs = base_ctxs;
-  this.handlerL = handler_l||{};  // 制御文字 handler
-  this.handlerC = handler_c||{};  // コマンド handler
-  this.handlerE = handler_e||{};  // 環境開始 handler
+  this.handlerL = handler_l || {};  // 制御文字 handler
+  this.handlerC = handler_c || {};  // コマンド handler
+  this.handlerE = handler_e || {};  // 環境開始 handler
   if (initializer != null)
     this.initializer = initializer;  // 初期化子
 

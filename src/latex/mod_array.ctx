@@ -946,10 +946,11 @@ agh.memcpy(_at.Table, {
   // &
   H_NEXT_COL: function(doc, cmdName) {
     doc.scanner.Next();
-    var output = doc.currentCtx.output;
     var data = _at.Table.GetTable(doc, cmdName, "NextColumn");
     if (data == null) return;
 
+    var output = doc.currentCtx.output;
+    clearArrayContext(doc.currentCtx);
     if (data.cell().is_multicol) {
       var cont = output.toHtml().trim();
       if (cont) {
@@ -969,10 +970,11 @@ agh.memcpy(_at.Table, {
   },
   // \\[dimen]
   H_NEXT_ROW: new ns.Command2("f", "#[]D", function(doc, argv) {
-    var output = doc.currentCtx.output;
     var data = _at.Table.GetTable(doc, argv[0], "NextLine");
     if (data == null) return;
 
+    var output = doc.currentCtx.output;
+    clearArrayContext(doc.currentCtx);
     if (argv[1]) data.line().paddingBottom = argv[1];
     data.cell().content += output.toHtml();
     output.clear();
@@ -988,9 +990,9 @@ agh.memcpy(_at.Table, {
   },
   // \cline{1-3}
   H_CLINE: new ns.Command2("f", "#mode.para!1", function(doc, args) {
-    var output = doc.currentCtx.output;
     var data = _at.Table.GetTable(doc, args[0], "HorizontalLine");
     if (data == null) return;
+    var output = doc.currentCtx.output;
 
     // chk 引数
     var s = args[1].match(/^\s*(\d)+\s*\-\s*(\d+)/);
@@ -1030,7 +1032,31 @@ _Mod["cmd:hdotsfor"] = _at.Table.H_HDOTSFOR;
 //*****************************************************************************
 //  array 環境
 //-----------------------------------------------------------------------------
+var CTXV_LABEL_EQ = 'mod_ref/label:eq';
+var CTXV_ARRAYCTX = 'mod_array/arrayCtx';
+var CTXV_NOTAG = 'mod_array/notag';
+var CTXV_EQTAG = 'mod_array/eqtag';
+var CTXV_RAISETAG = 'mod_array/raisetag';
+
+function setupArrayContext(ctx) {
+  ctx.dataV[CTXV_ARRAYCTX] = ctx;
+  ctx.dataV[CTXV_NOTAG] = false;
+  ctx.dataV[CTXV_EQTAG] = false;
+  ctx.dataV[CTXV_RAISETAG] = false;
+  ctx.dataV[CTXV_LABEL_EQ] = [];
+}
+function clearArrayContext(ctx) {
+  ctx.dataV = agh.memcpy({}, ctx.dataV, [
+    CTXV_ARRAYCTX, CTXV_NOTAG, CTXV_EQTAG,
+    CTXV_RAISETAG, CTXV_LABEL_EQ]);
+  ctx.dataL = {};
+  ctx.userC = {};
+  if (ctx["mod:array/eqno"])
+    ctx.userC["label"] = ns.Modules["mod:ref"]["cmd:label:eq"];
+}
+
 _Mod.ArrayEnvironmentDefaultPrologue = function(doc, ctx) {
+  setupArrayContext(ctx);
   var t = new _at.Table();
   return ctx.ENVDATA = t;
 
@@ -1051,6 +1077,7 @@ _Mod.ArrayEnvironmentDefaultEpilogue = function(doc, ctx) {
 
   table.write(doc.currentCtx.output);
 };
+
 _Mod.ArrayEnvironmentDefaultCatcher = function(doc, ctx) {
   this.epilogue(doc, ctx);
 };
@@ -1060,8 +1087,6 @@ _Mod.ArrayEnvironmentMathEpilogue = function(doc, ctx) {
   table.setSubSup(doc.GetSubSup());
   _Mod.ArrayEnvironmentDefaultEpilogue(doc, ctx);
 }
-//-----------------------------------------------------------------------------
-
 
 _Mod.ReadVerticalAlign = function(doc) {
   var va = doc.GetOptionalArgumentRaw() || "m";
@@ -1073,7 +1098,16 @@ _Mod.ReadVerticalAlign = function(doc) {
   return va;
 };
 
-var ENV_PARAMS = {
+//-----------------------------------------------------------------------------
+
+context "env.array" new("mode.math") {
+  _Ctx.AddLetterHandler("&", _at.Table.H_NEXT_COL);
+  _Ctx.AddCommandHandler("\\", _at.Table.H_NEXT_ROW);
+  _Ctx.AddCommandHandler("hline", _at.Table.H_HLINE);
+  _Ctx.AddCommandHandler("cline", _at.Table.H_CLINE);
+  _Ctx.AddCommandHandler("multicolumn", _at.Table.H_MULTICOL);
+}
+_Mod["envdef:array"] = {
   suppressOutput: true,
   prologue: function(doc, ctx) {
     var t = _Mod.ArrayEnvironmentDefaultPrologue(doc, ctx);
@@ -1101,18 +1135,10 @@ var ENV_PARAMS = {
       'mod:array.env:array.ExtraColumn'));
   },
   epilogue: _Mod.ArrayEnvironmentDefaultEpilogue,
-  catcher: _Mod.ArrayEnvironmentDefaultCatcher
+  catcher: _Mod.ArrayEnvironmentDefaultCatcher,
+  context: "env.array"
 };
-
-context "env.array" new("mode.math") {
-  _Ctx.AddLetterHandler("&", _at.Table.H_NEXT_COL);
-  _Ctx.AddCommandHandler("\\", _at.Table.H_NEXT_ROW);
-  _Ctx.AddCommandHandler("hline", _at.Table.H_HLINE);
-  _Ctx.AddCommandHandler("cline", _at.Table.H_CLINE);
-  _Ctx.AddCommandHandler("multicolumn", _at.Table.H_MULTICOL);
-}
-ENV_PARAMS.context = "env.array";
-ns.ContextFactory["mode.math"].AddEnvironment("array", ENV_PARAMS);
+ns.ContextFactory["mode.math"].AddEnvironment("array", _Mod["envdef:array"]);
 
 context "env.tabular" new("mode.para") {
   _Ctx.AddLetterHandler("&", _at.Table.H_NEXT_COL);
@@ -1121,17 +1147,17 @@ context "env.tabular" new("mode.para") {
   _Ctx.AddCommandHandler("cline", _at.Table.H_CLINE);
   _Ctx.AddCommandHandler("multicolumn", _at.Table.H_MULTICOL);
 }
-ENV_PARAMS.context = "env.tabular";
-ns.ContextFactory["mode.para"].AddEnvironment("tabular", ENV_PARAMS);
+_Mod["envdef:tabular"] = {
+  suppressOutput: true,
+  prologue: _Mod["envdef:array"].prologue,
+  epilogue: _Mod.ArrayEnvironmentDefaultEpilogue,
+  catcher: _Mod.ArrayEnvironmentDefaultCatcher,
+  context: "env.tabular"
+};
+ns.ContextFactory["mode.para"].AddEnvironment("tabular", _Mod["envdef:tabular"]);
 
 //-----------------------------------------------------------------------------
 // 式番号 (eqnarray)
-
-var CTXV_LABEL_EQ = 'mod_ref/label:eq';
-var CTXV_ARRAYCTX = 'mod_array/arrayCtx';
-var CTXV_NOTAG = 'mod_array/notag';
-var CTXV_EQTAG = 'mod_array/eqtag';
-var CTXV_RAISETAG = 'mod_array/raisetag';
 
 _Mod.eqno_output = function(doc, actx, output) {
   var counter = doc.GetCounter("equation");
@@ -1186,11 +1212,7 @@ function isEndingEqnoRequired(ctx) {
 }
 
 _Mod.eqno_prologue = function(doc, ctx) {
-  ctx.dataV[CTXV_ARRAYCTX] = ctx;
-  ctx.dataV[CTXV_NOTAG] = false;
-  ctx.dataV[CTXV_EQTAG] = false;
-  ctx.dataV[CTXV_RAISETAG] = false;
-  ctx.SetContextVariable(CTXV_LABEL_EQ, []);
+  ctx["mod:array/eqno"] = true;
   ctx.userC["label"] = ns.Modules["mod:ref"]["cmd:label:eq"];
 };
 _Mod.eqno_epilogue = function(doc, ctx) {

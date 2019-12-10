@@ -1,0 +1,41 @@
+\documentclass[11pt]{revtex4-1}
+\usepackage{amsmath}
+\begin{document}
+
+\section{Array cell scope and fonts}
+
+\subsection*{Q: Does font specifier have effects on other cells?}
+\begin{tabular}{c||cc}
+\ttfamily A & \bfseries B & \itshape C \\ \hline\hline
+X & Y & Z \\
+X & Y & Z
+\end{tabular}
+A: No
+
+\subsection*{Q: Does displaystyle have effects on other cells?}
+\begin{align}
+  \begin{pmatrix}
+    \frac56 & \frac12 & \frac34 \\
+    \frac56 & \displaystyle \frac12 & \frac34
+  \end{pmatrix}
+\end{align}
+A: No
+
+\subsection*{Q: Does user defined commands have effects on other cells?}
+\begin{align}
+  \def\AAA{AAA}
+  \begin{pmatrix}
+    x \def\AAA{World} & \text{Hello \AAA}
+  \end{pmatrix}
+\end{align}
+A: No
+
+\subsection*{Q: Can labels be added to non-tagged math environments?}
+\[
+  a=B
+  \label{eq:hello-world}\tag{A}
+\]
+This is Eq.~\eqref{eq:hello-world}. \\
+A: No. It can be used, but it will be the label for the section.
+
+\end{document}
