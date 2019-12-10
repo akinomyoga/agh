@@ -232,11 +232,11 @@ context "mode.para" {
   _Ctx.AddCommandHandler("rq", quoteright);
   letter s@\'"'()  '<tex:f class="aghtex-sym0-roman">”</tex:f>'; // "
 
-  environment s@\center()     '<div class="aghtex-center">#0</div>';
-  environment s@\flushright() '<div class="aghtex-flushright">#0</div>';
-  environment s@\flushleft()  '<div class="aghtex-flushleft">#0</div>';
-  environment s@\quote()      '<blockquote class="aghtex-quote">#0</blockquote>';
-  environment s@\quotation()  '<blockquote class="aghtex-quota">#0</blockquote>';
+  environment s@\center()     '<tex:i class="aghtex-center">#0</tex:i>';
+  environment s@\flushright() '<tex:i class="aghtex-flushright">#0</tex:i>';
+  environment s@\flushleft()  '<tex:i class="aghtex-flushleft">#0</tex:i>';
+  environment s@\quote()      '<tex:i class="aghtex-quote">#0</tex:i>';
+  environment s@\quotation()  '<tex:i class="aghtex-quota">#0</tex:i>';
   environment s@\verse()      '<tex:verse>#0</tex:verse>';
 
   //---------------------------------------------------------------------------

@@ -153,9 +153,9 @@ tex\:container.aghtex-math td,
 tex\:math td { padding: 0px; border-width: 0px; white-space: nowrap; }
 
 /* -- */
-div.aghtex-center { text-align: center; }
-div.aghtex-flushright { text-align: right; }
-div.aghtex-flushleft { text-align: left; }
+tex\:i.aghtex-center     { display: block; margin: 0.9em 0em; text-align: center; }
+tex\:i.aghtex-flushright { display: block; margin: 0.9em 0em; text-align: right; }
+tex\:i.aghtex-flushleft  { display: block; margin: 0.9em 0em; text-align: left; }
 
 /* TeX */
 tex\:i.aghtex-logo { font-family: aghtex_mathrm,aghtex_mincho,serif; }
@@ -185,8 +185,8 @@ dl.aghtex-desc dd { margin-left: 1em; display: block; margin-top: .8ex; margin-b
   dl.aghtex-desc dt { display: run-in; }
 /*%%)*/
 
-blockquote.aghtex-quote { text-indent: 0px; }
-blockquote.aghtex-quota { text-indent: 1em; }
+tex\:i.aghtex-quote { display: block; margin: 0.9em 3em; text-indent: 0px; }
+tex\:i.aghtex-quota { display: block; margin: 0.9em 3em; text-indent: 1em; }
 tex\:verse { display: block; margin-left: 2em; margin-right: 2em; }
 
 tex\:i.aghtex-hbox { display: inline-block; vertical-align: baseline; white-space: nowrap; }
