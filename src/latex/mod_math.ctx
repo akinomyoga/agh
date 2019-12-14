@@ -672,10 +672,12 @@ context "mode.math" {
           }
 
           if (sbsp.sup != null) {
-            buff.push('<tex:i class="aghtex-sum-u aghtex-tag-script">',sbsp.sup,'</tex:i>');
+            buff.push('<tex:i class="aghtex-sum-u aghtex-tag-script">', sbsp.sup, '</tex:i>');
+          } else {
+            buff.push('<tex:i class="aghtex-sum-u-empty"></tex:i>');
           }
           if (sbsp.sub != null) {
-            buff.push(ht_table_beg,content,ht_table_mid,sbsp.sub,ht_table_end);
+            buff.push(ht_table_beg, content, ht_table_mid, sbsp.sub, ht_table_end);
           } else {
             buff.push('<tex:i class="aghtex-sum-m1"><tex:i class="aghtex-sum-m2">', content, '</tex:i></tex:i>');
           }
