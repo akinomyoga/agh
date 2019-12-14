@@ -843,6 +843,7 @@ tex\:sum2m { display: block; margin: 0; font-size: 180%; line-height: 0.70em; }
 
 tex\:i.aghtex-sum { display: inline-block; text-align: center; padding: 0 0.2ex; }
 tex\:i.aghtex-sum-u { display: block; font-size: 70%; position: relative; top: 0em; margin-top: -0.05em; }
+tex\:i.aghtex-sum-u-empty { display: block; height: 0.3em; }
 table.aghtex-sum-table {
   text-align: center!important; margin-bottom: -0.10em!important;
   vertical-align: -0.15em!important;
