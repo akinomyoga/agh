@@ -22,156 +22,156 @@ agh.scripts.register("agh.dom.js", ["agh.js", "agh.text.js"], function(){
     return node;
   }
 
-  function insertAdjacentNode(elem,position,node){
+  function insertAdjacentNode(elem, position, node) {
     // insertAdjacentElement in IE は element しか受け付けない?
-    switch(position.toLowerCase()){
+    switch (position.toLowerCase()) {
     case "beforebegin":
-      if(elem.parentNode)
-        return elem.parentNode.insertBefore(node,elem);
+      if (elem.parentNode)
+        return elem.parentNode.insertBefore(node, elem);
       else
         return null;
     case "afterbegin":
-      return elem.insertBefore(node,elem.firstChild);
+      return elem.insertBefore(node, elem.firstChild);
     case "beforeend":
       return elem.appendChild(node);
     case "afterend":
-      if(elem.parentNode)
-        return insertAfter(elem.parentNode,node,elem);
+      if (elem.parentNode)
+        return insertAfter(elem.parentNode, node, elem);
       return null;
     default:
       return null;
     }
   }
 
-  function insertAdjacentHTML(elem,position,html){
-    if(elem.insertAdjacentHTML)
-      return elem.insertAdjacentHTML(position,html);
+  function insertAdjacentHTML(elem, position, html){
+    if (elem.insertAdjacentHTML)
+      return elem.insertAdjacentHTML(position, html);
 
-    var range=elem.ownerDocument.createRange();
+    var range = elem.ownerDocument.createRange();
     range.setStartBefore(elem);
-    var frag=range.createContextualFragment(html);
-    return insertAdjacentNode(elem,position,frag);
+    var frag = range.createContextualFragment(html);
+    return insertAdjacentNode(elem, position, frag);
 
-    // var nodes=elem.ownerDocument.createElement('div');
-    // nodes.innerHTML=html;
-    // nodes=nodes.children;
-    // switch(position){
-    // case 'beforebegin':case 'beforeend':
-    //   for(var i=nodes.length-1;i>=0;i--)
-    //     insertAdjacentNode(elem,position,nodes[i]);
+    // var nodes = elem.ownerDocument.createElement('div');
+    // nodes.innerHTML = html;
+    // nodes = nodes.children;
+    // switch (position) {
+    // case 'beforebegin': case 'beforeend':
+    //   for (var i = nodes.length - 1; i >= 0; i--)
+    //     insertAdjacentNode(elem, position, nodes[i]);
     //   break;
     // default:
-    //   nodes=agh(nodes,Array);
-    //   for(var i=0,iN=nodes.length;i<iN;i++)
-    //     insertAdjacentNode(elem,position,nodes[i]);
+    //   nodes = agh(nodes, Array);
+    //   for (var i = 0, iN = nodes.length; i < iN; i++)
+    //     insertAdjacentNode(elem, position, nodes[i]);
     //   break;
     // }
   }
 
-  function insertAdjacentText(elem,position,text){
-    if(elem.insertAdjacentText)
-      return elem.insertAdjacentText(elem,position,text);
+  function insertAdjacentText(elem, position, text) {
+    if (elem.insertAdjacentText)
+      return elem.insertAdjacentText(elem, position, text);
     return insertAdjacentText(elem.ownerDocument.createTextNode(text));
   }
 
-  var insertPositions={
-    beforebegin:'beforeBegin',
-    afterbegin:'afterBegin',
-    beforeend:'beforeEnd',
-    afterend:'afterEnd',
+  var insertPositions = {
+    beforebegin: 'beforeBegin',
+    afterbegin: 'afterBegin',
+    beforeend: 'beforeEnd',
+    afterend: 'afterEnd',
 
-    before:'beforeBegin',
-    begin:'afterBegin',
-    end:'beforeEnd',
-    after:'afterEnd'
+    before: 'beforeBegin',
+    begin: 'afterBegin',
+    end: 'beforeEnd',
+    after: 'afterEnd'
   };
-  agh.dom.insert=function(elem,node,position){
-    position=insertPositions[(position||"").toLowerCase()]||'beforeEnd';
+  agh.dom.insert = function(elem, node, position) {
+    position = insertPositions[(position || "").toLowerCase()] || 'beforeEnd';
 
-    if(node!=null){
-      if(node.nodeType!=null){
-        /// @fn agh.dom.insert(elem,node,position)
+    if (node != null) {
+      if (node.nodeType != null) {
+        /// @fn agh.dom.insert(elem, node, position)
         ///   指定した DOM ノードを指定した位置に挿入します。
-        return insertAdjacentNode(elem,position,node);
-      }else if("string"===typeof node||node instanceof String){
+        return insertAdjacentNode(elem, position, node);
+      } else if ("string" === typeof node || node instanceof String) {
         /// @fn agh.dom.insert(elem,html,position)
         ///   指定した HTML を指定した位置に挿入します。
-        return insertAdjacentHTML(elem,position,node);
-      }else if(node instanceof Array){
+        return insertAdjacentHTML(elem, position, node);
+      } else if (node instanceof Array) {
         /// @fn  agh.dom.insert(elem,[...],position)
         ///   指定したノード・HTML の列を指定した位置に挿入します。
-        switch(position){
-        case 'beforeBegin':case 'beforeEnd':
-          for(var i=node.length-1;i>=0;i--)
-            agh.dom.insert(elem,node[i],position);
+        switch (position) {
+        case 'beforeBegin': case 'beforeEnd':
+          for (var i = node.length - 1; i >= 0; i--)
+            agh.dom.insert(elem, node[i], position);
           return true;
         default:
-          for(var i=0,iN=node.length;i<iN;i++)
-            agh.dom.insert(elem,node[i],position);
+          for (var i = 0, iN = node.length; i < iN; i++)
+            agh.dom.insert(elem, node[i], position);
           return true;
         }
-      }else if('length' in node){
-        return agh.dom.insert(elem,agh(node,Array),position);
+      } else if ('length' in node) {
+        return agh.dom.insert(elem, agh(node, Array), position);
       }
     }
 
     return null;
   };
-  agh.dom.insertText=function(elem,text,position){
-    position=insertPositions[(position||"").toLowerCase()]||'afterEnd';
-    return insertAdjacentText(elem,position,text);
+  agh.dom.insertText = function(elem, text, position) {
+    position = insertPositions[(position || "").toLowerCase()] || 'afterEnd';
+    return insertAdjacentText(elem, position, text);
   };
 
   agh.dom.remove = function(node) {
     if (node.parentNode)
       node.parentNode.removeChild(node);
   };
-  agh.dom.isDescendantOf=function(descendant,ancestor){
-    if(descendant==null||ancestor==null)return false;
-    var parent=descendant.parentNode;
-    while(parent){
-      if(parent===ancestor)return true;
-      parent=parent.parentNode;
+  agh.dom.isDescendantOf = function(descendant, ancestor) {
+    if (descendant == null || ancestor == null) return false;
+    var parent = descendant.parentNode;
+    while (parent) {
+      if (parent === ancestor) return true;
+      parent = parent.parentNode;
     }
     return false;
   };
 
-  agh.dom.getInnerText=function(elem){
+  agh.dom.getInnerText = function(elem) {
     return elem.innerText;
   };
-  agh.dom.setInnerText=function(elem,value){
-    elem.innerText=value;
+  agh.dom.setInnerText = function(elem, value) {
+    elem.innerText = value;
   };
-  if(agh.browser.vFx<45){
-    agh.dom.getInnerText=function(elem){
+  if (agh.browser.vFx < 45) {
+    agh.dom.getInnerText = function(elem) {
       return elem.textContent;
     };
-    agh.dom.setInnerText=function(elem,value){
-      if(value===null)value="null";
-      else if(value===undefined)value="undefined";
-      else value=value.toString();
-      elem.innerHTML=agh.Text.Escape(value,"html");
+    agh.dom.setInnerText = function(elem, value) {
+      if (value === null) value = "null";
+      else if (value === undefined) value = "undefined";
+      else value = value.toString();
+      elem.innerHTML = agh.Text.Escape(value, "html");
     };
-  }else if(agh.browser.vIE){
-    agh.dom.setInnerText=function(elem,value){
+  } else if(agh.browser.vIE) {
+    agh.dom.setInnerText = function(elem, value) {
       try {
-        elem.innerText=value;
-      }catch(ex){
+        elem.innerText = value;
+      } catch(ex) {
         // 手持ちの IE6 環境の所為だと思うが
         // 何故か例外が発生するので。
-        elem.innerHTML=agh.Text.Escape(value,"html");
+        elem.innerHTML = agh.Text.Escape(value, "html");
       }
     };
   }
 
-  if(agh.browser.vIE){
+  if (agh.browser.vIE) {
     // IE8: DOM Tree に追加されていない要素の
     //      offsetParent プロパティにアクセスするとエラーになる。
-    var getOffsetParent=function(elem){
+    var getOffsetParent = function(elem) {
       return elem.parentNode&&elem.offsetParent;
     };
   }else{
-    var getOffsetParent=function(elem){
+    var getOffsetParent = function(elem) {
       return elem.offsetParent;
     };
   }
@@ -1308,19 +1308,19 @@ agh.scripts.register("agh.dom.js", ["agh.js", "agh.text.js"], function(){
           ""
         ].join("<br />");
 
-        function get_chain(elem){
-          if(elem==null)return null;
-          var r='<b>'+elem.tagName+'</b>';
-          var o=getOffsetParent(elem);
-          elem=elem.parentNode;
-          while(elem!=null&&elem.tagName){
-            if(elem==o){
-              r="<b>"+elem.tagName+"</b> &gt; "+r
-              o=getOffsetParent(elem);
-            }else{
-              r=elem.tagName+" &gt; "+r
+        function get_chain(elem) {
+          if (elem == null) return null;
+          var r = '<b>' + elem.tagName + '</b>';
+          var o = getOffsetParent(elem);
+          elem = elem.parentNode;
+          while (elem != null && elem.tagName) {
+            if (elem == o) {
+              r = "<b>" + elem.tagName + "</b> &gt; " + r;
+              o = getOffsetParent(elem);
+            } else {
+              r = elem.tagName + " &gt; " + r;
             }
-            elem=elem.parentNode;
+            elem = elem.parentNode;
           }
           return r;
         }
@@ -1639,47 +1639,47 @@ agh.scripts.register("agh.dom.js", ["agh.js", "agh.text.js"], function(){
     },false);
   }
 
-  if(agh.browser.vIE){
-    var initMouseEvents=function(target){
-      if(CustomEventInfo.flag(target,'agh.dom.initMouseEvents',true))return;
+  if (agh.browser.vIE) {
+    var initMouseEvents = function(target) {
+      if (CustomEventInfo.flag(target, 'agh.dom.initMouseEvents', true)) return;
 
-      var mousedown_prevup=false;
+      var mousedown_prevup = false;
 
       // mouseup
-      agh.addEventListener(target,'mouseup',function(e){
-        mousedown_prevup=true;
+      agh.addEventListener(target, 'mouseup', function(e) {
+        mousedown_prevup = true;
         return fireModifiedMouseEvent(target,'-agh-mouseup',e);
-      },false);
+      }, false);
 
       // mousemove
-      agh.addEventListener(target,'mousemove',function(e){
-        mousedown_prevup=false;
-        return fireModifiedMouseEvent(target,'-agh-mousemove',e);
-      },false);
+      agh.addEventListener(target, 'mousemove', function(e) {
+        mousedown_prevup = false;
+        return fireModifiedMouseEvent(target, '-agh-mousemove', e);
+      }, false);
 
       // mousedown
-      agh.addEventListener(target,'selectstart',function(e){
-        if(!mousedown_prevup)return;
+      agh.addEventListener(target, 'selectstart', function(e) {
+        if (!mousedown_prevup) return false;
 
-        var args=agh.memcpy(agh.memcpy({},e),{bubbles:false});
-        args.button|=1;
+        var args = agh.memcpy(agh.memcpy({}, e), {bubbles: false});
+        args.button |= 1;
         modifyMouseEventArgs(args);
-        CustomEventInfo.fire(target,'-agh-mousedown',args);
+        CustomEventInfo.fire(target, '-agh-mousedown', args);
         return true;
-      },false);
-      attachModifiedMouseEvent(target,'mousedown','-agh-mousedown');
+      }, false);
+      attachModifiedMouseEvent(target, 'mousedown', '-agh-mousedown');
 
       // click
-      attachModifiedMouseEvent(target,'click','-agh-click');
-      attachModifiedMouseEvent(target,'dblclick','-agh-click');
+      attachModifiedMouseEvent(target, 'click', '-agh-click');
+      attachModifiedMouseEvent(target, 'dblclick', '-agh-click');
 
       // mouseenter
       // mouseleave
-      attachModifiedMouseEvent(target,'mouseenter','-agh-mouseenter');
-      attachModifiedMouseEvent(target,'mouseleave','-agh-mouseleave');
+      attachModifiedMouseEvent(target, 'mouseenter', '-agh-mouseenter');
+      attachModifiedMouseEvent(target, 'mouseleave', '-agh-mouseleave');
     };
-  }else{
-    var initMouseEvents=function(target){
+  } else {
+    var initMouseEvents = function(target) {
       if(CustomEventInfo.flag(target,'agh.dom.initMouseEvents',true))return;
 
       attachModifiedMouseEvent(target,'mouseup','-agh-mouseup');
@@ -1689,19 +1689,19 @@ agh.scripts.register("agh.dom.js", ["agh.js", "agh.text.js"], function(){
 
       // mouseenter
       // mouseleave
-      var state_hover=false;
+      var state_hover = false;
       var targetPropertyName=agh.browser.vFx?"relatedTarget":"toElement";
       agh.addEventListener(target,'mouseover',function(e){
-        if(state_hover)return;
-        state_hover=true;
+        if (state_hover) return;
+        state_hover = true;
 
         var args=agh.memcpy(agh.memcpy({},e),{bubbles:false});
         modifyMouseEventArgs(args);
         CustomEventInfo.fire(target,'-agh-mouseenter',args);
         return true;
-      },false);
+      }, false);
       agh.addEventListener(target,'mouseout',function(e){
-        if(!state_hover)return;
+        if (!state_hover) return;
         var toElement=e[targetPropertyName];
         if(toElement!=target&&!agh.dom.isDescendantOf(toElement,target)){
           state_hover=false;
@@ -1731,65 +1731,68 @@ agh.scripts.register("agh.dom.js", ["agh.js", "agh.text.js"], function(){
     agh.dom.defineCustomEvent('-agh-capturestart');
     agh.dom.defineCustomEvent('-agh-captureend');
 
-    var state_target=null;
-    var state_bubble=false;
-    function registerCapture(target,bubble){
-      if(state_target===target)return;
+    var state_target = null;
+    var state_bubble = false;
+    function registerCapture(target, bubble) {
+      if (state_target === target) return;
       clearCapture(state_target);
-      state_target=target;
-      state_bubble=!!bubble;
-      CustomEventInfo.fire(state_target,'-agh-capturestart',{});
+      state_target = target;
+      state_bubble = !!bubble;
+      CustomEventInfo.fire(state_target, '-agh-capturestart', {});
     }
-    function clearCapture(target,bubble){
-      if(state_target==null||target!==state_target)return;
-      CustomEventInfo.fire(state_target,'-agh-captureend',{});
-      state_target=null;
-      state_bubble=null;
+    function clearCapture(target, bubble) {
+      if (state_target == null || target !== state_target) return;
+      CustomEventInfo.fire(state_target, '-agh-captureend', {});
+      state_target = null;
+      state_bubble = null;
     }
-    function stop_event(e){
+    function stop_event(e) {
       // 強制停止 (他の要素にイベントが伝播しない様にする)
       // ※agh.addEventListener で preventDefault/stopPropagation は保証されている。
       e.preventDefault();
       e.stopPropagation();
       return false;
     }
-    agh.addEventListener(document,"mousemove",function(e){
-      if(state_target){
-        var args=agh.memcpy(null,e);
-        args.bubbles=state_bubble;
+    agh.addEventListener(document, "mousemove", function(e) {
+      if (state_target) {
+        var args = agh.memcpy(null, e);
+        args.bubbles = state_bubble;
         modifyMouseEventArgs(args);
-        CustomEventInfo.fire(state_target,'-agh-mousemove',args);
+        CustomEventInfo.fire(state_target, '-agh-mousemove', args);
         return stop_event(e);
       }
-    },false);
-    agh.addEventListener(document,"mouseup",function(e){
-      if(state_target){
-        var args=agh.memcpy(null,e);
-        args.bubbles=state_bubble;
+      return true;
+    }, false);
+    agh.addEventListener(document, "mouseup", function(e) {
+      if (state_target) {
+        var args = agh.memcpy(null,e);
+        args.bubbles = state_bubble;
         modifyMouseEventArgs(args);
-        CustomEventInfo.fire(state_target,'-agh-mouseup',args);
+        CustomEventInfo.fire(state_target, '-agh-mouseup', args);
         return stop_event(e);
       }
-    },false);
-    agh.addEventListener(document,"mousedown",function(e){
-      if(state_target){
-        var args=agh.memcpy(null,e);
-        args.bubbles=state_bubble;
+      return true;
+    }, false);
+    agh.addEventListener(document, "mousedown", function(e) {
+      if (state_target) {
+        var args = agh.memcpy(null, e);
+        args.bubbles = state_bubble;
         modifyMouseEventArgs(args);
-        CustomEventInfo.fire(state_target,'-agh-mousedown',args);
+        CustomEventInfo.fire(state_target, '-agh-mousedown', args);
         return stop_event(e);
       }
-    },false);
+      return true;
+    }, false);
 
     // setCapture は IE6, Fx4 にある。今後他のブラウザも対応するかも。
-    agh.dom.captureMouse=function(elem,bubble){
-      registerCapture(elem,bubble);
-      if(bubble!=null&&elem.setCapture)
+    agh.dom.captureMouse = function(elem, bubble) {
+      registerCapture(elem, bubble);
+      if (bubble != null && elem.setCapture)
         elem.setCapture(bubble);
     };
-    agh.dom.releaseMouse=function(elem,bubble){
-      clearCapture(elem,bubble);
-      if(bubble!=null&&elem.releaseCapture)
+    agh.dom.releaseMouse = function(elem, bubble) {
+      clearCapture(elem, bubble);
+      if (bubble != null && elem.releaseCapture)
         elem.releaseCapture(bubble);
     };
   })();
