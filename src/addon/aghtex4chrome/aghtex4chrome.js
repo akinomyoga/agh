@@ -307,13 +307,25 @@
   }
 
   var key = null;
-  if (/\/\/mail\.google\.com\//.test(url))
+  var settingName = null;
+  if (/\/\/mail\.google\.com\//.test(url)) {
     key = "gmail";
-  else if (/\/\/groups\.google\.com\//.test(url))
+    settingName = 'enableGmail';
+  } else if (/\/\/groups\.google\.com\//.test(url)) {
     key = "ggroup";
-  else if (/\/\/sites\.google\.com\//.test(url))
+    settingName = 'enableGoogleGroups';
+  } else if (/\/\/sites\.google\.com\//.test(url)) {
     key = "gsite";
+    settingName = 'enableGoogleSites';
+  }
 
-  if (key != null)
-    agh.LaTeX.Utils.Sites[key]();
+  if (key != null) {
+    var defaultSetting = {};
+    defaultSetting[settingName] = true;
+    chrome.storage.sync.get(defaultSetting, function(setting) {
+      if (setting[settingName])
+        agh.LaTeX.Utils.Sites[key]();
+    });
+  }
+
 })();

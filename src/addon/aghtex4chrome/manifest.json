@@ -11,7 +11,7 @@
     "48":"agh.icon.agh_48x48.png",
     "128":"agh.icon.agh_128x128.png"
   },
-  "homepage_url":"http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/addon/",
+  "homepage_url":"http://akinomyoga.github.io/agh/addon/",
   "description":"View LaTeX files in Google Chrome. Also, convert embedded tex codes in Gmail, Google Groups and Google Sites.",
   "web_accessible_resources":[
     "aghtex.css",
@@ -110,9 +110,14 @@
   "background":{
     "page":"background.htm"
   },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
   "permissions": [
     "webRequest",
     "webRequestBlocking",
+    "storage",
     "http://*/*.tex",
     "https://*/*.tex"
     // "file:///*/*.tex"

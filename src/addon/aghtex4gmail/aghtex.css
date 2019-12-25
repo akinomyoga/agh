@@ -16,6 +16,7 @@ span.aghtex-switch-button{
   text-decoration:underline;
   font-weight:bold;
   font-size:x-small;
+  line-height:1;
   -webkit-user-select:none;
   -moz-user-select:none;
 }
