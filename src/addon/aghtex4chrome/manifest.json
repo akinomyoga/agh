@@ -2,18 +2,18 @@
 // C:\cygwin\home\koichi\prog\js\agh\out\addon\aghtex4gmail
 {
   "name": "agh.addon.aghtex4chrome",
-  "version":"%VERSION%",
-  "manifest_version":2,
-  //"update_url":"http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/addon/agh.addon.aghtex4chrome.xml",
-  //"key":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCYaFHl7+XFkrRbx/Gi/iWyoHRyJmLs61fSOG7+HF1ToKLhofmsMUw4b/ftguf21tqb/dqXbPIMdacLMEdBn71eelL5zbI0kq9NnskcD0uxaAk+Qd3kgF0XmwHUlyHtgjAXYa/P53r9gs4/KKb5A9QTSYDmYe2q04wg+guHKNTdfQIDAQAB",
-  "icons":{
-    "16":"agh.icon.agh_16x16.png",
-    "48":"agh.icon.agh_48x48.png",
-    "128":"agh.icon.agh_128x128.png"
+  "version": "%VERSION%",
+  "manifest_version": 2,
+  //"update_url": "http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/addon/agh.addon.aghtex4chrome.xml",
+  //"key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCYaFHl7+XFkrRbx/Gi/iWyoHRyJmLs61fSOG7+HF1ToKLhofmsMUw4b/ftguf21tqb/dqXbPIMdacLMEdBn71eelL5zbI0kq9NnskcD0uxaAk+Qd3kgF0XmwHUlyHtgjAXYa/P53r9gs4/KKb5A9QTSYDmYe2q04wg+guHKNTdfQIDAQAB",
+  "icons": {
+    "16": "agh.icon.agh_16x16.png",
+    "48": "agh.icon.agh_48x48.png",
+    "128": "agh.icon.agh_128x128.png"
   },
-  "homepage_url":"http://akinomyoga.github.io/agh/addon/",
-  "description":"View LaTeX files in Google Chrome. Also, convert embedded tex codes in Gmail, Google Groups and Google Sites.",
-  "web_accessible_resources":[
+  "homepage_url": "http://akinomyoga.github.io/agh/addon/",
+  "description": "View LaTeX files in Google Chrome. Also, convert embedded tex codes in Gmail, Google Groups and Google Sites.",
+  "web_accessible_resources": [
     "aghtex.css",
     "agh/latex/latex.sf.css",
 
@@ -65,9 +65,9 @@
     // "agh.icon.agh_128x128.png",
     "agh.icon.agh_16x16.png"
   ],
-  "content_scripts":[
+  "content_scripts": [
     {
-      "matches":[
+      "matches": [
         "https://mail.google.com/mail/*",
         "http://mail.google.com/mail/*",
         "https://groups.google.com/group/*",
@@ -77,11 +77,11 @@
         "https://sites.google.com/site/*",
         "http://site.google.com/site/*"
       ],
-      "css":[
+      "css": [
         "aghtex.css",
         "agh/latex/latex.sf.css"
       ],
-      "js":[
+      "js": [
         "agh/agh.js",
         "agh.hook_path.js",
         "agh/agh.text.js",
@@ -90,25 +90,25 @@
         "aghtex4gmail.js",
         "aghtex4chrome.js"
       ],
-      "all_frames":true
-    },{
-      "matches":[
+      "all_frames": true
+    }, {
+      "matches": [
         "http://*/*.tex",
         "https://*/*.tex",
         "file:///*/*.tex"
       ],
-      "css":[
+      "css": [
         "aghtex.css",
         "viewtex.css"
       ],
-      "js":[
+      "js": [
         "aghtex4chrome.js"
       ],
-      "run_at":"document_end"
+      "run_at": "document_end"
     }
   ],
-  "background":{
-    "page":"background.htm"
+  "background": {
+    "page": "background.htm"
   },
   "options_ui": {
     "page": "options.html",
