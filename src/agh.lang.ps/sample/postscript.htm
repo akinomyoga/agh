@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
-  <title>Test for mwg.postscript.js</title>
+  <title>Test for agh.lang.ps.js</title>
 <!-- Initialize Vml -->
 <style type="text/css">
 vml\:*{behavior:url(#default#VML);display:inline-block;}
@@ -55,28 +55,28 @@ if(navigator.userAgent.match(/MSIE 7.0/)&&document.compatMode=="CSS1Compat"){
   document.body.style.position="relative";
 }
 </script>
-<script type="text/javascript" charset="utf-8" src="../../../out/mwg.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../../out/agh.js"></script>
 <script type="text/javascript">
-mwg.scripts.wait([
-	"mwg.dom.js",
-	"mwg.lang.ps.js",
+agh.scripts.wait([
+	"agh.dom.js",
+	"agh.lang.ps.js",
 	"event:onload"
-],function(){
+], function() {
   function log(text){
-    var p=document.createElement('p');
-    p.innerText=""+text;
+    var p = document.createElement('p');
+    agh.dom.setInnerText(p, "" + text);
     document.getElementById('output').appendChild(p);
   }
-  window.log=log;
+  window.log = log;
   function log_html(text){
-    var p=document.createElement('div');
-    p.innerHTML=""+text;
+    var p = document.createElement('div');
+    p.innerHTML = "" + text;
     document.getElementById('output').appendChild(p);
   }
   
-  function get_script_content(idname){
-    var e=document.getElementById(idname);
-    if(mwg.browser.vIE)
+  function get_script_content(idname) {
+    var e = document.getElementById(idname);
+    if (agh.browser.vIE)
       return e.text;
     else
       return e.innerText;
@@ -84,11 +84,11 @@ mwg.scripts.wait([
   
   log("hello!");
   
-  var p=new mwg.PostScript.Processor({
-    target:mwg.browser.vIE?"vml":"svg",
-    bb:[-10,-10,110,110]
+  var p = new agh.PostScript.Processor({
+    target: agh.browser.vIE ? "vml" : "svg",
+    bb: [-10, -10, 110, 110]
   });
-  p.outstream=log;
+  p.outstream = log;
   p.Run("1 2 3 (Hello, world! (Parenthesis)) { 1 } exec pstack clear");
   p.Run("0 1 1 10 {add} for pstack clear");
   p.Run("<3332313> (0123) /def /+ pstack clear");
@@ -100,7 +100,7 @@ mwg.scripts.wait([
   p.Run("{1 2 3} dup cvlit dup 1 2011 put pstack clear");
   
   // todo: forall
-  function test_cvrs(){
+  function test_cvrs() {
     log("-- cvrs --");
     p.Run("/temp {15 string} def 123 10 temp cvrs -123 10 temp cvrs 123.4 10 temp cvrs pstack clear");
     p.Run("/temp {15 string} def 123 16 temp cvrs -123 16 temp cvrs 123.4 16 temp cvrs pstack clear");
@@ -113,15 +113,14 @@ mwg.scripts.wait([
   p.Run("(1 2 add) cvx exec ==");
   p.Run(
     "{11 22 33 //add //sub}"
-    +"{ 1 2 add 100 10 he sub mul } bind "
-    +"/myadd systemdict /add get def /myval 10 def {myval 20 myadd 30 myadd} bind "
-    +"pstack clear"
+    + "{ 1 2 add 100 10 he sub mul } bind "
+    + "/myadd systemdict /add get def /myval 10 def {myval 20 myadd 30 myadd} bind "
+    + "pstack clear"
   );
   
   p.Run(
     "10 10 moveto 100 100 lineto 100 50 lineto 0 50 lineto 10 setlinewidth 0.5 0.5 1 setrgbcolor 1 setlinejoin stroke"
-    +"/cs currentcolorspace /c currentrgbcolor pstack clear"
-    );
+    + "/cs currentcolorspace /c currentrgbcolor pstack clear");
   
   p.Run(get_script_content("ps1"));
   
