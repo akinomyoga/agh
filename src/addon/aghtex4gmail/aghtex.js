@@ -256,10 +256,11 @@ agh.scripts.register("addon/aghtex.js", [
 
       agh.LaTeX.ContextFactory['global'].DefineCommand({AghTeXSplitter: ['s@', '(@)']});
 
+      var fullContext = ["global", "mode.para", "pkg:amsmath/mode.para", "mode.math", "pkg:amssymb/mode.math", "pkg:amsmath/mode.math"];
       var tex_modes = {
         full_texview: {
           transform: function(source, option) {
-            var doc = new agh.LaTeX.Document(common + source, "global");
+            var doc = new agh.LaTeX.Document(common + source, fullContext);
             if (option && option.lastModified)
               doc.option.lastModified = option.lastModified;
 
@@ -276,7 +277,7 @@ agh.scripts.register("addon/aghtex.js", [
         },
         full: {
           transform: function(source) {
-            var doc = new agh.LaTeX.Document(common + source, "global");
+            var doc = new agh.LaTeX.Document(common + source, fullContext);
             doc.Parse();
             doc.ResolveReferences();
             return doc.html;

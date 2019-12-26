@@ -1,18 +1,34 @@
 (function() {
+  function show_headers(hs) {
+    var buff = [];
+    for (var i = 0; i < hs.length; i++)
+      buff.push(hs[i].name, ': ', hs[i].value, '\n');
+    alert(buff.join(""));
+  }
   chrome.webRequest.onHeadersReceived.addListener(function(details) {
     var hs = details.responseHeaders;
+    var contentTypeProcessed = false;
+    var contentDispositionProcessed = false;
+
     for (var i = 0; i < hs.length; i++) {
       var h = hs[i];
-      if (h.name.toLowerCase() != 'content-type') continue;
-
-      var value = h.value;
-      h.value = value ? value.replace(/^\s*[^\s\;]*/, "text/plain") : "text/plain";
-      // alert("Rewrite: " + h.name + " " + value + " -> " + h.value);
-      return {responseHeaders: hs};
+      switch (h.name.toLowerCase()) {
+      case 'content-type':
+        contentTypeProcessed = true;
+        h.value = h.value ? h.value.replace(/^\s*[^\s\;]*/, "text/plain") : "text/plain";
+        break;
+      case 'content-disposition':
+        contentDispositionProcessed = true;
+        h.value = 'inline';
+        break;
+      }
     }
 
-    // alert("Add: Content-Type text/plain");
-    hs.push({name: "Content-Type", value: "text/plain"});
+    if (!contentTypeProcessed)
+      hs.push({name: "Content-Type", value: "text/plain"});
+    if (!contentDispositionProcessed)
+      hs.push({name: "Content-Disposition", value: "inline"});
+    //show_headers(hs);
     return {responseHeaders: hs};
   }, {
     urls: ["*://*/*.tex"],
