@@ -46,7 +46,12 @@ agh.scripts.register("addon/aghtex.js", [
       return html.replace(/\<(?:[^"'<>]|"(?:[^"]*)"|'(?:[^']*)')+\>/g, "");
     },
     dom_hasClassName: function(elem, className) {
-      var cls = elem.className;
+      // Note: elem.className だと Cr で <svg> に対して
+      //   SVGAnimatedString 型の値が返って来て、
+      //   文字列に対する操作ができない。
+      var cls = elem.getAttribute('class');
+      if (!cls) return false;
+
       var i = cls.indexOf(className);
       var j = i + className.length;
       return i >= 0
@@ -92,7 +97,6 @@ agh.scripts.register("addon/aghtex.js", [
     },
     dom_getTextNodes: function(elem) {
       function recursive(e, buff) {
-        e.childNodes
         for (var i = 0, iN = e.childNodes.length; i < iN; i++) {
           var node = e.childNodes[i];
           if (node.nodeType == aghtex.NodeTypeTEXT_NODE)
@@ -408,7 +412,7 @@ agh.scripts.register("addon/aghtex.js", [
       // remove old contents
       for (var i = 0, iN = this.nodes.length; i < iN; i++) {
         var node = this.nodes[i];
-        if (node.parentNode == null)continue;
+        if (node.parentNode == null) continue;
 
         if (node.nodeType != aghtex.NodeTypeELEMENT_NODE) {
           var elem = this._document.createElement('span');

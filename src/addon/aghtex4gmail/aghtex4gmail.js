@@ -302,31 +302,31 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
       return aghtex.dom_istag(pp,'div')&&aghtex.dom_hasClassName(pp,'GAK2G4EDN3');
     }
 
-    function document_body_onmousemove(event){
-      var sender=event.target||event.srcElement;
-      if (sender==null||sender.tagName==null)return;
+    function document_body_onmousemove(event) {
+      var sender = event.target || event.srcElement;
+      if (sender == null || sender.tagName == null) return;
       var tagName=sender.tagName.toLowerCase();
 
-      if (tagName=='div'){
-        if (sender.tag_aghtex)return;
-        sender.tag_aghtex=true;
+      if (tagName == 'div') {
+        if (sender.tag_aghtex) return;
+        sender.tag_aghtex = true;
 
-        if (!is_mailbody_div(sender))return;
+        if (!is_mailbody_div(sender)) return;
         initialize_mailbody(sender);
-      }else if (tagName=='p'){
-        var div=sender.parentNode;
-        if (!aghtex.dom_istag(div,'div')
-           ||aghtex.dom_istag(div.firstChild,'div')
-           ||div.id!="inbdy")return;
+      } else if (tagName == 'p') {
+        var div = sender.parentNode;
+        if (!aghtex.dom_istag(div, 'div')
+           || aghtex.dom_istag(div.firstChild, 'div')
+           || div.id != "inbdy") return;
 
-        if (div.tag_aghtex)return;
-        div.tag_aghtex=true;
+        if (div.tag_aghtex) return;
+        div.tag_aghtex = true;
         initialize_mailbody(div);
-      }else if (tagName=='textarea'){
-        if (sender.name!="body")return;
+      } else if (tagName == 'textarea') {
+        if (sender.name != "body") return;
 
-        if (sender.tag_aghtex)return;
-        sender.tag_aghtex=true;
+        if (sender.tag_aghtex) return;
+        sender.tag_aghtex = true;
         aghtex.setupGMailPreview(sender);
       }
     }
@@ -336,40 +336,126 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
   //===========================================================================
   //  Site: sites.google
   //---------------------------------------------------------------------------
-  aghtex.Sites["gsite"]=function(_document){
-    if (_document==null)_document=document;
+  var handler = {
+    getTextNodes: function(elem, opts) {
+      if (opts && opts.getTextNodes) return opts.getTextNodes(elem);
+      return aghtex.dom_getTextNode(elem);
+    },
+    checkGuard: function(elem, opts) {
+      if (opts && opts.checkGuard) return opts.checkGuard(elem);
+      if (elem.aghtexProcessedTextNodes) return false;
+      elem.aghtexProcessedTextNodes = true;
+      return true;
+    },
+    initialize_textnodes: function(elem, opts) {
+      if (!opts) opts = {};
 
-    function initialize_textnodes(elem){
-      var emaths=[];
-      var eparas=[];
+      // check guard
+      if (!this.checkGuard(elem, opts)) return;
 
-      var texts=aghtex.dom_getTextNodes(elem);
-      for (var i=0,iN=texts.length;i<iN;i++){
-        var text=texts[i];
-        var html2=aghtex.html_create_range(aghtex.html_escape_soft(text.textContent));
-        if (html2==null)continue;
+      var emaths = [];
+      var eparas = [];
 
-        var div=_document.createElement("div");
-        div.innerHTML=html2;
-        var maths=aghtex.dom_getElementsByClassName(div,"aghtex-math");
-        for (var j=0,jN=maths.length;j<jN;j++)emaths.push(maths[j]);
-        var paras=aghtex.dom_getElementsByClassName(div,"aghtex-para");
-        for (var j=0,jN=paras.length;j<jN;j++)eparas.push(paras[j]);
+      var texts = this.getTextNodes(elem, opts);
+      for (var i = 0, iN = texts.length; i < iN; i++) {
+        var text = texts[i];
+        var html2 = aghtex.html_create_range(aghtex.html_escape_soft(text.textContent));
+        if (html2 == null) continue;
+
+        var div = elem.ownerDocument.createElement("div");
+        div.innerHTML = html2;
+        var maths = aghtex.dom_getElementsByClassName(div, "aghtex-math");
+        for (var j = 0, jN = maths.length; j < jN; j++) emaths.push(maths[j]);
+        var paras = aghtex.dom_getElementsByClassName(div, "aghtex-para");
+        for (var j = 0, jN = paras.length; j < jN; j++) eparas.push(paras[j]);
 
         // replace nodes
-        var parent=text.parentNode;
-        agh.Array.each(agh(div.childNodes,Array),function(node){
-          parent.insertBefore(node,text);
+        var parent = text.parentNode;
+        agh.Array.each(agh(div.childNodes, Array), function(node) {
+          parent.insertBefore(node, text);
         });
         parent.removeChild(text);
       }
 
-      if (emaths.length!=0)aghtex.tex_transform(emaths,"math","");
-      if (eparas.length!=0)aghtex.tex_transform(eparas,"para","");
+      if (emaths.length != 0) aghtex.tex_transform(emaths, "math", "");
+      if (eparas.length != 0) aghtex.tex_transform(eparas, "para", "");
     }
+  };
 
-    var div=_document.getElementById("sites-canvas");
-    if (div!=null)
-      initialize_textnodes(div);
+  aghtex.Sites["gsite"] = function(_document) {
+    if (_document == null) _document = document;
+    var div = _document.getElementById("sites-canvas");
+    if (div != null)
+      handler.initialize_textnodes(div);
+  };
+
+  //===========================================================================
+  //  Site: github.com
+  //---------------------------------------------------------------------------
+  aghtex.Sites["github"] = function(_document) {
+    if (_document == null) _document = document;
+    var _window = _document.defaultView;
+    var opts = {
+      checkGuard: function(elem) {
+        var children = elem.childNodes;
+        if (children.length == 0) return false;
+        var mark = children[children.length - 1];
+        if (mark.className == 'aghtex4gmail-textnodes-processed') return false;
+
+        var div = _document.createElement('div');
+        div.className = 'aghtex4gmail-textnodes-processed';
+        div.style.display = 'none';
+        elem.appendChild(div);
+        return true;
+      },
+      getTextNodes: function(elem) {
+        function recursive(e, buff) {
+          for (var i = 0, iN = e.childNodes.length; i < iN; i++) {
+            var node = e.childNodes[i];
+            if (node.nodeType == aghtex.NodeTypeTEXT_NODE)
+              buff.push(node);
+            else if (node.nodeType == aghtex.NodeTypeELEMENT_NODE) {
+              // 重複適用防止
+              if (/(?:^|\s)markdown-body(?:\s|$)/.test(node.className)) continue;
+              if (/^(?:pre|code)$/i.test(node.tagName)) continue;
+              recursive(node, buff);
+            }
+          }
+        }
+        var ret = [];
+        recursive(elem, ret);
+        return ret;
+      }
+    };
+
+    // 初期変換
+    var md = agh(_document.getElementsByClassName("markdown-body"), Array);
+    agh.Array.each(md, function(elem) {
+      handler.initialize_textnodes(elem, opts);
+    });
+
+    // [Preview].onclick
+    var tabs = aghtex.dom_getElementsByClassName(_document, "previewable-comment-form");
+    agh.Array.each(agh(tabs, Array), function(elem) {
+      var preview = aghtex.dom_getElementsByClassName(elem, 'preview-tab')[0];
+      var markdown = aghtex.dom_getElementsByClassName(elem, 'markdown-body')[0];
+      if (!preview || !markdown) return;
+      aghtex.dom_addEventListener(preview, 'click', function() {
+        // click した瞬間には未だ内容が設定されていない様なので遅延
+        _window.setTimeout(function() {
+          handler.initialize_textnodes(markdown, opts);
+        }, 0);
+      });
+    });
+
+    // document.onmousemove
+    aghtex.dom_addEventListener(_document.body, "mousemove", function() {
+      var sender = event.target || event.srcElement;
+      if (sender == null) return;
+      if (sender.nodeType != aghtex.NodeTypeELEMENT_NODE) return;
+      if (!aghtex.dom_hasClassName(sender, 'markdown-body')) return;
+      handler.initialize_textnodes(sender, opts);
+    }, false);
+
   };
 });

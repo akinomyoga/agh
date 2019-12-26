@@ -317,6 +317,9 @@
   } else if (/\/\/sites\.google\.com\//.test(url)) {
     key = "gsite";
     settingName = 'enableGoogleSites';
+  } else if (/\/\/github\.com/.test(url)) {
+    key = "github";
+    settingName = 'enableGitHub';
   }
 
   if (key != null) {

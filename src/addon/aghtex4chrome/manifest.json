@@ -62,6 +62,13 @@
     "agh/latex/aghtex_mathbb.ttf",
     "agh/latex/aghtex_mathbf.ttf",
     "agh/latex/aghtex_mathfrak.ttf",
+    "agh/latex/aghtex_mathscr.ttf",
+    "agh/latex/aghtex_cmttmn10.ttf",
+    "agh/latex/aghtex_cmttms10.ttf",
+    "agh/latex/aghtex_cmttmi10.ttf",
+    "agh/latex/aghtex_cmttbn10.ttf",
+    "agh/latex/aghtex_cmttbs10.ttf",
+    "agh/latex/aghtex_cmttbi10.ttf",
     // "agh.icon.agh_128x128.png",
     "agh.icon.agh_16x16.png"
   ],
@@ -75,7 +82,8 @@
         "https://groups.google.com/forum/*",
         "http://groups.google.com/forum/*",
         "https://sites.google.com/site/*",
-        "http://site.google.com/site/*"
+        "http://site.google.com/site/*",
+        "https://github.com/*"
       ],
       "css": [
         "aghtex.css",
