@@ -37,9 +37,12 @@
   font-family: aghtex_mincho;
   src: /*local("モリサワ リュウミン"),*/
     local("Hiragino Mincho Pro"),
-    local("IPA P明朝"),
-    local("YuMincho"),local("Yu Mincho"),
-    local("MS PMincho"),local("ＭＳ Ｐ明朝");
+    local("Hiragino Mincho ProN"),
+    local("Hiragino Mincho ProN W3"),
+    local("BIZ UDPMincho")
+    local("IPA P明朝"),local("IPAPMincho"),
+    local("游明朝"),local("YuMincho"),local("Yu Mincho"),
+    local("HGS明朝B"),local("MS PMincho"),local("ＭＳ Ｐ明朝");
 }
 @font-face {
   font-family: aghtex_gothic;
