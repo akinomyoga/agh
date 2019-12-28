@@ -46,17 +46,20 @@ agh.scripts.register("addon/aghtex.js", [
       return html.replace(/\<(?:[^"'<>]|"(?:[^"]*)"|'(?:[^']*)')+\>/g, "");
     },
     dom_hasClassName: function(elem, className) {
-      // Note: elem.className だと Cr で <svg> に対して
-      //   SVGAnimatedString 型の値が返って来て、
-      //   文字列に対する操作ができない。
-      var cls = elem.getAttribute('class');
-      if (!cls) return false;
+      if (elem.classList) {
+        return elem.classList.contains(className);
+      } else {
+        // Note: elem.className だと Cr で <svg> に対して
+        //   SVGAnimatedString 型の値が返って来て、
+        //   文字列に対する操作ができない。
+        var cls = elem.getAttribute('class');
+        if (!cls) return false;
 
-      var i = cls.indexOf(className);
-      var j = i + className.length;
-      return i >= 0
-        && (i == 0 || /\s/.test(cls.substr(i - 1, 1)))
-        && (j == cls.length || /\s/.test(cls.substr(j, 1)));
+        var classes = cls.split(/\s+/);
+        for (var i = 0; i < classes.length; i++)
+          if (classes[i] === className) return true;
+        return false;
+      }
     },
     dom_addClassName: function(elem, className) {
       if (elem.className && elem.className.length != 0)

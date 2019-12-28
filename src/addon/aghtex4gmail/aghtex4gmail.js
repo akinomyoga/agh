@@ -1,12 +1,12 @@
 // -*- mode:js;coding:utf-8 -*-
-agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
-  var aghtex=agh.LaTeX.Utils;
-  agh.Namespace("Sites",aghtex);
+agh.scripts.register("addon/aghtex4gmail.js", ["addon/aghtex.js"], function() {
+  var aghtex = agh.LaTeX.Utils;
+  agh.Namespace("Sites", aghtex);
 
   //***************************************************************************
   //  setupGMailPreview
   //---------------------------------------------------------------------------
-  aghtex.setupGMailPreview=(function(){
+  aghtex.setupGMailPreview = (function(){
     function PreviewWindow(eedit){
       this._document=eedit.ownerDocument;
       this._window=this._document.parentWindow||this._document.defaultView;
@@ -351,7 +351,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
       if (!opts) opts = {};
 
       // check guard
-      if (!this.checkGuard(elem, opts)) return;
+      if (!this.checkGuard(elem, opts)) return false;
 
       var emaths = [];
       var eparas = [];
@@ -379,6 +379,7 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
 
       if (emaths.length != 0) aghtex.tex_transform(emaths, "math", "");
       if (eparas.length != 0) aghtex.tex_transform(eparas, "para", "");
+      return true;
     }
   };
 
@@ -428,33 +429,45 @@ agh.scripts.register("addon/aghtex4gmail.js",["addon/aghtex.js"],function(){
       }
     };
 
-    // 初期変換
-    var md = agh(_document.getElementsByClassName("markdown-body"), Array);
-    agh.Array.each(md, function(elem) {
-      handler.initialize_textnodes(elem, opts);
-    });
-
     // [Preview].onclick
-    var tabs = aghtex.dom_getElementsByClassName(_document, "previewable-comment-form");
-    agh.Array.each(agh(tabs, Array), function(elem) {
+    function setup_preview(elem) {
+      if (elem.aghtex_preview_setup) return;
       var preview = aghtex.dom_getElementsByClassName(elem, 'preview-tab')[0];
       var markdown = aghtex.dom_getElementsByClassName(elem, 'markdown-body')[0];
       if (!preview || !markdown) return;
       aghtex.dom_addEventListener(preview, 'click', function() {
         // click した瞬間には未だ内容が設定されていない様なので遅延
-        _window.setTimeout(function() {
-          handler.initialize_textnodes(markdown, opts);
-        }, 0);
+        var delay = 10;
+        var elapsed = 0;
+        var proc = function() {
+          elapsed += delay;
+          if (elapsed < 1000 && !handler.initialize_textnodes(markdown, opts)) {
+            delay = 0 | delay * 1.5 + 0.5;
+            _window.setTimeout(proc, delay);
+          }
+        };
+        _window.setTimeout(proc, delay);
       });
+      elem.aghtex_preview_setup = true;
+    }
+
+    // 初期変換
+    var md = agh(aghtex.dom_getElementsByClassName(_document, "markdown-body"), Array);
+    agh.Array.each(md, function(elem) {
+      handler.initialize_textnodes(elem, opts);
     });
+    var tabs = agh(aghtex.dom_getElementsByClassName(_document, "previewable-comment-form"), Array);
+    agh.Array.each(tabs, setup_preview);
 
     // document.onmousemove
     aghtex.dom_addEventListener(_document.body, "mousemove", function() {
       var sender = event.target || event.srcElement;
-      if (sender == null) return;
-      if (sender.nodeType != aghtex.NodeTypeELEMENT_NODE) return;
-      if (!aghtex.dom_hasClassName(sender, 'markdown-body')) return;
-      handler.initialize_textnodes(sender, opts);
+      if (sender == null || sender.nodeType != aghtex.NodeTypeELEMENT_NODE) return;
+
+      if (aghtex.dom_hasClassName(sender, 'previewable-comment-form'))
+        setup_preview(sender);
+      else if (aghtex.dom_hasClassName(sender, 'markdown-body'))
+        handler.initialize_textnodes(sender, opts);
     }, false);
 
   };
