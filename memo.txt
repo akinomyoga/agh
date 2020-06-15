@@ -661,6 +661,31 @@ latex
   Done (実装メモ)
 -------------------------------------------------------------------------------
 
+2020-06-15
+
+  * aghtex4chrome/github: 変換済みの markdown を識別する為に
+    div.aghtex4gmail-textnodes-processed 要素を末尾に追加しているが、
+    これがレイアウトを変えてしまっている。
+
+    "display: none;" にしているのに何故かと思っていたら、
+    どうやら p:last-child による指定で margin-bottom: 0 に指定していた様だ。
+    div を追加する事によってこの rule が適用されなくなってしまう。
+
+    追加は aghtex4gmail/aghtex4gmail.js で実行されている。
+    調べるとこれは github 特有の処理に含まれているので変更範囲は抑えられる。
+    そもそも何故子要素として追加していたのかというと、
+    中身が置き換えられた場合に追跡する事ができる様にするためである。
+
+    どの様に対処したら良いだろうか。例えば一番最初に追加する?
+    と思って確認したところ、最初の要素についても :first-child{margin-top:0}
+    が設定されている様である。
+
+    或いは css を修正して .markdown-body>:has(+div.aghtex4gmail-textnodes-processed:last-child)
+    を使って margin-bottom:0 を指定する?
+    https://stackoverflow.com/questions/1817792/is-there-a-previous-sibling-selector
+    否、一番最初の要素として追加するのが良い気がする。
+    そして CSS を指定する。取り敢えず実装した。動いている。
+
 2019-12-25
 
   * aghtex4chrome にオプション機能を実装する事にした

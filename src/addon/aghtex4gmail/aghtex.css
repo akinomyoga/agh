@@ -72,3 +72,7 @@ tex\:f.aghtex-mathrm {
 }
 td.tex-arr2 { vertical-align: baseline; }
 tex\:math td { font-family: inherit; }
+
+/*-- workaround for GitHub Stylesheet ---------------------------------*/
+
+.markdown-body>div.aghtex4gmail-textnodes-processed:first-child+* { margin-top: 0!important; }

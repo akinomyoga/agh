@@ -244,7 +244,7 @@ agh.scripts.register("addon/aghtex.js", [
             return $0;
           }
         });
-        if (fREP == 0)return null;
+        if (fREP == 0) return null;
         return html1;
       };
     })(),

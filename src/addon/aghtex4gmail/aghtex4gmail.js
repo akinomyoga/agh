@@ -400,13 +400,13 @@ agh.scripts.register("addon/aghtex4gmail.js", ["addon/aghtex.js"], function() {
       checkGuard: function(elem) {
         var children = elem.childNodes;
         if (children.length == 0) return false;
-        var mark = children[children.length - 1];
+        var mark = children[0];
         if (mark.className == 'aghtex4gmail-textnodes-processed') return false;
 
         var div = _document.createElement('div');
         div.className = 'aghtex4gmail-textnodes-processed';
         div.style.display = 'none';
-        elem.appendChild(div);
+        elem.insertAdjacentElement('AfterBegin', div);
         return true;
       },
       getTextNodes: function(elem) {
