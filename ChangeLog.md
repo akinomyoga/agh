@@ -5,6 +5,7 @@
 **Fixes**
 
 - aghtex4chrome: fix a problem that a margin is added to the end of the markdown body
+- aghtex (pkg:color): fix a bug in the color specification by CMYK
 
 ## 2019-12-25 agh.addon.aghtex4chrome v1.1.8.1253
 

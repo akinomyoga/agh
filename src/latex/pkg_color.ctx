@@ -72,6 +72,7 @@ function get_color(doc, model, spec) {
     var bb = float_to_hex2(parseFloat01(s[2] || 0));
     return "#" + rr + gg + bb;
   case 'cmyk':
+    var s = spec.split(',');
     var c = parseFloat01(s[0] || 0);
     var m = parseFloat01(s[1] || 0);
     var y = parseFloat01(s[2] || 0);
