@@ -29,7 +29,11 @@ dist_excludes= \
  --exclude=*.20[0-9][0-9][01][0-9][0-3][0-9].* \
  --exclude=*~ 
 
-AGHDIR:=$(shell echo $${PWD##*/})
+# Note: GNU 4.2.1 は "v := $(shell )" 内の "#" を quote する必要がある。
+#   一方で GNU 4.3.0 は "v := $(shell )" 内の "#" を quote が残ってしまう。
+#   どちらでも動く様にするには一端 "#" を別の変数に入れておかなければならない。
+NumberSign := \#
+AGHDIR := $(shell echo $${PWD$(NumberSign)$(NumberSign)*/})
 dist:
 	cd ../ && tar cavf ./$(AGHDIR)/dist/agh.`date +%Y%m%d`.tar.xz ./$(AGHDIR) $(dist_excludes)
 

@@ -663,7 +663,19 @@ latex
 
 2020-07-04
 
-  * ページで指定されている CSS との干渉問題 (reported by @m_iidas)
+  * Makefile でエラーが発生する様になった (reported by @miidas)
+    https://twitter.com/akinomyoga/status/1279426577126748161
+
+    gmake 4.3.0 と gmake 4.2.1 で振る舞いが変わっている事を確認した。
+    以下の Makefile (GNUmakefile) で再現する。
+
+    > var := $(shell echo a#b)
+    > $(warning var is $(var))
+
+    色々試したら一端変数に "#" を入れれば問題は起こらない。
+    どうも var := $(shell) の特定の構造の時にだけ発生する様で危うい。
+
+  * ページで指定されている CSS との干渉問題 (reported by @miidas)
     https://twitter.com/m_iidas/status/1279379787216117765
     https://github.com/rust-lang/mdBook/blob/4f435c62e69e47685a4075e95ee765111ebf5746/src/theme/css/general.css#L125
 

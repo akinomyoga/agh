@@ -6,7 +6,8 @@
 
 - aghtex4chrome: fix a problem that a margin is added to the end of the markdown body
 - aghtex (pkg:color): fix a bug in the color specification by CMYK 6245593
-- aghtex (css): fix a bug that the CSS rule for "tr.aghtex-css-tr" was ineffective
+- aghtex (css): fix a bug that the CSS rule for `tr.aghtex-css-tr` was ineffective 6314c6d
+- Makefile: add a workaround for GNU make 4.3.0 quote removal in `var := $(shell)`
 
 ## 2019-12-25 agh.addon.aghtex4chrome v1.1.8.1253
 
