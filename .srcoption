@@ -1,1 +1,1 @@
---extension=ctx --exclude=out
+--extension=ctx --exclude=out Makefile -x pp

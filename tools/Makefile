@@ -37,13 +37,13 @@ all: make-unidata
 make-unidata: | submodule
 	+make -C ext/unidata
 
-all: $(OUTDIR)/ttf2eot.exe
-$(OUTDIR)/ttf2eot.exe: ext/ttf2eot/ttf2eot.exe
+all: $(OUTDIR)/ttf2eot
+$(OUTDIR)/ttf2eot: ext/ttf2eot/ttf2eot
 	cp $< $@
-ext/ttf2eot/ttf2eot.exe: | submodule ext/ttf2eot/.gitignore
+ext/ttf2eot/ttf2eot: | submodule ext/ttf2eot/.gitignore
 	+make -C ext/ttf2eot
 ext/ttf2eot/.gitignore: | submodule
-	printf '%s\n' /.gitignore *.o /ttf2eot /ttf2eot.exe > $@
+	printf '%s\n' /.gitignore *.o /ttf2eot /ttf2eot > $@
 
 all: $(OUTDIR)/sfnt2woff.exe
 $(OUTDIR)/sfnt2woff.exe: ext/woff/sfnt2woff.exe
