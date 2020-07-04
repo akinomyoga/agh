@@ -29,7 +29,7 @@ dist_excludes= \
  --exclude=*.20[0-9][0-9][01][0-9][0-3][0-9].* \
  --exclude=*~ 
 
-AGHDIR:=$(shell echo $${PWD\#\#*/})
+AGHDIR:=$(shell echo $${PWD##*/})
 dist:
 	cd ../ && tar cavf ./$(AGHDIR)/dist/agh.`date +%Y%m%d`.tar.xz ./$(AGHDIR) $(dist_excludes)
 

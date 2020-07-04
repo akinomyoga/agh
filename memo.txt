@@ -661,6 +661,21 @@ latex
   Done (実装メモ)
 -------------------------------------------------------------------------------
 
+2020-07-04
+
+  * ページで指定されている CSS との干渉問題 (reported by @m_iidas)
+    https://twitter.com/m_iidas/status/1279379787216117765
+    https://github.com/rust-lang/mdBook/blob/4f435c62e69e47685a4075e95ee765111ebf5746/src/theme/css/general.css#L125
+
+    ページで指定されている td の background が適用されて色が変化してしまっている。
+    見てみると padding, border, magin, font-weight などが設定されているが、
+    これについては既に対策が施されていた。background に関しては、
+    background-color が上書きされない様に設定はされていたが、
+    background 自体に対しては設定されていなかった。
+
+    と思ってよく見たら問題の CSS は tr に対して適用されていて、
+    tr に対するルールを確認したら latex.pp.css に typo があった。修正した。
+
 2020-06-15
 
   * aghtex4chrome/github: 変換済みの markdown を識別する為に

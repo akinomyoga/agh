@@ -77,7 +77,7 @@ table.aghtex-css-table-inline {
   top: auto!important; left: auto!important;
 
   font: inherit!important;
-  color: inherit!important; background-color: inherit!important;
+  color: inherit!important; background: inherit!important;
   white-space: inherit!important; text-align: inherit!important;
   overflow: visible!important;
 }
@@ -115,7 +115,7 @@ td.aghtex-css-td {
 /*%%end*/
 }
 
-td.aghtex-css-tr {
+tr.aghtex-css-tr {
   visibility: inherit!important;
   width: auto!important; height: auto!important;
   border: 0 solid $"borderColor:-inherit"!important;
