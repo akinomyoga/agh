@@ -26,9 +26,12 @@
   font-family: aghtex_mincho;
   src: /*local("モリサワ リュウミン"),*/
     local("Hiragino Mincho Pro"),
-    local("IPA P明朝"),
-    local("YuMincho"),local("Yu Mincho"),
-    local("MS PMincho"),local("ＭＳ Ｐ明朝");
+    local("Hiragino Mincho ProN"),
+    local("Hiragino Mincho ProN W3"),
+    local("BIZ UDPMincho")
+    local("IPA P明朝"),local("IPAPMincho"),
+    local("游明朝"),local("YuMincho"),local("Yu Mincho"),
+    local("HGS明朝B"),local("MS PMincho"),local("ＭＳ Ｐ明朝");
 }
 @font-face {
   font-family: aghtex_gothic;
@@ -63,7 +66,7 @@ table.aghtex-css-table-inline {
   top: auto!important; left: auto!important;
 
   font: inherit!important;
-  color: inherit!important; background-color: inherit!important;
+  color: inherit!important; background: inherit!important;
   white-space: inherit!important; text-align: inherit!important;
   overflow: visible!important;
 }
@@ -86,7 +89,7 @@ td.aghtex-css-td {
 
 }
 
-td.aghtex-css-tr {
+tr.aghtex-css-tr {
   visibility: inherit!important;
   width: auto!important; height: auto!important;
   border: 0 solid currentColor!important;

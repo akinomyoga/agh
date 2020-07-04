@@ -271,11 +271,12 @@
         };
         var paraContext = ["global", "mode.para", "pkg:amsmath/mode.para"];
         var mathContext = ["global", "mode.math", "pkg:amssymb/mode.math", "pkg:amsmath/mode.math"];
-
+        // 他から include する事前提の .tex も沢山あるので mode.para, mode.math を入れておく。
+        var fullContext = ["global", "mode.para", "pkg:amsmath/mode.para", "mode.math", "pkg:amssymb/mode.math", "pkg:amsmath/mode.math"];
         return {
           full: {
             transform: function(source) {
-              return new agh.LaTeX.Document(this.m_preamble + source, "global").Parse();
+              return new agh.LaTeX.Document(this.m_preamble + source, fullContext).Parse();
             },
             sethtml: sethtml_para
           },
