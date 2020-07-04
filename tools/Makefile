@@ -45,10 +45,10 @@ ext/ttf2eot/ttf2eot: | submodule ext/ttf2eot/.gitignore
 ext/ttf2eot/.gitignore: | submodule
 	printf '%s\n' /.gitignore *.o /ttf2eot /ttf2eot > $@
 
-all: $(OUTDIR)/sfnt2woff.exe
-$(OUTDIR)/sfnt2woff.exe: ext/woff/sfnt2woff.exe
+all: $(OUTDIR)/sfnt2woff
+$(OUTDIR)/sfnt2woff: ext/woff/sfnt2woff
 	cp $< $@
-ext/woff/sfnt2woff.exe: | ext/woff
+ext/woff/sfnt2woff: | ext/woff
 	+make -C ext/woff
 ext/woff:
 	mkdir -p $@ && cd $@ && unzip ../woff-code-latest.zip
