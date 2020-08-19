@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Test agh.lang.latex 202008</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" charset="utf-8" src="../out/agh.js"></script>
+<script type="text/javascript">
+agh.scripts.wait(["event:onload", "agh.lang.tex.js"], function() {
+  function convertDocument(id) {
+    var div = document.getElementById(id);
+    var source = agh.Text.Unescape(div.innerHTML, "html");
+    var doc = new agh.LaTeX.Document(source);
+    doc.Parse();
+    doc.ResolveReferences();
+    div.innerHTML = doc.html;
+  }
+  convertDocument("texdoc1");
+});
+</script>
+<style type="text/css">
+body {
+  background-color: gray;
+}
+.aghtex-page {
+  width: 50em; margin-left: auto; margin-right: auto; min-height: 100%;
+  padding: 1em; border: 1px solid silver; background-color: white;
+  font-family: aghtex_roman,aghtex_mincho,serif;
+}
+</style>
+<meta name="agh-fly-type" content="tex" />
+<script type="text/javascript" charset="utf-8" src="../out/agh.fly.js"></script>
+</head>
+<body>
+
+<div id="texdoc1" class="aghtex-page">
+\documentclass[amsmath,amssymb]{revtex4-1}
+\begin{document}
+\title{Test agh.lang.latex 202008}
+\author{\verb+@akinomyoga+}
+\maketitle
+\tableofcontents
+
+\section{cmd:hskip, cmd:kern, etc.}
+
+(hskip) Hello\hskip0.2emworld\hskip0.2emworld%
+\hskip0.2emworld\hskip0.2emworld%
+\hskip0.2emworld\hskip0.2emworld%
+\hskip0.2emworld\hskip0.2emworld%
+\hskip0.2emworld\hskip0.2emworld%
+\hskip0.2emworld\hskip0.2emworld%
+\hskip0.2emworld\hskip0.2emworld%
+\hskip0.2emworld\hskip0.2emworld%
+\hskip0.2emworld\hskip0.2emworld.
+
+(kern) Hello\kern0.2emworld\kern0.2emworld%
+\kern0.2emworld\kern0.2emworld%
+\kern0.2emworld\kern0.2emworld%
+\kern0.2emworld\kern0.2emworld%
+\kern0.2emworld\kern0.2emworld%
+\kern0.2emworld\kern0.2emworld%
+\kern0.2emworld\kern0.2emworld%
+\kern0.2emworld\kern0.2emworld%
+\kern0.2emworld\kern0.2emworld%
+\kern0.2emworld\kern0.2emworld%
+\kern0.2emworld\kern0.2emworld%
+\kern0.2emworld\kern0.2emworld%
+\kern0.2emworld\kern0.2emworld%
+\kern0.2emworld\kern0.2emworld.
+
+(hspace) Hello\hspace{0.2em}world\hspace{0.2em}world%
+\hspace{0.2em}world\hspace{0.2em}world%
+\hspace{0.2em}world\hspace{0.2em}world%
+\hspace{0.2em}world\hspace{0.2em}world%
+\hspace{0.2em}world\hspace{0.2em}world%
+\hspace{0.2em}world\hspace{0.2em}world%
+\hspace{0.2em}world\hspace{0.2em}world%
+\hspace{0.2em}world\hspace{0.2em}world%
+\hspace{0.2em}world\hspace{0.2em}world%
+\hspace{0.2em}world\hspace{0.2em}world.
+
+
+Hello\hspace{1em}world.
+
+Hello\hskip1emworld.
+
+Hello\kern1emworld.
+
+\end{document}
+</div>
+
+<div class="aghtex-page">
+<h1 id="html.1">HTML の動作の確認</h1>
+
+<h2 id="html.1.1">空白と行折返しについて</h2>
+
+<p>通常の空白を含む要素の場合</p>
+<p>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i></p>
+
+<p><code>&amp;nbsp;</code> を含む要素の場合</p>
+<p>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i>Hello<tex:i>&nbsp;</tex:i></p>
+
+<p>空要素の場合</p>
+<p>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i></p>
+
+<h2>空白の幅を指定する方法</h2>
+
+<p>padding を使って空白の幅を指定することができる事は分かっているが、一方でコピーした時に空文字列になってしまう。
+  コピーした時に単一の空白で、実際に表示される幅は指定した任意の幅 (負の場合もある) にしたい時にはどうしたら良いか。
+  単に display:inline-block;width:0ex; を指定すれば良い様だ。
+</p>
+<p>A<tex:i style="width:1.5em;height:1em;background-color:black;display:inline-block;"></tex:i>B (Reference)</p>
+<p>A<tex:i style="padding-right:1.5em;"></tex:i>B (padding-right)</p>
+<p>A<tex:i style="display:inline-block;width:0ex;box-sizing:content-box;padding-right:1.5em;">&nbsp;</tex:i>B (padding-right, width:0)</p>
+<p>A<tex:i style="display:inline-block;width:0ex;box-sizing:content-box;padding-right:1.5em;">&nbsp; </tex:i>B (padding-right, width:0)</p>
+<p>A<tex:i style="position:relative;padding-right:1.5em;"><tex:i style="position:absolute;">&nbsp;</tex:i></tex:i>B (padding-right, position:absolute)</p>
+
+<h2>display:inline-block と nbsp の両立</h2>
+<p>display:inline-block を指定したら nbsp でも改行が入る様になってしまった。
+  CSS に white-space:nowrap を指定してもやはり改行が入ってしまう。
+  或いは display:inline-block の代わりに position:absolute を使うか。
+</p>
+
+<h2 id="html.1.4">aghtex_mathtt の空白の幅を計測する。</h2>
+<p>空白の幅は 0.340em の様である。</p>
+<style type="text/css">
+p.html-1-4 { margin: 1px; line-height: 1; }
+.html-1-4-block {
+  display:inline-block;
+  vertical-align:bottom;
+  margin:0;padding:0;width:10px;height:1em;background-color:black;
+}
+</style>
+<p class="html-1-4" style="font-size:200%;"><span class="html-1-4-block"></span><span style="font-family:aghtex_mathtt;">Hello</span><span class="html-1-4-block"></span></p>
+<p class="html-1-4" style="font-size:200%;"><span class="html-1-4-block"></span><span style="font-family:aghtex_mathtt;">Hello</span><span class="html-1-4-block"></span></p>
+<p class="html-1-4" style="font-size:400%;"><span class="html-1-4-block"></span><span style="font-family:aghtex_mathtt;"> </span><span class="html-1-4-block"></span></p>
+<p class="html-1-4" style="font-size:400%;"><span class="html-1-4-block"></span><span style="font-family:aghtex_mathtt;padding-right:0.34em"></span><span class="html-1-4-block"></span></p>
+<p class="html-1-4" style="font-size:200%;"><span class="html-1-4-block"></span><span style="font-family:aghtex_mathtt;"> </span><span class="html-1-4-block"></span></p>
+<p class="html-1-4" style="font-size:200%;"><span class="html-1-4-block"></span><span style="font-family:aghtex_mathtt;padding-right:0.34em"></span><span class="html-1-4-block"></span></p>
+
+</div>
+
+</body>
+</html>

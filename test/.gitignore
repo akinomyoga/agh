@@ -1,0 +1,7 @@
+# gitignore
+
+/*.log
+/*.aux
+/*.toc
+/*Notes.bib
+/*.pdf

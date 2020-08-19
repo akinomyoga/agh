@@ -661,9 +661,63 @@ latex
   Done (実装メモ)
 -------------------------------------------------------------------------------
 
+2020-08-20
+
+  * \mskip, \kern が使われている例を見た [#D0038]
+    調べると mskip, mkern は hskip, kern の math-mode 版である様に見える。
+    また他に mspace 等も存在する。というよりそもそも hskip にも対応していなかった。
+
+    hspace と kern の違いは kern は no-break であるという事。
+    HTML で no-break を実現する為には前後の文字を一緒に囲む必要があった。
+    或いは別の方法が存在しただろうか。
+
+    振る舞いについて調べてみる。hskip,kern,hspace の何れの場合も空白に置換される。
+    愚直に考えると hskip, hspace は通常の空白にして、kern は nbsp にすれば良い気がする。
+    然し、それで期待通りに動く物なのだろうか。
+
+    | a &nbsp; にすれば勝手に途中で改行されないと思いきや、色々難しい。
+    |   先ず display:inline-block にしてしまうとその途端に改行できるようになってしまう。
+    |   また position:absolute にしてもその途端に改行できる様になってしまう。
+    |
+    |   OK command s@\kern(#D) '<tex:i style="padding-right:#1;">&nbsp;</tex:i>';
+    |   OK command s@\kern(#D) '<tex:i style="position:relative;padding-right:#1;">&nbsp;</tex:i>';
+    |   OK command s@\kern(#D) '<tex:i style="position:relative;padding-right:#1;"><tex:i>&nbsp;</tex:i></tex:i>';
+    |   NG command s@\kern(#D) '<tex:i style="position:relative;padding-right:#1;"><tex:i style="position:absolute;">&nbsp;</tex:i></tex:i>';
+    |
+    | b white-space:nowrap を指定しても駄目である。
+    |   display:inline-block の外側で指定しても駄目である。
+    |   nobr で囲んでも駄目。
+    |
+    |   NG command s@\kern(#D) '<tex:i style="white-space:nowrap;padding-right:#1;display:inline-block;">&nbsp;</tex:i>';
+    |   NG command s@\kern(#D) '<tex:i style="white-space:nowrap;padding-right:#1;"><tex:i style="display:inline-block;">&nbsp;</tex:i></tex:i>';
+    |   NG command s@\kern(#D) '<nobr><tex:i style="padding-right:#1;display:inline-block;width:0;">&nbsp;</nobr>';
+    |   NG command s@\kern(#D) '<nobr><tex:i style="padding-right:#1;"><tex:i style="display:inline-block;">&nbsp;</tex:i></tex:i></nobr>';
+    |
+    | c position:absolute と white-space:nowrap を組み合わせても駄目。
+    |
+    |   NG command s@\kern(#D) '<tex:i style="position:relative;white-space:nowrap;padding-right:#1;">
+    |     <tex:i style="position:absolute;">&nbsp;</tex:i></tex:i>';
+    |   NG command s@\kern(#D) '<tex:i style="position:relative;white-space:nowrap;padding-right:#1;">
+    |     <tex:i style="position:absolute;white-space:nowrap;">&nbsp;</tex:i></tex:i>';
+    |
+    | d 結局 font-size:0 に逃げるしか無いのだろうか。
+    |   然し、この方法だと firefox で最小フォントサイズが設定されている時に崩れてしまう。
+    |
+    |   或いは、aghtex_mathtt 等を指定して空白の幅を計測して、
+    |   それをキャンセルする様に追加の padding-right を仕掛けるという作戦。
+    |   物凄く拡大して計測した所 0.340em の様である。小さくしても大きくしてもずれは見られない。
+    |
+    |   更に font-size:0 にするのが良い。
+
+    取り敢えず \kern は (font-size:0) × (aghtex_mathtt の空白幅だけ後退) で実装した。
+    実は hspace に関しても下手に display:inline-block を使うよりもこちらの方が良いのではないか。
+    →その様に修正した。
+
+    取り敢えず hskip,kern,mskip,mspace,mkern を追加した。
+
 2020-07-04
 
-  * Makefile でエラーが発生する様になった (reported by @miidas)
+  * Makefile でエラーが発生する様になった (reported by @miidas) [#D0037]
     https://twitter.com/akinomyoga/status/1279426577126748161
 
     gmake 4.3.0 と gmake 4.2.1 で振る舞いが変わっている事を確認した。
@@ -675,7 +729,7 @@ latex
     色々試したら一端変数に "#" を入れれば問題は起こらない。
     どうも var := $(shell) の特定の構造の時にだけ発生する様で危うい。
 
-  * ページで指定されている CSS との干渉問題 (reported by @miidas)
+  * ページで指定されている CSS との干渉問題 (reported by @miidas) [#D0036]
     https://twitter.com/m_iidas/status/1279379787216117765
     https://github.com/rust-lang/mdBook/blob/4f435c62e69e47685a4075e95ee765111ebf5746/src/theme/css/general.css#L125
 
@@ -690,7 +744,7 @@ latex
 
 2020-06-15
 
-  * aghtex4chrome/github: 変換済みの markdown を識別する為に
+  * aghtex4chrome/github: 変換済みの markdown を識別する為に [#D0035]
     div.aghtex4gmail-textnodes-processed 要素を末尾に追加しているが、
     これがレイアウトを変えてしまっている。
 
@@ -715,7 +769,7 @@ latex
 
 2019-12-25
 
-  * aghtex4chrome にオプション機能を実装する事にした
+  * aghtex4chrome にオプション機能を実装する事にした [#D0034]
 
     オプションページを作成する。
 
@@ -737,7 +791,7 @@ latex
 
     .pem は何処にあるのかと思ったら agh/dist の中にあった。
 
-  * github に対応する。
+  * github に対応する [#D0033]
 
     取り敢えず .markdown-body の中を全て変換する事にした。
 
@@ -892,25 +946,25 @@ latex
     | cmmib   rm:bf:it
     | cmdunh  rm 縦長
     | cmu     直立it
-    | 
+    |
     | cmss    sf
     | cmssbx  sf:hf
     | cmssdc  sf:bf
     | cmssi   sf::sl
     | cmssq   sf:   丸ゴシックっぽい
     | cmssqi  sf::sl 丸ゴシックっぽい
-    | 
+    |
     | cmtt    tt1
     | cmtex   tt2
     | cmvtt   ttの横長? 縦書き用なのかもしれない。
     | cmtcsc  tt::sc
     | cmitt   tt::it
     | cmsltt  tt::sl
-    | 
+    |
     | cmff    ff (fancy?)
     | cmfi    ff? it
     | cmfib   ff? bf
-    | 
+    |
     | cmsy    cal
     | cmbsy   cal:bf
 

@@ -706,6 +706,15 @@ tex\:i.aghtex-hspace-slash { padding-right: 0.3ex; }
 tex\:i.aghtex-hspace-quad { padding-right: 2.4ex; }
 tex\:i.aghtex-hspace-qquad { padding-right: 4.8ex; }
 
+tex\:i.aghtex-zwspace {
+  white-space: pre;
+  font-size: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-family: aghtex_mathtt;
+  padding-right: -0.340em;
+}
+
 tex\:i.aghtex-phantom,
 tex\:i.aghtex-vphantom,
 tex\:i.aghtex-vphantom-middle,

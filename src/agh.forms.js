@@ -363,7 +363,7 @@ var ns=agh.Forms;
   function initializeStyleSheetControlBorders(sheet){
     sheet.add(
       "div.agh-forms-ctrl-b0",
-      "display:block;margin:0px;padding:0px;cursor:default;position:absolute;");
+      "display:block;margin:0px;padding:0px;cursor:default;position:absolute;background-color:threedface;color:windowtext;");
     sheet.add(
       "div.agh-forms-ctrl-b1",
       "margin:0px;padding:0px;position:absolute;top:0px;left:0px;");

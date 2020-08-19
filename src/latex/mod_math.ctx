@@ -201,11 +201,16 @@ context "mode.math" {
   };
 
   // 空白
-  command s>\,() @"\hspace{0.4ex}";  // \hspace{1\thinmuskip}
-  command s>\:() @"\hspace{0.53ex}"; // \hspace{1\medmuskip}
-  command s>\>() @"\hspace{0.60ex}"; // \hspace{1\medmuskip}
-  command s>\;() @"\hspace{0.67ex}"; // \hspace{1\thickmuskip}
-  letter  s>\~() @"\hspace{1ex}";
+  _Ctx.DefineCommand({
+    'mkern' : ['s@;#D','<tex:i style="padding-right:#1;"><tex:i class="aghtex-zwspace">&nbsp;</tex:i></tex:i>'],
+    'mskip' : ['s@;#D','<tex:i style="padding-right:#1;"><tex:i class="aghtex-zwspace"> </tex:i></tex:i>'],
+    'mspace': ['s@;#D','<tex:i style="padding-right:#1;"><tex:i class="aghtex-zwspace"> </tex:i></tex:i>'],
+    ','     : ['s>',"\\hspace{0.4ex}"],  // \hspace{1\thinmuskip}
+    ':'     : ['s>',"\\hspace{0.53ex}"], // \hspace{1\medmuskip}
+    '>'     : ['s>',"\\hspace{0.60ex}"], // \hspace{1\medmuskip}
+    ';'     : ['s>',"\\hspace{0.67ex}"] // \hspace{1\thickmuskip}
+  });
+  letter s>\~() @"\hspace{1ex}";
   if (agh.browser.vIE < 7) {
     command s@\!() '<tex:i class="aghtex-negative-space-ie6">&nbsp;&nbsp;</tex:i>&nbsp;';
   } else {

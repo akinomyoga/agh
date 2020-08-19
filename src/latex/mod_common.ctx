@@ -375,20 +375,25 @@ context "global" {
   //---------------------------------------------------------------------------
   // 空白・改行
 
-  command s@\hspace(#D)  '<tex:i style="padding-right:#1;"></tex:i>';
-  command s@\hspace*(#D) '<tex:i style="padding-right:#1;"></tex:i>';
-  command s@\vspace(#D)  '<tex:i class="aghtex-vspace" style="margin-bottom:#1">&nbsp;</tex:i>';
-  command s@\vspace*(#D) '<tex:i class="aghtex-vspace" style="margin-bottom:#1">&nbsp;</tex:i>';
+  _Ctx.DefineCommand({
+    'kern'    : ['s@;#D', '<tex:i style="padding-right:#1;"><tex:i class="aghtex-zwspace">&nbsp;</tex:i></tex:i>'],
+    'hskip'   : ['s@;#D', '<tex:i style="padding-right:#1;"><tex:i class="aghtex-zwspace"> </tex:i></tex:i>'],
+    'hspace'  : ['s@;#D', '<tex:i style="padding-right:#1;"><tex:i class="aghtex-zwspace"> </tex:i></tex:i>'],
+    'hspace*' : ['s@;#D', '<tex:i style="padding-right:#1;"><tex:i class="aghtex-zwspace"> </tex:i></tex:i>'],
 
-  command s>\enspace()              @'\hspace{0.5em}'; // from plain-TeX, kerning
+    'vspace'  : ['s@;#D', '<tex:i class="aghtex-vspace" style="margin-bottom:#1">&nbsp;</tex:i>'],
+    'vspace*' : ['s@;#D', '<tex:i class="aghtex-vspace" style="margin-bottom:#1">&nbsp;</tex:i>'],
 
-  command s@#" "()                   '&nbsp;';
-  command s@\enskip()                '&nbsp;';
-  command s@#"/"()                  '<tex:i class="aghtex-hspace-slash"></tex:i>';
-  command s@\quad()                 '<tex:i class="aghtex-hspace-quad"></tex:i>';
-  command s@\qquad()                '<tex:i class="aghtex-hspace-qquad"></tex:i>';
-  command s@\phantom("#>1")         '<tex:i class="aghtex-phantom">#1</tex:i>';
-  command s@\hphantom("#>1")        '<tex:i class="aghtex-hphantom">#1</tex:i>';
+    'enspace' : ['s>', '\\hspace{0.5em}'], // from plain-TeX, kerning
+
+    ' '       : ['s@', '&nbsp;'],
+    'enskip'  : ['s@', '&nbsp;'],
+    '/'       : ['s@', '<tex:i class="aghtex-hspace-slash"></tex:i>'],
+    'quad'    : ['s@', '<tex:i class="aghtex-hspace-quad"><tex:i class="aghtex-zwspace"> </tex:i></tex:i>'],
+    'qquad'   : ['s@', '<tex:i class="aghtex-hspace-qquad"><tex:i class="aghtex-zwspace"> </tex:i></tex:i>'],
+    'phantom' : ['s@;#>1', '<tex:i class="aghtex-phantom">#1</tex:i>'],
+    'hphantom': ['s@;#>1', '<tex:i class="aghtex-hphantom">#1</tex:i>']
+  });
   command f\vphantom("#[]!1#>2") {
     var className = 'aghtex-vphantom';
     switch (argv[1]) {
