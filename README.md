@@ -7,7 +7,7 @@
 - `make` (GNU Make)
 - `gawk` (GNU awk)
 - `wget`, `zip`, `unzip`
-- A C# compiler: `csc` (Windows) or `dmcs` (Mono)
+- A C# compiler: `csc` (Windows) or `mcs` (Mono)
 - CLI: .NET Framework (Windows) or `mono` (Mono)
 - [`uglifyjs`](https://github.com/mishoo/UglifyJS2) with Node.js
 - `sfnt2woff` [WOFF fonts!](http://people.mozilla.org/~jkew/woff/) (This link is no longer available. Please use [`agh/tools/ext/woff-code-latest.zip`](https://github.com/akinomyoga/agh/blob/master/tools/ext/woff-code-latest.zip) to make the `sfnt2woff` command)

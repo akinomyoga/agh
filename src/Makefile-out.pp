@@ -130,28 +130,15 @@ j agh.lang.tex;
 # j latex/latex.cls;
 
 # latex resources
-f latex/int.png;
-f latex/oint.png;
-f latex/paren1l.png;
-f latex/paren1r.png;
-f latex/paren2l.png;
-f latex/paren2ov.png;
-f latex/paren2r.png;
-f latex/paren2ud.png;
-f latex/paren4l.png;
-f latex/paren4r.png;
 f latex/paren5l.png;
 f latex/paren5r.png;
-f latex/root.png;
 f latex/stretch_bslash.png;
 f latex/stretch_darr.png;
 f latex/stretch_darr2.png;
-f latex/stretch_hat.png;
 f latex/stretch_larr.png;
 f latex/stretch_lrarr.png;
 f latex/stretch_rarr.png;
 f latex/stretch_slash.png;
-f latex/stretch_tilde.png;
 f latex/stretch_uarr.png;
 f latex/stretch_uarr2.png;
 f latex/stretch_udarr.png;
