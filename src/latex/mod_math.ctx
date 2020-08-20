@@ -151,73 +151,80 @@ context "mode.math" {
   //---------------------------------------------------------------
 
   // 空白は出力しない
-  letter s@#' \b\t\v\r\n\f'() @"";
+  _Ctx.DefineLetter({' \b\t\v\r\n\f': ['s@', '']});
 
   // 調整付の通常文字
-  letter s@\+() '<tex:f class="aghtex-binop aghtex-symb-gothic">＋</tex:f>';
-  letter s@\-() '<tex:f class="aghtex-binop aghtex-symb-gothic">－</tex:f>';
-  letter s@\=() '<tex:f class="aghtex-binop aghtex-symb-gothic">＝</tex:f>';
-  letter s@\/() '<tex:f class="aghtex-binop aghtex-symb-gothic aghtex-big-variant">/</tex:f>';
+  _Ctx.DefineLetter({
+    '+': ['s@', '<tex:f class="aghtex-binop aghtex-symb-gothic">＋</tex:f>'],
+    '-': ['s@', '<tex:f class="aghtex-binop aghtex-symb-gothic">－</tex:f>'],
+    '=': ['s@', '<tex:f class="aghtex-binop aghtex-symb-gothic">＝</tex:f>'],
+    '/': ['s@', '<tex:f class="aghtex-binop aghtex-symb-gothic aghtex-big-variant">/</tex:f>']
+  });
 
   // 数式フォントで再定義
-  letter s@#'['  () '<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">[</tex:f>';
-  letter s@#']'  () '<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">]</tex:f>';
-  letter s@#'('  () '<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">(</tex:f>';
-  letter s@#')'  () '<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">)</tex:f>';
-  command s@\{   () '<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">{</tex:f>';
-  command s@\}   () '<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">}</tex:f>';
-  command s@\&   () '<tex:f class="aghtex-symb-gothic">&amp;</tex:f>';
-  command s@\%   () '<tex:f class="aghtex-symb-gothic">%</tex:f>';
-  command s@\_   () '<tex:f class="aghtex-symb-gothic">_</tex:f>';
-  command s@\$   () '<tex:f class="aghtex-symb-gothic">$</tex:f>';
-  command s@\#   () '<tex:f class="aghtex-symb-gothic">#</tex:f>';
-  command s@\P   () '<tex:f class="aghtex-symb-gothic">¶</tex:f>'; // paragraph
-  command s@\S   () '<tex:f class="aghtex-symb-gothic">§</tex:f>'; // section
-  command s@\dag () '<tex:f class="aghtex-symb-cent">†</tex:f>'; // dagger
-  command s@\ddag() '<tex:f class="aghtex-symb-cent">‡</tex:f>'; // ddagger
+  _Ctx.DefineLetter({
+    '[': ['s@', '<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">[</tex:f>'],
+    ']': ['s@', '<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">]</tex:f>'],
+    '(': ['s@', '<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">(</tex:f>'],
+    ')': ['s@', '<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">)</tex:f>']
+  });
+  _Ctx.DefineCommand({
+    '{'   : ['s@', '<tex:f class="aghtex-lbrace aghtex-symb-gothic aghtex-big-variant">{</tex:f>'],
+    '}'   : ['s@', '<tex:f class="aghtex-rbrace aghtex-symb-gothic aghtex-big-variant">}</tex:f>'],
+    '&'   : ['s@', '<tex:f class="aghtex-symb-gothic">&amp;</tex:f>'],
+    '%'   : ['s@', '<tex:f class="aghtex-symb-gothic">%</tex:f>'],
+    '_'   : ['s@', '<tex:f class="aghtex-symb-gothic">_</tex:f>'],
+    '$'   : ['s@', '<tex:f class="aghtex-symb-gothic">$</tex:f>'],
+    '#'   : ['s@', '<tex:f class="aghtex-symb-gothic">#</tex:f>'],
+    'P'   : ['s@', '<tex:f class="aghtex-symb-gothic">¶</tex:f>'], // paragraph
+    'S'   : ['s@', '<tex:f class="aghtex-symb-gothic">§</tex:f>'], // section
+    'dag' : ['s@', '<tex:f class="aghtex-symb-cent">†</tex:f>'], // dagger
+    'ddag': ['s@', '<tex:f class="aghtex-symb-cent">‡</tex:f>'] // ddagger
+  });
 
-  letter s@\>() '<tex:f class="aghtex-binop aghtex-symb-roman">&gt;</tex:f>';
-  letter s@\<() '<tex:f class="aghtex-binop aghtex-symb-roman">&lt;</tex:f>';
-  letter s@\|() '<tex:f class="aghtex-symb-gothic">|</tex:f>';
-  letter f@\:() {
-    doc.scanner.Next();
-    if (doc.scanner.is(mod_core.SCAN_WT_LTR, "=")) {
-      //doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-gothic">:＝</tex:f>');
-      doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-gothic">&#x2254;</tex:f>');
+  _Ctx.DefineLetter({
+    '>': ['s@', '<tex:f class="aghtex-binop aghtex-symb-roman">&gt;</tex:f>'],
+    '<': ['s@', '<tex:f class="aghtex-binop aghtex-symb-roman">&lt;</tex:f>'],
+    '|': ['s@', '<tex:f class="aghtex-symb-gothic">|</tex:f>'],
+    ':': ['f@', function(doc, cmdName) {
       doc.scanner.Next();
-    } else {
-      doc.currentCtx.output.buff.push(":");
-    }
-  };
-  letter s@\,() '<tex:f class="aghtex-symb-roman aghtex-comma">,</tex:f>';
-  letter f@\.() {
-    var html = cmdName;
-    doc.scanner.Next();
-    if (doc.scanner.wordtype == mod_core.SCAN_WT_LTR && " \b\t\v\r\n\f".indexOf(doc.scanner.word) >= 0) {
-      html = '<tex:f class="aghtex-comma">' + html + '</tex:f>';
+      if (doc.scanner.is(mod_core.SCAN_WT_LTR, "=")) {
+        //doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-gothic">:＝</tex:f>');
+        doc.currentCtx.output.buff.push('<tex:f class="aghtex-binop aghtex-symb-gothic">&#x2254;</tex:f>');
+        doc.scanner.Next();
+      } else {
+        doc.currentCtx.output.buff.push(":");
+      }
+    }],
+    ',': ['s@', '<tex:f class="aghtex-symb-roman aghtex-comma">,</tex:f>'],
+    '.': ['f@', function(doc, cmdName) {
+      var html = cmdName;
       doc.scanner.Next();
-    }
-    doc.currentCtx.output.buff.push(html);
-  };
+      if (doc.scanner.wordtype == mod_core.SCAN_WT_LTR && " \b\t\v\r\n\f".indexOf(doc.scanner.word) >= 0) {
+        html = '<tex:f class="aghtex-comma">' + html + '</tex:f>';
+        doc.scanner.Next();
+      }
+      doc.currentCtx.output.buff.push(html);
+    }]
+  });
 
   // 空白
+  _Ctx.DefineLetter({'~': ['s>', '\\hspace{1ex}']});
   _Ctx.DefineCommand({
-    'mkern' : ['s@;#D','<tex:i style="padding-right:#1;"><tex:i class="aghtex-zwspace">&nbsp;</tex:i></tex:i>'],
-    'mskip' : ['s@;#D','<tex:i style="padding-right:#1;"><tex:i class="aghtex-zwspace"> </tex:i></tex:i>'],
-    'mspace': ['s@;#D','<tex:i style="padding-right:#1;"><tex:i class="aghtex-zwspace"> </tex:i></tex:i>'],
-    ','     : ['s>',"\\hspace{0.4ex}"],  // \hspace{1\thinmuskip}
-    ':'     : ['s>',"\\hspace{0.53ex}"], // \hspace{1\medmuskip}
-    '>'     : ['s>',"\\hspace{0.60ex}"], // \hspace{1\medmuskip}
-    ';'     : ['s>',"\\hspace{0.67ex}"] // \hspace{1\thickmuskip}
-  });
-  letter s>\~() @"\hspace{1ex}";
-  if (agh.browser.vIE < 7) {
-    command s@\!() '<tex:i class="aghtex-negative-space-ie6">&nbsp;&nbsp;</tex:i>&nbsp;';
-  } else {
-    command s@\!() '<tex:i class="aghtex-negative-space"></tex:i>';
-  }
+    'mkern'     : ['s@;#D', '<tex:i style="padding-right:#1;"><tex:i class="aghtex-zwspace">&nbsp;</tex:i></tex:i>'],
+    'mskip'     : ['s@;#D', '<tex:i style="padding-right:#1;"><tex:i class="aghtex-zwspace"> </tex:i></tex:i>'],
+    'mspace'    : ['s@;#D', '<tex:i style="padding-right:#1;"><tex:i class="aghtex-zwspace"> </tex:i></tex:i>'],
+    ','         : ['s>', "\\hspace{0.4ex}"],  // \hspace{1\thinmuskip}
+    ':'         : ['s>', "\\hspace{0.53ex}"], // \hspace{1\medmuskip}
+    '>'         : ['s>', "\\hspace{0.60ex}"], // \hspace{1\medmuskip}
+    ';'         : ['s>', "\\hspace{0.67ex}"], // \hspace{1\thickmuskip}
 
-  command s@\allowbreak() '<tex:i class="aghtex-latex-allowbreak"></tex:i>';
+    '!'         : ['s@', agh.browser.vIE < 7 ?
+                   '<tex:i class="aghtex-negative-space-ie6">&nbsp;&nbsp;</tex:i>&nbsp;' :
+                   '<tex:i class="aghtex-negative-space"></tex:i>'],
+
+    'allowbreak': ['s@', '<tex:i class="aghtex-latex-allowbreak"></tex:i>']
+  });
 
   // letter
 

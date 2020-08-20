@@ -78,20 +78,31 @@ body {
 \hspace{0.2em}world\hspace{0.2em}world%
 \hspace{0.2em}world\hspace{0.2em}world.
 
-
 Hello\hspace{1em}world.
 
 Hello\hskip1emworld.
 
 Hello\kern1emworld.
 
+\section{\textbackslash{}left/\textbackslash{}right}
+
+$\left(\frac12\right)A(3)\left(3\right)B(4)\left(4\right)_X$
+$\left[\frac12\right]A[3]\left[3\right]B[4]\left[4\right]_X$
+
+\begin{align}
+  A &= \left(\frac12\right)\left(\sum_{i}\right)\left(\sum_{i=0}^\infty\right), \\
+  B &= \left[\frac12\right]\left[\sum_{i}\right]\left[\sum_{i=0}^\infty\right].
+\end{align}
+
 \end{document}
 </div>
 
 <div class="aghtex-page">
-<h1 id="html.1">HTML の動作の確認</h1>
+<h1>HTML の動作の確認</h1>
 
-<h2 id="html.1.1">空白と行折返しについて</h2>
+<h2 id="html.1">1 \hskip, \kern, etc.</h2>
+
+<h3 id="html.1.1">1.1 空白と行折返しについて</h3>
 
 <p>通常の空白を含む要素の場合</p>
 <p>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i>Hello<tex:i> </tex:i></p>
@@ -102,8 +113,7 @@ Hello\kern1emworld.
 <p>空要素の場合</p>
 <p>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i>Hello<tex:i></tex:i></p>
 
-<h2>空白の幅を指定する方法</h2>
-
+<h3>空白の幅を指定する方法</h3>
 <p>padding を使って空白の幅を指定することができる事は分かっているが、一方でコピーした時に空文字列になってしまう。
   コピーした時に単一の空白で、実際に表示される幅は指定した任意の幅 (負の場合もある) にしたい時にはどうしたら良いか。
   単に display:inline-block;width:0ex; を指定すれば良い様だ。
@@ -114,17 +124,17 @@ Hello\kern1emworld.
 <p>A<tex:i style="display:inline-block;width:0ex;box-sizing:content-box;padding-right:1.5em;">&nbsp; </tex:i>B (padding-right, width:0)</p>
 <p>A<tex:i style="position:relative;padding-right:1.5em;"><tex:i style="position:absolute;">&nbsp;</tex:i></tex:i>B (padding-right, position:absolute)</p>
 
-<h2>display:inline-block と nbsp の両立</h2>
+<h3>display:inline-block と nbsp の両立</h3>
 <p>display:inline-block を指定したら nbsp でも改行が入る様になってしまった。
   CSS に white-space:nowrap を指定してもやはり改行が入ってしまう。
   或いは display:inline-block の代わりに position:absolute を使うか。
 </p>
 
-<h2 id="html.1.4">aghtex_mathtt の空白の幅を計測する。</h2>
+<h3 id="html.1.4">aghtex_mathtt の空白の幅を計測する。</h3>
 <p>空白の幅は 0.340em の様である。</p>
 <style type="text/css">
 p.html-1-4 { margin: 1px; line-height: 1; }
-.html-1-4-block {
+span.html-1-4-block {
   display:inline-block;
   vertical-align:bottom;
   margin:0;padding:0;width:10px;height:1em;background-color:black;

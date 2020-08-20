@@ -536,7 +536,8 @@ context "sub.until.raw" new() {
       doc.currentCtx.BRACE_LEVEL++;
       doc.currentCtx.output.buff.push(letter);
       doc.scanner.Next();
-    }, '}': function(doc, letter) {
+    },
+    '}': function(doc, letter) {
       if (doc.currentCtx.BRACE_LEVEL == 0) {
         LHR_EXIT_WITH_ERROR(doc, letter);
       } else {
