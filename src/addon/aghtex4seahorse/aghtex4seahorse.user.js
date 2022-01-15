@@ -9,61 +9,61 @@
 // @include        http://site.google.com/site/*
 // @type           SleipnirScript
 // ==/UserScript==
-var document=_document;
-var window=_window;
-(function(){
-  var url=_window.location.href;
-  var key=null;
-  if(/\/\/mail\.google\.com\//.test(url))
-    key="gmail";
-  else if(/\/\/groups\.google\.com\//.test(url))
-    key="ggroup";
-  else if(/\/\/sites\.google\.com\//.test(url))
-    key="gsite";
-  if(key==null)return;
+var document = _document;
+var window = _window;
+(function() {
+  var url = _window.location.href;
+  var key = null;
+  if (/\/\/mail\.google\.com\//.test(url))
+    key = "gmail";
+  else if (/\/\/groups\.google\.com\//.test(url))
+    key = "ggroup";
+  else if (/\/\/sites\.google\.com\//.test(url))
+    key = "gsite";
+  if (key == null) return;
   //---------------------------------------------------------------------------
 
-  var aghutil={
+  var aghutil = {
     // from https://sites.google.com/site/958site/Home/sleipnirscript/Show-SpeedDial-Icon-in-Sleipnir-Start
-    GetCodebasePath:function(name){
-      if(this.contentPathRoot!=null)
-        return this.contentPathRoot+name;
+    GetCodebasePath: function(name) {
+      if (this.contentPathRoot != null)
+        return this.contentPathRoot + name;
 
-      var reg_ext_js=/\.js$/i;
-      this.contentPathRoot=sleipnir.ScriptFullName.replace(sleipnir.ScriptName,"").replace(reg_ext_js,"");
-      return this.contentPathRoot+name;
+      var reg_ext_js = /\.js$/i;
+      this.contentPathRoot = sleipnir.ScriptFullName.replace(sleipnir.ScriptName, "").replace(reg_ext_js, "");
+      return this.contentPathRoot + name;
     },
-    GetUrlFromFilepath:(function(){
-      var reg_char_yen=/\\/g;
-      var reg_char_and=/\&/g;
-      var reg_char_spc=/ /g;
-      return function(path){
-        return "file:///"+path.replace(reg_char_yen,"/").replace(reg_char_and,"%26").replace(reg_char_spc,"%20");
+    GetUrlFromFilepath: (function() {
+      var reg_char_yen = /\\/g;
+      var reg_char_and = /\&/g;
+      var reg_char_spc = / /g;
+      return function(path) {
+        return "file:///" + path.replace(reg_char_yen, "/").replace(reg_char_and, "%26").replace(reg_char_spc, "%20");
       };
     })(),
-    // ReadFileAllTextA:function(filename){
-    //   var buff=[];
-    //   var f=sleipnir.OpenFile(agh_basepath+"\\"+filename,"r");
-    //   for(var i=0;i<10000;i++){
-    //     var line=f.ReadLine();
-    //     if(line==null)break;
+    // ReadFileAllTextA: function(filename) {
+    //   var buff = [];
+    //   var f = sleipnir.OpenFile(agh_basepath+"\\"+filename,"r");
+    //   for (var i = 0; i < 10000; i++) {
+    //     var line = f.ReadLine();
+    //     if (line == null) break;
     //     buff.push(line);
     //   }
-    //   alert("line = "+i+"; first = "+buff[0]);
-    //   if(buff[0].startsWith("\uFEFF"))
-    //     buff[0]=buff[0].substr(1);
+    //   alert("line = " + i + "; first = " + buff[0]);
+    //   if (buff[0].startsWith("\uFEFF"))
+    //     buff[0] = buff[0].substr(1);
     //   return buff[0].join("\n");
     // },
-    ReadFileAllText:function(filename,charset){
+    ReadFileAllText: function(filename, charset) {
       try {
-        var f=sleipnir.CreateObject("ADODB.Stream");
-        f.Charset=charset||"UTF-8";
+        var f = sleipnir.CreateObject("ADODB.Stream");
+        f.Charset = charset || "UTF-8";
         f.Open();
         f.LoadFromFile(filename);
-        var ret=f.ReadText;
+        var ret = f.ReadText;
         f.Close();
         return ret;
-      }catch(e){
+      } catch(e) {
         return null;
       }
     },
@@ -82,30 +82,30 @@ var window=_window;
     _:0
   };
 
-  var ext_basepath=aghutil.GetCodebasePath("agh.addon.aghtex4seahorse");
-  var ext_baseurl =aghutil.GetUrlFromFilepath(ext_basepath);
-  var agh_basepath=ext_basepath+"\\agh";
-  var agh_baseurl =ext_baseurl+"/agh";
+  var ext_basepath = aghutil.GetCodebasePath("agh.addon.aghtex4seahorse");
+  var ext_baseurl  = aghutil.GetUrlFromFilepath(ext_basepath);
+  var agh_basepath = ext_basepath + "\\agh";
+  var agh_baseurl  = ext_baseurl + "/agh";
 
   // test to load image from local
-  //document.body.style.backgroundImage="url("+agh_baseurl+"/latex/int.png)";
-  function load_js(jsfile){
-    var src=aghutil.ReadFileAllText(ext_basepath+"\\"+jsfile);
-    if(src==null)return false;
+  // document.body.style.backgroundImage = "url(" + agh_baseurl + "/latex/int.png)";
+  function load_js(jsfile) {
+    var src = aghutil.ReadFileAllText(ext_basepath+"\\"+jsfile);
+    if (src == null) return false;
     _window.eval(src);
     return true;
   }
-  function load_css(cssfile){
-    var head=document.getElementsByTagName("head")[0];
-    var link=document.createElement("link");
-    link.setAttribute("rel","stylesheet");
-    link.setAttribute("type","text/css");
-    link.setAttribute("charset","utf-8");
-    link.setAttribute("href",ext_baseurl+"/"+cssfile);
+  function load_css(cssfile) {
+    var head = document.getElementsByTagName("head")[0];
+    var link = document.createElement("link");
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("type", "text/css");
+    link.setAttribute("charset", "utf-8");
+    link.setAttribute("href", ext_baseurl + "/" + cssfile);
     head.appendChild(link);
   }
 
-  if(!load_js("agh/agh.js")){
+  if (!load_js("agh/agh.js")) {
     alert("aghtex4seahorse: failed to initialize agh.js");
     return;
   }
@@ -123,6 +123,6 @@ var window=_window;
   //load_css("aghtex.css");
   load_js("aghtex4seahorse.js");
 
-  agh.LaTeX.Utils["aghtex.css/content"]=aghutil.ReadFileAllText(ext_basepath+"\\aghtex.css");
-  agh.LaTeX.Utils["latex.ie.css/content"]=aghutil.ReadFileAllText(agh_basepath+"\\latex\\latex.ie.css");
+  agh.LaTeX.Utils["aghtex.css/content"] = aghutil.ReadFileAllText(ext_basepath + "\\aghtex.css");
+  agh.LaTeX.Utils["latex.ie.css/content"] = aghutil.ReadFileAllText(agh_basepath + "\\latex\\latex.ie.css");
 })();
