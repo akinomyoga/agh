@@ -1,4 +1,10 @@
-
+# gitignore
 
 *.js.gz
 *.jgz
+
+/addon/insdir_seahorse
+/addon/agh.addon.aghtex4chrome/
+/addon/agh.addon.aghtex4firefox.xml
+/addon/agh.addon.aghtex4firefox@kch.murase/
+/addon/agh.addon.aghtex4thunderbird@kch.murase/
