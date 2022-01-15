@@ -5,6 +5,32 @@ agh/js - Ageha JavaScript Library v3.2
   Memo
 -------------------------------------------------------------------------------
 
+2022-01-15
+
+  * aghtex4chrome の更新は Chrome Web Store Developer Dashboard から行う。
+    https://chrome.google.com/webstore/devconsole/dd88e2e3-c614-4a13-babe-30d2b8c34197?hl=ja
+
+    * manifest-v3 への移行が勧告されている
+      然し、どうやら v2 -> v3 でかなりの変更がある様だ。
+
+      1. background page がなくなる (service_worker に移行)
+      1.1 色々仕組みが異なるらしい。というか他の js をロードできるのだろうか。
+      1.2 XMLHttpRequest が service_worker では使えない。
+      2. chrome.extensions.getURL がなくなる
+      3. chrome.extensions.connect がなくなる
+      4. chrome.extensions.onConnect がなくなる
+
+      うーん。雛形などを作って動作を確認して行かないと駄目だ。それから現在の実
+      装が一体どの様にして動いているのかの確認もしなければならない。
+      XMLHttpRequest 関連については aghtex4chrome 特有のコードの様なので、完全
+      に fetch に移行して問題ない。その他の getURL/connect/onConnect も完全に新
+      しい方法に移行して問題ない。
+
+      というかこれを機に完全に別名で登録して設定をリセットしても良いのではない
+      かという気がする。後、全く使っていない機能 (google groups, google sites,
+      etc) は off にするという事。
+
+
 2016-06-10
 
   * コマンドラインから vcproj をビルドする方法
