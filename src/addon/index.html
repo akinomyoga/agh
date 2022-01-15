@@ -8,7 +8,7 @@
   <meta name="author" content="Koichi Murase" />
   <title>agh.addon</title>
   <meta name="agh-fly-type" content="color tex" />
-  <link rel="stylesheet" type="text/css" charset="utf-8" href="https://akinomyoga.github.io/agh/mwg.std.css" />
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="https://akinomyoga.github.io/agh/mwg.slide.css" />
   <link rel="stylesheet" type="text/css" charset="utf-8" href="https://akinomyoga.github.io/agh/prog.std.css" />
   <script type="text/javascript" charset="utf-8" src="https://akinomyoga.github.io/agh/agh.fly.jgz"></script>
 </head>
@@ -35,14 +35,14 @@ agh.addon.aghtex は色々の環境に対する拡張・アドオンとして提
 <p>それぞれの環境におけるアドオン・拡張は以下から</p>
 <table class="normal center">
 <tr><th>メール環境</th><th>説明見出し</th><th>ファイル</th><th>種類</th><th>ソース</th></tr>
-<tr><td>Thunderbird</td>
-  <td><a class="internal" href="#agh.addon.aghtex4thunderbird">agh.addon.aghtex4thunderbird</a></td>
-  <td>[<a href="agh.addon.aghtex4thunderbird.xpi">.xpi</a>]</td><td>アドオン</td>
-  <td>[<a href="agh.addon.aghtex4thunderbird.tar.xz">.tar.xz</a>]</td></tr>
 <tr><td>Chrome (web mail)</td>
   <td><a class="internal" href="#agh.addon.aghtex4chrome">agh.addon.aghtex4chrome</a></td>
   <td>[<a href="agh.addon.aghtex4chrome.crx">.crx</a>]</td><td>拡張</td>
   <td>[<a href="agh.addon.aghtex4chrome.tar.xz">.tar.xz</a>]</td></tr>
+<tr><td>Thunderbird</td>
+  <td><a class="internal" href="#agh.addon.aghtex4thunderbird">agh.addon.aghtex4thunderbird</a></td>
+  <td>[<a href="agh.addon.aghtex4thunderbird.xpi">.xpi</a>]</td><td>アドオン</td>
+  <td>[<a href="agh.addon.aghtex4thunderbird.tar.xz">.tar.xz</a>]</td></tr>
 <tr><td>Firefox (web mail)</td>
   <td><a class="internal" href="#agh.addon.aghtex4firefox">agh.addon.aghtex4firefox</a></td>
   <td>[<a href="agh.addon.aghtex4firefox.xpi">.xpi</a>]</td><td>アドオン</td>
@@ -63,9 +63,6 @@ agh.addon.aghtex は色々の環境に対する拡張・アドオンとして提
 <tr><td>Apple Mail.app</td><td>未対応</td>
   <td>対応予定無し<!-- (Objective C で一応拡張は作れるらしい/Cocoa の機能??)--></td><td>Cocoa バンドル?</td><td>-</td></tr>
 <tr><td>Becky!</td><td>未対応</td><td>対応予定無し<!--(プラグイン用 API がある。)--></td><td>プラグイン</td><td>-</td></tr>
-<!--
-<tr><td></td><td></td><td></td><td></td></tr>
--->
 </table>
 <p>web mail としている物に関しては今の所以下のサイトに対応しています。</p>
 <ul>
@@ -287,6 +284,13 @@ agh.addon.aghtex4chrome.crx をドラッグ&amp;ドロップします。
   <li>aghtex4gmail: groups 編集プレビュー (編集は HTML 形式のみになっている?)</li>
   </ul>
 </li>
+<li>1.1.9.1256 [2022-01-15]
+  <ul>
+  <li>1.1.9.1254: github: github コメント下部の余分な空白挿入を修正</li>
+  <li>1.1.9.1255: github: コメント中の blob 参照ボックスは変換の対象から除外</li>
+  </ul>
+</li>
+<li>1.1.8.1253 [2020-06-26]</li>
 <li>1.1.8.1200 [2019-12-26]
   <ul>
   <li>1.1.8.1200:aghtex4chrome: オプションページに対応</li>
