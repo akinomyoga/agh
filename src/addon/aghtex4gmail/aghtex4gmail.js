@@ -418,7 +418,8 @@ agh.scripts.register("addon/aghtex4gmail.js", ["addon/aghtex.js"], function() {
             else if (node.nodeType == aghtex.NodeTypeELEMENT_NODE) {
               // 重複適用防止
               if (/(?:^|\s)markdown-body(?:\s|$)/.test(node.className)) continue;
-              if (/^(?:pre|code)$/i.test(node.tagName)) continue;
+              // コードは除外
+              if (/^(?:pre|code)$/i.test(node.tagName) || /(?:^|\s)blob-wrapper(?:\s|$)/.test(node.className)) continue;
               recursive(node, buff);
             }
           }

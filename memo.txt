@@ -109,6 +109,17 @@ agh/js - Ageha JavaScript Library v3.2
   ToDo
 -------------------------------------------------------------------------------
 
+2020-09-02
+
+  * aghtex: \thinspace がない
+    調べると paragraph mode で定義されている。
+    math mode で使えるのかを確認してから移動する。
+
+  * aghtex: \not E の左右の kerning が壊れている
+
+    "negative space" が左右に入っているがこれを削除すると E の位置はよくなる。
+    / の左右の位置は駄目。そもそも position:absolute になっているのは?
+
 2019-12-26
 
   * aghtex4chrome: タブ内で開ける .tex と開けない .tex が存在する。
