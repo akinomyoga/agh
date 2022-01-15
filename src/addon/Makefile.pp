@@ -26,7 +26,7 @@ upload: aghtex4gmail.htm
 
 $(OUTDIR)/addon:
 	mkdir -p $@
-$(OUTDIR)/addon/index.html: aghtex4gmail.htm
+$(OUTDIR)/addon/index.html: index.html
 	cp -p $< $@
 
 #==============================================================================

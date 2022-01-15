@@ -271,7 +271,7 @@
       });
     }
 
-    var aghtex4chrome_webpage_url = "http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/addon/";
+    var aghtex4chrome_webpage_url = "https://akinomyoga.github.io/agh/addon/";
     e_menu.appendChild(_document.createElement("hr"));
     var d = _document.createElement("div");
     d.style.textAlign = "center";

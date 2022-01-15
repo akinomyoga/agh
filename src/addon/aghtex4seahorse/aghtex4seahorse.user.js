@@ -67,16 +67,16 @@ var window=_window;
         return null;
       }
     },
-    // LoadJsA:function(filename){
-    //   return sleipnir.RunScript(agh_basepath+"\\"+filename);
+    // LoadJsA: function(filename) {
+    //   return sleipnir.RunScript(agh_basepath + "\\" + filename);
     // },
-    // LoadJsB:function(filename){
-    //   var aghbase="http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh";
-    //   var head=document.getElementsByTagName("head")[0];
-    //   var script=document.createElement("script");
-    //   script.setAttribute("type","text/javascript");
-    //   script.setAttribute("charset","utf-8");
-    //   script.setAttribute("src",aghbase+"/"+filename);
+    // LoadJsB: function(filename){
+    //   var aghbase = "https://akinomyoga.github.io/agh";
+    //   var head = document.getElementsByTagName("head")[0];
+    //   var script = document.createElement("script");
+    //   script.setAttribute("type", "text/javascript");
+    //   script.setAttribute("charset", "utf-8");
+    //   script.setAttribute("src", aghbase + "/" + filename);
     //   head.appendChild(script);
     // },
     _:0
@@ -109,10 +109,10 @@ var window=_window;
     alert("aghtex4seahorse: failed to initialize agh.js");
     return;
   }
-  //agh.scripts.AGH_URLBASE="http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh/";
-  agh.scripts.AGH_URLBASE=agh_baseurl+"/";
-  agh.scripts.load_css=function(cssfile){
-    //alert("load_css: "+agh.scripts.AGH_URLBASE+cssfile);
+  // agh.scripts.AGH_URLBASE = "https://akinomyoga.github.io/agh/";
+  agh.scripts.AGH_URLBASE = agh_baseurl + "/";
+  agh.scripts.load_css = function(cssfile) {
+    //alert("load_css: " + agh.scripts.AGH_URLBASE + cssfile);
     return true;
   };
 
