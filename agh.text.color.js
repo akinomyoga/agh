@@ -2020,7 +2020,7 @@ nsColor.cpp=function(str,option){
   // test implementation: bash
   var bash=new ns.RegexConverter("gm",[
     [
-      /^(.*?\$) (.*)$/,
+      /^(.*?\$|(?:.*[^\s])?#) (.*)$/,
       function(G,C){return '<span class="agh-syntax-bash-prompt">'+_h(G[1])+'</span> '+agh.Text.Color.bash(G[2]);}
     ],ruleHtmlEscape
   ]);

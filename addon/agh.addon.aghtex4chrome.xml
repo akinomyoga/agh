@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <gupdate xmlns="http://www.google.com/update2/response" protocol="2.0">
   <app appid="gbdhlnkhgglcojdbhooijfjklchfikkj">
-    <updatecheck codebase="https://akinomyoga.github.io/agh/addon/agh.aghtex.aghtex4chrome.crx" version="1.1.9.1256" />
+    <updatecheck codebase="https://akinomyoga.github.io/agh/addon/agh.aghtex.aghtex4chrome.crx" version="1.1.10.1260" />
   </app>
 </gupdate>
