@@ -1,0 +1,18 @@
+/* -*- mode: js; coding: utf-8 -*- */
+
+// Package
+//   \usepackage{mathrsfs}
+// ChangeLog
+//   2025-05-27, KM
+//     create the package file
+// References
+//   https://ctan.org/pkg/mathrsfs
+
+context "pkg:mathrsfs/mode.math" new() {
+  _Ctx.DefineCommand({
+    mathscr: ['s@;#>1', '<tex:font class="aghtex-mathscr">#1</tex:font>'],
+  });
+}
+ns.Document.Packages["mathrsfs"] = function(doc, opt, pkgName) {
+  doc.context_cast("mode.math").OverwriteContext(doc.context_cast("pkg:mathrsfs/mode.math"));
+};

@@ -88,8 +88,9 @@ modules+=.gen/mod_ref.js
 #%x aghtex::Module.r/%name%/cls_article/
 #%x aghtex::Module.r/%name%/pkg_ams/
 #%x aghtex::Module.r/%name%/pkg_bm/
-#%x aghtex::Module.r/%name%/pkg_url/
 #%x aghtex::Module.r/%name%/pkg_color/
+#%x aghtex::Module.r/%name%/pkg_mathrsfs/
+#%x aghtex::Module.r/%name%/pkg_url/
 
 modules: $(modules)
 

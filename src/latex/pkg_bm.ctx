@@ -21,7 +21,7 @@ agh.memcpy(ns.Modules["core"].ErrorMessages, {
 });
 
 context "pkg:bm/global" new() {
-  function DefineBoldSymbol(doc,weight,name,content) {
+  function DefineBoldSymbol(doc, weight, name, content) {
     if (weight == 'bold') {
       content = '<tex:font class="aghtex-mathbm">' + content + '</tex:font>';
     } else if (weight == 'heavy') {
