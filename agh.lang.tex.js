@@ -9836,7 +9836,7 @@ agh.memcpy(ns.Modules["core"].ErrorMessages, {
 new function(){
   var _Ctx=ns.ContextFactory.GetInstance("pkg:bm/global");
   var _CtxName="pkg:bm/global";
-  function DefineBoldSymbol(doc,weight,name,content) {
+  function DefineBoldSymbol(doc, weight, name, content) {
     if (weight == 'bold') {
       content = '<tex:font class="aghtex-mathbm">' + content + '</tex:font>';
     } else if (weight == 'heavy') {
@@ -10068,6 +10068,30 @@ new function(){
 }
 ns.Document.Packages["color"] = function(doc, opt, pkgName) {
   doc.context_cast("global").OverwriteContext(doc.context_cast("pkg:color/global"));
+};
+
+})();
+//-----------------------------------------------------------------------------
+(function _aghtex_include_pkg_mathrsfs_js() { /* main.pp.js: included from .gen/pkg_mathrsfs.js */
+/* -*- mode: js; coding: utf-8 -*- */
+
+// Package
+//   \usepackage{mathrsfs}
+// ChangeLog
+//   2025-05-27, KM
+//     create the package file
+// References
+//   https://ctan.org/pkg/mathrsfs
+
+new function(){
+  var _Ctx=ns.ContextFactory.GetInstance("pkg:mathrsfs/mode.math");
+  var _CtxName="pkg:mathrsfs/mode.math";
+  _Ctx.DefineCommand({
+    mathscr: ['s@;#>1', '<tex:font class="aghtex-mathscr">#1</tex:font>'],
+  });
+}
+ns.Document.Packages["mathrsfs"] = function(doc, opt, pkgName) {
+  doc.context_cast("mode.math").OverwriteContext(doc.context_cast("pkg:mathrsfs/mode.math"));
 };
 
 })();

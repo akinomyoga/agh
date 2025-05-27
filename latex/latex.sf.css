@@ -510,6 +510,16 @@ tex\:math tex\:font.aghtex-mathcal tex\:f.aghtex-alpha-upper {
   font-family: aghtex_mathcal,'Monotype Corsiva','Script',cursive;
   font-style: normal;
 }
+/* \mathscr */
+tex\:font.aghtex-mathscr,
+tex\:math tex\:font.aghtex-mathscr tex\:f.aghtex-alpha-lower {
+  font-family: 'Monotype Corsiva','Script','HG正楷書体-PRO','HGP教科書体',cursive;
+  font-style: normal;
+}
+tex\:math tex\:font.aghtex-mathscr tex\:f.aghtex-alpha-upper {
+  font-family: aghtex_mathscr,'Monotype Corsiva','Script',cursive;
+  font-style: normal;
+}
 /* \mathfrak */
 tex\:font.aghtex-mathfrak {
   font-family: 'Script','Monotype Corsiva','HGP行書体','HG行書体',cursive; }
