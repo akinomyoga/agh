@@ -47,6 +47,7 @@ agh.scripts.register("agh.lang.tex.js", ["agh.js"], function() {
 #%x include.r|@|pkg_ams.js|
 #%x include.r|@|pkg_bm.js|
 #%x include.r|@|pkg_color.js|
+#%x include.r|@|pkg_mathrsfs.js|
 #%x include.r|@|pkg_url.js|
 
 /*===========================================================================*/
